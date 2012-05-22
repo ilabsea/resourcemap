@@ -39,6 +39,16 @@
 //available on sprocket 2.2 and above
 //= stub 'mobile/map'
 
+//= require jquery.colorPicker.min
+//= require custom_bindings/colorpicker
+//= require sammy
+//= require module
+//= require utils
+//= require event_dispatcher
+//= require bootstrap
+//= require events/system_event
+//= require events/threshold_event
+
 // Update the appcache for offline
 
 $(document).ready(function() {
