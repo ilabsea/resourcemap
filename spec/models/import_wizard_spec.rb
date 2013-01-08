@@ -744,6 +744,15 @@ describe ImportWizard do
     data_errors[7][:column].should eq(8)
     data_errors[7][:type].should eq('email addresses')
     data_errors[7][:rows].should eq([1, 2])
+    
+    second_line.should include({:value=>"new val", :error=>nil})
+    second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
+    second_line.should include({:value=>"inval", :error=>"Invalid option in select_one field"})
+    second_line.should include({:value=>"Dad, inv", :error=>"Invalid option in select_many field"})
+    second_line.should include({:value=>"inval", :error=>"Invalid option in hierarchy field"})
+    second_line.should include({:value=>"999", :error=>"Non-existent site-id in site field"})
+    second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user email address in user field"})
+    second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email address in email field"})
 
     ImportWizard.delete_file(user, collection)
   end
@@ -781,6 +790,32 @@ describe ImportWizard do
 
      ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
      errors = (ImportWizard.validate_sites_with_columns user, collection, specs)[:errors]
+     sites_preview = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:sites]
+
+     sites_preview.length.should eq(2)
+
+     first_line = sites_preview.first
+     first_line.should include({:value=>"new val", :error=>nil})
+     first_line.should include({value: '11', error: nil})
+     first_line.should include({:value=>"two", :error=>nil})
+     first_line.should include({:value=>"one", :error=>nil})
+     first_line.should include({:value=>"Dad", :error=> "Hierarchy fields can only be created via web in the Layers page"})
+     first_line.should include({:value=>"1235", :error=>nil})
+     first_line.should include({:value=>"12/26/1988", :error=>nil})
+     first_line.should include({:value=>"user2@email.com", :error=>nil})
+     first_line.should include({:value=>"email@mail.com", :error=>nil})
+
+     second_line = sites_preview.last
+     second_line.should include({:value=>"new val", :error=>nil})
+     second_line.should include({:value=>"invalid11", :error=>"Invalid numeric value in numeric field"})
+     #option will be created as news
+     second_line.should include({:value=>"inval", :error=>nil})
+     second_line.should include({:value=>"Dad, inv", :error=>nil})
+     #hierarchy fields cannot be created using import wizard
+     second_line.should include({:value=>"inval", :error=> "Hierarchy fields can only be created via web in the Layers page"})
+     second_line.should include({:value=>"999", :error=>"Non-existent site-id in site field"})
+     second_line.should include({:value=>"non-existing@email.com", :error=>"Non-existent user email address in user field"})
+     second_line.should include({:value=>"email@ma@il.com", :error=>"Invalid email address in email field"})
 
      data_errors = errors[:data_errors]
      data_errors.length.should eq(1)

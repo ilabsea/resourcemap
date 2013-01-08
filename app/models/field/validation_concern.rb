@@ -20,12 +20,21 @@ module Field::ValidationConcern
     end
   end
 
+<<<<<<< HEAD
   def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site = nil)
     decoded_value = value.blank? ? nil : decode(value)  
     if decoded_value 
       standadrize(decoded_value) if valid_value?(decoded_value, site)
     else
       decoded_value
+=======
+  private
+
+  def check_email_format(value)
+    regex = Regexp.new('^(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})$')
+    if value.match(regex).nil?
+      raise "Invalid email address in #{code} field"
+>>>>>>> applied error message change for field with kind=email
     end
   end
 
@@ -57,8 +66,15 @@ module Field::ValidationConcern
 
   private
 
+<<<<<<< HEAD
   def check_presence_of_value(value)
     raise "Missing #{code} value" if value.blank?
+=======
+    if !user_emails.include? user_email
+      raise "Non-existent user email address in #{code} field"
+    end
+    user_email
+>>>>>>> applied error message change for field with kind=email
   end
 
 
