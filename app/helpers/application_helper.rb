@@ -29,4 +29,8 @@ module ApplicationHelper
   def field_edit_view(kind)
     Field::PluginKinds.has_key?(kind) ? Field::PluginKinds[kind][:edit_view] : "collections/fields/#{kind}_edit_view"
   end
+
+  def all_icons
+    [:pin, :airplane, :anchor, :anthenna, :baby, :balance, :barn, :bell, :biohazard, :boat, :bookmark, :box_icon, :bug, :building, :bus, :car, :clark, :cog, :dog, :drop, :envelope, :factory, :family, :faucet, :fire, :flag, :gas_pump, :group, :hand_truck, :helicopter, :hospital, :house, :key, :medical_kit, :mortarboard, :mountain, :notebook, :pine, :police, :pregnant, :recycle, :robot, :shopping_cart, :signpost, :subway, :swing, :syringe, :tag, :tent, :test, :train, :trashbin, :truck, :tunnel, :wheat, :wifi]
+  end
 end

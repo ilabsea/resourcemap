@@ -1,0 +1,103 @@
+/* Make helpers available to this file */
+<% environment.context_class.instance_eval { include ApplicationHelper } %>
+
+<% all_icons.each do |i| %>
+<%= ".#{i} {"%>
+    <%= "background-image:url(/assets/collection_icons/big/#{i}.png);" %>
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+  }
+<% end %>
+
+.icon_selector_button:hover {
+  background-position: 0px -60px;
+}
+
+.icon_selector_button:active {
+  background-position: 0px -120px;
+}
+
+.icon_selector_button.pushed {
+  background-position: -2px -122px;
+  border-radius: 8px;
+  border-width: 2px;
+  border-color: #00;
+  border-style: solid;
+}
+
+button.icon_selector_button {
+  width: 59px;
+  height: 59px;
+  display:block;
+  float:left;
+  margin:0 12px 0 0;
+  margin-bottom:12px;
+  cursor:pointer;
+  background-repeat: no-repeat;
+  background-color:transparent;
+  border:none;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0
+}
+
+.box.plain.orange {
+  background-color:#FFF0BD;
+  background-position:initial initial;
+  background-repeat:initial initial;
+  padding:20px;
+}
+
+.center {
+  margin-left:auto;
+  margin-right: auto;
+  display:block;
+}
+
+/* Used for the Switch effect: */
+.cb-enable, .cb-disable, .cb-enable span, .cb-disable span { background: url(/assets/on_off.png) repeat-x; display: block; float: left; height: 22px; }
+
+.cb-enable span, .cb-disable span {
+  line-height: 22px;
+  display: block;
+  background-repeat: no-repeat;
+  font-weight: bold;
+}
+
+.cb-enable span {
+  background-position: 0px;
+  width: 30.5px;
+}
+
+.cb-disable span {
+  background-position: -72px;
+  width: 30.5px;
+}
+
+.cb-disable.selected {
+  background-position: 0 -22px;
+}
+
+.cb-disable.selected span {
+  background-position: -30.5px;
+  width: 20.5px;
+}
+
+.cb-enable.selected {
+  background-position: 52.5px;
+}
+.cb-enable.selected span {
+  background-position: 103px;
+  width: 20.5px;
+  color: #fff;
+}
+.switch label {
+  cursor: pointer;
+}
+.field {
+  display: inline-block;
+  float: left;
+  margin-right: 5px;
+}
