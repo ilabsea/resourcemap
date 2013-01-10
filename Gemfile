@@ -38,7 +38,11 @@ group :test, :development do
   gem 'rvm'
   gem 'rvm-capistrano', '1.2.2'
   gem 'jasminerice'
+  gem 'guard'
   gem 'guard-jasmine'
+  gem 'guard-rspec'
+  gem 'spork'
+  gem 'guard-spork'
 end
 
 group :test do
@@ -47,6 +51,9 @@ group :test do
   gem 'resque_spec'
   gem 'pry'
   gem 'pry-nav'
+
+  gem 'rb-fsevent', :require => RUBY_PLATFORM.include?('darwin') && 'rb-fsevent'
+  gem 'rb-inotify', :require => RUBY_PLATFORM.include?('linux') && 'rb-inotify'
 end
 
 # To use ActiveModel has_secure_password
