@@ -2,7 +2,6 @@ mobile_id: off
 host: localhost:3000
 
 plugins:
-  
   snapshot: on
   channels: on
   reminders: on

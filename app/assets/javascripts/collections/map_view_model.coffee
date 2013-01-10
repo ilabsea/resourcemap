@@ -363,18 +363,20 @@ onCollections ->
         icon = 'active'
 
       if marker.site && marker.site.icon != 'null'
-        marker.setIcon @markerImage 'resmap_' + marker.site.icon + @endingUrl(icon) + '.png'
+        marker.setIcon @markerImage 'collection_icons/red/' + marker.site.icon + @endingUrl(icon) + '.png'
       else
         marker.setIcon @markerImage 'resmap_default' + @endingUrl(icon) + '.png'
 
     @endingUrl: (icon_name) ->
-      switch icon_name
-        when 'inactive'
-           '_inactive'
-        when 'target'
-           '_target'
-        else
-          ''
+      #switch icon_name
+        #when 'inactive'
+           #'_inactive'
+        #when 'target'
+           #'_target'
+        #else
+          #''
+      ''
+
     @deleteMarker: (siteId, removeFromMap = true) ->
       return unless @markers[siteId]
       @markers[siteId].setMap null if removeFromMap
