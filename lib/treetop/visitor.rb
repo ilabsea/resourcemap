@@ -5,5 +5,7 @@ class Visitor
 	
 	# default fallback - visit_update_command
 	def visit_update_command(node); end
+
+  def visit_add_command(node); end
 	
 end

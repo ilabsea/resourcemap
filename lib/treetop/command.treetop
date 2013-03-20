@@ -8,7 +8,7 @@ grammar Command
 	end
 	
 	rule command
-		query_command / update_command
+		query_command / update_command / add_command
 	end
 	
 	rule query_command
@@ -18,7 +18,11 @@ grammar Command
 	rule update_command
 		('u' / 'U') space resource_id:resource space property_list space? comma* new_line <UpdateCommandNode>
 	end
-	
+
+  rule add_command
+    ('a' / 'A') space collection_id:optional_collection_id? property_list space? comma* new_line <AddCommandNode>  
+  end
+
 	rule property_list
 		assignment_expression space? ',' space? next:property_list 
     /
@@ -44,8 +48,12 @@ grammar Command
 	rule value
 		number / string
 	end
+
+  rule optional_collection_id
+    digit+ space <CollectionNode>
+  end
 	
-	rule string
+  rule string
 		phrase space?
 	end
 	
@@ -58,7 +66,7 @@ grammar Command
 	rule number
 		digit* !word <NumberNode> 
 	end
-	
+
 	rule word
 		character+ symbol* character*
 		/

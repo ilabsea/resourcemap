@@ -185,3 +185,79 @@ describe ExecVisitor, "Process update command" do
     site.properties[@f2.id.to_s].to_i.should == 20
   end
 end
+
+
+describe ExecVisitor, "Process add command" do
+  before(:all) do
+    @visitor = ExecVisitor.new
+    @parser = CommandParser.new
+  end
+
+  before(:each) do
+    @collection = Collection.make
+    @user = User.make(:phone_number => '85512345678')
+    @collection.memberships.create(:user => @user, :admin => false)
+    @layer = @collection.layers.make(:name => "default")
+    @f1 = @layer.fields.make(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1, :kind => "numeric")
+    @f2 = @layer.fields.make(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1, :kind => "numeric")
+    #@site = @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
+    #@collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
+    @node = @parser.parse("dyrm a #{@collection.id} lat=12.11,lng=75.11,name=sms_site").command
+    @node.sender = @user
+  end
+
+  it 'should have collection_id' do
+    @node.collection_id.value.should == @collection.id
+  end
+
+  it 'should recognize lat equal 12.11' do
+    property = @node.property_list.assignment_expression
+    property.name.text_value.should eq 'lat'
+    property.value.text_value.should eq '12.11'
+  end
+
+  it 'should recognize lng equal 75.11' do
+    property = @node.property_list.next.assignment_expression
+    property.name.text_value.should eq 'lng'
+    property.value.text_value.should eq '75.11'
+  end
+
+  it 'should recognize name equal sms_site ' do
+    property = @node.property_list.next.next
+    property.name.text_value.should eq 'name'
+    property.value.text_value.should eq 'sms_site'
+  end
+
+  it 'should return added_successfully after site has been created' do
+    @visitor.visit_add_command(@node).should == ExecVisitor::MSG[:added_successfully]
+  end
+
+  it 'should added 1 new site when visit_add_command called' do
+    @node = @parser.parse("dyrm a #{@collection.id} lat=12.11,lng=75.11,name=sms_site,doctor=10").command
+    @node.sender = @user
+    expect{@visitor.visit_add_command(@node)}.to change{
+      Collection.find(@collection.id).sites.count
+    }.by(1)
+  end
+
+  it 'should return added_successfully without collection_id' do
+    @node = @parser.parse("dyrm a lat=12.11,lng=75.11,name=sms_site").command
+    @node.sender = @user
+    @visitor.visit_add_command(@node).should == ExecVisitor::MSG[:added_successfully]
+  end
+
+  it 'should return collection_id is needed when sender have more than 1 collections' do
+    @collection1 = Collection.make
+    @collection1.memberships.create(:user => @user, :admin => false)
+    @node = @parser.parse("dyrm a lat=12.11,lng=75.11,name=sms_site").command
+    @node.sender = @user
+    @visitor.visit_add_command(@node).should eq "Collection id is needed in your message."
+  end
+
+  it 'should return collection_id is needed when sender do not belong to any collections' do
+    @user1 = User.make(:phone_number => '85512345678')
+    @node = @parser.parse("dyrm a lat=12.11,lng=75.11,name=sms_site").command
+    @node.sender = @user1
+    @visitor.visit_add_command(@node).should eq "Collection id is needed in your message."
+  end
+end

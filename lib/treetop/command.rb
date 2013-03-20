@@ -215,8 +215,13 @@ module Command
       if r2
         r0 = r2
       else
-        @index = i0
-        r0 = nil
+        r3 = _nt_add_command
+        if r3
+          r0 = r3
+        else
+          @index = i0
+          r0 = nil
+        end
       end
     end
 
@@ -438,6 +443,118 @@ module Command
     end
 
     node_cache[:update_command][start_index] = r0
+
+    r0
+  end
+
+  module AddCommand0
+    def space
+      elements[1]
+    end
+
+    def collection_id
+      elements[2]
+    end
+
+    def property_list
+      elements[3]
+    end
+
+    def new_line
+      elements[6]
+    end
+  end
+
+  def _nt_add_command
+    start_index = index
+    if node_cache[:add_command].has_key?(index)
+      cached = node_cache[:add_command][index]
+      if cached
+        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        @index = cached.interval.end
+      end
+      return cached
+    end
+
+    i0, s0 = index, []
+    i1 = index
+    if has_terminal?('a', false, index)
+      r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      @index += 1
+    else
+      terminal_parse_failure('a')
+      r2 = nil
+    end
+    if r2
+      r1 = r2
+    else
+      if has_terminal?('A', false, index)
+        r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure('A')
+        r3 = nil
+      end
+      if r3
+        r1 = r3
+      else
+        @index = i1
+        r1 = nil
+      end
+    end
+    s0 << r1
+    if r1
+      r4 = _nt_space
+      s0 << r4
+      if r4
+        r6 = _nt_optional_colelction_id
+        if r6
+          r5 = r6
+        else
+          r5 = instantiate_node(SyntaxNode,input, index...index)
+        end
+        s0 << r5
+        if r5
+          r7 = _nt_property_list
+          s0 << r7
+          if r7
+            r9 = _nt_space
+            if r9
+              r8 = r9
+            else
+              r8 = instantiate_node(SyntaxNode,input, index...index)
+            end
+            s0 << r8
+            if r8
+              s10, i10 = [], index
+              loop do
+                r11 = _nt_comma
+                if r11
+                  s10 << r11
+                else
+                  break
+                end
+              end
+              r10 = instantiate_node(SyntaxNode,input, i10...index, s10)
+              s0 << r10
+              if r10
+                r12 = _nt_new_line
+                s0 << r12
+              end
+            end
+          end
+        end
+      end
+    end
+    if s0.last
+      r0 = instantiate_node(AddCommandNode,input, i0...index, s0)
+      r0.extend(AddCommand0)
+    else
+      @index = i0
+      r0 = nil
+    end
+
+    node_cache[:add_command][start_index] = r0
 
     r0
   end
@@ -735,6 +852,57 @@ module Command
     end
 
     node_cache[:value][start_index] = r0
+
+    r0
+  end
+
+  module OptionalColelctionId0
+    def space
+      elements[1]
+    end
+  end
+
+  def _nt_optional_colelction_id
+    start_index = index
+    if node_cache[:optional_colelction_id].has_key?(index)
+      cached = node_cache[:optional_colelction_id][index]
+      if cached
+        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        @index = cached.interval.end
+      end
+      return cached
+    end
+
+    i0, s0 = index, []
+    s1, i1 = [], index
+    loop do
+      r2 = _nt_digit
+      if r2
+        s1 << r2
+      else
+        break
+      end
+    end
+    if s1.empty?
+      @index = i1
+      r1 = nil
+    else
+      r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
+    end
+    s0 << r1
+    if r1
+      r3 = _nt_space
+      s0 << r3
+    end
+    if s0.last
+      r0 = instantiate_node(CollectionNode,input, i0...index, s0)
+      r0.extend(OptionalColelctionId0)
+    else
+      @index = i0
+      r0 = nil
+    end
+
+    node_cache[:optional_colelction_id][start_index] = r0
 
     r0
   end

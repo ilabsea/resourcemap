@@ -25,6 +25,12 @@ class UpdateCommandNode < CommandNode
 	end
 end
 
+class AddCommandNode < CommandNode
+  def accept(visitor)
+    visitor.visit_add_command self
+  end
+end
+
 class ConditionalExpressionNode < Treetop::Runtime::SyntaxNode
 	# :string
 	# :comparison_operator
@@ -53,4 +59,10 @@ class NumberNode < Treetop::Runtime::SyntaxNode
 	def value
 		text_value.to_i
 	end
+end
+
+class CollectionNode < Treetop::Runtime::SyntaxNode
+  def value
+    text_value.to_i
+  end
 end
