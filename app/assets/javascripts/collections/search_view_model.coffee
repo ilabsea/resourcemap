@@ -12,7 +12,6 @@ onCollections ->
       return false if !@currentCollection() || @ignorePerformSearchOrHierarchy
 
       rootCollection = @currentCollection().collection ? @currentCollection()
-
       @unselectSite()
 
       if $.trim(@search()).length == 0 && @filters().length == 0 && !@sort()
@@ -24,9 +23,8 @@ onCollections ->
       else
         @currentCollection(new CollectionSearch(rootCollection, @search(), @filters(), @sort(), @sortDirection()))
         @lastSearch(@search())
-
+      
       @currentCollection().loadMoreSites() if @currentCollection().sitesPage == 1
-
       if @showingMap()
         @reloadMapSites()
       else

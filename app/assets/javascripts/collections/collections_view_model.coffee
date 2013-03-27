@@ -34,6 +34,7 @@ onCollections ->
 
       $('.BreadCrumb').load("/collections/breadcrumbs", {})
 
+      @getAlertedCollections()
       window.setTimeout(window.adjustContainerSize, 100)
 
       # Return undefined because otherwise some browsers (i.e. Miss Firefox)
@@ -50,10 +51,14 @@ onCollections ->
       @currentCollection collection
       @unselectSite() if @selectedSite()
       @exitSite() if @editingSite()
-
-      $.get "/collections/#{@currentCollection().id}/sites_by_term.json", (sites) =>
-        @currentCollection().allSites(sites)
-        window.adjustContainerSize()
+      if @showingAlert()
+        $.get "/collections/#{@currentCollection().id}/sites_by_term.json", _alert: true, (sites) =>
+          @currentCollection().allSites(sites)
+          window.adjustContainerSize()
+      else
+        $.get "/collections/#{@currentCollection().id}/sites_by_term.json", (sites) =>
+          @currentCollection().allSites(sites)
+          window.adjustContainerSize()
 
       initialized = @initMap()
       collection.panToPosition(true) unless initialized

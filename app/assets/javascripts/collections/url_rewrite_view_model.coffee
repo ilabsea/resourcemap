@@ -27,6 +27,9 @@ onCollections ->
 
       # Append map/table view mode
       query._table = true unless @showingMap()
+      
+      # Append alert view
+      query._alert = true if @showingAlert()
 
       location = document.createElement 'a'
       location.href = window.location

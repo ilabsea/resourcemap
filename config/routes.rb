@@ -11,6 +11,7 @@ ResourceMap::Application.routes.draw do
   match 'real-time-resource-tracking' => 'home#second_page', :via => :get
   match 'track-medical-supplies-and-personnel'=> 'home#medical_page', :via => :get
   match 'track-food-prices-and-supplies' => 'home#food_page', :via => :get
+  match 'collections/alerted-collections' => 'collections#alerted_collections', :via => :get
   #match 'analytics' => 'analytics#index', :via => :get
 
   resources :repeats

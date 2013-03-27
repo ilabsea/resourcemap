@@ -10,7 +10,9 @@ class SitesController < ApplicationController
     else
       search = collection.new_search current_user_id: current_user.id
     end
+    p params[:_alert]
     search.name_start_with params[:name] if params[:name].present?
+    search.alerted_search params[:_alert] if params[:_alert] == "true"
     search.offset params[:offset]
     search.limit params[:limit]
 
@@ -67,11 +69,12 @@ class SitesController < ApplicationController
     search.exclude_id params[:exclude_id].to_i if params[:exclude_id].present?
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search] if params[:search].present?
+    search.alerted_search params[:_alert] if params[:_alert].present?
     search.location_missing if params[:location_missing].present?
     if params[:selected_hierarchies].present?
       search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
     end
-    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies)
+    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
 
     search.apply_queries
     render json: search.results

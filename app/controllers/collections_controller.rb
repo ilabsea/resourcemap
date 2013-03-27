@@ -142,6 +142,8 @@ class CollectionsController < ApplicationController
   end
 
   def sites_by_term
+    p '00000' * 9
+    p params
     if current_snapshot
       search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
     else
@@ -149,6 +151,7 @@ class CollectionsController < ApplicationController
     end
 
     search.full_text_search params[:term] if params[:term]
+    search.alerted_search params[:_alert] if params[:_alert] 
     search.select_fields(['id', 'name'])
 
     search.apply_queries
@@ -246,5 +249,16 @@ class CollectionsController < ApplicationController
     end
     ms = collection.messages.where("is_send = true and created_at between ? and ?", start_date, Time.now)
     render json: {status: 200, remain_quota: collection.quota, sended_message: ms.length }
+  end
+
+  def alerted_collections
+    collections = Collection.find_all_by_id params[:ids]
+    ids = collections.map do |c|
+      s = c.new_search
+      s.alerted_search true
+      s.apply_queries
+      c.id if s.results.length > 0 
+    end
+    render json: ids.compact
   end
 end

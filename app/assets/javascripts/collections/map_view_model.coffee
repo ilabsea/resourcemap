@@ -1,5 +1,4 @@
 onCollections ->
-
   class @MapViewModel
     @constructor: ->
       @showingMap = ko.observable(true)
@@ -149,6 +148,7 @@ onCollections ->
         e: ne.lng()
         w: sw.lng()
         z: zoom
+        _alert: @showingAlert() if @showingAlert()
         collection_ids: collection_ids
 
       query.selected_hierarchies = @selectedHierarchy().hierarchyIds() if @selectedHierarchy()
@@ -474,4 +474,3 @@ onCollections ->
       # fix dinamic DOM
       # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
       $(".ux-datepicker").removeClass('hasDatepicker').datepicker(options)
-

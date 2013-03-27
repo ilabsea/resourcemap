@@ -35,7 +35,6 @@ module ElasticSearch::QueryHelper
       end
 
       search_hash.each do |key, value|
-
         # Check that the field exists indeed in the collection,
         # but only when not searching for name and id
         if key.downcase == 'id' || key.downcase == 'name'

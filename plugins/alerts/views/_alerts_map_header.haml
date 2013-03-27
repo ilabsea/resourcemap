@@ -1,3 +1,4 @@
 <!-- ko if: alertsCount() && alertsCount() > 0 -->
-%span.alert{ko(text: :alertsCountText)}
+%span.alert{ko(text: :alertsCountText, click: '$root.filterAlertedSites'), style: "cursor: pointer "}
+%span.cancel-alert{ko(visible: '$root.showingAlert()', click: '$root.cancelFilterAlertedSites')}Close Alert
 <!-- /ko -->
