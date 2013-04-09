@@ -1,10 +1,6 @@
 module Field::Base
   extend ActiveSupport::Concern
 
-  # [
-  #   { :name => 'email', :css_class => 'lmessage' }
-  # ]
-
   BaseKinds = [
    { name: 'text', css_class: 'ltext', small_css_class: 'stext' },
    { name: 'numeric', css_class: 'lnumber', small_css_class: 'snumeric' },
@@ -74,7 +70,7 @@ module Field::Base
         return value
       end
     elsif hierarchy?
-      return value
+      return find_hierarchy_name_by_id(value)
     elsif date?
       return Site.iso_string_to_mdy(value)
     else

@@ -24,31 +24,6 @@ class ImportWizard
       validated_data
     end
 
-    def validate_sites_with_column(user, collection, column_spec)
-      column_spec = column_spec.with_indifferent_access
-      csv = CSV.read file_for(user, collection)
-      csv[0].map!{|r| r.strip}
-      column_index = csv[0].index(column_spec[:header])
-      csv_column = csv[1 .. -1].transpose[column_index]
-
-      sites = csv_column.map{|csv_field_value| {value: csv_field_value}}
-
-      #TODO: Refactor this duplicated code
-      sites_errors = {}
-      sites_errors[:hierarchy_field_found] = []
-      sites_errors[:usage_missing] = []
-      sites_errors[:data_errors] = []
-
-      #At this point we asume that no columns with duplicated usage or columns with duplicated/existing code or label are found in column_specs.
-      #This validations are performed client side
-
-      sites_errors[:hierarchy_field_found] << column_index if column_spec[:use_as] == 'new_field' && column_spec[:kind] == 'hierarchy'
-      errors_for_column = validate_column(user, collection, column_spec, collection.fields, csv_column, column_index)
-      sites_errors[:data_errors] << errors_for_column unless errors_for_column.nil?
-
-      { sites: sites, errors: sites_errors}
-    end
-
     def calculate_errors(user, collection, columns_spec, csv_columns, header)
       #Add index to each column spec
       columns_spec.each_with_index do |column_spec, column_index|
@@ -357,7 +332,9 @@ class ImportWizard
       validated_csv_column = []
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
-          validate_column_value(column_spec, csv_field_value, field, collection)
+          if column_spec[:use_as].to_sym == :existing_field || column_spec[:use_as].to_sym == :new_field
+            validate_column_value(column_spec, csv_field_value, field, collection)
+          end
         rescue => ex
           field_type = if field then field.kind else column_spec[:kind] end
           description = error_description_for_type(field, column_spec, field_type)
@@ -371,7 +348,7 @@ class ImportWizard
         if error_type[0]
           # For the moment we only have one kind of error for each column.
           field_type = if field then field.kind else column_spec[:kind] end
-          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: type_value(field_type), example: hint_for_type(field_type) }
+          grouped_errors = {description: error_type[0], column: column_number, rows:error_type[1].map{|e| e[:row]}, type: type_value(field_type), example: hint_for_type(field_type, field) }
         end
       end
       grouped_errors
@@ -381,8 +358,10 @@ class ImportWizard
       case field_type
         when 'numeric'
           "numeric values"
-        when 'select_one', 'select_many', 'hierarchy'
+        when 'select_one', 'select_many'
           "option values"
+        when 'hierarchy'
+          "values that can be found in the defined hierarchy"
         when 'date'
           "dates"
         when 'user', 'email'
@@ -392,8 +371,10 @@ class ImportWizard
       end
     end
 
-    def hint_for_type(field_type)
+    def hint_for_type(field_type, field)
       case field_type
+      when 'hierarchy'
+        if field then "Some valid values for this hierarchy are: #{field.hierarchy_options_names_samples}." end
       when 'numeric'
         "Values must be integers."
       when 'date'
@@ -408,8 +389,10 @@ class ImportWizard
       description = case field_type
       when 'site'
         "Some site ids in column #{column_index + 1} don't match any existing site in this collection."
-      when 'select_many', 'select_one', 'hierarchy'
+      when 'select_many', 'select_one'
         "Some option values in column #{column_index + 1} don't exist."
+      when 'hierarchy'
+        "Some values in column #{column_index + 1} don't exist in the corresponding hierarchy."
       when 'user'
         "Some email addresses in column #{column_index + 1} don't belong to any member of this collection."
       else
