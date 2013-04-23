@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html manifest='mobile/mobile.appcache'>
+	<head>
+		<title>Offline Test</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script type="text/javascript" src="mobile/jquery.js"></script>  
+		<script>
+
+
+			function saveItem(e){
+				if(navigator.onLine){
+					alert("Internet On: Saved to web server");
+				} else {
+					alert("Internet Off: Saved to local storage");
+					var cr = localStorage.getItem("cachedRequests");
+					if(cr){
+						cr++	
+					} else {
+						cr = 1
+					}
+					localStorage.setItem("cachedRequests", cr);
+				}
+			}
+
+
+			$(document).ready(function(){
+				
+				if(navigator.onLine){
+
+					// Load Schema
+					$.getJSON(
+						"mobile/collections.json?timestamp="+ $.now(),
+						function(result){
+							localStorage.setItem("collectionSchema", result);	
+							$("#form").append(JSON.stringify(localStorage.getItem("collectionSchema")));
+						}
+					)
+
+					// Save items from the cache
+					if(localStorage.getItem("cachedRequests")){
+						var r = window.confirm("You have " + localStorage.getItem("cachedRequests") + " items in your cache, would you like to save those also?");
+						if(r){
+							localStorage.removeItem("cachedRequests");
+						}
+					}
+
+				} else {
+					var collectionSchema = localStorage.getItem("collectionSchema");
+					if(collectionSchema){
+						$("#form").append(JSON.stringify(collectionSchema)); 
+					} else {
+					 alert("Offline mode is currently not available");
+					}
+				}
+
+				$("#save").click(saveItem);
+			});
+		</script>
+	</head>
+	<body>
+		<h1 id="heading">Resource Map Mobile</h1>
+		<p id="form"></p>
+		<input id="save" type="button" value="Save Some Stuff" />
+	</body>
+</html>
