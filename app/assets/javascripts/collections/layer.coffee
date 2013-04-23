@@ -1,5 +1,4 @@
 onCollections ->
-
   class @Layer
     constructor: (data) ->
       @name = data?.name

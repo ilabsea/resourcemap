@@ -1,0 +1,42 @@
+- content_for :head do
+  = google_maps_javascript_include_tag
+
+<!-- ko if: !fullscreen() -->
+%h1
+  Collections
+  %p#snapshot_loaded_message{style: 'display:none'}
+    <!-- ko if: currentSnapshot() -->
+    <!-- ko with: currentCollection -->
+    %span.i18g-snapshot
+    %span{ko(text: :viewingCurrentSnapshotMessage )}
+    %a{ko(click: :unloadCurrentSnapshot)}
+      Go back to present
+    <!-- /ko -->
+    <!-- /ko -->
+<!-- /ko -->
+
+= render 'collections/index/refine_hierarchy_items_template'
+= render 'collections/index/field_hierarchy_items_template'
+= render 'collections/index/map_sites_template'
+= render 'collections/index/map_hierarchy_items_template'
+= render 'collections/index/table_sites_template'
+= render 'collections/index/table_hierarchy_items_template'
+
+#refine-container{style: 'display:none'}
+  <!-- ko if: currentCollection() -->
+  = render 'collections/index/refine'
+  <!-- /ko -->
+
+
+#collections-dummy{style: 'height:600px'}
+#collections-main.box.slightly-padded.h50{style: 'display:none'}
+
+  <!-- ko if: showingMap() -->
+  = render 'collections/index/map'
+  <!-- /ko -->
+
+  <!-- ko if: !showingMap() -->
+  = render 'collections/index/table'
+  <!-- /ko -->
+
+  .clear

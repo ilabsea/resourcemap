@@ -98,6 +98,12 @@ ResourceMap::Application.routes.draw do
     devise_for :users, :controllers => { :sessions => 'sessions' }
   end
 
+  namespace :mobile do
+    resources :collections do
+      resources :sites
+    end
+  end
+
   scope '/plugin' do
     Plugin.all.each do |plugin|
       scope plugin.name do
