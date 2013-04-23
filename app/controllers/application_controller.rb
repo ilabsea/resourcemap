@@ -60,7 +60,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    stored_location_for(resource) || collections_path
+    if mobile_device?
+      stored_location_for(resource) || mobile_collections_path
+    else
+      stored_location_for(resource) || collections_path
+    end
   end
 
   def authenticate_collection_user!
@@ -89,7 +93,6 @@ class ApplicationController < ActionController::Base
     add_breadcrumb "Properties", collection_path(collection)
   end
 
-  private
   def mobile_device?
     if session[:mobile_param]
       session[:mobile_param] == "1"

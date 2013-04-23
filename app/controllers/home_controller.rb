@@ -3,7 +3,12 @@ class HomeController < ApplicationController
   before_filter :authenticate_user!, :except => [:show, :index]
 
   def index
-    redirect_to collections_path if current_user && !params[:explicit]
+    if current_user && !params[:explicit]
+      if mobile_device?
+        redirect_to mobile_collections_path 
+      else
+        redirect_to collections_path
+      end
+    end
   end
-
 end
