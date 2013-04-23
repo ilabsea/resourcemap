@@ -1,0 +1,38 @@
+#mobile-sites-main{"data-role" => "page"}
+
+  %div{"data-role" => "header"} Add New Site
+  <!-- ko if: currentSite -->
+  %form{ko(with: :currentSite, submit: '$root.saveSite'), action: '#/null', method: :post}
+    %div{"data-role" => "content"}
+      %div
+        %label{:for => "basic"} Text Input:
+        %input#basic{:name => "name", :type => "text", :value => ""}
+
+
+        %label{:for => "basic"} Name: 
+        %input#basic{:name => "name", :type => "text", 'data-bind' => kov(value: :name, valueUpdate: :afterkey, hasfocus: true), :autofocus => true}
+        .clear
+      %div
+        %label Location:
+        = ko_text_field_tag :locationText, html: {placeholder: 'Search or drag the pin'}
+        .clear
+      <!-- ko foreach: $root.layers -->
+
+      %div
+        %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
+        %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
+      <!-- ko if: expanded() -->
+      <!-- ko foreach: fields -->
+      %div
+        = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
+        %span.value{ko(text: :valueUI)}
+        - Field::kinds.each do |kind|
+          <!-- ko if: kind == '#{kind}' -->
+          = render partial: field_edit_view(kind), locals: { single_editing_mode: false }
+          <!-- /ko -->
+      <!-- /ko -->
+      <!-- /ko -->
+      <!-- /ko -->
+
+  <!-- /ko -->
+  %div{"data-role" => "footer"} Version 1.0

@@ -6,6 +6,8 @@ class CollectionsController < ApplicationController
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
   before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
 
+  #before_filter :prepare_for_mobile
+
   def index
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?

@@ -20,6 +20,24 @@ class ApplicationController < ActionController::Base
     render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true
   end
 
+  #before_filter :prepare_for_mobile
+
+  private
+
+  def mobile_device?
+    if session[:mobile_param]
+      session[:mobile_param] == "1"
+    else
+      request.user_agent =~ /Mobile|webOS/
+    end
+  end
+  helper_method :mobile_device?
+
+  def prepare_for_mobile
+    session[:mobile_param] = params[:mobile] if params[:mobile]
+    #request.format = :mobile if mobile_device?
+  end
+
   def current_user_or_guest
     if user_signed_in?
       return if !current_user.try(:is_guest)

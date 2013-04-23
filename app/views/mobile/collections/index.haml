@@ -1,0 +1,16 @@
+- content_for :head do
+  = google_maps_javascript_include_tag
+
+#mobile-collections-main{"data-role" => "page", "data-fullscreen" => "true" }
+  %div{"data-role" => "header"}  
+    %h1 Collection List
+  %div{"data-role" => "content"}
+    %ul{"data-role" => "listview", "data-inset" => "true"}
+      <!-- ko foreach: collections -->
+      %li
+        %a{ko(text: :name, click: '$root.createSite'), style: 'cursor: pointer;'}
+      <!-- /ko -->
+
+  %div{"data-role" => "footer"} 
+    %h4 Version 1.0
+
