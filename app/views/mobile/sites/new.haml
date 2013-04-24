@@ -1,7 +1,8 @@
 #mobile-sites-main{"data-role" => "page", "data-fullscreen" => "true"}
 
-  %div{"data-role" => "header"}  
-    %h1 Add New Site
+  %div{"data-role" => "header", "data-theme" => "c"}
+    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", "data-rel" => "back"} Back
+    %h1= @title || 'Add New Site'
   <!-- ko if: currentSite -->
   %form{ko(with: :currentSite, submit: '$root.saveSite'), action: 'http://', method: :post}
     %div{"data-role" => "content"}
@@ -29,7 +30,7 @@
           <!-- /ko -->
       <!-- /ko -->
       <!-- /ko -->
-    %button{type: 'submit', "data-theme" => "c"} Save Site
+    %button{type: 'submit', "data-theme" => "c", "onclick" => "history.go(-1)"} Save Site
   <!-- /ko -->
-  %div{"data-role" => "footer"}  
+  %div{"data-role" => "footer", "data-theme" => "c"}  
     %h1 Version 1.0

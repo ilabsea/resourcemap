@@ -10,10 +10,7 @@
     = csrf_meta_tag
   %body
     %div{"data-role" => "page"}
-      %div{"data-role" => "header"}
+      %div{"data-role" => "header", "data-theme" => "c"}
         %h1= @title || 'Mobile App'
-        - unless user_signed_in?
-          = link_to 'Sign In', new_user_session_path, "class" => "ui-btn-right"
-        - else
-          = link_to 'Sign Out', destroy_user_session_path, "class" => "ui-btn-right"
+
       = yield

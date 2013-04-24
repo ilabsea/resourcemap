@@ -2,8 +2,9 @@
   = google_maps_javascript_include_tag
 
 #mobile-collections-main{"data-role" => "page", "data-fullscreen" => "true" }
-  %div{"data-role" => "header"}  
-    %h1 Collection List
+  %div{"data-role"=> "header", "data-theme" => "c"}  
+    %h1= @title || 'Collection List'
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", :rel => "nofollow", :html => {"data-ajax" => false} }Sign out
   %div{"data-role" => "content"}
     %ul{"data-role" => "listview", "data-inset" => "true"}
       <!-- ko foreach: collections -->
@@ -11,6 +12,6 @@
         %a{ko(text: :name, click: '$root.createSite'), style: 'cursor: pointer;'}
       <!-- /ko -->
 
-  %div{"data-role" => "footer"} 
+  %div{"data-role" => "footer", "data-theme" => "c"} 
     %h4 Version 1.0
 
