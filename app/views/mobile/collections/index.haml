@@ -1,10 +1,17 @@
 - content_for :head do
   = google_maps_javascript_include_tag
+:javascript
+  $(function(){
+    $(document.body).delegate("form", 'submit',function(e){
+      $(this).attr("data-ajax", "false");
+    });
+  });
+
 
 #mobile-collections-main{"data-role" => "page", "data-fullscreen" => "true" }
   %div{"data-role"=> "header", "data-theme" => "c"}  
     %h1= @title || 'Collection List'
-    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", :rel => "nofollow", :html => {"data-ajax" => false} }Sign out
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false" }Sign out
   %div{"data-role" => "content"}
     %ul{"data-role" => "listview", "data-inset" => "true"}
       <!-- ko foreach: collections -->
