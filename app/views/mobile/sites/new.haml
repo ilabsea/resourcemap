@@ -14,17 +14,20 @@
         = ko_text_field_tag :locationText, html: {placeholder: 'Search or drag the pin'}
         .clear
       <!-- ko foreach: $root.layers -->
-      %div{"data-collapsed" => "false", "data-role" => "collapsible"} 
-        %h3{ko(text: :name)} 
-        <!-- ko foreach: fields -->
-        %div
-          = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
-          //%span.value{ko(text: :valueUI)}
-          - Field::kinds.each do |kind|
-            <!-- ko if: kind == '#{kind}' -->
-            = render partial: field_edit_view(kind), locals: { single_editing_mode: false }
-            <!-- /ko -->
+      %h3{ko(text: :name)} 
+      <!-- ko foreach: fields -->
+      %div
+        <!-- ko if: show -->
+        = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
         <!-- /ko -->
+        //%span.value{ko(text: :valueUI)}
+        - Field::kinds.each do |kind|
+          <!-- ko if: kind == '#{kind}' -->
+          <!-- ko if: show -->
+          = render partial: field_edit_view(kind), locals: { single_editing_mode: false, mobile: true }
+          <!-- /ko -->
+          <!-- /ko -->
+      <!-- /ko -->
       <!-- /ko -->
     %button{type: 'submit', "data-theme" => "c"} Save Site
   <!-- /ko -->

@@ -15,3 +15,7 @@ onMobileSites ->
       callback = (data) =>
       @currentSite().copyPropertiesFromCollection()
       @currentSite().post @currentSite().toJSON(), callback
+
+    showField: (kind) =>
+      return false  if kind == 'identifier' || kind == 'select_one' || kind == 'date' || kind == 'select_many' || kind == 'site' || kind == 'user'
+      true

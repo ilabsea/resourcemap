@@ -5,6 +5,7 @@ onMobileSites ->
       @code = ko.observable data.code
       @name = data.name
       @kind = data.kind
+      @show = ko.observable(@isShow(data.kind))
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
       #@writeable = @originalWriteable = data?.writeable
 
@@ -40,19 +41,7 @@ onMobileSites ->
 
       @buildHierarchyItems() if @hierarchy?
 
-      if @kind == 'select_many'
-        @filter = ko.observable('') # The text for filtering options in a select_many
-        @remainingOptions = ko.computed =>
-          option.selected(false) for option in @options
-          remaining = if @value()
-            @options.filter((x) => @value()?.indexOf(x.id) == -1 && x.label.toLowerCase().indexOf(@filter().toLowerCase()) == 0)
-          else
-            @options
-          remaining[0].selected(true) if remaining.length > 0
-          remaining
-      else
-        @filter = ->
-
+      
       @editing = ko.observable false
       @expanded = ko.observable false # For select_many
   
@@ -68,8 +57,8 @@ onMobileSites ->
       else if @kind == 'date'
         if value then @datePickerFormat(new Date(value)) else ''
       else if @kind == 'site'
-        name = window.model.currentCollection()?.findSiteNameById(value)
-        if value && name then name else ''
+        #name = window.model.currentCollection()?.findSiteNameById(value)
+        #if value && name then name else ''
       else
         if value then value else ''
   
@@ -78,6 +67,21 @@ onMobileSites ->
         value
       else if @kind == 'site'
         # Return site_id or "" if the id for this name is not found (deleting the value or invalid value)
-        window.model.currentCollection()?.findSiteIdByName(value) || ""
+        #window.model.currentCollection()?.findSiteIdByName(value) || ""
       else
         value
+    buildHierarchyItems: =>
+      @fieldHierarchyItemsMap = {}
+      @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@, x))
+    labelFor: (id) =>
+      for option in @optionsUI
+        if option.id == id
+          return option.label
+      null
+    
+    datePickerFormat: (date) =>
+      date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear()
+
+    isShow: (kind) =>
+      return false  if kind == 'identifier' || kind == 'select_one' || kind == 'date' || kind == 'select_many' || kind == 'site' || kind == 'user'
+      true

@@ -30,6 +30,8 @@ class SitesController < ApplicationController
   end
 
   def create
+    p '------' * 9
+    p params[:site]
     validated_site = validate_site_properties(params[:site])
     site = collection.sites.create(validated_site.merge(user: current_user))
     current_user.site_count += 1
