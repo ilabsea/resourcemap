@@ -10,7 +10,8 @@
     = csrf_meta_tag
   %body
     %div{"data-role" => "page"}
-      %div{"data-role" => "header", "data-theme" => "c"}
-        %h1= @title || 'Mobile App'
-
-      = yield
+      %div{"data-role" => "header", "data-mini" => "true", "data-theme" => "c"}
+        %div{:style => "text-align:center;"}
+          = image_tag("/assets/resource_map.png", :alt => "logo", :style => "margin:0px auto;width:110px;height:35px;")
+      %div{"data-role" => "content"}      
+        = yield
