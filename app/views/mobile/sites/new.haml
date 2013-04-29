@@ -12,14 +12,21 @@
         .clear
       %div
         %label Location:
-        = ko_text_field_tag :locationText, html: {placeholder: 'Search or drag the pin'}
+        = ko_text_field_tag :locationText, html: {placeholder: 'Enter your location!'}
+
+        <!-- ko if: !locationValid() -->
+        %label{ko(enable: :locationValid)}
+          %p{:style => "background-color:#FFF9D5;border:solid 1px #FFC088;padding:5px;font-size:12px"}
+            Theere was an error detecting your current location. Please make sure location services are enabled in your browser, and that resourcemap.instedd.org has permission to use them. You can still enter location manually.  
+            //You can still search for a place, but the search will not be as accurate.
+        <!-- /ko -->
         .clear
       <!-- ko foreach: $root.layers -->
       %h3{ko(text: :name)} 
       <!-- ko foreach: fields -->
       %div
         <!-- ko if: show -->
-        = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
+        = label_tag '', '', ko(text: "name + ':'")
         <!-- /ko -->
         //%span.value{ko(text: :valueUI)}
         - Field::kinds.each do |kind|
@@ -32,5 +39,3 @@
       <!-- /ko -->
     %button{type: 'submit', "data-theme" => "c", "onclick" => "history.go(-1)"} Save Site
   <!-- /ko -->
-  %div{"data-role" => "footer", "data-theme" => "c"}  
-    %h1 Version 1.0

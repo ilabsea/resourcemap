@@ -8,13 +8,38 @@ onMobileSites ->
       @properties = ko.observable data?.properties
       @lat = ko.observable data?.lat
       @lng = ko.observable data?.lng
+
+      @locationValid = ko.observable(true)
       @locationText = ko.computed =>
-        @lat() + ", " + @lng()
-      navigator.geolocation.getCurrentPosition(@getLocation)
+        @lat() + ", " + @lng() if @locationValid()
+
+      navigator.geolocation.getCurrentPosition(@getLocation, @showError)
 
     getLocation: (position) =>
       @lat(position.coords.latitude)
       @lng(position.coords.longitude)
+
+    showError: (error) =>
+      switch error.code
+        when error.PERMISSION_DENIED
+          @lat('')
+          @lng('')
+          @locationValid(false)
+          #x.innerHTML = "User denied the request for Geolocation."
+        when error.POSITION_UNAVAILABLE
+          @lat('')
+          @lng('')
+          @locationValid(false)
+          #x.innerHTML = "Location information is unavailable."
+        when error.TIMEOUT
+          @lat('')
+          @lng('')
+          @locationValid(false)
+        when error.UNKNOWN_ERROR
+          @lat('')
+          @lng('')
+          @locationValid(false)
+          #x.innerHTML = "An unknown error occurred."
 
     copyPropertiesFromCollection: () =>
       oldProperties = @properties()
