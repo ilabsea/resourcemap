@@ -9,6 +9,10 @@ class HomeController < ApplicationController
       else
         redirect_to collections_path
       end
+    else
+      if mobile_device?
+        redirect_to new_user_session_path 
+      end
     end
   end
 end
