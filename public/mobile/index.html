@@ -6,7 +6,6 @@
 		<script type="text/javascript" src="mobile/jquery.js"></script>  
 		<script>
 
-
 			function saveItem(e){
 				if(navigator.onLine){
 					alert("Internet On: Saved to web server");
@@ -22,19 +21,21 @@
 				}
 			}
 
-
 			$(document).ready(function(){
 				
 				if(navigator.onLine){
 
 					// Load Schema
-					$.getJSON(
-						"mobile/collections.json?timestamp="+ $.now(),
-						function(result){
-							localStorage.setItem("collectionSchema", result);	
-							$("#form").append(JSON.stringify(localStorage.getItem("collectionSchema")));
-						}
-					)
+					$.ajax({
+						url: "/mobile/collections.json?timestamp="+ $.now(),
+						dataType: 'text'
+					}).done(function(result){
+						localStorage.setItem("collectionSchema", result);	
+						updateCollectionList();
+					}).fail(function(e, status, error){
+						console.log(status);
+						console.log(error);
+					});
 
 					// Save items from the cache
 					if(localStorage.getItem("cachedRequests")){
@@ -45,12 +46,20 @@
 					}
 
 				} else {
-					var collectionSchema = localStorage.getItem("collectionSchema");
+					var collectionSchema = JSON.parse(localStorage.getItem("collectionSchema"));
 					if(collectionSchema){
-						$("#form").append(JSON.stringify(collectionSchema)); 
+						updateCollectionList();
 					} else {
 					 alert("Offline mode is currently not available");
 					}
+				}
+
+				function updateCollectionList(){
+					var collectionSchema = localStorage.getItem("collectionSchema");
+					var json = JSON.parse(collectionSchema);
+					$.each(json.collections, function(index,value){
+						$("#collectionList").append('<li><a href="">'+ value +'</a></li>');
+					});
 				}
 
 				$("#save").click(saveItem);
@@ -59,7 +68,7 @@
 	</head>
 	<body>
 		<h1 id="heading">Resource Map Mobile</h1>
-		<p id="form"></p>
+		<ol id="collectionList"></ol>
 		<input id="save" type="button" value="Save Some Stuff" />
 	</body>
 </html>
