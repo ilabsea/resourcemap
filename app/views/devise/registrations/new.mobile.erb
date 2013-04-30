@@ -2,7 +2,7 @@
 
 
 <div class="box centered w30">
-<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => {"data-ajax" => false}) do |f| %>
 
 
 

@@ -1,5 +1,5 @@
 class RegistrationsController < Devise::RegistrationsController
-  before_filter :prepare_for_mobile, :only => [:new]
+  before_filter :prepare_for_mobile
   def new
     super
   end
