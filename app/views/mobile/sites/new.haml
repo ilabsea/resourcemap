@@ -12,8 +12,11 @@
         .clear
       %div
         %label Location:
-        = ko_text_field_tag :locationText, html: {placeholder: 'Enter your location!'}
-
+        %div
+          %label Location'Lat
+          = ko_text_field_tag :lat,html: {placeholder: "Enter your location's lat"}
+          %label Location'Lng
+          = ko_text_field_tag :lng, html: {placeholder: "Enter your location's lng"}
         <!-- ko if: !locationValid() -->
         %label{ko(enable: :locationValid)}
           %p{:style => "background-color:#FFF9D5;border:solid 1px #FFC088;padding:5px;font-size:12px"}
@@ -37,5 +40,8 @@
           <!-- /ko -->
       <!-- /ko -->
       <!-- /ko -->
-    %button{type: 'submit', "data-theme" => "c", "onclick" => "history.go(-1)"} Save Site
+    <!-- ko if: !valid() -->
+    %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red; margin-left:20px'}
+    <!-- /ko -->
+    %button{ko(enable: :valid),type: 'submit'} Save Site
   <!-- /ko -->

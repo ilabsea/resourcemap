@@ -11,7 +11,11 @@ onMobileSites ->
 
       @locationValid = ko.observable(true)
       @locationText = ko.computed =>
-        @lat() + ", " + @lng() if @locationValid()
+      @nameError  = ko.computed => "Site's Name is missing " if $.trim(@name()).length == 0
+      @latError = ko.computed =>  "Site location's lat is missing" if $.trim(@lat()).length == 0
+      @lngError = ko.computed => "Site location;s lng is missing" if $.trim(@lng()).length == 0 
+      @error = ko.computed => @nameError() ? @latError() ? @lngError()
+      @valid = ko.computed => !@error()
 
       navigator.geolocation.getCurrentPosition(@getLocation, @showError)
 
@@ -73,6 +77,3 @@ onMobileSites ->
       json.lng = @lng() if @lng()
       json.properties = @properties() if @properties()
       json
-
-
-
