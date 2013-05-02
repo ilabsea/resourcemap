@@ -1,5 +1,4 @@
-#= require mobile/sites/field
-onMobileSites ->
+onMobileCollections ->
   class @Layer
     constructor: (data) ->
       @name = data?.name

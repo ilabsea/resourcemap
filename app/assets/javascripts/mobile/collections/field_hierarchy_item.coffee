@@ -1,4 +1,4 @@
-onMobileSites ->
+onMobileCollections ->
   # Used when selecting a hierarchy field value
   class @FieldHierarchyItem
     constructor: (field, data, parent = null, level = 0) ->

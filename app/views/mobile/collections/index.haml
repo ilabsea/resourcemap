@@ -10,12 +10,24 @@
 
 #mobile-collections-main{"data-role" => "page", "data-fullscreen" => "true" }
   %div{"data-role"=> "header", "data-theme" => "c"}  
+    <!-- ko if: !currentCollection() -->
     %h1= @title || 'My Collectons'
+    <!-- /ko -->
+    <!-- ko if: currentCollection() -->
+    %h1{ko(text: 'currentCollection().name')}
+    <!-- /ko -->
+
     %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false" }Sign out
   %div{"data-role" => "content"}
+    <!-- ko if: !currentCollection() -->
+
     %ul{"data-role" => "listview", "data-inset" => "true"}
       <!-- ko foreach: collections -->
       %li
         %a{ko(text: :name, click: '$root.createSite'), style: 'cursor: pointer;'}
       <!-- /ko -->
-
+    <!-- /ko -->
+    -# Collection's Site
+    <!-- ko if: currentCollection() -->
+    = render 'mobile/collections/index/site'
+    <!-- /ko -->

@@ -10,7 +10,6 @@ class SitesController < ApplicationController
     else
       search = collection.new_search current_user_id: current_user.id
     end
-    p params[:_alert]
     search.name_start_with params[:name] if params[:name].present?
     search.alerted_search params[:_alert] if params[:_alert] == "true"
     search.offset params[:offset]
@@ -30,8 +29,6 @@ class SitesController < ApplicationController
   end
 
   def create
-    p '------' * 9
-    p params[:site]
     validated_site = validate_site_properties(params[:site])
     site = collection.sites.create(validated_site.merge(user: current_user))
     current_user.site_count += 1

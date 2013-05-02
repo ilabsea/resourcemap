@@ -1,13 +1,24 @@
 onMobileCollections ->
   class @SitesViewModel
     @constructor: ->
-      @editingSite = ko.observable(false)
-      @newOrEditSite = ko.observable(false)
-      @showSite = ko.observable(false)
-      @loadingSite = ko.observable(false)
+      @editingSite = ko.observable()
+      @newOrEditSite = ko.observable()
+      @showSite = ko.observable()
+      @loadingSite = ko.observable()
 
     @saveSite: (site) ->
-      console.log site
+      failed = (data) =>
+        @newOrEditSite().saveFailed(true)
+      @newOrEditSite().copyPropertiesFromCollection(@currentCollection())
+      @newOrEditSite().post @newOrEditSite().toJSON(), @saveSiteCallback
+    
+    @saveSiteCallback: (response) ->
+      if(response.status != 201 )
+        @newOrEditSite().saveFailed(true)
+        @newOrEditSite().errorMessage(response.message)
+      else
+        @currentCollection(null)
+        @newOrEditSite(null)
 
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
@@ -36,5 +47,4 @@ onMobileCollections ->
             value = @properties()[field.esCode]
 
             field.value(value)
-
 

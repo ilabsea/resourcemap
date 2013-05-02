@@ -16,4 +16,8 @@ onMobileCollections ->
       # to this, and they don't work when being invoked by knockout when interacting
       # with the view.
       @[k] = v.bind(@) for k, v of @ when v.bind? && !ko.isObservable(v)
+  
+    exitSite: ->
+      @currentCollection(null)
+      @newOrEditSite(null)
 

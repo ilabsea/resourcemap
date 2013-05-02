@@ -1,0 +1,48 @@
+<!-- ko if: newOrEditSite() -->
+%form{ko(with: :newOrEditSite, submit: '$root.saveSite'), action: 'http://', method: :post}
+  %h4{:style => "margin:0px"} New Site
+  %div{"data-role" => "content"}
+    <!-- ko if: saveFailed -->
+    %span{ko(text: :errorMessage), style: 'color:red;'}
+    <!-- /ko -->
+    %div
+      %label{:for => "basic"} Name: 
+      %input#basic{:name => "name", :type => "text", 'data-bind' => kov(value: :name, valueUpdate: :afterkey, hasfocus: true), :autofocus => true}
+      .clear
+    %br     
+    %div
+      %label Location:
+      %div{"data-role" => "controlgroup", style: "margin-left:10px"}
+        %label Latitude
+        = ko_text_field_tag :lat,html: {placeholder: "Enter your location's lat"}
+        %label Longitude
+        = ko_text_field_tag :lng, html: {placeholder: "Enter your location's lng"}
+      <!-- ko if: !locationValid() -->
+      %label{ko(enable: :locationValid)}
+        %p{:style => "background-color:#FFF9D5;border:solid 1px #FFC088;padding:5px;font-size:12px"}
+          Theere was an error detecting your current location. Please make sure location services are enabled in your browser, and that resourcemap.instedd.org has permission to use them. You can still enter location manually.  
+          //You can still search for a place, but the search will not be as accurate.
+      <!-- /ko -->
+      .clear
+    <!-- ko foreach: $root.currentCollection().layers() -->
+    %h5{ko(text: :name)} 
+    <!-- ko foreach: fields -->
+    %div{"data-role" => "controlgroup", style: "margin-left:10px"}
+      <!-- ko if: show -->
+      = label_tag '', '', ko(text: "name + '(' + code() + '):'")
+      <!-- /ko -->
+      //%span.value{ko(text: :valueUI)}
+      - Field::kinds.each do |kind|
+        <!-- ko if: kind == '#{kind}' -->
+        <!-- ko if: show -->
+        = render partial: field_edit_view(kind), locals: { single_editing_mode: false, mobile: true }
+        <!-- /ko -->
+        <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
+  <!-- ko if: !valid() -->
+  %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red; margin-left:20px'}
+  <!-- /ko -->
+  %button{ko(enable: :valid),type: 'submit'} Save Site
+  %a{ko(click: '$root.exitSite'), "data-role" => "button", "data-icon" => "delete", "data-theme" => "b"} Cancel
+<!-- /ko -->

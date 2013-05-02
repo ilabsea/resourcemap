@@ -1,4 +1,4 @@
-onMobileSites ->
+onMobileCollections ->
   class @Field
     constructor: (data) ->
       @esCode = "#{data.id}"

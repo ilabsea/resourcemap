@@ -1,33 +1,94 @@
-#= require module
-
 onMobileCollections ->
-  class @Site extends Module
+  class @Site
     constructor: (collection, data) ->
-      @id = data?.id
       @collection = collection
+      @selected = ko.observable()
+      @id = ko.observable data?.id
       @name = ko.observable data?.name
       @idWithPrefix = ko.observable data?.id_with_prefix
       @properties = ko.observable data?.properties
-      
-      @updatedAt = ko.observable(data.updated_at)
-      @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
-      @editingName = ko.observable(false)
-      @editingLocation = ko.observable(false)
-      @alert = ko.observable data?.alert
-      @locationText = ko.computed
-        read: =>
-          if @hasLocation()
-            (Math.round(@lat() * 1000000) / 1000000) + ', ' + (Math.round(@lng() * 1000000) / 1000000)
-          else
-            ''
-        write: (value) => @locationTextTemp = value
-        owner: @
-      @locationTextTemp = @locationText()
-      @valid = ko.computed => @hasName()
-      @highlightedName = ko.computed => window.model.highlightSearch(@name())
-      @inEditMode = ko.observable(false)
+      @lat = ko.observable data?.lat
+      @lng = ko.observable data?.lng
 
-    hasLocation: => @position() != null
+      @locationValid = ko.observable(true)
+      @locationText = ko.computed =>
+      @nameError  = ko.computed => "Site's Name is missing " if $.trim(@name()).length == 0
+      @latError = ko.computed =>  "Site location's lat is missing" if $.trim(@lat()).length == 0
+      @lngError = ko.computed => "Site location;s lng is missing" if $.trim(@lng()).length == 0 
+      @error = ko.computed => @nameError() ? @latError() ? @lngError()
+      @valid = ko.computed => !@error()
+      @saveFailed = ko.observable(false)
+      @errorMessage = ko.observable("")
+      navigator.geolocation.getCurrentPosition(@getLocation, @showError)
 
-    hasName: => @.trim(@name()).length > 0
+    getLocation: (position) =>
+      @lat(position.coords.latitude)
+      @lng(position.coords.longitude)
 
+    showError: (error) =>
+      switch error.code
+        when error.PERMISSION_DENIED
+          @lat('')
+          @lng('')
+          @locationValid(false)
+          #x.innerHTML = "User denied the request for Geolocation."
+        when error.POSITION_UNAVAILABLE
+          @lat('')
+          @lng('')
+          @locationValid(false)
+          #x.innerHTML = "Location information is unavailable."
+        when error.TIMEOUT
+          @lat('')
+          @lng('')
+          @locationValid(false)
+        when error.UNKNOWN_ERROR
+          @lat('')
+          @lng('')
+          @locationValid(false)
+          #x.innerHTML = "An unknown error occurred."
+
+    copyPropertiesFromCollection: (collection) =>
+      oldProperties = @properties()
+
+      hierarchyChanges = []
+
+      @properties({})
+      for field in collection.fields()
+        if field.kind == 'hierarchy' && @id()
+          hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode], newValue: field.value()})
+
+        if field.value()
+          value = field.value()
+          
+          @properties()[field.esCode] = value
+          console.log @properties()
+        else
+          delete @properties()[field.esCode]
+
+    post: (json, callback) =>
+      callback_with_updated_at = (data) =>
+        callback(data) if callback && typeof(callback) == 'function'
+
+      failed_callback = (data) =>
+        failed(data) if failed && typeof(callback) == 'function'
+      data = {site: JSON.stringify json}
+      $.post("collections/#{@collection.id}/sites", data, callback_with_updated_at)
+
+    copyPropertiesToCollection: (collection) =>
+      collection.fetchFields =>
+        collection.clearFieldValues()
+        if @properties()
+          for field in collection.fields()
+            value = @properties()[field.esCode]
+
+            field.value(value)
+
+
+    toJSON: =>
+      json =
+        id: @id()
+        name: @name()
+      json.lat = @lat() if @lat()
+      json.lng = @lng() if @lng()
+      json.properties = @properties() if @properties()
+      json
