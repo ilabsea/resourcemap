@@ -42,6 +42,8 @@ onCollections ->
         @getAlertedCollections()
 
     @getAlertedCollections: () ->
+      console.log @showingAlert()
+      return unless @showingAlert()
       collection_ids = $.map @collections(), (c) -> 
         c.id if c.checked()
       $.get "collections/alerted-collections.json", ids: collection_ids, (data) =>
@@ -53,6 +55,7 @@ onCollections ->
               collection.checked(true)
 
     @cancelFilterAlertedSites: () ->
+
       @showingAlert(false)
       if @currentCollection()
         @resetCollectionStatus(@currentCollection()) 
