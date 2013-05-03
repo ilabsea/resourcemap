@@ -11,7 +11,7 @@
 #mobile-collections-main{"data-role" => "page", "data-fullscreen" => "true" }
   %div{"data-role"=> "header", "data-theme" => "c"}  
     <!-- ko if: !currentCollection() -->
-    %h1= @title || 'My Collectons'
+    %h1= @title || 'My Collections'
     <!-- /ko -->
     <!-- ko if: currentCollection() -->
     %h1{ko(text: 'currentCollection().name')}
