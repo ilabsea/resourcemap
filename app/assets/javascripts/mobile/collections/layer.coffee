@@ -7,3 +7,4 @@ onMobileCollections ->
 
     toggleExpand: =>
       @expanded !@expanded()
+

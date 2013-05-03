@@ -1,4 +1,3 @@
-
 onMobileCollections ->
   class @CollectionsViewModel
     @constructor: (collections) ->

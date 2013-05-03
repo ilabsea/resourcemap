@@ -1,5 +1,5 @@
 <!-- ko if: newOrEditSite() -->
-%form{ko(with: :newOrEditSite, submit: '$root.saveSite'), action: 'http://', method: :post}
+%form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post}
   %h4{:style => "margin:0px"} New Site
   %div{"data-role" => "content"}
     <!-- ko if: saveFailed -->
@@ -20,7 +20,7 @@
       <!-- ko if: !locationValid() -->
       %label{ko(enable: :locationValid)}
         %p{:style => "background-color:#FFF9D5;border:solid 1px #FFC088;padding:5px;font-size:12px"}
-          Theere was an error detecting your current location. Please make sure location services are enabled in your browser, and that resourcemap.instedd.org has permission to use them. You can still enter location manually.  
+          There was an error detecting your current location. Please make sure location services are enabled in your browser, and that resourcemap.instedd.org has permission to use them. You can still enter location manually.  
           //You can still search for a place, but the search will not be as accurate.
       <!-- /ko -->
       .clear
