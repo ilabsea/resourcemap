@@ -1,4 +1,4 @@
-onMobileSites ->
+onMobileCollections ->
   constructor: (data) ->
     @id = data?.id
     @code = data?.code

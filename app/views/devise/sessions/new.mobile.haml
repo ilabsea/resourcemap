@@ -1,0 +1,13 @@
+= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { "data-ajax" => false}) do |f|
+  %h4 Already have an account?
+  %p
+    = f.label :email
+    = f.email_field :email
+  %p
+    = f.label :password
+    = f.password_field :password
+  %p= f.submit "Log in"
+  
+  %h4 New to ResourceMap?
+  %a{"data-role" => "button", "data-theme" => "b", "data-ajax" => "false", :href => new_registration_path(resource_name)}
+    Create New Account

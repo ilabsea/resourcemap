@@ -3,6 +3,12 @@
   %button{ko(click: :save)} OK
   %button{ko(click: :exit)} Cancel
 - else
-  %input{ko(checked: 'value'), type: 'checkbox', class: 'right w20'}
+  - if mobile 
+    %br
+    %br
+    %input{ko(checked: 'value'), type: 'checkbox', class: 'right w20'}
+    %br
+  - else
+    %input{ko(checked: 'value'), type: 'checkbox', class: 'right w20'}
   .clear
 

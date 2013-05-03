@@ -10,7 +10,6 @@ class SitesController < ApplicationController
     else
       search = collection.new_search current_user_id: current_user.id
     end
-    p params[:_alert]
     search.name_start_with params[:name] if params[:name].present?
     search.alerted_search params[:_alert] if params[:_alert] == "true"
     search.offset params[:offset]

@@ -141,7 +141,7 @@
                 <!-- ko if: writeable -->
                 - Field::kinds.each do |kind|
                   <!-- ko if: kind == '#{kind}' -->
-                  = render partial: field_edit_view(kind), locals: { single_editing_mode: false }
+                  = render partial: field_edit_view(kind), locals: { single_editing_mode: false, mobile: false }
                   <!-- /ko -->
                 <!-- /ko -->
               <!-- /ko -->

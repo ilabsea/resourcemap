@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
+  helper :all
   protect_from_forgery
+  #before_filter :prepare_for_mobile
 
   expose(:collections) { current_user.collections }
   expose(:collection)
@@ -58,7 +60,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    stored_location_for(resource) || collections_path
+    if mobile_device?
+      stored_location_for(resource) || mobile_collections_path
+    else
+      stored_location_for(resource) || collections_path
+    end
   end
 
   def authenticate_collection_user!
@@ -85,5 +91,19 @@ class ApplicationController < ActionController::Base
 
   def show_properties_breadcrumb
     add_breadcrumb "Properties", collection_path(collection)
+  end
+
+  def mobile_device?
+    if session[:mobile_param]
+      session[:mobile_param] == "1"
+    else
+      request.user_agent =~ /Mobile|webOS/
+    end
+  end
+  helper_method :mobile_device?
+
+  def prepare_for_mobile
+    session[:mobile_param] = params[:mobile] if params[:mobile]
+    request.format = :mobile if mobile_device?
   end
 end

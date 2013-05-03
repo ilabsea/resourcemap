@@ -19,6 +19,7 @@ class CollectionsController < ApplicationController
         collections.all.each do |collection|
           attrs = collection.attributes
           attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
+          attrs["layers"] = collection.visible_layers_for(current_user)
           collections_with_snapshot = collections_with_snapshot + [attrs]
         end
         format.json {render json: collections_with_snapshot }

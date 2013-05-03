@@ -1,16 +1,33 @@
 - content_for :head do
   = google_maps_javascript_include_tag
+:javascript
+  $(function(){
+    $(document.body).delegate("form", 'submit',function(e){
+      $(this).attr("data-ajax", "false");
+    });
+  });
+
 
 #mobile-collections-main{"data-role" => "page", "data-fullscreen" => "true" }
-  %div{"data-role" => "header"}  
-    %h1 Collection List
+  %div{"data-role"=> "header", "data-theme" => "c"}  
+    <!-- ko if: !currentCollection() -->
+    %h1= @title || 'My Collections'
+    <!-- /ko -->
+    <!-- ko if: currentCollection() -->
+    %h1{ko(text: 'currentCollection().name')}
+    <!-- /ko -->
+
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false" }Sign out
   %div{"data-role" => "content"}
+    <!-- ko if: !currentCollection() -->
+
     %ul{"data-role" => "listview", "data-inset" => "true"}
       <!-- ko foreach: collections -->
       %li
         %a{ko(text: :name, click: '$root.createSite'), style: 'cursor: pointer;'}
       <!-- /ko -->
-
-  %div{"data-role" => "footer"} 
-    %h4 Version 1.0
-
+    <!-- /ko -->
+    -# Collection's Site
+    <!-- ko if: currentCollection() -->
+    = render 'mobile/collections/index/site'
+    <!-- /ko -->
