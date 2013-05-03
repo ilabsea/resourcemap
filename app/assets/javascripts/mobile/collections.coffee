@@ -4,7 +4,6 @@
 #= require mobile/collections/collections_view_model
 onMobileCollections -> if $('#mobile-collections-main').length > 0
 	if window.navigator.onLine
-		console.log("online")
 		$.ajax
 			url: "/collections.json"
 			dataType: "text"
@@ -14,8 +13,6 @@ onMobileCollections -> if $('#mobile-collections-main').length > 0
 				window.model = new MainViewModel(collectionSchema)
 				ko.applyBindings window.model
 	else
-		console.log("offline")
-		collections = window.JSON.parse(window.localStorage.getItem("collectionSchema"))
-		window.localStorage.getItem("collectionSchema", collections)
-		window.model = new MainViewModel(collections)
+		collectionSchema = window.JSON.parse(window.localStorage.getItem("collectionSchema"))
+		window.model = new MainViewModel(collectionSchema)
 		ko.applyBindings window.model
