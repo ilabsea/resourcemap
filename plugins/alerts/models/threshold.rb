@@ -20,17 +20,9 @@ class Threshold < ActiveRecord::Base
   end
 
   def test(properties)
-    if is_all_condition
-      throw :threshold, self if conditions.all? do |hash|
-        if value = properties[hash[:field]]
-          true if condition(hash, properties).evaluate(value)
-        end
-      end
-    else
-      throw :threshold, self if conditions.any? do |hash|
-        if value = properties[hash[:field]]
-          true if condition(hash, properties).evaluate(value)
-        end
+    throw :threshold, self if conditions.send(is_all_condition ? :all? : :any?) do |hash|
+      if value = properties[hash[:field]]
+        true if condition(hash, properties).evaluate(value)
       end
     end
   end
