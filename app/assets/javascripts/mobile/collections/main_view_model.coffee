@@ -1,5 +1,7 @@
 #= require module
 #= require mobile/collections/site
+#= require mobile/collections/layer
+#= require mobile/collections/field
 #= require mobile/collections/collections_view_model
 #= require mobile/collections/sites_view_model
 onMobileCollections ->
