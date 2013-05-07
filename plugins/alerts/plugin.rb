@@ -37,7 +37,7 @@ class Alerts::Plugin < Plugin
 
     reduce: ->(tmp, cluster) do 
       cluster[:alert_count] = tmp[:alert_count] 
-      cluster[:color] = tmp[:status] && tmp[:alert] ? Collection.find(tmp[:collection_id]).thresholds.find_by_ord(tmp[:ord]).try(:color) : ''
+      cluster[:color] = tmp[:alert] ? Collection.find(tmp[:collection_id]).thresholds.find_by_ord(tmp[:ord]).try(:color) : ''
       cluster[:alert] = tmp[:alert]
     end
 
