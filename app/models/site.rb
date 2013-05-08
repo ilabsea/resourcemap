@@ -22,7 +22,7 @@ class Site < ActiveRecord::Base
 
   def update_properties(site, user, props)
     props.each do |p|
-      field = Field.find_by_code(p.values[0])
+      field = Field.where(:collection_id => site.collection.id, :code => p.values[0]).first
       site.properties[field.id.to_s] = p.values[1]
     end
     site.save!

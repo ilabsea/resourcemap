@@ -146,8 +146,6 @@ class CollectionsController < ApplicationController
   end
 
   def sites_by_term
-    p '00000' * 9
-    p params
     if current_snapshot
       search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
     else
