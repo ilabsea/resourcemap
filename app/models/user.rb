@@ -11,6 +11,9 @@ class User < ActiveRecord::Base
   has_many :channels
   has_many :collections, through: :memberships, order: 'collections.name ASC'
   has_one :user_snapshot
+  
+  validates_uniqueness_of :phone_number, :allow_blank => true
+
   # Include default devise modules. Others available are:
   def create_collection(collection)
     return false unless collection.save
