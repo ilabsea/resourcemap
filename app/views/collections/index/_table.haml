@@ -22,9 +22,11 @@
           %button.farrow{ko(click: '$root.enterCollection'), type: :button}
         %td.l.timeago{ko(attr: {title: :updatedAt}, text: :updatedAtTimeago)}
       <!-- /ko -->
-.tablebottom{ko(click: '$root.createCollection'), style: 'cursor: pointer'}
-  %button.cadd{type: "button"}
-  %span.createCollection Create Collection
+
+= render 'collections/index/create_collection'
+
+
+
 <!-- /ko -->
 
 -# Collection sites
