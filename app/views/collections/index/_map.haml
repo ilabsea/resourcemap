@@ -12,7 +12,7 @@
         %tr
           %td
             %div{style: "width:230px;overflow:hidden;"}
-              %input{ko(checked: :checked), type: :checkbox, style: 'position:relative;'}
+              %input{ko(checked: :checked, disable: '$root.showingAlert()? $root.showingAlert()== !checked() : false'), type: :checkbox, style: 'position:relative;'}
               %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor: pointer;width:205px;overflow:hidden;display:block;float:right;'}"
             <!-- ko if: currentSnapshot -->
             .snapshot_on.right{style: 'padding-right:0'}
@@ -68,7 +68,7 @@
     %span
     %span{ko(text: :name)}
     - if !current_user.is_guest
-      %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+      %button.fconfiguration.right{ko(click: '$root.editCollection', visible: :isAdmin), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
   .tablescroll.sites

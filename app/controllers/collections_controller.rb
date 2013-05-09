@@ -19,6 +19,7 @@ class CollectionsController < ApplicationController
         collections.all.each do |collection|
           attrs = collection.attributes
           attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
+          attrs["is_admin"] = collection.memberships.find_by_user_id(current_user.id).admin
           attrs["layers"] = collection.visible_layers_for(current_user)
           collections_with_snapshot = collections_with_snapshot + [attrs]
         end
@@ -145,8 +146,6 @@ class CollectionsController < ApplicationController
   end
 
   def sites_by_term
-    p '00000' * 9
-    p params
     if current_snapshot
       search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
     else

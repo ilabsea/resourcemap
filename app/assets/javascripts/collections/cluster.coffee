@@ -48,7 +48,7 @@ onCollections ->
       @countDownListener = google.maps.event.addDomListener @countClick, 'mousedown', listenerDownCallback
       @countUpListener = google.maps.event.addDomListener @countClick, 'mouseup', listenerUpCallback
 
-      @setMarkerIcon(@div, @data.icon, @data.color, @data.alert) if @data.status 
+      @setMarkerIcon(@div, @data.icon, @data.color, @data.alert) 
     
     draw: =>
       pos = @getProjection().fromLatLngToDivPixel @position
