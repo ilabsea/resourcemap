@@ -42,7 +42,6 @@ onCollections ->
         @getAlertedCollections()
 
     @getAlertedCollections: () ->
-      console.log @showingAlert()
       return unless @showingAlert()
       collection_ids = $.map @collections(), (c) -> 
         c.id if c.checked()
