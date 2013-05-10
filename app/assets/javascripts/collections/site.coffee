@@ -30,9 +30,10 @@ onCollections ->
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
-      @valid = ko.computed => @hasName()
+      @valid = ko.computed => @hasName() 
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
+
     hasLocation: => @position() != null
 
     hasName: => $.trim(@name()).length > 0
@@ -57,9 +58,25 @@ onCollections ->
 
       @properties()[esCode] = value
 
-      $.post "/sites/#{@id()}/update_property.json", {es_code: esCode, value: value}, (data) =>
-        @propagateUpdatedAt(data.updated_at)
-
+      $.ajax({
+        type: "POST",
+        url: "/sites/#{@id()}/update_property.json",
+        data: {es_code: esCode, value: value},
+        success: ((data) =>
+          field.errorMessage("")
+          @propagateUpdatedAt(data.updated_at)),
+        global: false
+      })
+      .fail((data) =>
+        try
+          responseMessage = JSON.parse(data.responseText) 
+          if data.status == 422 && responseMessage && responseMessage.error_message
+            field.errorMessage(responseMessage.error_message) 
+          else
+            $.handleAjaxError(data)
+        catch error
+          $.handleAjaxError(data))
+          
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
 
@@ -89,17 +106,64 @@ onCollections ->
 
             field.value(value)
 
-    post: (json, callback) =>
-      callback_with_updated_at = (data) =>
-        @propagateUpdatedAt(data.updated_at)
-        callback(data) if callback && typeof(callback) == 'function'
-
+    update_site: (json, callback) =>
       data = {site: JSON.stringify json}
-      if @id()
-        data._method = 'put'
-        $.post "/collections/#{@collection.id}/sites/#{@id()}.json", data, callback_with_updated_at, 'json'
-      else
-        $.post "/collections/#{@collection.id}/sites", data, callback_with_updated_at
+      $.ajax({
+          type: "PUT",
+          url: "/collections/#{@collection.id}/sites/#{@id()}.json",
+          data: data,
+          success: ((data) =>
+            for field in @collection.fields()
+              field.errorMessage("")
+            @propagateUpdatedAt(data.updated_at)
+            callback(data) if callback && typeof(callback) == 'function' )
+          global: false
+        }).fail((data) =>
+          try
+            propertyErrors = JSON.parse(data.responseText)["properties"]
+            for field in @collection.fields()
+                field.errorMessage("")
+            if data.status == 422 && propertyErrors
+              for prop in propertyErrors 
+                for es_code, value of prop
+                  f = @collection.findFieldByEsCode(es_code)
+                  f.errorMessage(value)
+            else
+              $.handleAjaxError(data)
+          catch error
+              $.handleAjaxError(data))
+
+
+    create_site: (json, callback) =>
+      data = {site: JSON.stringify json}
+      $.ajax({
+          type: "POST",
+          url: "/collections/#{@collection.id}/sites",
+          data: data,
+          success: ((data) =>
+            for field in @collection.fields()
+              field.errorMessage("")
+            @propagateUpdatedAt(data.updated_at)
+            @id(data.id)
+            @idWithPrefix(data.id_with_prefix)
+            $.status.showNotice "Site '#{@name()}' successfully created", 2000
+            callback(data) if callback && typeof(callback) == 'function' )
+          global: false
+        }).fail((data) =>
+          try
+            propertyErrors = JSON.parse(data.responseText)["properties"]
+            for field in @collection.fields()
+                field.errorMessage("")
+            if data.status == 422 && propertyErrors
+              for prop in propertyErrors 
+                for es_code, value of prop
+                  f = @collection.findFieldByEsCode(es_code)
+                  f.errorMessage(value)
+            else
+              $.handleAjaxError(data)
+          catch error
+            $.handleAjaxError(data))
+  
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)

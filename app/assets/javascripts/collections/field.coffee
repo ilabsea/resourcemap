@@ -49,7 +49,7 @@ onCollections ->
           remaining = if @value()
             @options.filter((x) => @value()?.indexOf(x.id) == -1 && x.label.toLowerCase().indexOf(@filter().toLowerCase()) == 0)
           else
-            @options
+            @options.filter((x) => x.label.toLowerCase().indexOf(@filter().toLowerCase()) == 0)
           remaining[0].selected(true) if remaining.length > 0
           remaining
       else
@@ -57,6 +57,9 @@ onCollections ->
 
       @editing = ko.observable false
       @expanded = ko.observable false # For select_many
+      @errorMessage = ko.observable ""
+      @error = ko.computed => !!@errorMessage()
+
 
     codeForLink: (api = false) =>
       if api then @code else @esCode
@@ -122,10 +125,11 @@ onCollections ->
       delete @originalValue
 
     save: =>
-      @editing(false)
-      @filter('')
       window.model.editingSite().updateProperty(@esCode, @value())
-      delete @originalValue
+      if !@error()
+        @editing(false)
+        @filter('')
+        delete @originalValue
 
     closeDatePickerAndSave: =>
       if $('#ui-datepicker-div:visible').length == 0

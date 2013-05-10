@@ -15,13 +15,18 @@ gem "nuntium_api", "~> 0.13", :require => "nuntium"
 gem 'ice_cube'
 gem 'knockoutjs-rails'
 gem 'will_paginate'
-gem 'jquery-rails'
+gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
+gem 'uuidtools'
 
 group :test do
   gem 'shoulda-matchers'
   gem 'ci_reporter'
   gem 'resque_spec'
+  gem 'selenium-webdriver'
+  gem 'nokogiri'
+  gem 'capybara'
+  gem 'database_cleaner'
 end
 
 group :test, :development do

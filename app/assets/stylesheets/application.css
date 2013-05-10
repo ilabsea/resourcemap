@@ -201,6 +201,7 @@
 .settings-form label {
   padding-bottom:5px;
 }
+
 .dialog{
     display: block;
     position: fixed !important;
@@ -208,4 +209,8 @@
     left: 50%;
     z-index: 100;
     padding: 10px;
+}
+
+.white-space-normal {
+  white-space:normal;
 }
