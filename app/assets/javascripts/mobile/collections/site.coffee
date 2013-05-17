@@ -61,7 +61,6 @@ onMobileCollections ->
           value = field.value()
           
           @properties()[field.esCode] = value
-          console.log @properties()
         else
           delete @properties()[field.esCode]
 
@@ -72,7 +71,24 @@ onMobileCollections ->
       failed_callback = (data) =>
         failed(data) if failed && typeof(callback) == 'function'
       data = {site: JSON.stringify json}
-      $.post("collections/#{@collection.id}/sites", data, callback_with_updated_at)
+
+      if window.navigator.onLine
+        console.log("Online: store now")
+        $.post("collections/#{@collection.id}/sites", data, callback_with_updated_at)
+      else
+        if window.localStorage.getItem("cachedSites") is null
+          window.localStorage.setItem("cachedSites", JSON.stringify([]))
+
+        cachedSites = JSON.parse(window.localStorage.getItem("cachedSites"))
+        siteRequest =
+          id: Math.floor(Math.random()*9000000000000) + 1000000000000
+          endpoint: "collections/#{@collection.id}/sites"
+          data: data
+
+        cachedSites.push siteRequest
+        window.localStorage.setItem("cachedSites", JSON.stringify(cachedSites))
+        window.model.currentCollection(null) 
+        window.model.newOrEditSite(null)
 
     copyPropertiesToCollection: (collection) =>
       collection.fetchFields =>

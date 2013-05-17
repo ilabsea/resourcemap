@@ -17,6 +17,7 @@ gem 'knockoutjs-rails'
 gem 'will_paginate'
 gem 'jquery-rails'
 gem 'foreman'
+gem 'rack-offline'
 
 group :test do
   gem 'shoulda-matchers'
