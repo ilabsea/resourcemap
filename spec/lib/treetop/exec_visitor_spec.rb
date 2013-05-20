@@ -196,11 +196,11 @@ describe ExecVisitor, "Process add command" do
 
   before(:each) do
     @collection = Collection.make
-    @user = User.make(:phone_number => '85512345678')
+    @user = User.make(:phone_number => '85512345679')
     @collection.memberships.create(:user => @user, :admin => false)
     @layer = @collection.layers.make(:name => "default")
-    @f1 = @layer.fields.make(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1, :kind => "numeric")
-    @f2 = @layer.fields.make(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1, :kind => "numeric")
+    @f1 = @layer.numeric_fields.make(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1, :kind => "numeric")
+    @f2 = @layer.numeric_fields.make(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1, :kind => "numeric")
     #@site = @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
     #@collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
     @node = @parser.parse("dyrm a #{@collection.id} lat=12.11,lng=75.11,name=sms_site").command

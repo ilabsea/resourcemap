@@ -27,7 +27,7 @@ describe SitesController do
   it 'should validate format for numeric field' do
     post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: 'not a number' 
     json = JSON.parse response.body
-    json["error_message"].should eq("Invalid numeric value in field #{numeric.code}")
+    json["error_message"].should eq("Invalid numeric value in #{numeric.name}(#{numeric.code}) field")
     post :update_property, site_id: site.id, format: 'json', es_code: numeric.es_code, value: '2'
     validate_site_property_value(site, numeric, 2)
   end

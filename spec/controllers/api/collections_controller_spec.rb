@@ -163,7 +163,7 @@ describe Api::CollectionsController do
     it "should validate numeric fields in equal queries" do
       get :show, id: collection.id, format: 'csv', numeric.code => "invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid numeric value in field numeric")
+      response.body.should include("Invalid numeric value in #{numeric.name}(#{numeric.code}) field")
       get :show, id: collection.id, format: 'csv', numeric.code => "2"
       response.response_code.should be(200)
     end
@@ -171,7 +171,7 @@ describe Api::CollectionsController do
     it "should validate numeric fields in other operations" do
       get :show, id: collection.id, format: 'csv', numeric.code => "<=invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid numeric value in field numeric")
+      response.body.should include("Invalid numeric value in #{numeric.name}(#{numeric.code}) field")
       get :show, id: collection.id, format: 'csv', numeric.code => "<=2"
       response.response_code.should be(200)
     end

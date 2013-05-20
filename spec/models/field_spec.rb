@@ -198,7 +198,7 @@ describe Field do
       it "should validate format for numeric field" do
         numeric.apply_format_update_validation(2, false, collection).should be(2)
         numeric.apply_format_update_validation("2", false, collection).should be(2)
-        expect { numeric.apply_format_update_validation("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field #{numeric.code}")
+        expect { numeric.apply_format_update_validation("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.name}(#{numeric.code}) field")
       end
 
       it "should validate format for yes_no field" do
@@ -213,9 +213,9 @@ describe Field do
       end
 
       it "should not allow decimals" do
-        expect { numeric.apply_format_update_validation("2.3", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field #{numeric.code}. This numeric field is configured not to allow decimal values.")
+        expect { numeric.apply_format_update_validation("2.3", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.name}(#{numeric.code}) field. This numeric field is configured not to allow decimal values.")
 
-        expect { numeric.apply_format_update_validation(2.3, false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field #{numeric.code}. This numeric field is configured not to allow decimal values.")
+        expect { numeric.apply_format_update_validation(2.3, false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in #{numeric.name}(#{numeric.code}) field. This numeric field is configured not to allow decimal values.")
       end
 
       it "should allow decimals" do
