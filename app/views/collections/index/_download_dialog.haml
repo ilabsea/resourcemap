@@ -1,28 +1,50 @@
-%div{ class: "box centered w40 dialog", style: "margin-left: -200px; margin-top: -150px;" }
-  %h2 Download History
-  - types = { :month => "This month",
+%div{ class: "box centered w40 rm-dialog hidden", style: "margin-left: -200px; margin-top: -150px;" }
+  =form_tag(download_activity_path, :method => "get" ) do
+    %h2 Download History
+    - types = { :month => "This month",
               :previous_month => "Previous Month",
               :all => "All" }
-  - types.each do |key, value|
+    - types.each do |key, value|
+      .item
+        %input{ type: "radio",  name: "collection[type]",  value: key, id: "collection_type_#{key}"}
+        %label{ for: "collection_type_#{key}"}
+          = value
+          
+    %input{"type" => "hidden", "id" => "rm-colllection_id" , "name" => "collection[id]", "value" => "xx" }   
     .item
-      %input{type: "radio",  name: "collection[type]",  value: key}
-      %label
-        = value
+      %input{type: "radio", checked: 'checked',name: "collection[type]",  value: "range", id: "collection_type_range" }
+      %label{for: "collection_type_range"} Custom Range
 
-  .item
-    %input{type: "radio",  name: "collection[type]",  value: "range" }
-    %label Custom Range
+    .date_rage{ style: "margin-left: 15px; padding: 10px;" }
+      .w15{ style: "float:left;"}
+        %label{for: "collection_from"} From
+        %input{ :type => "text", :name => "collection[from]", :class => "w10 datepicker", :id => "collection_from", :"auto-complete" => "off" }
+      .w15{ style: "float:left;"}
+        %label{for: "collection_to" } To
+        %input{ :type => "text", :name => "collection[to]",  :class => "w10 datepicker", :id => "collection_to", :"auto-complete" => "off" }
+    %br
+    %div{ style: "margin-left: 15px; padding-top: 10px;"}
+      %button{ type: "button", value: "Cancel", class: "white rm-dialog-cancel" } Cancel
+      %button{ type: "submit", value: "Download", class: "white rm-dialog-ok" } Download
+    .clear &nbsp;
 
-  .date_rage{ style: "margin-left: 15px; padding: 10px;" }
-    .w15{ style: "float:left;"}
-      %label From
-      %input{ type: "text", name: "collection[from]", class: "w10 ux-datepicker"}
-    .w15{ style: "float:left;"}
-      %label To
-      %input{ type: "text", name: "collection[to]" ,  class: "w10 ux-datepicker"}
-  %br
-  %div{ style: "margin-left: 15px; padding-top: 10px;"}
-    %button{ type: "button", value: "Download", class: "white" } Download
+:javascript
+  $(function(){
     
-    %button{ type: "button", value: "Cancel", class: "white" } Cancel
-  .clear &nbsp;
+    $.fn.rmDialog = function(options){
+  
+        return this.each(function(){
+            $(this).show();
+            dialog = $(this);
+            $(this).find(".rm-dialog-cancel").on("click", function(){
+                dialog.hide();
+            });
+        });
+    }
+    $(".datepicker").datepicker({
+        dateFormat : "yy-mm-dd"
+    });
+
+  });
+
+   

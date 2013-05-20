@@ -9,7 +9,7 @@ namespace :index do
     print "\rRecreating collection indexes"
 
     i = 0.0
-    collections.find_each do |collection|
+    collections.find_each(:batch_size => 5) do |collection|
       i += 1
       percentage = (100 * (i / count)).round
       print "\rRecreating collection #{i.to_i}/#{count}: %#{percentage}"

@@ -30,4 +30,8 @@ class ActivitiesController < ApplicationController
       end
     end
   end
+  
+  def download
+    render :json => Activity.search_collection(params[:collection])
+  end
 end

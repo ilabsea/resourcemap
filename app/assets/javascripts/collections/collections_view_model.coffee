@@ -83,6 +83,10 @@ onCollections ->
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
+    @openDialog:  ->
+      $(".rm-dialog").rmDialog().show()
+      $("#rm-colllection_id").val(@currentCollection().id)
+
     @tooglefullscreen: ->
       if !@fullscreen()
         @fullscreen(true)

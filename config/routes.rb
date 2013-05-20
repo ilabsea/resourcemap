@@ -13,7 +13,9 @@ ResourceMap::Application.routes.draw do
   match 'track-food-prices-and-supplies' => 'home#food_page', :via => :get
   match 'collections/alerted-collections' => 'collections#alerted_collections', :via => :get
   #match 'analytics' => 'analytics#index', :via => :get
+  get 'download/activity' => "activities#download"
 
+  
   resources :repeats
   resources :collections do
     post :register_gateways

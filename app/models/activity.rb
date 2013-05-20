@@ -1,3 +1,6 @@
+#encoding: UTF-8
+require "csv"
+
 class Activity < ActiveRecord::Base
   ItemTypesAndActions = {
     'collection' => %w(created imported csv_imported),
@@ -15,6 +18,73 @@ class Activity < ActiveRecord::Base
   serialize :data
 
   validates_inclusion_of :item_type, :in => ItemTypesAndActions.keys
+  
+  
+  def self.search_collection options   
+     activities = Activity.order(' id DESC ').includes(:site, :user)
+     activities =  activities.where(:collection_id => options[:id])
+     activities = activities.where(' item_type = "site" ')
+     
+     case options[:type]
+     
+     when "month"
+       current_month = DateTime.current.beginning_of_month
+       activities = activities.where("created_at >= :current_month ", :current_month => current_month)
+     
+     when "previous_month"
+       previous_month = DateTime.current - 1.month
+       start_day = previous_month.beginning_of_month.beginning_of_day
+       end_day  = previous_month.end_of_month.end_of_day 
+       activities = activities.where(['created_at BETWEEN :start_day AND :end_day',
+           :start_day => start_day, :end_day => end_day ]) 
+      
+     when "all"
+        #nothing to do here
+     when "range" 
+       activities = activities.where(['created_at BETWEEN :start_day AND :end_day',
+           :start_day => options[:from] , :end_day => options[:to] ])
+      
+     end
+     
+     activities.limit(10)
+   
+  end
+  
+  
+  def self.as_csv
+        
+       CSV.generate do |csv|
+        colunm_names = ["From", "Sender",  "Slip", "Text", "Ignored?", "Confirmed?", "Error?"]
+        5.times.each do |i| 
+          colunm_names << Referral::Field.field_label(i+1) 
+          colunm_names << Referral::Field.meaning_label(i+1) 
+        end
+        colunm_names << "Date"
+        
+        csv << colunm_names
+        
+        find_each(:batch_size => 500) do |report|
+          row  = [ report.type,
+                   report.sender.nil? ? "" : report.sender.phone_number ,
+                   report.slip_code,
+                   report.text,
+                   report.ignored ? "Yes" : "No",
+                   report.confirm_from ? report.confirm_from.sender.phone_number + "(#{report.confirm_from.sender.user_name})" : "",
+                   report.error ?  "Yes" : "No" ,
+          ]
+           
+          5.times.each do |i|
+            row << (report.send("field#{i+1}") || "")
+            row << (report.send("meaning#{i+1}") || "")
+            
+          end  
+          
+          row << report.created_at         
+          csv << row   
+        end
+ 
+      end
+  end
 
   def description
     case [item_type, action]
