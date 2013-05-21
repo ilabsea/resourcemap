@@ -2,7 +2,18 @@ class ImportWizard
   TmpDir = "#{Rails.root}/tmp/import_wizard"
 
   class << self
-    def import(user, collection, contents)
+    def enqueue_job(user, collection, columns_spec)
+      mark_job_as_pending user, collection
+
+      # Enqueue job with user_id, collection_id, serialized column_spec
+      Resque.enqueue ImportTask, user.id, collection.id, columns_spec
+    end
+
+    def import(user, collection, original_filename, contents)
+      # Store representation of import job in database to enable status tracking later
+      import_job = ImportJob.uploaded original_filename, user, collection
+      import_job.save!
+
       FileUtils.mkdir_p TmpDir
       File.open(file_for(user, collection), "wb") { |file| file << contents }
 
@@ -14,7 +25,7 @@ class ImportWizard
     def validate_sites_with_columns(user, collection, columns_spec)
       columns_spec.map!{|c| c.with_indifferent_access}
       validated_data = {}
-      csv = CSV.read file_for(user, collection)
+      csv = CSV.read(file_for(user, collection), :encoding => 'utf-8')
       csv_columns = csv[1.. -1].transpose
       csv[0].map!{|r| r.strip if r}
 
@@ -54,6 +65,11 @@ class ImportWizard
       # Name is mandatory
       sites_errors[:missing_name] = {:use_as => 'name'} if !(columns_spec.any?{|spec| spec[:use_as].to_s == 'name'})
 
+      columns_used_as_id = columns_spec.select{|spec| spec[:use_as].to_s == 'id'}
+      # Only one column will be marked to be used as id
+      csv_column_used_as_id = csv_columns[columns_used_as_id.first[:index]] if columns_used_as_id.length > 0
+      sites_errors[:non_existent_site_id] = calculate_non_existent_site_id(collection.sites.map{|s| s.id.to_s}, csv_column_used_as_id, columns_used_as_id.first[:index]) if columns_used_as_id.length > 0
+
       sites_errors[:data_errors] = []
       sites_errors[:hierarchy_field_found] = []
 
@@ -77,7 +93,7 @@ class ImportWizard
     end
 
     def get_sites(user, collection, columns_spec, page)
-      csv = CSV.read file_for(user, collection)
+      csv = CSV.read(file_for(user, collection), :encoding => 'utf-8')
       csv_columns = csv[1 .. 11]
       processed_csv_columns = []
       csv_columns.each do |csv_column|
@@ -95,6 +111,16 @@ class ImportWizard
     end
 
     def execute(user, collection, columns_spec)
+      #Execute may be called with actual user and collection entities, or their ids.
+      if user.is_a?(User) && collection.is_a?(Collection)
+        execute_with_entities(user, collection, columns_spec)
+      else
+        #If the method's been called with ids instead of entities
+        execute_with_entities(User.find(user), Collection.find(collection), columns_spec)
+      end
+    end
+
+    def execute_with_entities(user, collection, columns_spec)
       # Easier manipulation
       columns_spec.map! &:with_indifferent_access
 
@@ -104,7 +130,7 @@ class ImportWizard
       validate_columns_does_not_exist_in_collection(collection, columns_spec)
 
       # Read all the CSV to memory
-      rows = CSV.read file_for(user, collection)
+      rows = CSV.read(file_for(user, collection), :encoding => 'utf-8')
 
       # Put the index of the row in the columns spec
       rows[0].each_with_index do |row, i|
@@ -193,7 +219,7 @@ class ImportWizard
             # For select one and many we need to collect the fields options
             if spec[:kind] == 'select_one'  || spec[:kind] == 'select_many'
 
-              # For select_one fields each value will be only one option 
+              # For select_one fields each value will be only one option
               # and for select_many fields we may create more than one option per value
               options_to_be_created = if spec[:kind] == 'select_many'
                 value.split(',').map{|v| v.strip}
@@ -313,10 +339,13 @@ class ImportWizard
 
         # And this will create the new ones
         collection.save!
+
+        import_job = ImportJob.last_in_status_pending_for user, collection
+        import_job.finish
+        import_job.save!
       end
 
       delete_file(user, collection)
-
     end
 
     def delete_file(user, collection)
@@ -341,7 +370,22 @@ class ImportWizard
       end
     end
 
+    def mark_job_as_pending(user, collection)
+      # Move the corresponding ImportJob to status pending, since it'll be enqueued
+      import_job = ImportJob.last_in_status_file_uploaded_for user, collection
+      import_job.status = :pending
+      import_job.save!
+    end
+
     private
+
+    def calculate_non_existent_site_id(valid_site_ids, csv_column, resmap_id_column_index)
+      invalid_ids = []
+      csv_column.each_with_index do |csv_field_value, field_number|
+        invalid_ids << field_number unless (csv_field_value.blank? || valid_site_ids.include?(csv_field_value.to_s))
+      end
+      [{rows: invalid_ids, column: resmap_id_column_index}] if invalid_ids.length >0
+    end
 
     def validate_column(user, collection, column_spec, fields, csv_column, column_number)
       if column_spec[:use_as].to_sym == :existing_field
@@ -504,9 +548,9 @@ class ImportWizard
         # options will be created
         return field_value
       end
-  
+
       column_header = column_spec[:code]? column_spec[:code] : column_spec[:label]
-  
+
       sample_field = Field.new kind: column_spec[:kind], code: column_header
       sample_field.apply_format_update_validation(field_value, true, collection)
     end
