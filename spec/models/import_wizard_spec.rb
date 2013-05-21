@@ -58,6 +58,32 @@ describe ImportWizard do
     sites[1].properties.should eq({fields[0].es_code => 20})
   end
 
+  it "import should calculate collection bounds from sites" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Lat', 'Lon']
+      csv << ['Foo', '30.0', '20.0']
+      csv << ['Bar', '40.0', '30.0']
+      csv << ['FooBar', '45.0', '40.0']
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'}
+      ]
+
+    ImportWizard.import user, collection, csv_string
+    ImportWizard.execute user, collection, specs
+
+    collection.reload
+    collection.min_lat.to_f.should eq(30.0)
+    collection.max_lat.to_f.should eq(45.0)
+    collection.min_lng.to_f.should eq(20.0)
+    collection.max_lng.to_f.should eq(40.0)
+    collection.lat.to_f.should eq(37.5)
+    collection.lng.to_f.should eq(30.0)
+  end
+
   it "imports with name, lat, lon and one new numeric property and existing ID" do
     site1 = collection.sites.make name: 'Foo old', properties: {text.es_code => 'coco'}
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}
@@ -516,17 +542,17 @@ describe ImportWizard do
       select_one.es_code => 1,
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
-      site.es_code => 1234,
       date.es_code => "2012-10-24T03:00:00.000Z",
       director.es_code => user.email
     }
+    site1.properties[site.es_code] = site1.id
 
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
 
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Text', 'Numeric', 'Yes no', 'Select One', 'Select Many', 'Hierarchy', 'Site', 'Date', 'User']
-      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'no', 'two', 'two', 'Dad',  1235, '12/26/1988', 'user2@email.com']
+      csv << ["#{site1.id}", 'Foo new', '1.2', '3.4', 'new val', 11, 'no', 'two', 'two, one', 'Dad',  1235, '12/26/1988', 'user2@email.com']
     end
 
     specs = [
@@ -563,7 +589,7 @@ describe ImportWizard do
       numeric.es_code => 11,
       yes_no.es_code => false,
       select_one.es_code => 2,
-      select_many.es_code => [2],
+      select_many.es_code => [2, 1],
       hierarchy.es_code => '60',
       site.es_code => '1235',
       date.es_code => "1988-12-26T00:00:00Z",
@@ -582,10 +608,11 @@ describe ImportWizard do
       select_one.es_code => 1,
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
-      site.es_code => 1234,
       date.es_code => "2012-10-24T03:00:00.000Z",
       director.es_code => user.email
     }
+    site1.properties[site.es_code] = site1.id
+
 
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
@@ -879,7 +906,6 @@ describe ImportWizard do
     sites_errors[:duplicated_label].should eq({})
     sites_errors[:existing_code].should eq({})
     sites_errors[:existing_label].should eq({})
-    sites_errors[:usage_missing].should eq([])
 
     data_errors = sites_errors[:data_errors]
     data_errors.length.should eq(6)
@@ -926,13 +952,13 @@ describe ImportWizard do
       {header: 'Text', use_as: 'new_field', kind: 'text', code: 'text', label: 'Non Existing field'},
     ]
 
-    expect {ImportWizard.validate_columns collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with code 'text' already exists in the layer named #{layer.name}")
+    expect {ImportWizard.validate_columns_does_not_exist_in_collection collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with code 'text' already exists in the layer named #{layer.name}")
 
     column_spec = [
      {header: 'Text', use_as: 'new_field', kind: 'text', code: 'newtext', label: 'Existing field'},
     ]
 
-    expect {ImportWizard.validate_columns collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
+    expect {ImportWizard.validate_columns_does_not_exist_in_collection collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
 
     ImportWizard.delete_file(user, collection)
   end
@@ -1099,4 +1125,118 @@ describe ImportWizard do
 
     ImportWizard.delete_file(user, collection)
   end
+
+  # Otherwise a missmatch will be generated 
+  it 'should not bypass columns with an empty value in the first row' do
+    csv_string = CSV.generate do |csv|
+      csv << ['0', '' , '']
+      csv << ['1', '0', 'label2']
+    end
+
+    ImportWizard.import user, collection, csv_string
+    column_spec = ImportWizard.guess_columns_spec user, collection
+
+    column_spec.length.should eq(3)
+    column_spec[1][:header].should eq("")
+    column_spec[1][:code].should eq("")
+    column_spec[1][:label].should eq("")
+    column_spec[1][:use_as].should eq(:new_field)
+    column_spec[2][:header].should eq("")
+    column_spec[2][:code].should eq("")
+    column_spec[2][:label].should eq("")
+    column_spec[2][:use_as].should eq(:new_field)
+
+    ImportWizard.delete_file(user, collection)
+  end
+
+  it 'should not fail if header has a nil value' do
+    csv_string = CSV.generate do |csv|
+      csv << ['0', nil , nil]
+      csv << ['1', '0', 'label2']
+    end
+
+    ImportWizard.import user, collection, csv_string
+    column_spec = ImportWizard.guess_columns_spec user, collection
+
+    column_spec.length.should eq(3)
+    column_spec[1][:header].should eq("")
+    column_spec[1][:code].should eq("")
+    column_spec[1][:label].should eq("")
+    column_spec[1][:use_as].should eq(:new_field)
+    column_spec[2][:header].should eq("")
+    column_spec[2][:code].should eq("")
+    column_spec[2][:label].should eq("")
+    column_spec[2][:use_as].should eq(:new_field)
+
+    ImportWizard.delete_file(user, collection)
+  end
+
+  it 'should not fail if label and code are missing in new fields' do 
+    csv_string = CSV.generate do |csv|
+      csv << ['0', '' , '']
+      csv << ['1', '0', 'label2']
+    end
+
+    specs = [
+      {:header=>"0", :kind=>:numeric, :code=>"0", :label=>"0", :use_as=>:new_field}, 
+      {:header=>"", :kind=>:text, :code=>"", :label=>"", :use_as=>:new_field},
+      {:header=>"", :kind=>:text, :code=>"", :label=>"", :use_as=>:new_field}]
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+    sites_errors[:missing_label].should eq(:columns => [1,2])
+    sites_errors[:missing_code].should eq(:columns => [1,2])
+
+    ImportWizard.delete_file(user, collection)
+  end
+    
+  it "should validate presence of name in column specs" do 
+    csv_string = CSV.generate do |csv|
+      csv << ['numeric']
+      csv << ['11']
+    end
+
+    specs = [{:header=>"numeric", :kind=>:numeric, :code=>"numeric", :label=>"numeric", :use_as=>:new_field}]
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+    sites_errors[:missing_name].should_not be_blank
+
+    ImportWizard.delete_file(user, collection)
+
+
+    specs = [{:header=>"numeric", :use_as=>:name}]
+
+    ImportWizard.import user, collection, csv_string
+    sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+    sites_errors = sites_preview[:errors]
+    sites_errors[:missing_name].should be_blank
+
+    ImportWizard.delete_file(user, collection)
+
+  end
+
+  Field.reserved_codes().each do |reserved_code|
+    it "should validate reserved code #{reserved_code} in new fields" do
+      csv_string = CSV.generate do |csv|
+        csv << ["#{reserved_code}"]
+        csv << ['11']
+      end
+
+      specs = [{:header=>"#{reserved_code}", :kind=>:text, :code=>"#{reserved_code}", :label=>"Label", :use_as=>:new_field}]
+
+      ImportWizard.import user, collection, csv_string
+      sites_preview = (ImportWizard.validate_sites_with_columns user, collection, specs)
+      sites_errors = sites_preview[:errors]
+      sites_errors[:reserved_code].should eq({"#{reserved_code}"=>[0]})
+      ImportWizard.delete_file(user, collection)
+
+    end
+  end
+
+  it "should validate ids belong to collection's sites if a column is marked to be used as 'id'" do
+  end
+
 end

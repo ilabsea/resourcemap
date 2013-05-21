@@ -124,6 +124,7 @@ describe ExecVisitor, "Process update command" do
     @f1 = @layer.numeric_fields.make(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1)
     @f2 = @layer.numeric_fields.make(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1)
     @site = @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
+    @site.user = @user
     @collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
     @node = parser.parse('dyrm u AB1 ambulances=15,doctors=20').command
     @node.sender = @user
@@ -174,15 +175,15 @@ describe ExecVisitor, "Process update command" do
   it "should update property  of the site" do
     Site.should_receive(:find_by_id_with_prefix).with('AB1').and_return(@site)
     @visitor.should_receive(:can_update?).and_return(true)
-    @site.should_receive(:update_properties).with(@site, @node.sender, [{:code=>"ambulances", :value=>"15"}, {:code=>"doctors", :value=>"20"}])
+    @visitor.should_receive(:update_properties).with(@site, @node.sender, [{:code=>"ambulances", :value=>"15"}, {:code=>"doctors", :value=>"20"}])
     @visitor.visit_update_command(@node).should == ExecVisitor::MSG[:update_successfully]
   end
 
   it "should update field Ambulance to 15 and Doctor to 20" do
     @visitor.visit_update_command(@node).should == ExecVisitor::MSG[:update_successfully]
     site = Site.find_by_id_with_prefix('AB1')
-    site.properties[@f1.id.to_s].to_i.should == 15
-    site.properties[@f2.id.to_s].to_i.should == 20
+    site.properties[@f1.es_code].to_i.should == 15
+    site.properties[@f2.es_code].to_i.should == 20
   end
 end
 
@@ -195,11 +196,11 @@ describe ExecVisitor, "Process add command" do
 
   before(:each) do
     @collection = Collection.make
-    @user = User.make(:phone_number => '85512345678')
+    @user = User.make(:phone_number => '85512345679')
     @collection.memberships.create(:user => @user, :admin => false)
     @layer = @collection.layers.make(:name => "default")
-    @f1 = @layer.fields.make(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1, :kind => "numeric")
-    @f2 = @layer.fields.make(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1, :kind => "numeric")
+    @f1 = @layer.numeric_fields.make(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1, :kind => "numeric")
+    @f2 = @layer.numeric_fields.make(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1, :kind => "numeric")
     #@site = @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
     #@collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
     @node = @parser.parse("dyrm a #{@collection.id} lat=12.11,lng=75.11,name=sms_site").command

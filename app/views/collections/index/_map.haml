@@ -100,7 +100,7 @@
 
   -# New Site or Edit Site form
   <!-- ko if: newOrEditSite -->
-  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
+  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), novalidate: 'novalidate', action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
     .tableheader.w30
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
@@ -131,6 +131,7 @@
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
               %div
+                %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
                 <!-- ko if: !writeable -->
                 %span.value{ko(text: :valueUI)}
@@ -153,7 +154,7 @@
 
   -# Show Site form
   <!-- ko if: showSite -->
-  %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline;width:100%'}
+  %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, novalidate: 'novalidate', style: 'display:inline;width:100%'}
     .tableheader.w30
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
@@ -192,19 +193,20 @@
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
               %div{style: 'margin-bottom:14px'}
-                %label{ko(text: "name + '(' + code + '):'")}
-                <!-- ko if: hasValue() -->
+                %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
+                %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
+                <!-- ko if: hasValue() && !error() -->
                 <!-- ko if: writeable -->
                 %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer'}
                 <!-- /ko -->
                 <!-- ko if: !writeable -->
                 %span.value{ko(text: :valueUI)}
                 <!-- /ko -->
-                <!-- ko if: kind == 'site' && !editing() -->
+                <!-- ko if: kind == 'site' && !editing() && !error() -->
                 %button.farrow.right{ko(click: 'function(data, event) { $root.editSiteFromId(value(),$root.currentCollection().id) }'), type: "button"}
                 <!-- /ko -->
                 <!-- /ko -->
-                <!-- ko if: !hasValue() -->
+                <!-- ko if: !hasValue() &&  !error() -->
                 <!-- ko if: writeable -->
                 %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no value)
                 <!-- /ko -->
@@ -212,7 +214,7 @@
                 %span.value{style: 'color:grey'} (no value)
                 <!-- /ko -->
                 <!-- /ko -->
-                <!-- ko if: editing() -->
+                <!-- ko if: editing() || error() -->
                 - Field::kinds.each do |kind|
                   <!-- ko if: kind == '#{kind}' -->
                   = render partial: field_edit_view(kind), locals: { single_editing_mode: true }

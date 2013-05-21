@@ -3,7 +3,12 @@ module Membership::SitesPermissionConcern
 
   def update_sites_permission(sites_permission = {})
     sites_permission.each do |type, permission|
-      permission[:some_sites] = permission[:some_sites].values if permission[:some_sites].is_a? Hash
+      if permission[:some_sites].is_a? Hash
+        permission[:some_sites] = permission[:some_sites].values
+      elsif not permission[:some_sites]
+        permission[:some_sites] = []
+      end
+
       self.find_or_build_sites_permission(type).update_attributes permission
     end
   end
@@ -18,3 +23,6 @@ module Membership::SitesPermissionConcern
     permission
   end
 end
+
+{:write=>{:all_sites=>false, :some_sites=>[{:id=>1, :name=>"Bayon clinic"}]}}
+{"write"=>{"all_sites"=>"false", "some_sites"=>{"0"=>{"id"=>"5", "name"=>"Carlos Casares"}}}}
