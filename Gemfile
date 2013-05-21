@@ -18,6 +18,7 @@ gem 'will_paginate'
 gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
 gem 'uuidtools'
+gem 'rack-offline'
 
 group :test do
   gem 'shoulda-matchers'

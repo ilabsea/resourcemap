@@ -122,6 +122,19 @@ ResourceMap::Application.routes.draw do
     match 'quota' => 'quota#index', via: :get
   end
 
+  offline = Rack::Offline.configure do  
+    cache "/assets/application.js"
+    cache "/assets/application.css"
+    cache "/jquery.mobile-1.3.1.min.css"
+    cache "/jquery.mobile-1.3.1.min.js"
+    cache "/images/ajax-loader.gif"
+    cache "/images/icons-18-white.png"
+    cache "http://theme.instedd.org/theme/images/interface/add.png"
+    cache "/images/favicon.ico"
+    network "/"  
+  end   
+  match "/application.manifest" => offline 
+
   # TODO: deprecate later
   match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#show_facility', :via => :get
   match 'collections/:collection_id/fred_api/v1/facilities' => 'fred_api#facilities', :via => :get
