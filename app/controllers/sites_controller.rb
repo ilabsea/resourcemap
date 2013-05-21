@@ -76,6 +76,7 @@ class SitesController < ApplicationController
     search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
 
     search.apply_queries
+    search.apply_cluster_status
     render json: search.results
   end
 
