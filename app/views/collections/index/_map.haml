@@ -225,7 +225,7 @@
                 <!-- ko if: editing() || error() -->
                 - Field::kinds.each do |kind|
                   <!-- ko if: kind == '#{kind}' -->
-                  = render partial: field_edit_view(kind), locals: { single_editing_mode: true }
+                  = render partial: field_edit_view(kind), locals: { single_editing_mode: true, mobile: false }
                   <!-- /ko -->
                 <!-- /ko -->
               <!-- /ko -->
