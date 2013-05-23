@@ -43,7 +43,6 @@ onCollections ->
       undefined
 
     @enterCollection: (collection) ->
-      console.log collection.sites()
       return if !collection.checked() and @showingAlert()  
       @queryParams = $.url().param()
 
