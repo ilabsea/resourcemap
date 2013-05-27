@@ -13,11 +13,11 @@
   %div{:style => "margin-left: 130px;"}
     We need to verify this phone number
   %div{:style => "margin-left: 130px;"}
-    %button{ko(click: '$root.sentCodeMsg', css: {disabled: '$root.phoneNumberExist'}), type: "button", value: "text", class: "white" } Text Me!
-    %input{:name => "text_verify", :type => "text"}
+    %button{ko(click: '$root.sentCodeMsg', css: {disabled: '$root.phoneNumberExist()'}), type: "button", value: "text", class: "white" } Text Me!
+    %input{ko(value: :smsCode), :name => "text_verify", :type => "text"}
   %div{:style => "margin-left: 130px; width: 250px;"}
     Click "Text Me!". You will receive an SMS message, please enter that text in the text box.
   %div{ style: "margin-left: 130px; padding-top: 20px;"}
-    %button{ko(click: '$root.createMembership'), type: "button", value: "Save", class: "white", id: "btn_create_member" } Submit
+    %button{ko(click: '$root.createMembership', css: {disabled: '$root.smsCodeExiste()'}), type: "button", value: "Save", class: "white", id: "btn_create_member" } Submit
     
     %button{ko(click: '$root.hideRegisterMembership'), type: "button", value: "Cancel", class: "white", id: "btn_close_member" } Cancel

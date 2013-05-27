@@ -12,6 +12,7 @@ class @MembershipsViewModel
     @showRegisterNewMember = ko.observable(false)
     @email = ko.observable()
     @phoneNumber = ko.observable()
+    @smsCode = ko.observable()
 
     @groupBy = ko.observable("Users")
     @groupByOptions = ["Users", "Layers"]
@@ -24,9 +25,15 @@ class @MembershipsViewModel
 
   phoneNumberExist: () =>
     if (@phoneNumber())
-      return true
-    else 
-      return false
+      false
+    else
+      true
+
+  smsCodeExiste: () =>
+    if (@smsCode())
+      false
+    else
+      true
 
   sentCodeMsg: () =>
     alert("code msg is sent");
