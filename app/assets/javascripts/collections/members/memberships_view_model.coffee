@@ -13,6 +13,7 @@ class @MembershipsViewModel
     @email = ko.observable()
     @phoneNumber = ko.observable()
     @smsCode = ko.observable()
+    @secretCode = null
 
     @groupBy = ko.observable("Users")
     @groupByOptions = ["Users", "Layers"]
@@ -29,14 +30,13 @@ class @MembershipsViewModel
     else
       true
 
-  smsCodeExiste: () =>
-    if (@smsCode())
-      false
-    else
-      true
+  smsCodeExiste: () => @smsCode() != @secretCode
 
   sentCodeMsg: () =>
-    alert("code msg is sent");
+    _self = this;
+    if (@phoneNumber())
+      $.post "/collections/#{ @collectionId() }/send_new_member_sms.json", phone_number: @phoneNumber(), (data) ->
+        _self.secretCode = data.secret_code
 
   showRegisterMembership: () =>
     @showRegisterNewMember(true)
@@ -47,8 +47,7 @@ class @MembershipsViewModel
 
   createMembership: () ->
     _self = this;
-    if $.trim(@email()).length > 0
-      
+    if (@smsCode() == @secretCode)
       $.post "/collections/#{ @collectionId() }/memberships.json", user: email: @email(), phone_number: @phoneNumber(), (data) ->
           if data.status == 'ok'
             new_member = new Membership(window.model, { user_id: data.user_id, user_display_name: data.user_display_name, layers: data.layers })
