@@ -1,7 +1,6 @@
 class @MembershipsViewModel
   initialize: (admin, memberships, layers, collectionId) ->
     _self = @
-
     @collectionId = ko.observable(collectionId)
 
     @selectedLayer = ko.observable()
@@ -9,6 +8,12 @@ class @MembershipsViewModel
 
     @memberships = ko.observableArray $.map(memberships, (x) -> new Membership(_self, x))
     @admin = ko.observable admin
+
+    @showRegisterNewMember = ko.observable(false)
+    @email = ko.observable()
+    @phoneNumber = ko.observable()
+    @smsCode = ko.observable()
+    @secretCode = null
 
     @groupBy = ko.observable("Users")
     @groupByOptions = ["Users", "Layers"]
@@ -18,3 +23,40 @@ class @MembershipsViewModel
     if confirm("Are you sure you want to remove #{membership.userDisplayName()} from the collection?")
       $.post "/collections/#{collectionId}/memberships/#{membership.userId()}.json", {_method: 'delete'}, =>
         @memberships.remove membership
+
+  phoneNumberExist: () =>
+    if (@phoneNumber())
+      false
+    else
+      true
+
+  smsCodeExiste: () => @smsCode() != @secretCode
+
+  sentCodeMsg: () =>
+    _self = this;
+    if (@phoneNumber())
+      $.post "/collections/#{ @collectionId() }/send_new_member_sms.json", phone_number: @phoneNumber(), (data) ->
+        _self.secretCode = data.secret_code
+
+  showRegisterMembership: () =>
+    @showRegisterNewMember(true)
+    @email($('#member_email').val());
+
+  hideRegisterMembership: () =>
+    @showRegisterNewMember(false)
+
+  createMembership: () ->
+    _self = this;
+    if (@smsCode() == @secretCode)
+      $.post "/collections/#{ @collectionId() }/memberships.json", user: email: @email(), phone_number: @phoneNumber(), (data) ->
+          if data.status == 'ok'
+            new_member = new Membership(window.model, { user_id: data.user_id, user_display_name: data.user_display_name, layers: data.layers })
+            window.model.memberships.push new_member
+            _self.showRegisterNewMember(false)
+            _self.email("")
+            _self.phoneNumber("")
+            $('#member_email').val("")
+
+
+
+

@@ -16,6 +16,7 @@ ResourceMap::Application.routes.draw do
 
   resources :repeats
   resources :collections do
+    post  :send_new_member_sms
     post :register_gateways
     get  :message_quota
     get :sites_by_term

@@ -116,4 +116,8 @@ class User < ActiveRecord::Base
     membership = self.memberships.find_by_collection_id collection_id
     self.memberships.create! collection_id: collection_id, admin: false  if(!membership)
   end
+
+  def self.generate_random_password
+    Devise.friendly_token.first(6)
+  end
 end
