@@ -73,6 +73,12 @@ describe 'Collection', ->
 
         expect(window.model.editingSite().updateProperty).toHaveBeenCalledWith('1', 123)
 
+      it 'should have error if an errorMessage is set', ->
+        expect(@field.error()).toBeFalsy()
+        @field.errorMessage("Invalid Option")
+        expect(@field.error()).toBeTruthy()
+
+
     describe 'Numeric Field', ->
       beforeEach ->
         @field = new Field { id: 1, code: 'beds', name: 'Available beds', kind: 'numeric' }
@@ -169,6 +175,15 @@ describe 'Collection', ->
         @field.removeOption(3)
         expect(@field.value()).toEqual([1])
         expect(@field.remainingOptions()).toEqual([@field.options[1], @field.options[2]])
+
+      it 'remainingOptions should be full when no filter is set', ->
+        @field.filter('')
+        expect(@field.remainingOptions()).toEqual([@field.options[0], @field.options[1], @field.options[2]])
+
+      it 'should filter options', ->
+        @field.filter('Red')
+        expect(@field.remainingOptions()).toEqual([@field.options[0]])
+
 
     describe 'Date Field', ->
       beforeEach ->

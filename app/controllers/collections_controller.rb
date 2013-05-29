@@ -59,7 +59,15 @@ class CollectionsController < ApplicationController
     if collection.update_attributes params[:collection]
 
       if collection.public
-        guest_user = User.find_by_email 'guest@resourcemap.org'
+        u = User.find_by_email 'guest@resourcemap.org'
+        guest_user = if (u != nil)
+          u
+        else
+           u = User.new(email: 'guest@resourcemap.org', password: 'guest_resourcemap', is_guest: true)
+           u.skip_confirmation!
+           u.save
+           u
+        end
         guest_user.register_guest_membership(collection.id)
       end
 
@@ -128,7 +136,9 @@ class CollectionsController < ApplicationController
     current_snapshot && current_snapshot.user_snapshots.where(user_id: current_user.id).first.destroy
 
     respond_to do |format|
-      format.html { redirect_to collection_path(collection), notice: "Snapshot #{current_snapshot.name} unloaded" }
+      format.html {
+        flash[:notice] = "Snapshot #{current_snapshot.name} unloaded" if current_snapshot
+        redirect_to  collection_path(collection) }
       format.json { render json: :ok }
     end
   end
@@ -209,7 +219,8 @@ class CollectionsController < ApplicationController
   end
 
   def decode_hierarchy_csv
-    @hierarchy = collection.decode_hierarchy_csv(params[:file].read)
+    csv_string = File.read(params[:file].path, :encoding => 'utf-8')
+    @hierarchy = collection.decode_hierarchy_csv(csv_string)
     @hierarchy_errors = CollectionsController.generate_error_description_list(@hierarchy)
     render layout: false
   end
@@ -262,5 +273,13 @@ class CollectionsController < ApplicationController
       c.id if s.results.length > 0 
     end
     render json: ids.compact
+  end
+
+  def send_new_member_sms
+    random_code = (0..5).map{(rand(9))}.join
+    collection = Collection.find_by_id(params[:collection_id])
+    channel = collection.channels.first
+    SmsNuntium.notify_sms [params[:phone_number]], "Your secret code is : #{random_code}", channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
+    render json: {status: 200, secret_code: random_code}
   end
 end

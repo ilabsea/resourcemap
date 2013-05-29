@@ -18,6 +18,7 @@ ResourceMap::Application.routes.draw do
   
   resources :repeats
   resources :collections do
+    post  :send_new_member_sms
     post :register_gateways
     get  :message_quota
     get :sites_by_term
@@ -50,11 +51,9 @@ ResourceMap::Application.routes.draw do
 
     post 'upload_csv'
 
-    member do
-      post 'create_snapshot'
-      post 'load_snapshot'
-      post 'unload_current_snapshot'
-    end
+    post 'create_snapshot'
+    post 'load_snapshot'
+    post 'unload_current_snapshot'
 
     get 'recreate_index'
     get 'search'
@@ -68,8 +67,10 @@ ResourceMap::Application.routes.draw do
        post 'execute'
        post 'validate_sites_with_columns'
        get 'get_visible_sites/:page' => 'import_wizards#get_visible_sites'
+       get 'import_in_progress'
+       get 'import_finished'
+       get 'job_status'
      end
-
   end
 
   resources :sites do
@@ -125,6 +126,19 @@ ResourceMap::Application.routes.draw do
     match 'analytics' => 'analytics#index', :via => :get
     match 'quota' => 'quota#index', via: :get
   end
+
+  offline = Rack::Offline.configure do  
+    cache "/assets/application.js"
+    cache "/assets/application.css"
+    cache "/jquery.mobile-1.3.1.min.css"
+    cache "/jquery.mobile-1.3.1.min.js"
+    cache "/images/ajax-loader.gif"
+    cache "/images/icons-18-white.png"
+    cache "http://theme.instedd.org/theme/images/interface/add.png"
+    cache "/images/favicon.ico"
+    network "/"  
+  end   
+  match "/application.manifest" => offline 
 
   # TODO: deprecate later
   match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#show_facility', :via => :get

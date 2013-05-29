@@ -69,9 +69,13 @@ onCollections ->
         $.get "/collections/#{collectionId}/sites/#{siteId}.json", {}, (data) =>
           @loadingSite(false)
           collection = window.model.findCollectionById(collectionId)
-          site = new Site(collection, data)
-          site = collection.addSite(site)
-          @selectSite site
+          # Data will be empty if site is not found
+          if !$.isEmptyObject(data)
+            site = new Site(collection, data)
+            site = collection.addSite(site)
+            @selectSite site
+          else
+            @enterCollection(collection)
 
     @editSiteFromMarker: (siteId, collectionId) ->
       @exitSite() if @editingSite()
@@ -94,11 +98,6 @@ onCollections ->
       return unless @editingSite().valid()
 
       callback = (data) =>
-        unless @editingSite().id()
-          @editingSite().id(data.id)
-          @editingSite().idWithPrefix(data.id_with_prefix)
-          $.status.showNotice "Site '#{@editingSite().name()}' successfully created", 2000
-
         @currentCollection().reloadSites()
 
         @editingSite().updatedAt(data.updated_at)
@@ -114,7 +113,10 @@ onCollections ->
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
 
-      @editingSite().post @editingSite().toJSON(), callback
+      if @editingSite().id()
+        @editingSite().update_site(@editingSite().toJSON(), callback)
+      else
+        @editingSite().create_site(@editingSite().toJSON(), callback)
 
     @exitSite: ->
       if !@editingSite()?.inEditMode()

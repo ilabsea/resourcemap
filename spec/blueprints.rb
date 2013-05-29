@@ -30,6 +30,7 @@ end
 
 Collection.blueprint do
   name
+  icon {'default'}
 end
 
 Site.blueprint do
@@ -102,4 +103,10 @@ Membership.blueprint do
   user
   collection
   admin { true }
+end
+
+ImportJob.blueprint do
+  user
+  collection
+  status
 end

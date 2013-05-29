@@ -32,6 +32,6 @@
           createMembership(ui.item.label)
       appendTo: '#autocomplete_container'
 
-    $('#add_member').click -> createMembership()
+#    $('#add_member').click -> createMembership()
 
     $('.hidden-until-loaded').show()

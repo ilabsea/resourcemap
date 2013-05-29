@@ -25,24 +25,36 @@ class SitesController < ApplicationController
       search = collection.new_search current_user_id: current_user.id
     end
     search.id params[:id]
-    render json: search.ui_results.first['_source']
+    # If site does not exists, return empty object
+    result = search.ui_results.first['_source'] rescue {}
+    render json: result
   end
 
   def create
-    validated_site = validate_site_properties(params[:site])
-    site = collection.sites.create(validated_site.merge(user: current_user))
-    current_user.site_count += 1
-    current_user.update_successful_outcome_status
-    current_user.save!
-    render json: site
+    site_params = JSON.parse params[:site]
+    site = collection.sites.new(site_params.merge(user: current_user))
+    if site.valid?
+      site.save!
+      current_user.site_count += 1
+      current_user.update_successful_outcome_status
+      current_user.save!
+      render json: site, :layout => false
+    else
+      render json: site.errors.messages, status: :unprocessable_entity, :layout => false
+    end
   end
 
   def update
-    validated_site = validate_site_properties(params[:site])
+    site_params = JSON.parse params[:site]
     site.user = current_user
     site.properties_will_change!
-    site.update_attributes! validated_site
-    render json: site
+    site.attributes = site_params
+    if site.valid?
+      site.save!
+      render json: site, :layout => false
+    else
+      render json: site.errors.messages, status: :unprocessable_entity, :layout => false
+    end
   end
 
   def update_property
@@ -53,9 +65,14 @@ class SitesController < ApplicationController
     site.user = current_user
     site.properties_will_change!
 
-    site.properties[params[:es_code]] = field.apply_format_update_validation(params[:value], false, site.collection)
-    site.save!
-    render json: site
+    site.properties[params[:es_code]] = params[:value]
+    if site.valid?
+      site.save!
+      render json: site, :status => 200, :layout => false
+    else
+      error_message = site.errors[:properties][0][params[:es_code]]
+      render json: {:error_message => error_message}, status: :unprocessable_entity, :layout => false
+    end
   end
 
   def search
@@ -76,6 +93,7 @@ class SitesController < ApplicationController
     search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
 
     search.apply_queries
+    search.apply_cluster_status
     render json: search.results
   end
 
@@ -84,20 +102,5 @@ class SitesController < ApplicationController
     site.destroy
     render json: site
   end
-
-  private
-
-  def validate_site_properties(site_param)
-    fields = collection.fields
-    properties = JSON.parse(site_param)["properties"] || {}
-    validated_properties = {}
-    properties.each_pair do |es_code, value|
-      field = fields.where_es_code_is es_code
-      validated_value = field.apply_format_update_validation(value, false, collection)
-      validated_properties["#{es_code}"] = validated_value
-    end
-    validated_site = JSON.parse(site_param)
-    validated_site["properties"] = validated_properties
-    validated_site
-  end
+  
 end

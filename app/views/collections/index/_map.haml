@@ -63,8 +63,7 @@
   <!-- ko if: !editingSite() -->
   <!-- ko with: currentCollection -->
   .tableheader
-    - if !current_user.is_guest
-      %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
+    %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
     %span
     %span{ko(text: :name)}
     - if !current_user.is_guest
@@ -100,7 +99,7 @@
 
   -# New Site or Edit Site form
   <!-- ko if: newOrEditSite -->
-  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
+  %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), novalidate: 'novalidate', action: '#/null', method: :post, style: 'display:inline-block;width:100%'}
     .tableheader.w30
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
@@ -131,6 +130,7 @@
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
               %div
+                %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                 = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
                 <!-- ko if: !writeable -->
                 %span.value{ko(text: :valueUI)}
@@ -153,7 +153,7 @@
 
   -# Show Site form
   <!-- ko if: showSite -->
-  %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, style: 'display:inline;width:100%'}
+  %form{ko(with: :showSite, submit: '$root.saveSite'), action: '#/null', method: :post, novalidate: 'novalidate', style: 'display:inline;width:100%'}
     .tableheader.w30
       %button.pback{ko(click: '$root.exitSite'), type: 'button'}
       %span
@@ -165,17 +165,26 @@
             %td
               %div{style: 'margin-bottom:14px'}
                 %label Name:
-                %span.value{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
+                - if current_user.is_guest
+                  %span.value{ko(text: :name, visible: '!editingName()')}
+                -else
+                  %span.value{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
                 <!-- ko if: editingName() -->
                 = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                 <!-- /ko -->
               %div{style: 'margin-bottom:14px'}
                 %label Location:
                 <!-- ko if: !hasLocation() -->
-                %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'} (no value)
+                - if current_user.is_guest
+                  %span.value{ko(visible: '!editingLocation()', style: 'color:grey;')} (no value)
+                - else
+                  %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'} (no value)
                 <!-- /ko -->
                 <!-- ko if: hasLocation() && !editingLocation() -->
-                %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
+                - if current_user.is_guest
+                  %span.value{ko(text: :locationText, visible: '!editingLocation()')}
+                - else
+                  %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
                 <!-- /ko -->
                 <!-- ko if: editingLocation() -->
                 = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search'}
@@ -192,19 +201,20 @@
               <!-- ko if: expanded() -->
               <!-- ko foreach: fields -->
               %div{style: 'margin-bottom:14px'}
-                %label{ko(text: "name + '(' + code + '):'")}
-                <!-- ko if: hasValue() -->
+                %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
+                %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
+                <!-- ko if: hasValue() && !error() -->
                 <!-- ko if: writeable -->
                 %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer'}
                 <!-- /ko -->
                 <!-- ko if: !writeable -->
                 %span.value{ko(text: :valueUI)}
                 <!-- /ko -->
-                <!-- ko if: kind == 'site' && !editing() -->
+                <!-- ko if: kind == 'site' && !editing() && !error() -->
                 %button.farrow.right{ko(click: 'function(data, event) { $root.editSiteFromId(value(),$root.currentCollection().id) }'), type: "button"}
                 <!-- /ko -->
                 <!-- /ko -->
-                <!-- ko if: !hasValue() -->
+                <!-- ko if: !hasValue() &&  !error() -->
                 <!-- ko if: writeable -->
                 %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no value)
                 <!-- /ko -->
@@ -212,10 +222,10 @@
                 %span.value{style: 'color:grey'} (no value)
                 <!-- /ko -->
                 <!-- /ko -->
-                <!-- ko if: editing() -->
+                <!-- ko if: editing() || error() -->
                 - Field::kinds.each do |kind|
                   <!-- ko if: kind == '#{kind}' -->
-                  = render partial: field_edit_view(kind), locals: { single_editing_mode: true }
+                  = render partial: field_edit_view(kind), locals: { single_editing_mode: true, mobile: false }
                   <!-- /ko -->
                 <!-- /ko -->
               <!-- /ko -->

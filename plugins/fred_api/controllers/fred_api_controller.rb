@@ -4,11 +4,11 @@ class FredApiController < ApplicationController
   before_filter :verify_site_belongs_to_collection!, :only => [:show_facility, :delete_facility, :update_facility]
   before_filter :authenticate_site_user!, :only => [:show_facility, :delete_facility, :update_facility]
 
-  around_filter :rescue_with_status_codes
-
-  rescue_from ActiveRecord::RecordNotFound do |x|
-    render json: { code: "404 Not Found", message: "Resource not found" }, :status => 404, :layout => false
-  end
+  rescue_from Exception, :with => :default_rescue
+  rescue_from RuntimeError, :with => :rescue_runtime_error
+  rescue_from ActionController::RoutingError, :with => :rescue_record_not_found
+  rescue_from ActiveRecord::RecordNotFound, :with => :rescue_record_not_found
+  rescue_from ActiveRecord::RecordInvalid, :with => :rescue_record_invalid
 
   expose(:site)
   expose(:collection) { Collection.find params[:collection_id] }
@@ -17,12 +17,6 @@ class FredApiController < ApplicationController
     if !collection.sites.include? site
       render json: { message: "Facility #{site.id} do not belong to collection #{collection.id}"}, status: 409
     end
-  end
-
-  def rescue_with_status_codes
-    yield
-  rescue => ex
-    render json: { message: ex.message}, status: 422
   end
 
   def show_facility
@@ -36,33 +30,34 @@ class FredApiController < ApplicationController
   end
 
   def update_facility
-    facility_params = JSON.parse request.raw_post
+    raw_post = request.raw_post.empty? ? "{}" : request.raw_post
+    facility_params = JSON.parse raw_post
 
-    if ["id","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
-      render  json: { message: "Invalid Paramaters: The id, url, createdAt, and updatedAt core properties cannot be changed by the client."}, status: 400
-      return
-    end
-    if facility_params.include? "active"
-      facility_params.delete("active")
-    end
-    validated_facility = validate_site_params(facility_params)
+    if ["id","uuid","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
+      render  json: { message: "Invalid Paramaters: The id, uuid, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400
+      return  
+    end 
+    facility_params = validate_site_params(facility_params)
+
+    site.use_codes_instead_of_es_codes = true
     site.user = current_user
     site.properties_will_change!
-    site.update_attributes! validated_facility
+    site.update_attributes! facility_params
+
     render json: find_facility_and_apply_fred_format(site.id), status: :ok, :location => url_for_facility(site.id)
   end
 
   def create_facility
-    facility_params = JSON.parse request.raw_post
+    raw_post = request.raw_post.empty? ? "{}" : request.raw_post
+    facility_params = JSON.parse raw_post
     if ["id","url","createdAt","updatedAt"].any?{|invalid_param| facility_params.include? invalid_param}
-      render  json: { message: "Invalid Paramaters: The id, url, createdAt, and updatedAt core properties cannot be changed by the client."}, status: 400
+      render  json: { message: "Invalid Paramaters: The id, url, createdAt and updatedAt core properties cannot be changed by the client."}, status: 400
       return
     end
-    if facility_params.include? "active"
-      facility_params.delete("active")
-    end
-    validated_facility = validate_site_params(facility_params)
-    facility = collection.sites.create!(validated_facility.merge(user: current_user))
+    facility_params = validate_site_params(facility_params)
+    facility = collection.sites.new
+    facility.use_codes_instead_of_es_codes = true
+    facility.update_attributes! facility_params.merge(user: current_user)
     render json: find_facility_and_apply_fred_format(facility.id), status: :created, :location => url_for_facility(facility.id)
   end
 
@@ -85,11 +80,13 @@ class FredApiController < ApplicationController
     end
 
     #Perform queries
-    except_params = [:action, :controller, :format, :id, :collection_id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince, "identifiers.id", "identifiers.agency", "identifiers.context"]
+    except_params = [:action, :controller, :format, :id, :collection_id, :sortAsc, :sortDesc, :offset, :limit, :fields, :name, :allProperties, :coordinates, :active, :createdAt, :updatedAt, :updatedSince, "identifiers.id", "identifiers.agency", "identifiers.context", :uuid]
 
     # Query by Core Properties
     search.name(params[:name]) if params[:name]
     search.id(params[:id]) if params[:id]
+    search.uuid(params[:uuid]) if params[:uuid]
+
     search.radius(params[:coordinates][1], params[:coordinates][0], 1) if params[:coordinates]
     search.updated_at(params[:updatedAt]) if params[:updatedAt]
     search.created_at(params[:createdAt]) if params[:createdAt]
@@ -153,25 +150,22 @@ class FredApiController < ApplicationController
   end
 
   def validate_site_params(facility_param)
-    fields = collection.fields
-    properties = facility_param["properties"] || {}
-    identifiers = facility_param["identifiers"] || []
 
-    validated_properties = {}
-    properties.each_pair do |code, value|
-      field = fields.find_by_code code
-      validated_value = field.apply_format_update_validation(value, true, collection)
-      validated_properties["#{field.es_code}"] = validated_value
+    if facility_param.include? "active"
+      facility_param.delete("active")
     end
 
-    identifiers_fields = collection.fields.find_all{|f| f.identifier?}
-    identifiers.each do |identifier|
-      field = identifiers_fields.find{|f| f.context == identifier["context"] && f.agency == identifier["agency"] }
-      if field
-        validated_value = field.apply_format_update_validation(identifier["id"], true, collection)
-        validated_properties["#{field.es_code}"] = validated_value
+    fields = collection.fields.index_by(&:code)
+    properties = facility_param["properties"] || {}
+
+    properties.each_pair do |code, value|
+      field = fields[code]
+      if field.nil?
+        raise "Invalid Parameters: Cannot find Field with code equal to '#{code}' in Collection's Layers."
       end
     end
+
+    properties_with_identifiers = properties.merge(convert_to_properties(facility_param["identifiers"]))
 
     lat = facility_param["coordinates"][1] if facility_param["coordinates"]
     lng = facility_param["coordinates"][0] if facility_param["coordinates"]
@@ -180,11 +174,23 @@ class FredApiController < ApplicationController
     facility_param.delete "identifiers"
 
     validated_site = facility_param
-    validated_site["properties"] = validated_properties
+    validated_site["properties"] = properties_with_identifiers
     validated_site["lat"] = lat
     validated_site["lng"] = lng
 
     validated_site
+  end
+
+  def convert_to_properties(params_idetifiers)
+    identifiers = params_idetifiers || []
+    as_properties = {}
+    identifiers_fields = collection.fields.find_all{|f| f.identifier?}
+    identifiers.each do |identifier|
+      field = identifiers_fields.find{|f| f.context == identifier["context"] && f.agency == identifier["agency"] }
+      raise "Invalid Parameters: Cannot find Identifier Field with context equal to '#{identifier["context"]}' and agency equal to '#{identifier["agency"]}' in Collection's Layers." if field.nil?
+      as_properties["#{field.code}"] = identifier["id"]
+    end
+    as_properties
   end
 
   def select_properties(facilities, fields_list)
@@ -214,8 +220,8 @@ class FredApiController < ApplicationController
     source = result['_source']
 
     obj = {}
-    obj[:id] = source['id'].to_s
     obj[:name] = source['name']
+    obj[:uuid] = source['uuid']
 
     obj[:createdAt] = format_time_to_iso_string(source['created_at'])
     obj[:updatedAt] = format_time_to_iso_string(source['updated_at'])
@@ -226,7 +232,7 @@ class FredApiController < ApplicationController
     # ResourceMap does not implement logical deletion yet. Thus all facilities are active.
     obj[:active] = true
 
-    obj[:url] = url_for_facility(source['id'])
+    obj[:href] = url_for_facility(source['id'])
 
     obj[:identifiers] = source['identifiers']
 
@@ -238,5 +244,26 @@ class FredApiController < ApplicationController
   def format_time_to_iso_string(es_format_date_sting)
     date = Site.parse_time(es_format_date_sting).utc
     date.iso8601
+  end
+
+  def rescue_record_invalid(ex)
+    if ex.record.errors[:uuid].include?("has already been taken")
+      render json: {code: "409 Conflict", message: "Duplicated facility: UUID has already been taken in this collection."}, :status => 409, :layout => false
+    else
+      render json: {code: "400 Record Invalid", message: "#{ex.message}"}, :status => 400, :layout => false
+    end
+  end
+
+  def rescue_runtime_error(ex)
+    render json: {code: "400 Record Invalid", message: "#{ex.message}"}, :status => 400, :layout => false
+  end
+
+  def default_rescue(ex)
+    puts ex.message
+    render json: {code: "500 Internal Server Error",  message: "#{ex.message}"}, status: 500, :layout => false
+  end
+
+  def rescue_record_not_found(ex)
+    render json: { code: "404 Not Found", message: "Resource not found" }, :status => 404, :layout => false
   end
 end

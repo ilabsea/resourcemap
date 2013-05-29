@@ -2,7 +2,18 @@ class ImportWizard
   TmpDir = "#{Rails.root}/tmp/import_wizard"
 
   class << self
-    def import(user, collection, contents)
+    def enqueue_job(user, collection, columns_spec)
+      mark_job_as_pending user, collection
+
+      # Enqueue job with user_id, collection_id, serialized column_spec
+      Resque.enqueue ImportTask, user.id, collection.id, columns_spec
+    end
+
+    def import(user, collection, original_filename, contents)
+      # Store representation of import job in database to enable status tracking later
+      import_job = ImportJob.uploaded original_filename, user, collection
+      import_job.save!
+
       FileUtils.mkdir_p TmpDir
       File.open(file_for(user, collection), "wb") { |file| file << contents }
 
@@ -14,9 +25,9 @@ class ImportWizard
     def validate_sites_with_columns(user, collection, columns_spec)
       columns_spec.map!{|c| c.with_indifferent_access}
       validated_data = {}
-      csv = CSV.read file_for(user, collection)
+      csv = CSV.read(file_for(user, collection), :encoding => 'utf-8')
       csv_columns = csv[1.. -1].transpose
-      csv[0].map!{|r| r.strip}
+      csv[0].map!{|r| r.strip if r}
 
       validated_data[:errors] = calculate_errors(user, collection, columns_spec, csv_columns, csv[0])
       # TODO: implement pagination
@@ -32,22 +43,32 @@ class ImportWizard
 
       sites_errors = {}
 
-      proc_select_new_fields = Proc.new{columns_spec.select{|spec| spec[:use_as] == 'new_field'}}
+      proc_select_new_fields = Proc.new{columns_spec.select{|spec| spec[:use_as].to_s == 'new_field'}}
       sites_errors[:duplicated_code] = calculate_duplicated(proc_select_new_fields, 'code')
       sites_errors[:duplicated_label] = calculate_duplicated(proc_select_new_fields, 'label')
+      sites_errors[:missing_label] = calculate_missing(proc_select_new_fields, 'label')
+      sites_errors[:missing_code] = calculate_missing(proc_select_new_fields, 'code')
+
+      sites_errors[:reserved_code] = calculate_reserved_code(proc_select_new_fields)
 
       collection_fields = collection.fields.all(:include => :layer)
       sites_errors[:existing_code] = calculate_existing(columns_spec, collection_fields, 'code')
       sites_errors[:existing_label] = calculate_existing(columns_spec, collection_fields, 'label')
 
-      sites_errors[:usage_missing] = []
-
       # Calculate duplicated usage for default fields (lat, lng, id, name)
-      proc_default_usages = Proc.new{columns_spec.reject{|spec| spec[:use_as] == 'new_field' || spec[:use_as] == 'existing_field' || spec[:use_as] == 'ignore'}}
+      proc_default_usages = Proc.new{columns_spec.reject{|spec| spec[:use_as].to_s == 'new_field' || spec[:use_as].to_s == 'existing_field' || spec[:use_as].to_s == 'ignore'}}
       sites_errors[:duplicated_usage] = calculate_duplicated(proc_default_usages, :use_as)
       # Add duplicated-usage-error for existing_fields
-      proc_existing_fields = Proc.new{columns_spec.select{|spec| spec[:use_as] == 'existing_field'}}
+      proc_existing_fields = Proc.new{columns_spec.select{|spec| spec[:use_as].to_s == 'existing_field'}}
       sites_errors[:duplicated_usage].update(calculate_duplicated(proc_existing_fields, :field_id))
+
+      # Name is mandatory
+      sites_errors[:missing_name] = {:use_as => 'name'} if !(columns_spec.any?{|spec| spec[:use_as].to_s == 'name'})
+
+      columns_used_as_id = columns_spec.select{|spec| spec[:use_as].to_s == 'id'}
+      # Only one column will be marked to be used as id
+      csv_column_used_as_id = csv_columns[columns_used_as_id.first[:index]] if columns_used_as_id.length > 0
+      sites_errors[:non_existent_site_id] = calculate_non_existent_site_id(collection.sites.map{|s| s.id.to_s}, csv_column_used_as_id, columns_used_as_id.first[:index]) if columns_used_as_id.length > 0
 
       sites_errors[:data_errors] = []
       sites_errors[:hierarchy_field_found] = []
@@ -72,7 +93,7 @@ class ImportWizard
     end
 
     def get_sites(user, collection, columns_spec, page)
-      csv = CSV.read file_for(user, collection)
+      csv = CSV.read(file_for(user, collection), :encoding => 'utf-8')
       csv_columns = csv[1 .. 11]
       processed_csv_columns = []
       csv_columns.each do |csv_column|
@@ -90,16 +111,26 @@ class ImportWizard
     end
 
     def execute(user, collection, columns_spec)
+      #Execute may be called with actual user and collection entities, or their ids.
+      if user.is_a?(User) && collection.is_a?(Collection)
+        execute_with_entities(user, collection, columns_spec)
+      else
+        #If the method's been called with ids instead of entities
+        execute_with_entities(User.find(user), Collection.find(collection), columns_spec)
+      end
+    end
+
+    def execute_with_entities(user, collection, columns_spec)
       # Easier manipulation
       columns_spec.map! &:with_indifferent_access
 
       existing_fields = collection.fields.index_by &:id
 
       # Validate new fields
-      validate_columns(collection, columns_spec)
+      validate_columns_does_not_exist_in_collection(collection, columns_spec)
 
       # Read all the CSV to memory
-      rows = CSV.read file_for(user, collection)
+      rows = CSV.read(file_for(user, collection), :encoding => 'utf-8')
 
       # Put the index of the row in the columns spec
       rows[0].each_with_index do |row, i|
@@ -163,7 +194,7 @@ class ImportWizard
 
         site = nil
         site = collection.sites.find_by_id row[id_spec[:index]] if id_spec && row[id_spec[:index]].present?
-        site ||= collection.sites.new properties: {}, collection_id: collection.id
+        site ||= collection.sites.new properties: {}, collection_id: collection.id, from_import_wizard: true
 
         site.user = user
         sites << site
@@ -179,89 +210,60 @@ class ImportWizard
 
           case spec[:use_as]
           when 'new_field'
-            value = validate_format_value(spec, value, collection)
+
+            # New hierarchy fields cannot be created via import wizard
+            if spec[:kind] == 'hierarchy'
+              raise "Hierarchy fields can only be created via web in the Layers page"
+            end
 
             # For select one and many we need to collect the fields options
-            if spec[:kind] == 'select_one' || spec[:kind] == 'select_many'
-              field = fields[spec[:code]]
-              field.config ||= {'options' => [], 'next_id' => 1}
+            if spec[:kind] == 'select_one'  || spec[:kind] == 'select_many'
 
-              code = nil
-              label = nil
-
-              # Compute code and label based on the selectKind
-              case spec[:selectKind]
-              when 'code'
-                next unless spec[:related]
-
-                code = value
-                label = row[spec[:related][:index]]
-              when 'label'
-                # Processing just the code is enough
-                next
-              when 'both'
-                code = value
-                label = value
+              # For select_one fields each value will be only one option
+              # and for select_many fields we may create more than one option per value
+              options_to_be_created = if spec[:kind] == 'select_many'
+                value.split(',').map{|v| v.strip}
+              else
+                [value]
               end
 
-              # Add to options, if not already present
-              if code.present? && label.present?
-                existing = field.config['options'].find{|x| x['code'] == code}
-                if existing
-                  value = existing['id']
-                else
-                  value = field.config['next_id']
-                  field.config['options'] << {'id' => field.config['next_id'], 'code' => code, 'label' => label}
-                  field.config['next_id'] += 1
+              options_to_be_created.each do |option|
+                field = fields[spec[:code]]
+                field.config ||= {'options' => [], 'next_id' => 1}
+
+                code = nil
+                label = nil
+
+                # Compute code and label based on the selectKind
+                case spec[:selectKind]
+                when 'code'
+                  next unless spec[:related]
+
+                  code = option
+                  label = row[spec[:related][:index]]
+                when 'label'
+                  # Processing just the code is enough
+                  next
+                when 'both'
+                  code = option
+                  label = option
+                end
+
+                # Add to options, if not already present
+                if code.present? && label.present?
+                  existing = field.config['options'].find{|x| x['code'] == code}
+                  if !existing
+                    field.config['options'] << {'id' => field.config['next_id'], 'code' => code, 'label' => label}
+                    field.config['next_id'] += 1
+                  end
                 end
               end
             end
 
             field = fields[spec[:code]]
-            site.properties[field] = field.strongly_type value
-
-          when 'existing_field'
-            existing_field = existing_fields[spec[:field_id].to_i]
-            if existing_field
-              if value.blank?
-                site.properties[existing_field] = nil
-              else
-                case existing_field.kind
-                  when 'numeric', 'text', 'site', 'user', 'yes_no'
-                    site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
-                  when 'select_one'
-                    existing_option = existing_field.config['options'].find { |x| x['code'] == value }
-                    if existing_option
-                      site.properties[existing_field] = existing_option['id']
-                    else
-                      site.properties[existing_field] = existing_field.config['next_id']
-                      existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => value, 'label' => value}
-                      existing_field.config['next_id'] += 1
-                    end
-                  when 'select_many'
-                    site.properties[existing_field] = []
-                    value.split(',').each do |v|
-                      v = v.strip
-                      existing_option = existing_field.config['options'].find { |x| x['code'] == v }
-                      if existing_option
-                        site.properties[existing_field] << existing_option['id']
-                      else
-                        site.properties[existing_field] << existing_field.config['next_id']
-                        existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => v, 'label' => v}
-                        existing_field.config['next_id'] += 1
-                      end
-                    end
-                  when 'hierarchy'
-                    site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
-                  when 'date'
-                    site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
-                end
-                if Field::plugin_kinds.has_key? existing_field.kind
-                  site.properties[existing_field] = existing_field.apply_format_update_validation(value, true, collection)
-                end
-              end
-              fields[existing_field.code] = existing_field
-            end
+            site.use_codes_instead_of_es_codes = true
+            site.properties_will_change!
+            site.properties[field.code] = value
 
           when 'name'
             site.name = value
@@ -269,7 +271,49 @@ class ImportWizard
             site.lat = value
           when 'lng'
             site.lng = value
+
+
+          when 'existing_field'
+            existing_field = existing_fields[spec[:field_id].to_i]
+            if existing_field
+              site.use_codes_instead_of_es_codes = true
+
+              case existing_field.kind
+                when 'select_one'
+
+                  # Add option to field options if it doesnt exists
+                  existing_option = existing_field.config['options'].find { |x| x['code'] == value }
+                  if !existing_option
+                    existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => value, 'label' => value}
+                    existing_field.config['next_id'] += 1
+                  end
+
+                  site.properties_will_change!
+                  site.properties[existing_field.code] = value
+
+                when 'select_many'
+                  site.properties[existing_field.code] = []
+                  value.split(',').each do |v|
+                    v = v.strip
+
+                    # Add option to field options if it doesnt exists
+                    existing_option = existing_field.config['options'].find { |x| x['code'] == v }
+                    if !existing_option
+                      existing_field.config['options'] << {'id' => existing_field.config['next_id'], 'code' => v, 'label' => v}
+                      existing_field.config['next_id'] += 1
+                    end
+
+                    site.properties_will_change!
+                    site.properties[existing_field.code] << v
+                  end
+                else
+                  site.properties_will_change!
+                  site.properties[existing_field.code] = value
+              end
+              fields[existing_field] = existing_field
+            end
           end
+
         end
       end
 
@@ -287,25 +331,28 @@ class ImportWizard
         # Force computing bounds and such in memory, so a thousand callbacks are not called
         collection.compute_geometry_in_memory
 
-        # Need to change site properties from code to field.es_code
-        sites.each { |site| site.properties = Hash[site.properties.map { |k, v| [k.is_a?(Field) ? k.es_code : k, v] }] }
+        # Reload collection in order to invalidate cached collection.fields copy and to load the new ones
+        collection.fields.reload
 
         # This will update the existing sites
         sites.each { |site| site.save! unless site.new_record? }
 
         # And this will create the new ones
         collection.save!
+
+        import_job = ImportJob.last_in_status_pending_for user, collection
+        import_job.finish
+        import_job.save!
       end
 
       delete_file(user, collection)
-
     end
 
     def delete_file(user, collection)
       File.delete(file_for(user, collection))
     end
 
-    def validate_columns(collection, columns_spec)
+    def validate_columns_does_not_exist_in_collection(collection, columns_spec)
       collection_fields = collection.fields.all(:include => :layer)
       columns_spec.each do |col_spec|
         if col_spec[:use_as] == 'new_field'
@@ -323,7 +370,22 @@ class ImportWizard
       end
     end
 
+    def mark_job_as_pending(user, collection)
+      # Move the corresponding ImportJob to status pending, since it'll be enqueued
+      import_job = ImportJob.last_in_status_file_uploaded_for user, collection
+      import_job.status = :pending
+      import_job.save!
+    end
+
     private
+
+    def calculate_non_existent_site_id(valid_site_ids, csv_column, resmap_id_column_index)
+      invalid_ids = []
+      csv_column.each_with_index do |csv_field_value, field_number|
+        invalid_ids << field_number unless (csv_field_value.blank? || valid_site_ids.include?(csv_field_value.to_s))
+      end
+      [{rows: invalid_ids, column: resmap_id_column_index}] if invalid_ids.length >0
+    end
 
     def validate_column(user, collection, column_spec, fields, csv_column, column_number)
       if column_spec[:use_as].to_sym == :existing_field
@@ -332,7 +394,8 @@ class ImportWizard
       validated_csv_column = []
       csv_column.each_with_index do |csv_field_value, field_number|
         begin
-          if column_spec[:use_as].to_sym == :existing_field || column_spec[:use_as].to_sym == :new_field
+          case column_spec[:use_as].to_sym
+          when :existing_field, :new_field
             validate_column_value(column_spec, csv_field_value, field, collection)
           end
         rescue => ex
@@ -418,6 +481,36 @@ class ImportWizard
       duplicated_columns
     end
 
+    def calculate_reserved_code(selection_block)
+      spec_to_validate = selection_block.call()
+      invalid_columns = {}
+      spec_to_validate.each do |column_spec|
+        if Field.reserved_codes().include?(column_spec[:code])
+          if invalid_columns[column_spec[:code]]
+            invalid_columns[column_spec[:code]] << column_spec[:index]
+          else
+            invalid_columns[column_spec[:code]] = [column_spec[:index]]
+          end
+        end
+      end
+      invalid_columns
+    end
+
+    def calculate_missing(selection_block, missing_value)
+      spec_to_validate = selection_block.call()
+      missing_value_columns = []
+      spec_to_validate.each do |column_spec|
+        if column_spec[missing_value].blank?
+          if missing_value_columns.length >0
+            missing_value_columns << column_spec[:index]
+          else
+            missing_value_columns = [column_spec[:index]]
+          end
+        end
+      end
+      {:columns => missing_value_columns} if missing_value_columns.length >0
+    end
+
     def calculate_existing(columns_spec, collection_fields, grouping_field)
       spec_to_validate = columns_spec.select {|spec| spec[:use_as] == 'new_field'}
       existing_columns = {}
@@ -464,9 +557,18 @@ class ImportWizard
 
     def to_columns(collection, rows, admin)
       fields = collection.fields.index_by &:code
+      columns_initial_guess = []
 
-      columns = rows[0].select(&:present?).map{|x| {:header => x.strip, :kind => :text, :code => x.downcase.gsub(/\s+/, ''), :label => x.titleize}}
-      columns.each_with_index do |column, i|
+      rows[0].each do |header|
+        column_spec = {}
+        column_spec[:header] = header ? header.strip : ''
+        column_spec[:kind] = :text
+        column_spec[:code] = header ? header.downcase.gsub(/\s+/, '') : ''
+        column_spec[:label] = header ? header.titleize : ''
+        columns_initial_guess << column_spec
+      end
+
+      columns_initial_guess.each_with_index do |column, i|
         guess_column_usage(column, fields, rows, i, admin)
       end
     end

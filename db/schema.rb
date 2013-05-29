@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130220030926) do
+ActiveRecord::Schema.define(:version => 20130510183328) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -84,6 +84,16 @@ ActiveRecord::Schema.define(:version => 20130220030926) do
     t.text     "config"
     t.integer  "ord"
     t.text     "metadata"
+  end
+
+  create_table "import_jobs", :force => true do |t|
+    t.string   "status"
+    t.string   "original_filename"
+    t.datetime "finished_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.integer  "user_id"
+    t.integer  "collection_id"
   end
 
   create_table "layer_histories", :force => true do |t|
@@ -197,6 +207,7 @@ ActiveRecord::Schema.define(:version => 20130220030926) do
     t.datetime "valid_since"
     t.datetime "valid_to"
     t.integer  "site_id"
+    t.string   "uuid"
   end
 
   add_index "site_histories", ["site_id"], :name => "index_site_histories_on_site_id"
@@ -223,6 +234,7 @@ ActiveRecord::Schema.define(:version => 20130220030926) do
     t.text     "properties"
     t.string   "location_mode",  :limit => 10,                                :default => "automatic"
     t.string   "id_with_prefix"
+    t.string   "uuid"
   end
 
   create_table "sites_permissions", :force => true do |t|

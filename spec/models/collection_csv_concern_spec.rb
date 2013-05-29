@@ -5,7 +5,6 @@ describe Collection::CsvConcern do
   let(:collection) { user.create_collection Collection.make }
   let!(:layer) { collection.layers.make }
 
-
   it "imports csv" do
     collection.import_csv user, %(
       resmap-id, name, lat, lng
@@ -38,7 +37,7 @@ describe Collection::CsvConcern do
   it "should download hiearchy value as Name" do
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
     hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
- 
+
     site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
 
     csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
@@ -78,6 +77,24 @@ describe Collection::CsvConcern do
   end
 
   describe "decode hierarchy csv test" do
+
+    it "gets parents right" do
+      json = collection.decode_hierarchy_csv %(
+        ID, ParentID, ItemName
+        1,,Dispensary
+        2,,Health Centre
+        101,1,Lab Dispensary
+        102,1,Clinical Dispensary
+        201,2,Health Centre Type 1
+        202,2,Health Centre Type 2
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Dispensary', sub: [{order: 3, id: '101', name: 'Lab Dispensary'}, {order: 4, id: '102', name: 'Clinical Dispensary'}]},
+        {order: 2, id: '2', name: 'Health Centre', sub: [{order: 5, id: '201', name: 'Health Centre Type 1'}, {order: 6, id: '202', name: 'Health Centre Type 2'}]},
+      ])
+    end
+
 
     it "decodes hierarchy csv" do
       json = collection.decode_hierarchy_csv %(
@@ -159,6 +176,21 @@ describe Collection::CsvConcern do
       json.should eq([
         {order: 1, id: '1', name: 'Site 1'},
         {order: 2, id: '2', name: 'Site 2'}
+      ])
+    end
+
+    it "gets an error if the parent does not exists" do
+      json = collection.decode_hierarchy_csv %(
+        ID, ParentID, ItemName
+        1,,Dispensary
+        2,,Health Centre
+        101,10,Lab Dispensary
+      ).strip
+
+      json.should eq([
+        {order: 1, id: '1', name: 'Dispensary', },
+        {order: 2, id: '2', name: 'Health Centre'},
+        {order: 3, error: 'Invalid parent value.', error_description: 'ParentID should match one of the Hierarchy ids'},
       ])
     end
 

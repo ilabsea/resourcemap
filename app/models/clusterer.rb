@@ -123,6 +123,10 @@ class Clusterer
     result
   end
 
+  def set_clustering_enabled status
+    @clustering_enabled = status
+  end
+
   protected
 
   def cell_for(site)
