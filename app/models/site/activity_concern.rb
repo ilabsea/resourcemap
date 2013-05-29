@@ -49,11 +49,11 @@ module Site::ActivityConcern
                        collection_id: collection.id, 
                        user_id: user.id, 
                        site_id: id, 
-                       data: { name:  @name_was || name, 
-                               changes:  site_changes ,
-                               properties: site.properties,
-                               lat: site.lat, 
-                               lng: site.lng 
+                       data: { "name"     =>  @name_was || name, 
+                               "changes"  =>  site_changes ,
+                               "properties" => site.properties,
+                               "lat" =>  site.lat, 
+                               "lng"  => site.lng 
                              }
                        
     end

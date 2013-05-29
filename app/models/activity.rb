@@ -45,8 +45,18 @@ class Activity < ActiveRecord::Base
      when "all"
         #nothing to do here
      when "range" 
-       activities = activities.where(['created_at BETWEEN :start_day AND :end_day',
-           :start_day => options[:from] , :end_day => options[:to] ])
+       if !options[:from].blank? && !options[:to].blank? 
+          activities = activities.where(['created_at BETWEEN :start_day AND :end_day',
+                      :start_day => options[:from] , :end_day => options[:to] ])
+       elsif !options[:from].blank?    
+          activities = activities.where(['created_at >= :start_day',
+                      :start_day => options[:from] ])
+       elsif !options[:to].blank?
+          activities = activities.where(['created_at <= :end_day',
+                      :end_day => options[:to] ])
+       else
+         # just like all nothing to do
+       end           
       
      end
      activities
@@ -78,7 +88,6 @@ class Activity < ActiveRecord::Base
           colunm_header << value
         end
         
-        colunm_header << "Description"
         csv << colunm_header  
       
         
@@ -114,7 +123,6 @@ class Activity < ActiveRecord::Base
                row << col_value   
              end
            
-             row << activity.description
              csv << row
           end
           
@@ -184,19 +192,20 @@ class Activity < ActiveRecord::Base
     fields = collection.fields.index_by(&:es_code)
     text_changes = []
     only_name_changed = false
-
+    
     if (change = data['changes']['name'])
       text_changes << "name changed from '#{change[0]}' to '#{change[1]}'"
       only_name_changed = true
     end
 
-    if (lat_change = data['changes']['lat']) && (lng_change = data['changes']['lng'])
+    if data['changes']['lat'] && data['changes']['lng']
       text_changes << "location changed from #{format_location data['changes'], :from} to #{format_location data['changes'], :to}"
       only_name_changed = false
     end
-
+    
     if data['changes']['properties']
       properties = data['changes']['properties']
+      
       properties[0].each do |key, old_value|
         new_value = properties[1][key]
         if new_value != old_value
