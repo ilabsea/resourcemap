@@ -20,9 +20,13 @@ class Activity < ActiveRecord::Base
   validates_inclusion_of :item_type, :in => ItemTypesAndActions.keys
   
   
-  def self.search_collection options   
-     activities = Activity.order(' id DESC ').includes(:site, :user)
-     activities =  activities.where(:collection_id => options[:id])
+  def self.search_collection options 
+     activities = Activity.order('id desc' ).includes(:site, :user, :collection, :field)
+     
+     activities =  activities.where(["collection_id = :collection_id",
+         :collection_id => options[:id]
+     ])
+   
      activities = activities.where(' item_type = "site" ')
      
      case options[:type]
@@ -45,45 +49,84 @@ class Activity < ActiveRecord::Base
            :start_day => options[:from] , :end_day => options[:to] ])
       
      end
-     
-     activities.limit(10)
-   
+     activities
   end
   
-  
-  def self.as_csv
-        
-       CSV.generate do |csv|
-        colunm_names = ["From", "Sender",  "Slip", "Text", "Ignored?", "Confirmed?", "Error?"]
-        5.times.each do |i| 
-          colunm_names << Referral::Field.field_label(i+1) 
-          colunm_names << Referral::Field.meaning_label(i+1) 
-        end
-        colunm_names << "Date"
-        
-        csv << colunm_names
-        
-        find_each(:batch_size => 500) do |report|
-          row  = [ report.type,
-                   report.sender.nil? ? "" : report.sender.phone_number ,
-                   report.slip_code,
-                   report.text,
-                   report.ignored ? "Yes" : "No",
-                   report.confirm_from ? report.confirm_from.sender.phone_number + "(#{report.confirm_from.sender.user_name})" : "",
-                   report.error ?  "Yes" : "No" ,
-          ]
-           
-          5.times.each do |i|
-            row << (report.send("field#{i+1}") || "")
-            row << (report.send("meaning#{i+1}") || "")
-            
-          end  
-          
-          row << report.created_at         
-          csv << row   
-        end
  
-      end
+  
+  def self.to_csv_file options, filename
+    collection = Collection.find(options[:id])
+    CSV.open(filename, 'w') do |csv|
+        colunm_header = [ "User",
+                         "Site",
+                         "SiteCode",
+                         "Lat",
+                         "Lng",
+                         "Action",
+                         "Date"                   
+                         ]
+                         
+        
+        column_keys = {} #column properties of csv stored in "field"
+        
+        collection.fields.each do |field|
+          column_keys[field.id] = field.name
+        end
+      
+        # add column properties to csv column header
+        column_keys.each do |key, value|
+          colunm_header << value
+        end
+        
+        colunm_header << "Description"
+        csv << colunm_header  
+      
+        
+        activities = search_collection(options) # search activities from criterias
+        sites = {} # store unique sites from activities
+        
+        activities.each do |activity|
+          sites[activity.site.id]  = activity.site
+        end
+        
+    
+        
+        sites.each do |site_id, site|
+          properties_row = {}         
+          column_keys.each do |col_id, col_name|
+             properties_row[col_id.to_s] = ""
+          end
+          
+          site_activities = activities.select{|activity| activity.site.id == site.id }
+          
+          site_activities.each do |activity| 
+             properties_row = properties_row.merge(activity.data["properties"] || {} )
+             row = [
+               activity.user.email,
+               activity.data["name"] ,
+               site.id_with_prefix ,
+               activity.data["lat"] ,
+               activity.data["lng"] ,
+               activity.action,
+               activity.updated_at               
+             ]            
+             properties_row.each do |col_key, col_value|
+               row << col_value   
+             end
+           
+             row << activity.description
+             csv << row
+          end
+          
+          #put 3 empty rows to separate each site
+          number_empty_row = 3
+          number_empty_row.times do
+            csv << Array.new(colunm_header.size){ "" }
+          end
+        
+        
+        end
+    end
   end
 
   def description
@@ -139,7 +182,6 @@ class Activity < ActiveRecord::Base
 
   def site_changes_text
     fields = collection.fields.index_by(&:es_code)
-
     text_changes = []
     only_name_changed = false
 

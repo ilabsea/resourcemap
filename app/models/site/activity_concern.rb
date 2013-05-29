@@ -21,6 +21,7 @@ module Site::ActivityConcern
   end
 
   def create_updated_activity
+    
     site_changes = changes.except('updated_at', 'min_lat', 'max_lat', 'min_lng', 'max_lng', 'min_zoom', 'max_zoom').to_hash
 
     # If either lat or lng change we want to singal a change in both, as in "location changed" and
@@ -42,7 +43,19 @@ module Site::ActivityConcern
     end
 
     if site_changes.present?
-      Activity.create! item_type: 'site', action: 'changed', collection_id: collection.id, user_id: user.id, site_id: id, 'data' => {'name' => @name_was || name, 'changes' => site_changes}
+      site = Site.find(id)
+      Activity.create! item_type: 'site', 
+                       action: 'changed', 
+                       collection_id: collection.id, 
+                       user_id: user.id, 
+                       site_id: id, 
+                       data: { name:  @name_was || name, 
+                               changes:  site_changes ,
+                               properties: site.properties,
+                               lat: site.lat, 
+                               lng: site.lng 
+                             }
+                       
     end
   end
 
