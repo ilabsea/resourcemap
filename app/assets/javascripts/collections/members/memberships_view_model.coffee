@@ -56,6 +56,10 @@ class @MembershipsViewModel
 
   hideRegisterMembership: () =>
     @showRegisterNewMember(false)
+    @smsCode("")
+    @secretCode = null
+    @phoneNumber("")
+    @email("")
     @codeVerificationMsg('Click "Text Me!". You will receive an SMS pin code for verification.')
 
   runSomething: () =>
