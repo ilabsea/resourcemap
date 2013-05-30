@@ -14,6 +14,17 @@ class @MembershipsViewModel
     @phoneNumber = ko.observable()
     @smsCode = ko.observable()
     @secretCode = null
+    @phoneExiste = ko.observable false
+    @codeVerificationMsg = ko.observable('Click "Text Me!". You will receive an SMS pin code for verification.')
+    @emailError = ko.computed => null
+    @phoneError = ko.computed => 
+      if @hasPhone()
+        if @phoneExiste()
+          "Phone number is taken" 
+        else 
+          null
+      else
+        "Phone number is required"      
 
     @groupBy = ko.observable("Users")
     @groupByOptions = ["Users", "Layers"]
@@ -37,6 +48,7 @@ class @MembershipsViewModel
     if (@phoneNumber())
       $.post "/collections/#{ @collectionId() }/send_new_member_sms.json", phone_number: @phoneNumber(), (data) ->
         _self.secretCode = data.secret_code
+        _self.codeVerificationMsg('The pin code has been sent to the phone number above. Please enter the pin code in the textbox for verification.')
 
   showRegisterMembership: () =>
     @showRegisterNewMember(true)
@@ -44,10 +56,18 @@ class @MembershipsViewModel
 
   hideRegisterMembership: () =>
     @showRegisterNewMember(false)
+    @codeVerificationMsg('Click "Text Me!". You will receive an SMS pin code for verification.')
+
+  runSomething: () =>
+    alert("test")
+
+  hasEmail: => $.trim(@email()).length > 0
+
+  hasPhone: => $.trim(@phoneNumber()).length > 0
 
   createMembership: () ->
     _self = this;
-    if (@smsCode() == @secretCode)
+    if ((@smsCode() == @secretCode) && @hasPhone())
       $.post "/collections/#{ @collectionId() }/memberships.json", user: email: @email(), phone_number: @phoneNumber(), (data) ->
           if data.status == 'ok'
             new_member = new Membership(window.model, { user_id: data.user_id, user_display_name: data.user_display_name, layers: data.layers })
@@ -56,6 +76,8 @@ class @MembershipsViewModel
             _self.email("")
             _self.phoneNumber("")
             $('#member_email').val("")
+          else if data.status == 'phone_existed'
+            _self.phoneExiste true
 
 
 
