@@ -142,7 +142,6 @@ class Activity < ActiveRecord::Base
           colunm_header << value
         end
         colunm_header << "Action"
-        colunm_header << "Description"
         csv << colunm_header  
       
         
@@ -176,7 +175,7 @@ class Activity < ActiveRecord::Base
              end
              
              row << activity.action
-             row << activity.description
+             #row << activity.description
              
              csv << row
           end
