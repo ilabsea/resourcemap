@@ -120,4 +120,31 @@ class User < ActiveRecord::Base
   def self.generate_random_password
     Devise.friendly_token.first(6)
   end
+
+  def self.generate_default_email
+    email_order_number_array = []
+    emails = User.where("email like ?", "%default-%").select("email")
+    if (emails.count > 0)
+      emails.each do |el|
+        email = el.email
+        end_index = email.index("@") - 1
+        start_index = email.index("-") + 1
+        email_order_number = Integer(email[start_index..end_index])
+        email_order_number_array << email_order_number
+      end
+      max_order = email_order_number_array.max + 1
+    else
+      max_order = 1
+    end
+    return "default-#{max_order}@example.com"    
+  end
+
+  def self.generate_user_display_name user
+    if user.email.index("default-")
+      display_name = user.phone_number   
+    else
+      display_name = user.email
+    end
+    return display_name
+  end
 end

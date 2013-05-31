@@ -276,10 +276,10 @@ class CollectionsController < ApplicationController
   end
 
   def send_new_member_sms
-    random_code = (0..5).map{(rand(9))}.join
+    random_code = (0..3).map{(rand(9))}.join
     collection = Collection.find_by_id(params[:collection_id])
     channel = collection.channels.first
-    SmsNuntium.notify_sms [params[:phone_number]], "Your secret code is : #{random_code}", channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
+    SmsNuntium.notify_sms [params[:phone_number]], "Your single-use Resource Map pin code is #{random_code}", channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
     render json: {status: 200, secret_code: random_code}
   end
 end

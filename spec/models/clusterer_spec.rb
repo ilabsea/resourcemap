@@ -42,8 +42,8 @@ describe Clusterer do
     clusters = clusterer.clusters
     clusters[:sites].should be_nil
     clusters[:clusters].should eq([
-      {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 1, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false, :alert => true, :status => false, :icon => "default", :color =>nil},
-      {:id => "1:3:4", :lat => 65.5, :lng => 120.5, :count => 2, :alert_count => 1, :min_lat => 65, :max_lat => 66, :min_lng => 120, :max_lng => 121, :highlighted=>false, :alert => true, :status => false, :icon => "default", :color =>nil}
+      {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 1, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false, :alert => true, :status => false, :icon => "default", :color =>""},
+      {:id => "1:3:4", :lat => 65.5, :lng => 120.5, :count => 2, :alert_count => 1, :min_lat => 65, :max_lat => 66, :min_lng => 120, :max_lng => 121, :highlighted=>false, :alert => true, :status => false, :icon => "default", :color =>""}
     ])
   end
 
@@ -125,7 +125,7 @@ describe Clusterer do
       clusters = clusterer.clusters
       clusters[:sites].should be_nil
       clusters[:clusters].should eq([
-        {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 1, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false, :alert => true, :status => false, :icon => "default", :color => nil}
+        {:id => "1:2:3", :lat => 20.5, :lng => 30.5, :count => 2, :alert_count => 1, :min_lat => 20, :max_lat => 21, :min_lng => 30, :max_lng => 31, :highlighted=>false, :alert => true, :status => false, :icon => "default", :color => ""}
       ])
     end
     

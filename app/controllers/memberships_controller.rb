@@ -8,9 +8,10 @@ class MembershipsController < ApplicationController
       hash
     end
     memberships = collection.memberships.includes([:user, :read_sites_permission, :write_sites_permission]).all.map do |membership|
+      user_display_name = User.generate_user_display_name membership.user
       {
         user_id: membership.user_id,
-        user_display_name: membership.user.display_name,
+        user_display_name: user_display_name,
         admin: membership.admin?,
         layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
         sites: {
@@ -72,32 +73,40 @@ class MembershipsController < ApplicationController
   end
 
   def register_new_member
+    if (params[:user][:email].strip.length == 0)
+      params[:user][:email] = User.generate_default_email
+    end
+
     params[:user][:password] = User.generate_random_password if params[:user]
-    user = User.create! params[:user] if params[:user]    
-    user.confirmed_at = Time.now
-    if user.save!
-      user = User.find_by_email params[:user][:email]
-      user.memberships.create! admin: false, user_id: user.id, collection_id: collection.id
-      membership = collection.memberships.find_by_user_id user.id
-      if membership
-        collection.layers.each do |l|
-#          membership.set_layer_access :access => true, :layer_id => l.id, :verb => "write"
-          membership.set_layer_access :access => true, :layer_id => l.id, :verb => "read"
-        end 
-      end 
+    if (User.find_all_by_phone_number(params[:user][:phone_number]).count == 0)
+      user = User.create params[:user] if params[:user]    
+      user.confirmed_at = Time.now
+      if user.save!
+        user = User.find_by_email params[:user][:email]
+        user.memberships.create! admin: false, user_id: user.id, collection_id: collection.id
+        membership = collection.memberships.find_by_user_id user.id
+        user_display_name = User.generate_user_display_name user  
+        if membership
+          collection.layers.each do |l|
+            membership.set_layer_access :access => true, :layer_id => l.id, :verb => "read"
+          end 
+        end
+        layer_memberships = collection.layer_memberships.all.inject({}) do |hash, membership|
+          (hash[membership.user_id] ||= []) << membership
+          hash
+        end
+        render json: {
+                      status: :ok, 
+                      user_id: user.id,
+                      layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}}, 
+                      user_display_name: user_display_name
+                      } 
+      else
+        render json: :unsaved
+      end
     else
-      render json: :unsaved
+      render json: {status: :phone_existed}
     end
-    layer_memberships = collection.layer_memberships.all.inject({}) do |hash, membership|
-      (hash[membership.user_id] ||= []) << membership
-      hash
-    end
-    render json: {
-                  status: :ok, 
-                  user_id: user.id,
-                  layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}}, 
-                  user_display_name: user.display_name
-                  }
   end
 
   private
