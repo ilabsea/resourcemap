@@ -62,17 +62,71 @@ class Activity < ActiveRecord::Base
      activities
   end
   
+  def self.migrate_site_activity collection_id
+    options = {
+      :id => collection_id,
+      :type => "all"
+    }
+
+    activities = search_collection(options) # search activities from criterias
+    activities = activities.select{|activity| !activity.site.nil?} # some sites were remove but there activity log still in db
+    migrate_activities(activities)   
+  end
+  
+  def self.migrate_activities activities
+    sites = {} # store unique sites from activities
+    activities.each do |activity|
+      sites[activity.site.id]  = activity.site
+    end
+    
+    sites.each do |site_id, site|
+      site_activities = activities.select{|activity| activity.site.id == site.id }
+      migrate_activities_of_site site_activities, site
+    end
+  end
+  
+  def self.migrate_activities_of_site site_activities, site
+    last_properties = site.properties
+    last_lat = site.lat
+    last_lng = site.lng
+    last_name = site.name
+
+    site_activities.each do |activity| 
+      if(activity.action == "changed")      
+            activity.data["properties"] = last_properties.dup
+            activity.data["lat"]  = last_lat
+            activity.data["lng"]  = last_lng
+            activity.data["name"] = activity.data["name"] || last_name
+            activity.save
+            
+          if(!activity.data["changes"]["lat"].nil? && !activity.data["changes"]["lat"].empty?)
+            last_lat = activity.data["changes"]["lat"][0]
+          end
+          
+          if(!activity.data["changes"]["lng"].nil? && !activity.data["changes"]["lng"].empty?)
+            last_lng = activity.data["changes"]["lng"][0]
+          end
+          
+          if(!activity.data["changes"]["properties"].nil? && !activity.data["changes"]["properties"].empty?)
+            activity.data["changes"]["properties"][0].each do |key, value|
+              last_properties[key] = value
+            end
+          end
+      end
+    end
+    site_activities
+  end
  
   
   def self.to_csv_file options, filename
     collection = Collection.find(options[:id])
     CSV.open(filename, 'w') do |csv|
-        colunm_header = [ "User",
+        colunm_header = [ 
+                         "User",
                          "Site",
                          "SiteCode",
                          "Lat",
                          "Lng",
-                         "Action",
                          "Date"                   
                          ]
                          
@@ -87,7 +141,8 @@ class Activity < ActiveRecord::Base
         column_keys.each do |key, value|
           colunm_header << value
         end
-        
+        colunm_header << "Action"
+        colunm_header << "Description"
         csv << colunm_header  
       
         
@@ -98,41 +153,39 @@ class Activity < ActiveRecord::Base
           sites[activity.site.id]  = activity.site
         end
         
-    
-        
         sites.each do |site_id, site|
           properties_row = {}         
           column_keys.each do |col_id, col_name|
              properties_row[col_id.to_s] = ""
           end
           
-          site_activities = activities.select{|activity| activity.site.id == site.id }
+          site_activities = activities.select{|activity| activity.site.id == site.id }  
           
-          site_activities.each do |activity| 
+          site_activities.each do |activity|   
              properties_row = properties_row.merge(activity.data["properties"] || {} )
              row = [
                activity.user.email,
                activity.data["name"] ,
-               site.id_with_prefix ,
+               activity.site.id_with_prefix ,
                activity.data["lat"] ,
-               activity.data["lng"] ,
-               activity.action,
+               activity.data["lng"] ,              
                activity.updated_at               
              ]            
              properties_row.each do |col_key, col_value|
                row << col_value   
              end
-           
+             
+             row << activity.action
+             row << activity.description
+             
              csv << row
           end
           
           #put 3 empty rows to separate each site
-          number_empty_row = 3
+          number_empty_row = 1
           number_empty_row.times do
             csv << Array.new(colunm_header.size){ "" }
           end
-        
-        
         end
     end
   end
