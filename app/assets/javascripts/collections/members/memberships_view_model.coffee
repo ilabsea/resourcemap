@@ -76,9 +76,7 @@ class @MembershipsViewModel
           if data.status == 'ok'
             new_member = new Membership(window.model, { user_id: data.user_id, user_display_name: data.user_display_name, layers: data.layers })
             window.model.memberships.push new_member
-            _self.showRegisterNewMember(false)
-            _self.email("")
-            _self.phoneNumber("")
+            _self.hideRegisterMembership()
             $('#member_email').val("")
           else if data.status == 'phone_existed'
             _self.phoneExiste true
