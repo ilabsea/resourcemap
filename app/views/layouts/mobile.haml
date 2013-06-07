@@ -1,5 +1,5 @@
 !!!
-%html{:manifest => "/application.manifest"}
+%html{:manifest => "/mobile.appcache"}
   %head
     %title= application_name.titleize
     - if Rails::version < '3.1'
@@ -13,7 +13,6 @@
     - if Rails::version < '3.1'
       //= stylesheet_link_tag "/stylesheets/#{application_name.underscore}.css"
     - else
-      = stylesheet_link_tag    "application"
       %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
       %link{:href => "/jquery.mobile-1.3.1.min.css", :rel => "stylesheet"}
       
