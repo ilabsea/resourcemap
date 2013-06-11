@@ -149,7 +149,7 @@ class Activity < ActiveRecord::Base
         sites = {} # store unique sites from activities
         
         activities.each do |activity|
-          sites[activity.site.id]  = activity.site
+          sites[activity.site.id]  = activity.site if activity.site
         end
         
         sites.each do |site_id, site|
@@ -158,7 +158,7 @@ class Activity < ActiveRecord::Base
              properties_row[col_id.to_s] = ""
           end
           
-          site_activities = activities.select{|activity| activity.site.id == site.id }  
+          site_activities = activities.select{|activity| (activity.site and activity.site.id == site.id) }  
           
           site_activities.each do |activity|   
              properties_row = properties_row.merge(activity.data["properties"] || {} )
