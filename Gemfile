@@ -41,7 +41,7 @@ group :test, :development do
   gem 'jasminerice'
   gem 'guard-jasmine'
   gem 'pry'
-  gem 'pry-debugger'
+  gem 'pry-debugger', '~>0.2.2'
 end
 
 group :development do
