@@ -1,0 +1,6 @@
+- if single_editing_mode
+  %input{ko(event: {change: "fileSelected"}, attr: {name: "'photo-input-'+ code", id: "'photo-input-'+ code"}), type: 'file', accept: 'image/*'}
+- else
+  %input.right.w20{ko(event: {change: "fileSelected"}, attr: {name: "'photo-input-'+ code", id: "'photo-input-'+ code"}), type: 'file', accept: 'image/*'}
+  
+
