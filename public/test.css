@@ -8,11 +8,6 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
- *= require_self
- *= require fixedheadertable
- *= require_tree .
- *= require jquery.fancybox
- *= require_fullscreen
 */
 
 .ui-autocomplete {
@@ -38,25 +33,21 @@
 }
 
 .homepage .illustration {
-  background: url("/assets/data_collection.png") no-repeat scroll 0 0 transparent;
   height: 286px;
   width: 401px;
 }
 
 .homepage .food {
-  background: url("/assets/tracking_food.jpg") no-repeat scroll 0 0 transparent;
   height: 260px;
   width: 360px;
 }
 
 .homepage .medical {
-  background: url("/assets/tracking_medical.png") no-repeat scroll 0 0 transparent;
   height: 200px;
   width: 300px;
 }
 
 .get-update {
-  background: url("/assets/get_update.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -64,7 +55,6 @@
 }
 
 .visualize-and-update {
-  background: url("/assets/visualize_and_update.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -72,7 +62,6 @@
 }
 
 .update {
-  background: url("/assets/update.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -80,7 +69,6 @@
 }
 
 .identify {
-  background: url("/assets/identify.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -88,7 +76,6 @@
 }
 
 .receive {
-  background: url("/assets/receive.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -96,7 +83,6 @@
 }
 
 .collaborate {
-  background: url("/assets/collaborate.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -104,7 +90,6 @@
 }
 
 .maintain {
-  background: url("/assets/maintain.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 48px;
   vertical-align: middle;
@@ -112,7 +97,6 @@
 }
 
 .tracking-medical-supplies {
-  background: url("/assets/tracking_medical_supplies_and_personnel.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -120,7 +104,6 @@
 }
 
 .managing-disease-prevention-supplies {
-  background: url("/assets/managing_disease_prevention_supplies.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -128,7 +111,6 @@
 }
 
 .monitoring-food-price {
-  background: url("/assets/monitoring_food_price_and_supply_levels.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -136,7 +118,6 @@
 }
 
 .testing-enviromental-health {
-  background: url("/assets/testing_enviromental_health.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -144,7 +125,6 @@
 }
 
 .client-cnm {
-  background: url("/assets/centre_nationale_de_malaria.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -152,7 +132,6 @@
 }
 
 .client-wranda-ministry-of-health {
-  background: url("/assets/rwanda_coat_of_arms.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -160,7 +139,6 @@
 }
 
 .client-CMPE {
-  background: url("/assets/Center_for_Malaria_Parasitology_and_Entomology_of_Lao_PDR.png") no-repeat scroll center top transparent;
   display: inline-block;
   height: 96px;
   vertical-align: middle;
@@ -201,14 +179,11 @@
 .settings-form label {
   padding-bottom:5px;
 }
-.rm-dialog{
+.dialog{
     display: block;
     position: fixed !important;
     top: 50%;
     left: 50%;
     z-index: 100;
     padding: 10px;
-}
-.hidden{
-    display: none;
 }

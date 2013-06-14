@@ -47,7 +47,6 @@ onCollections ->
 
       @countDownListener = google.maps.event.addDomListener @countClick, 'mousedown', listenerDownCallback
       @countUpListener = google.maps.event.addDomListener @countClick, 'mouseup', listenerUpCallback
-
       @setMarkerIcon(@div, @data.icon, @data.color, @data.alert) 
     
     draw: =>
@@ -128,7 +127,10 @@ onCollections ->
 
     setMarkerIcon:(marker, icon, color, alert) =>
       if alert
-        marker.style.backgroundImage = "url(/assets/markers/resmap_#{@alertMarker(color)}_#{icon}.png)" 
+        if status
+          marker.style.backgroundImage = "url(/assets/markers/resmap_#{@alertMarker(color)}_#{icon}.png)" 
+        else # alerted cluster but multi collections
+          marker.style.backgroundImage = "url(/assets/resmap_#{icon}.png)" 
       else
         marker.style.backgroundImage = "url(/assets/resmap_#{icon}.png)" 
 

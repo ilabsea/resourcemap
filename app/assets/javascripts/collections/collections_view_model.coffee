@@ -43,7 +43,8 @@ onCollections ->
       undefined
 
     @enterCollection: (collection) ->
-      return if !collection.checked() and @showingAlert()  
+      if @showingAlert()
+        return if !collection.checked()
       @queryParams = $.url().param()
 
       if typeof collection == 'string'
@@ -81,6 +82,10 @@ onCollections ->
 
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
+
+    @openDialog:  ->
+      $(".rm-dialog").rmDialog().show()
+      $("#rm-colllection_id").val(@currentCollection().id)
 
     @tooglefullscreen: ->
       if !@fullscreen()

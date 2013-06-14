@@ -7,8 +7,8 @@ describe Channel do
       channel.valid?.should be_true
   end
 
-  it 'should not valid when name is less than 4 characters' do 
-    channel = Channel.new name: "abc", password: "12345"
+  it 'should not valid when name is less than 3 characters' do 
+    channel = Channel.new name: "ab", password: "12345"
     channel.should_not be_valid
   end
 

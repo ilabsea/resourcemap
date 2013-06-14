@@ -2,7 +2,7 @@ class Channel < ActiveRecord::Base
   has_many :share_channels, :dependent => :destroy
   has_many :collections, :through => :share_channels
   belongs_to :user
-  validates :name, :presence => true, :length => {:minimum => 4, :maximum => 30}, :uniqueness => {:scope => :user_id}
+  validates :name, :presence => true, :length => {:minimum => 3, :maximum => 30}, :uniqueness => {:scope => :user_id}
   validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :advanced_setup
   validates :ticket_code, :presence => {:on => :create}, :if => :basic_setup
     

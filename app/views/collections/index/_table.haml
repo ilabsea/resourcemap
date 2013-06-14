@@ -98,7 +98,7 @@
 .tablebottom
   <!-- ko if: !currentSnapshot-->
   - if !current_user.is_guest
-    %button.flocation{ko(click: '$root.createSite')} Create Site
+    = render 'collections/index/create_site'
   <!-- /ko -->
 <!-- /ko -->
 <!-- /ko -->

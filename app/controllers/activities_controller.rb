@@ -30,4 +30,16 @@ class ActivitiesController < ApplicationController
       end
     end
   end
+  
+  def download
+    filename = 'download-history.csv'
+    full_path = "#{Rails.root}/tmp/" + filename
+    
+    Activity.to_csv_file(params[:collection], full_path)
+    file = File.open(full_path, "rb")
+    contents = file.read
+    send_data contents, :type => "text/csv" , :filename => filename
+  end
+  
+  
 end
