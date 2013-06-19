@@ -1,0 +1,189 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+*/
+
+.ui-autocomplete {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#container {
+  height:100%;
+}
+
+#footer-span {
+  position:relative;
+}
+
+#NavMenu ul {
+  background: transparent;
+}
+
+.refine-popup a.button.white {
+  padding: 7px 5px !important;
+}
+
+.homepage .illustration {
+  height: 286px;
+  width: 401px;
+}
+
+.homepage .food {
+  height: 260px;
+  width: 360px;
+}
+
+.homepage .medical {
+  height: 200px;
+  width: 300px;
+}
+
+.get-update {
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.visualize-and-update {
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.update {
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.identify {
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.receive {
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.collaborate {
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.maintain {
+  display: inline-block;
+  height: 48px;
+  vertical-align: middle;
+  width: 48px;
+}
+
+.tracking-medical-supplies {
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.managing-disease-prevention-supplies {
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.monitoring-food-price {
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.testing-enviromental-health {
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.client-cnm {
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.client-wranda-ministry-of-health {
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+.client-CMPE {
+  display: inline-block;
+  height: 96px;
+  vertical-align: middle;
+  width: 96px;
+}
+
+::-webkit-input-placeholder {
+  font-style: italic;
+}
+:-moz-placeholder {
+  font-style: italic;
+}
+:-ms-input-placeholder {
+  font-style: italic;
+}
+
+#export {
+  margin:0;
+  padding:2px;
+  display:inline-block;
+}
+
+#export .link {
+  color: black;
+  text-decoration:underline;
+  cursor:pointer;
+  margin:0;
+}
+
+.delete-collection-or-sites {
+  height:60px;
+}
+
+.delete-collection-or-sites .left {
+  margin-right:10px;
+}
+
+.settings-form label {
+  padding-bottom:5px;
+}
+.dialog{
+    display: block;
+    position: fixed !important;
+    top: 50%;
+    left: 50%;
+    z-index: 100;
+    padding: 10px;
+}

@@ -21,7 +21,7 @@
   %div{"data-role" => "content"}
     <!-- ko if: !currentCollection() -->
 
-    %ul{"data-role" => "listview", "data-inset" => "true"}
+    %ul{ id: "listview", "data-role" => "listview", "data-inset" => "true"}
       <!-- ko foreach: collections -->
       %li
         %a{ko(text: :name, click: '$root.createSite'), style: 'cursor: pointer;'}

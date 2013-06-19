@@ -173,3 +173,5 @@ onLayers ->
   class @Field_site extends @FieldImpl
 
   class @Field_user extends @FieldImpl
+
+  class @Field_photo extends @FieldImpl

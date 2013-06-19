@@ -10,7 +10,8 @@ module Field::Base
    { name: 'hierarchy', css_class: 'lhierarchy', small_css_class: 'shierarchy' },
    { name: 'date', css_class: 'ldate', small_css_class: 'sdate' },
    { name: 'site', css_class: 'lsite', small_css_class: 'ssite' },
-   { name: 'user', css_class: 'luser', small_css_class: 'suser' }]
+   { name: 'user', css_class: 'luser', small_css_class: 'suser' },
+   { name: 'photo', css_class: 'luser', small_css_class: 'suser' }]
 
   BaseKinds.each do |base_kind|
     class_eval %Q(def #{base_kind[:name]}?; kind == '#{base_kind[:name]}'; end)

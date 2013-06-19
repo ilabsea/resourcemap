@@ -112,10 +112,12 @@ onCollections ->
           @exitSite()
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
+      @editingSite().fillPhotos(@currentCollection())
 
       if @editingSite().id()
         @editingSite().update_site(@editingSite().toJSON(), callback)
       else
+        
         @editingSite().create_site(@editingSite().toJSON(), callback)
 
     @exitSite: ->

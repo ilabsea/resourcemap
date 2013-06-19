@@ -32,6 +32,21 @@ class SitesController < ApplicationController
 
   def create
     site_params = JSON.parse params[:site]
+    p params[:site]
+    p "***************"
+    p site_params
+    p "******************"
+
+    if params[:fileUpload] 
+      params[:fileUpload].each do |key, value|
+        #file = File.new("public/photo_field/" + key + "." + "jpg")
+        File.open("public/photo_field/" + key, "wb") do |file|
+          file.write(Base64.decode64(value))
+        end
+      end
+    end
+
+    p "5555555555555555"
     site = collection.sites.new(site_params.merge(user: current_user))
     if site.valid?
       site.save!

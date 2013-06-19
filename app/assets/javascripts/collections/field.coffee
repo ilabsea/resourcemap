@@ -7,6 +7,7 @@ onCollections ->
       @code = data.code
       @name = data.name
       @kind = data.kind
+      @photo = '' 
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
       @writeable = @originalWriteable = data?.writeable
 
@@ -192,3 +193,20 @@ onCollections ->
     exitEditing: ->
       @editing(false)
       @writeable = @originalWriteable
+
+    fileSelected: (data, event) =>
+      fileUploads = event.srcElement.files
+      if fileUploads.length >0
+
+        photoExt = fileUploads[0].name.split('.').pop()
+        value = @code + "." + photoExt 
+        @value(value)
+        
+        reader = new FileReader()
+        reader.onload = (event) =>
+          @photo = event.target.result.split(',')[1]
+          
+        reader.readAsDataURL(fileUploads[0])
+      else
+        @photo = ''
+        @value('')

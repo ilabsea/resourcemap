@@ -20,6 +20,7 @@ onCollections ->
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
+      @photos = {}
       @alert = ko.observable data?.alert
       @locationText = ko.computed
         read: =>
@@ -77,6 +78,11 @@ onCollections ->
         catch error
           $.handleAjaxError(data))
           
+    fillPhotos: (collection) =>
+      for field in collection.fields()
+        if field.kind == 'photo' & field.photo != ''
+          @photos[field.value()] = field.photo
+
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
 
@@ -136,6 +142,7 @@ onCollections ->
 
     create_site: (json, callback) =>
       data = {site: JSON.stringify json}
+      data["fileUpload"] = @photos
       $.ajax({
           type: "POST",
           url: "/collections/#{@collection.id}/sites",
