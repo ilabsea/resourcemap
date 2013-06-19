@@ -8,6 +8,7 @@ onCollections ->
       @name = data.name
       @kind = data.kind
       @photo = '' 
+      @photoPath = '/photo_field/'
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
       @writeable = @originalWriteable = data?.writeable
 
@@ -81,6 +82,8 @@ onCollections ->
       else if @kind == 'site'
         name = window.model.currentCollection()?.findSiteNameById(value)
         if value && name then name else ''
+      else if @kind == 'photo'
+        
       else
         if value then value else ''
 
@@ -199,14 +202,23 @@ onCollections ->
       if fileUploads.length >0
 
         photoExt = fileUploads[0].name.split('.').pop()
-        value = @code + "." + photoExt 
+        value = (new Date()).getTime() + "." + photoExt 
         @value(value)
         
         reader = new FileReader()
         reader.onload = (event) =>
           @photo = event.target.result.split(',')[1]
+          $("#imgUpload-" + @code).attr('src',event.target.result)
+          $("#divUpload-" + @code).show()
           
         reader.readAsDataURL(fileUploads[0])
       else
         @photo = ''
         @value('')
+
+    removeImage: => 
+      @photo = ''
+      @value('')
+      $("#" + @code).attr("value",'')
+      $("#divUpload-" + @code).hide()
+
