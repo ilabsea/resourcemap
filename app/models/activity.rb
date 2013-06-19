@@ -76,11 +76,11 @@ class Activity < ActiveRecord::Base
   def self.migrate_activities activities
     sites = {} # store unique sites from activities
     activities.each do |activity|
-      sites[activity.site.id]  = activity.site
+      sites[activity.site.id]  = activity.site if activity.site
     end
     
     sites.each do |site_id, site|
-      site_activities = activities.select{|activity| activity.site.id == site.id }
+      site_activities = activities.select{|activity| (activity.site and activity.site.id == site.id) }
       migrate_activities_of_site site_activities, site
     end
   end
