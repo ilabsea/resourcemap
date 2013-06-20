@@ -1,6 +1,7 @@
 onCollections ->
 
   class @SitesViewModel
+    $('a#previewimg').fancybox()
     @constructor: ->
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
@@ -18,7 +19,6 @@ onCollections ->
       params["collection_id"] = @currentCollection().id if @currentCollection()
 
       $('.BreadCrumb').load("/collections/breadcrumbs", params)
-
     @editingSiteLocation: ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
@@ -46,6 +46,8 @@ onCollections ->
         @currentCollection(site.collection)
 
         @loadBreadCrumb()
+
+      $('a#previewimg').fancybox()
 
     @editSiteFromId: (siteId, collectionId) ->
       site = @siteIds[siteId]
@@ -110,6 +112,8 @@ onCollections ->
         else
           @editingSite().deleteMarker()
           @exitSite()
+
+        $('a#previewimg').fancybox()
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
       @editingSite().fillPhotos(@currentCollection())
