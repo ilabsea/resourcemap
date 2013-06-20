@@ -32,13 +32,7 @@ class SitesController < ApplicationController
 
   def create
     site_params = JSON.parse params[:site]
-    if params[:fileUpload] 
-      params[:fileUpload].each do |key, value|
-        File.open("public/photo_field/" + key, "wb") do |file|
-          file.write(Base64.decode64(value))
-        end
-      end
-    end
+    Site::UploadUtils.uploadFile(params[:fileUpload])
 
     site = collection.sites.new(site_params.merge(user: current_user))
     if site.valid?
@@ -58,6 +52,7 @@ class SitesController < ApplicationController
     site.properties_will_change!
     site.attributes = site_params
     if site.valid?
+     Site::UploadUtils.uploadFile(params[:fileUpload])
       site.save!
       render json: site, :layout => false
     else

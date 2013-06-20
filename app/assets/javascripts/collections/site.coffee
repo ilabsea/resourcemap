@@ -114,6 +114,9 @@ onCollections ->
 
     update_site: (json, callback) =>
       data = {site: JSON.stringify json}
+      if JSON.stringify(@photos) != "{}"
+        data["fileUpload"] = @photos
+
       $.ajax({
           type: "PUT",
           url: "/collections/#{@collection.id}/sites/#{@id()}.json",
