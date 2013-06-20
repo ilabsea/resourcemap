@@ -1,13 +1,3 @@
-- content_for :head do
-  = google_maps_javascript_include_tag
-:javascript
-  $(function(){
-    $(document.body).delegate("form", 'submit',function(e){
-      $(this).attr("data-ajax", "false");
-    });
-  });
-
-
 #mobile-collections-main{"data-role" => "page", "data-fullscreen" => "true" }
   %div{"data-role"=> "header", "data-theme" => "c"}  
     <!-- ko if: !currentCollection() -->
@@ -20,13 +10,13 @@
     %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false" }Sign out
   %div{"data-role" => "content"}
     <!-- ko if: !currentCollection() -->
-
     %ul{ id: "listview", "data-role" => "listview", "data-inset" => "true"}
       <!-- ko foreach: collections -->
       %li
         %a{ko(text: :name, click: '$root.createSite'), style: 'cursor: pointer;'}
       <!-- /ko -->
     <!-- /ko -->
+
     -# Collection's Site
     <!-- ko if: currentCollection() -->
     = render 'mobile/collections/index/site'
