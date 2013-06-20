@@ -80,7 +80,7 @@ onCollections ->
           
     fillPhotos: (collection) =>
       for field in collection.fields()
-        if field.kind == 'photo' & field.photo != ''
+        if field.kind == 'photo' && field.value() 
           @photos[field.value()] = field.photo
 
     copyPropertiesFromCollection: (collection) =>
@@ -142,12 +142,15 @@ onCollections ->
 
     create_site: (json, callback) =>
       data = {site: JSON.stringify json}
-      data["fileUpload"] = @photos
+      if JSON.stringify(@photos) != "{}"
+        data["fileUpload"] = @photos
+
       $.ajax({
           type: "POST",
           url: "/collections/#{@collection.id}/sites",
           data: data,
           success: ((data) =>
+            @photos = {}
             for field in @collection.fields()
               field.errorMessage("")
             @propagateUpdatedAt(data.updated_at)
