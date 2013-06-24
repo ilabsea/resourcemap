@@ -205,7 +205,7 @@
                 %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
                 <!-- ko if: kind == 'photo' && hasValue() && !editing() -->
                 %a{ko(attr: {href: "photoPath + value()"}), id: "previewimg"}
-                  %img{ko(attr: {src: "photoPath + value()"}), width: "60px", style: "float: right"}
+                  %img{ko(attr: {src: "photoPath + value()"}), width: "60px", style: "vertical-align: middle; border: 2px solid #BBB;"}
                 <!-- /ko -->
                 <!-- ko if: hasValue() && !error() -->
                 <!-- ko if: writeable -->

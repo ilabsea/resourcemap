@@ -2,16 +2,16 @@
   %input{ko(event: {change: "fileSelected"}, attr: {name: :code, id: :code}), type: 'file', accept: 'image/*'}
   <!-- ko if: hasValue() -->
   %div{ko(attr: {id: "'divUpload-' + code"}), style: "position: relative "}
-    %img{ko(attr: {id: "'imgUpload-' + code", src: "photoPath + value()"}), width: "100px", style: "float: right"}
-    %img{ko(click: "removeImage"), src: "images/remove.ico", style: "position: absolute;right: 10px; top: 10px; cursor: pointer"}
+    %img{ko(attr: {id: "'imgUpload-' + code", src: "photoPath + value()"}), width: "100px", style: "float: right; border: 2px solid #BBB;"}
+    %img{ko(click: "removeImage"), src: "images/remove.ico", style: "position: absolute;right: 10px; top: 8px; cursor: pointer"}
   <!-- /ko -->
   .clear
 - else
   %input.right.w20{ko(event: {change: "fileSelected"}, attr: {name: :code, id: :code}), type: 'file', accept: 'image/*'}
   <!-- ko if: hasValue() --> 
   %div{ko(attr: {id: "'divUpload-' + code"}), style: "position: relative"}
-    %img{ko(attr: {id: "'imgUpload-' + code", src: "photoPath + value()"}), width: "100px", style: "float: right"}
-    %img{ko(click: "removeImage"), src: "images/remove.ico", style: "position: absolute;right: 10px; top: 10px; cursor: pointer"}
+    %img{ko(attr: {id: "'imgUpload-' + code", src: "photoPath + value()"}), width: "100px", style: "float: right; border: 2px solid #BBB;"}
+    %img{ko(click: "removeImage"), src: "images/remove.ico", style: "position: absolute;right: 10px; top: 8px; cursor: pointer"}
   <!-- /ko -->
   .clear
 

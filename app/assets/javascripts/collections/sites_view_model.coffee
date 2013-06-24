@@ -147,6 +147,7 @@ onCollections ->
       @loadBreadCrumb()
       @rewriteUrl()
 
+      $('a#previewimg').fancybox()
       # Return undefined because otherwise some browsers (i.e. Miss Firefox)
       # would render the Object returned when called from a 'javascript:___'
       # value in an href (and this is done in the breadcrumb links).
