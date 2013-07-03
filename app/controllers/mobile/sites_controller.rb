@@ -8,6 +8,7 @@ class Mobile::SitesController < SitesController
   def create
     begin
       site_params = JSON.parse params[:site]
+      Site::UploadUtils.uploadFile(params[:fileUpload])
       site = collection.sites.create(site_params.merge(user: current_user))
       if site.valid?
         current_user.site_count += 1

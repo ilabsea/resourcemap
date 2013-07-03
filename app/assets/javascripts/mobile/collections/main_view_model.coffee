@@ -22,4 +22,6 @@ onMobileCollections ->
     exitSite: ->
       @currentCollection(null)
       @newOrEditSite(null)
+      window.history.back()
+
 

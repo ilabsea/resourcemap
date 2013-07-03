@@ -3,12 +3,12 @@ onMobileCollections ->
     @constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
-
   
     @createSite:(collection) ->
       collection.fetchFields()
       site = new Site(collection, {})
       @newOrEditSite(site)
       @currentCollection(collection)
+      $.mobile.navigate("#site-page")
       #window.location = "/mobile/collections/" + collection.id + "/sites/new"
 

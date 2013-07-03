@@ -9,6 +9,7 @@ onMobileCollections ->
       @properties = ko.observable data?.properties
       @lat = ko.observable data?.lat
       @lng = ko.observable data?.lng
+      @photos = {}
 
       @locationValid = ko.observable(true)
       @locationText = ko.computed =>
@@ -47,6 +48,11 @@ onMobileCollections ->
           @locationValid(false)
           #x.innerHTML = "An unknown error occurred."
 
+    fillPhotos: (collection) =>
+      for field in collection.fields()
+        if field.kind == 'photo' && field.value() 
+          @photos[field.value()] = field.photo
+
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
 
@@ -71,6 +77,9 @@ onMobileCollections ->
       failed_callback = (data) =>
         failed(data) if failed && typeof(callback) == 'function'
       data = {site: JSON.stringify json}
+
+      if JSON.stringify(@photos) != "{}"
+        data["fileUpload"] = @photos
 
       if window.navigator.onLine
         console.log("Online: store now")
