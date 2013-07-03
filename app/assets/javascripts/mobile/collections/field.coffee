@@ -2,9 +2,11 @@ onMobileCollections ->
   class @Field
     constructor: (data) ->
       @esCode = "#{data.id}"
-      @code = ko.observable data.code
+      @code = data.code
       @name = data.name
       @kind = data.kind
+      @photo = '' 
+      @photoPath = '/photo_field/'
       @show = ko.observable(@isShow(data.kind))
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
       #@writeable = @originalWriteable = data?.writeable
@@ -59,6 +61,8 @@ onMobileCollections ->
       else if @kind == 'site'
         #name = window.model.currentCollection()?.findSiteNameById(value)
         #if value && name then name else ''
+      else if @kind == 'photo'
+
       else
         if value then value else ''
   
@@ -85,3 +89,29 @@ onMobileCollections ->
     isShow: (kind) =>
       return false  if kind == 'identifier' || kind == 'select_one' || kind == 'date' || kind == 'select_many' || kind == 'site' || kind == 'user'
       true
+
+    fileSelected: (data, event) =>
+      fileUploads = event.currentTarget.files
+      if fileUploads.length >0
+
+        photoExt = fileUploads[0].name.split('.').pop()
+        value = (new Date()).getTime() + "." + photoExt 
+        @value(value)
+        
+        reader = new FileReader()
+        reader.onload = (event) =>
+          @photo = event.target.result.split(',')[1]
+          $("#imgUpload-" + @code).attr('src',event.target.result)
+          $("#divUpload-" + @code).show()
+          
+        reader.readAsDataURL(fileUploads[0])
+      else
+        @photo = ''
+        @value('')
+
+    removeImage: => 
+      @photo = ''
+      @value('')
+      $("#" + @code).attr("value",'')
+      $("#divUpload-" + @code).hide()
+

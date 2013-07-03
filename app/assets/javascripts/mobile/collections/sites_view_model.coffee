@@ -10,7 +10,9 @@ onMobileCollections ->
       failed = (data) =>
         @newOrEditSite().saveFailed(true)
       @newOrEditSite().copyPropertiesFromCollection(@currentCollection())
+      @newOrEditSite().fillPhotos(@currentCollection())
       @newOrEditSite().post @newOrEditSite().toJSON(), @saveSiteCallback
+      window.history.back()
     
     @saveSiteCallback: (response) ->
       if(response.status != 201 )
@@ -18,6 +20,7 @@ onMobileCollections ->
         @newOrEditSite().errorMessage(response.message)
       else
         @currentCollection(null)
+        @newOrEditSite().photos = {}
         @newOrEditSite(null)
 
     copyPropertiesFromCollection: (collection) =>
