@@ -2,7 +2,7 @@
 %form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post, id: "siteform"}
   %div{"data-role" => "header", "data-theme" => "c"}
     %h1{ko(text: '$root.currentCollection().name')}
-    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false" }Sign out
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "nofollow", "data-ajax" => "false" }Sign out
 
   %h4{:style => "margin:0px"} New Site
   %div{"data-role" => "content"}
