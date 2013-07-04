@@ -212,3 +212,39 @@
 .hidden{
     display: none;
 }
+.lbutton{
+  background-color: transparent;
+  background-position: left top;
+  background-repeat: no-repeat;
+  height: 59px;
+  width: 59px;
+  margin: 0px 5px 0px 0px;
+  cursor: pointer;
+  border: none;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+}
+.lphoto{
+  background-image: url(/assets/fields_large_icons/photo.png);
+}
+
+a.disabled.lbutton{
+  cursor: default !important;
+}
+.lbutton:hover{
+  background-position: 0px -60px;
+}
+.lbutton:focus{
+  background-position: 0px -60px;
+}
+.lbutton:active{
+  background-position: 0px -120px;
+}
+.disabled.lbutton{
+  background-position: 0px -180px;
+}
+a.lbutton{
+  padding-top: 3px !important;
+  vertical-align: middle;
+}
