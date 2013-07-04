@@ -5,7 +5,6 @@ onMobileCollections ->
       @currentCollection = ko.observable()
   
     @createSite:(collection) ->
-      collection.fetchFields()
       site = new Site(collection, {})
       @newOrEditSite(site)
       @currentCollection(collection)
