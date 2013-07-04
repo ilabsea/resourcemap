@@ -1,11 +1,3 @@
-:javascript
-  $(function(){
-    $("#site-page").on("pagebeforeshow", function(){
-      $("#site-page").trigger("pagecreate");
-    });
-  });
-
-
 #mobile-collections-main{"data-role" => "page", "data-fullscreen" => "true" }
   %div{"data-role"=> "header", "data-theme" => "c"}  
     %h1= @title || 'My Collections'
