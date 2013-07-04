@@ -11,7 +11,7 @@
     <!-- /ko -->
     %div
       %label{:for => "basic"} Name: 
-      %input#basic{:name => "name", :type => "text", 'data-bind' => kov(value: :name, valueUpdate: :afterkey, hasfocus: true), :autofocus => true}
+      %input#basic{:name => "name", :type => "text", 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true), :autofocus => true}
       .clear
     %br     
     %div
