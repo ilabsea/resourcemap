@@ -3,9 +3,9 @@ CACHE MANIFEST
 /jquery.mobile-1.3.1.min.css
 /jquery-1.9.1.min.js
 /knockout-2.2.1.js
-/assets/custom_bindings/mobileenable.coffee
+/assets/custom_bindings/mobileenable.js
 /assets/mobile/mobilecache.js
-/assets/mobile/collections.coffee
+/assets/mobile/collections.js
 /assets/mobile/events.js
 /jquery.mobile-1.3.1.min.js
 /images/ajax-loader.gif  
