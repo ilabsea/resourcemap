@@ -4,7 +4,13 @@
     %title= application_name.titleize
     %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
     %link{:href => "/assets/jquery.mobile-1.3.1.min.css", :rel => "stylesheet"}
-    =javascript_include_tag "/assets/mobile"
+    =javascript_include_tag "/assets/jquery-1.9.1.min.js"
+    =javascript_include_tag "/assets/knockout-2.2.1.js"
+    =javascript_include_tag "custom_bindings/mobileenable"
+    =javascript_include_tag "mobile/mobilecache"
+    =javascript_include_tag "mobile/collections"
+    =javascript_include_tag "mobile/events"
+    =javascript_include_tag "/assets/jquery.mobile-1.3.1.min.js"
     %link{:href => "/images/favicon.ico", :rel => "shortcut icon", :type => "image/x-icon"}/
   %body
     = flash_message
