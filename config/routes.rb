@@ -97,7 +97,9 @@ ResourceMap::Application.routes.draw do
     get 'sites/:id' => 'sites#show', as: :site
     get 'activity' => 'activities#index', as: :activity
     resources :tokens, :only => [:index, :destroy]
-    resources :collections
+    resources :collections do
+      resources :sites
+    end
     devise_for :users, :controllers => { :sessions => 'sessions' }
   end
 

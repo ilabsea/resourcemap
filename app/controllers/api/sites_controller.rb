@@ -1,8 +1,10 @@
 class Api::SitesController < ApplicationController
   include Api::JsonHelper
 
-  before_filter :authenticate_user!
-  before_filter :authenticate_site_user!
+  # before_filter :authenticate_user!
+  # before_filter :authenticate_site_user!
+
+  skip_before_filter  :verify_authenticity_token
 
   expose(:site)
 
@@ -20,6 +22,21 @@ class Api::SitesController < ApplicationController
     respond_to do |format|
       format.rss
       format.json { render json: site_item_json(@result) }
+    end
+  end
+
+  def update
+    site.user = User.first
+    # site.properties_will_change!
+    site.name = params[:name]
+    site.lat = params[:lat]
+    site.lng = params[:lng]
+    if site.valid?
+     # Site::UploadUtils.uploadFile(params[:fileUpload])
+      site.save!
+      render json: {site: site, status: 201}
+    else
+      render json: site.errors.messages, status: :unprocessable_entity, :layout => false
     end
   end
 end
