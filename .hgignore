@@ -9,6 +9,7 @@ syntax: glob
 tmp/*
 public/assets
 .bundle
+.idea
 spec/reports
 *.swp
 *.project
