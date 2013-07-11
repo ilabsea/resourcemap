@@ -27,12 +27,10 @@ class Api::SitesController < ApplicationController
 
   def update
     site.user = User.first
-    # site.properties_will_change!
-    site.name = params[:name]
+    # site.name = params[:name]
     site.lat = params[:lat]
     site.lng = params[:lng]
     if site.valid?
-     # Site::UploadUtils.uploadFile(params[:fileUpload])
       site.save!
       render json: {site: site, status: 201}
     else
