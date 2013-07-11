@@ -1,12 +1,13 @@
 module Site::UploadUtils
   extend self
+  require 'RMagick'
 
   def uploadFile(fileHash)
-    if fileHash 
+    if fileHash
       fileHash.each do |key, value|
-        File.open("public/photo_field/" + key, "wb") do |file|
-          file.write(Base64.decode64(value))
-        end
+        img = Magick::Image::from_blob(Base64.decode64(value)).first
+        img.resize_to_fit!(800)
+        img.write("public/photo_field/" + key)
       end
     end
   end
