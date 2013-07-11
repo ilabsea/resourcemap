@@ -102,6 +102,8 @@ class SitesController < ApplicationController
 
   def destroy
     site.user = current_user
+    puts 'sssssssssssssssssssssssssssss'
+    Site::UploadUtils.purgeUploadedPhotos(site)
     site.destroy
     render json: site
   end
