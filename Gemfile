@@ -19,6 +19,7 @@ gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
 gem 'uuidtools'
 gem 'rack-offline'
+gem 'rmagick', '2.13.2'
 
 group :test do
   gem 'shoulda-matchers'

@@ -32,11 +32,11 @@ class SitesController < ApplicationController
 
   def create
     site_params = JSON.parse params[:site]
-    Site::UploadUtils.uploadFile(params[:fileUpload])
 
     site = collection.sites.new(site_params.merge(user: current_user))
     if site.valid?
       site.save!
+      Site::UploadUtils.uploadFile(params[:fileUpload])
       current_user.site_count += 1
       current_user.update_successful_outcome_status
       current_user.save!
@@ -102,6 +102,8 @@ class SitesController < ApplicationController
 
   def destroy
     site.user = current_user
+    puts 'sssssssssssssssssssssssssssss'
+    Site::UploadUtils.purgeUploadedPhotos(site)
     site.destroy
     render json: site
   end
