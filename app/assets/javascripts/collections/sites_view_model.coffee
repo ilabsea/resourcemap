@@ -96,10 +96,22 @@ onCollections ->
           site = new Site(collection, data)
           @editSite site
 
+    @showProgress: ->
+      $("#editorContent").css({opacity: 0.2})
+      $('#uploadProgress').fadeIn()
+      $("#editorContent :input").attr("disabled", true)
+
+    @hideProgress: ->
+      $("#editorContent").css({opacity: 1})
+      $('#uploadProgress').fadeOut()
+      $("#editorContent :input").removeAttr('disabled')
+
     @saveSite: ->
       return unless @editingSite().valid()
-
+      @showProgress()
       callback = (data) =>
+        @hideProgress()
+
         @currentCollection().reloadSites()
 
         @editingSite().updatedAt(data.updated_at)
