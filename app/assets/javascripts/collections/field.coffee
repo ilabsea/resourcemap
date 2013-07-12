@@ -202,8 +202,9 @@ onCollections ->
       if fileUploads.length >0
 
         photoExt = fileUploads[0].name.split('.').pop()
-        value = (new Date()).getTime() + "." + photoExt 
-        @value(value)
+        if !@value()
+          value = (new Date()).getTime() + "." + photoExt
+          @value(value)
         
         reader = new FileReader()
         reader.onload = (event) =>
