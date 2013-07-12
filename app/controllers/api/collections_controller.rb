@@ -2,8 +2,10 @@ class Api::CollectionsController < ApplicationController
   include Api::JsonHelper
   include Api::GeoJsonHelper
 
-  before_filter :authenticate_user!
+  # before_filter :authenticate_user!
   around_filter :rescue_with_check_api_docs
+
+  skip_before_filter  :verify_authenticity_token
 
   def index
     respond_to do |format|
@@ -55,6 +57,26 @@ class Api::CollectionsController < ApplicationController
   def geo_json
     @results = perform_search :page, :sort, :require_location
     render json: collection_geo_json(collection, @results)
+  end
+
+  def update_sites
+    index = 0
+    array_site_ids = params[:site_id].split(",")
+    array_user_email = params[:user_email].split(",")
+    array_site_ids.each do |el|
+      site = Site.find_by_id(el)
+      site.user = User.find_by_email(array_user_email[index])
+      site.user = User.first
+      site.lat = params[:lat]
+      site.lng = params[:lng]
+      if site.valid?
+        site.save!
+      else
+        render json: site.errors.messages, status: :unprocessable_entity, :layout => false
+      end
+      index = index + 1
+    end
+    render json: {status: 201}
   end
 
   private
@@ -131,4 +153,6 @@ class Api::CollectionsController < ApplicationController
 
     render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
   end
+
+ 
 end

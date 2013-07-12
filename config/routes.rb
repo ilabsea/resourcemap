@@ -96,8 +96,18 @@ ResourceMap::Application.routes.draw do
     get 'collections/:id/geo' => 'collections#geo_json',as: :geojson
     get 'sites/:id' => 'sites#show', as: :site
     get 'activity' => 'activities#index', as: :activity
+    # match 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', :via => :put
+    # put 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', as: :collections
     resources :tokens, :only => [:index, :destroy]
-    resources :collections
+    resources :collections do      
+      member do 
+        put 'update_sites'
+      end
+      resources :sites
+    end
+    match 'collections/:collection_id/memberships' => 'memberships#create', :via => :post
+    match 'collections/:collection_id/memberships' => 'memberships#update', :via => :put 
+    
     devise_for :users, :controllers => { :sessions => 'sessions' }
   end
 
