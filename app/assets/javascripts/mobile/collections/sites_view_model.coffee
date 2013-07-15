@@ -9,11 +9,15 @@ onMobileCollections ->
     @saveSite: (site) ->
       failed = (data) =>
         @newOrEditSite().saveFailed(true)
+      $.mobile.loading("show", {
+        text: "Saving...",
+        textVisible: true,
+        theme: "c"
+      })
       @newOrEditSite().copyPropertiesFromCollection(@currentCollection())
       @newOrEditSite().fillPhotos(@currentCollection())
       @newOrEditSite().post @newOrEditSite().toJSON(), @saveSiteCallback
-      window.history.back()
-    
+
     @saveSiteCallback: (response) ->
       if(response.status != 201 )
         @newOrEditSite().saveFailed(true)
@@ -22,6 +26,8 @@ onMobileCollections ->
         @currentCollection(null)
         @newOrEditSite().photos = {}
         @newOrEditSite(null)
+        $.mobile.loading("hide")
+        window.history.back()
 
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
