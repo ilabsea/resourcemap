@@ -11,6 +11,15 @@ module Site::UploadUtils
       end
     end
   end
+  def purgePhotos(photosToRemove)
+    path = "public/photo_field/"
+    photosToRemove.each { |photo|
+      photoFileName = path + photo
+      if File.exists?(photoFileName)
+        File.delete(photoFileName)
+      end
+    }
+  end
   def purgeUploadedPhotos(site)
     photoFields = Field.where(:collection_id => site.collection_id, :kind => 'photo')
     puts photoFields.length

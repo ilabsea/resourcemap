@@ -21,6 +21,7 @@ onCollections ->
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
       @photos = {}
+      @photosToRemove = []
       @alert = ko.observable data?.alert
       @locationText = ko.computed
         read: =>
@@ -79,9 +80,13 @@ onCollections ->
           $.handleAjaxError(data))
           
     fillPhotos: (collection) =>
+      @photo = {}
       for field in collection.fields()
-        if field.kind == 'photo' && field.value() 
-          @photos[field.value()] = field.photo
+        if field.kind == 'photo'
+          if !!field.value()
+            @photos[field.value()] = field.photo
+          if field.originalValue and !field.value()
+            @photosToRemove.push(field.originalValue)
 
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
@@ -109,13 +114,15 @@ onCollections ->
         if @properties()
           for field in collection.fields()
             value = @properties()[field.esCode]
-
             field.value(value)
 
     update_site: (json, callback) =>
       data = {site: JSON.stringify json}
       if JSON.stringify(@photos) != "{}"
         data["fileUpload"] = @photos
+
+      if @photosToRemove.length > 0
+        data["photosToRemove"] = @photosToRemove
 
       $.ajax({
           type: "PUT",

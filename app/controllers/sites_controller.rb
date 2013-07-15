@@ -36,6 +36,7 @@ class SitesController < ApplicationController
     site = collection.sites.new(site_params.merge(user: current_user))
     if site.valid?
       site.save!
+
       Site::UploadUtils.uploadFile(params[:fileUpload])
       current_user.site_count += 1
       current_user.update_successful_outcome_status
@@ -52,8 +53,11 @@ class SitesController < ApplicationController
     site.properties_will_change!
     site.attributes = site_params
     if site.valid?
-     Site::UploadUtils.uploadFile(params[:fileUpload])
       site.save!
+      Site::UploadUtils.uploadFile(params[:fileUpload])
+      if params[:photosToRemove]
+        Site::UploadUtils.purgePhotos(params[:photosToRemove])
+      end
       render json: site, :layout => false
     else
       render json: site.errors.messages, status: :unprocessable_entity, :layout => false

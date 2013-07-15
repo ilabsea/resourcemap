@@ -202,6 +202,8 @@ onCollections ->
       if fileUploads.length >0
 
         photoExt = fileUploads[0].name.split('.').pop()
+        if @originalValue and !@value()
+          @value(@originalValue)
         if !@value()
           value = (new Date()).getTime() + "." + photoExt
           @value(value)
@@ -217,7 +219,7 @@ onCollections ->
         @photo = ''
         @value('')
 
-    removeImage: => 
+    removeImage: =>
       @photo = ''
       @value('')
       $("#" + @code).attr("value",'')
