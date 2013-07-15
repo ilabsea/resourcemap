@@ -18,24 +18,28 @@ class Api::MembershipsController < ApplicationController
       end
       render :json => params[:user], :status => :ok
     else
-      render :json => params[:user], :status => 401
+      render :json => params[:user], :status => :unauthorized
     end
   end
 
   def update
     user = User.find_by_email(params["user"]["email"])
     role = params[:role]
-    if user.update_attributes!(params[:user])
-      if role == "Admin"
-        member = user.memberships.find_by_collection_id(params[:collection_id])
-        member.update_attributes! admin: false
-      elsif role == "Super Admin"
-        member = user.memberships.find_by_collection_id(params[:collection_id])
-        member.update_attributes! admin: true
+    begin
+      if user.update_attributes!(params[:user])
+        if role == "Admin"
+          member = user.memberships.find_by_collection_id(params[:collection_id])
+          member.update_attributes! admin: false
+        elsif role == "Super Admin"
+          member = user.memberships.find_by_collection_id(params[:collection_id])
+          member.update_attributes! admin: true
+        end
+        render :json => params[:user], :status => :ok
+      else
+        render :json => params[:user], :status => :unauthorized
       end
-      render :json => params[:user], :status => :ok
-    else
-      render :json => params[:user], :status => 401
+    rescue
+      render :json => params[:user], :status => :unauthorized
     end
   end
 
