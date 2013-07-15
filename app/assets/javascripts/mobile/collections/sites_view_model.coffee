@@ -6,14 +6,19 @@ onMobileCollections ->
       @showSite = ko.observable()
       @loadingSite = ko.observable()
 
-    @saveSite: (site) ->
-      failed = (data) =>
-        @newOrEditSite().saveFailed(true)
+    @handleSavingStatus: ->
       $.mobile.loading("show", {
         text: "Saving...",
         textVisible: true,
         theme: "c"
       })
+    @handleSavingFished: ->
+      $.mobile.loading("hide")
+      window.history.back()
+    @saveSite: (site) ->
+      failed = (data) =>
+        @newOrEditSite().saveFailed(true)
+      @handleSavingStatus()
       @newOrEditSite().copyPropertiesFromCollection(@currentCollection())
       @newOrEditSite().fillPhotos(@currentCollection())
       @newOrEditSite().post @newOrEditSite().toJSON(), @saveSiteCallback
@@ -26,8 +31,7 @@ onMobileCollections ->
         @currentCollection(null)
         @newOrEditSite().photos = {}
         @newOrEditSite(null)
-        $.mobile.loading("hide")
-        window.history.back()
+      @handleSavingFished()
 
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()

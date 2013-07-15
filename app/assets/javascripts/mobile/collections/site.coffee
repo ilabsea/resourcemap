@@ -98,6 +98,7 @@ onMobileCollections ->
         window.localStorage.setItem("cachedSites", JSON.stringify(cachedSites))
         window.model.currentCollection(null) 
         window.model.newOrEditSite(null)
+        window.model.handleSavingFished()
 
     copyPropertiesToCollection: (collection) =>
       collection.fetchFields =>
