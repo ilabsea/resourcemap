@@ -82,8 +82,7 @@ onCollections ->
       else if @kind == 'site'
         name = window.model.currentCollection()?.findSiteNameById(value)
         if value && name then name else ''
-      else if @kind == 'photo'
-        
+
       else
         if value then value else ''
 
