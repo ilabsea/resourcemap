@@ -14,7 +14,14 @@
       %span{ko(text: :safe_lng)}
     <!-- ko foreach: $root.currentCollection().fields() -->
     %td.padded
+      <!-- ko if: kind == 'photo' -->
+      <!-- ko if: $parent.propertyValue($data) -->
+      %img{ko(attr: {src: "photoPath + $parent.propertyValue($data)"}), width: "36px"}
+      <!-- /ko -->
+      <!-- /ko -->
+      <!-- ko if: kind != 'photo' -->
       %span{ko(attr: "{ title: $parent.highlightedPropertyValue($data) }", text: "$parent.highlightedPropertyValue($data)"), style: 'vertical-align:top'}
+      <!-- /ko -->
     <!-- /ko -->
     %td.timeago.padded{ko(attr: "{title: updatedAt}", text: :updatedAtTimeago)}
     %td.padded
