@@ -26,15 +26,15 @@ class Api::SitesController < ApplicationController
   end
 
   def update
-    site.user = User.first
-    # site.name = params[:name]
+    site = Site.find_by_id(params[:id])
     site.lat = params[:lat]
     site.lng = params[:lng]
+    properties = prepare_site_property params
+    site.properties = properties
+    site.user = User.find_by_phone_number(params[:phone_number])
     if site.valid?
       site.save!
       render json: {site: site, status: 201}
-    else
-      render json: site.errors.messages, status: :unprocessable_entity, :layout => false
     end
   end
 
@@ -51,12 +51,11 @@ class Api::SitesController < ApplicationController
     site_params.merge!("lat" => params[:lat])
     site_params.merge!("lng" => params[:lng])
     site_params.merge!("properties" => properties)
-    current_user = User.find_by_email(params[:email])
+    current_user = User.find_by_phone_number(params[:phone_number])
     collection = Collection.find_by_id(params[:collection_id])
     site = collection.sites.new(site_params.merge!(user: current_user))
     if site.valid?
       site.save!
-      # Site::UploadUtils.uploadFile(params[:fileUpload])
       current_user.site_count += 1
       current_user.update_successful_outcome_status
       current_user.save!
