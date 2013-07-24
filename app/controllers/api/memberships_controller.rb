@@ -1,5 +1,5 @@
 class Api::MembershipsController < ApplicationController
-  protect_from_forgery :except => [:create, :update]
+  protect_from_forgery :except => [:create, :update, :register_new_member]
 
   USER_NAME, PASSWORD = 'iLab', '1c4989610bce6c4879c01bb65a45ad43'
 
@@ -26,7 +26,7 @@ class Api::MembershipsController < ApplicationController
     if (params[:user][:email].strip.length == 0)
       params[:user][:email] = User.generate_default_email
     end
-
+    collection = Collection.find_by_id(params[:collection_id])
     params[:user][:password] = User.generate_random_password if params[:user]
     if (User.find_all_by_phone_number(params[:user][:phone_number]).count == 0)
       user = User.create params[:user] if params[:user]    
@@ -38,29 +38,28 @@ class Api::MembershipsController < ApplicationController
         user_display_name = User.generate_user_display_name user  
         if membership
           collection.layers.each do |l|
-            membership.set_layer_access :access => true, :layer_id => l.id, :verb => "read"
+            membership.set_layer_access :access => true, :layer_id => l.id, :verb => "write"
           end 
         end
         layer_memberships = collection.layer_memberships.all.inject({}) do |hash, membership|
           (hash[membership.user_id] ||= []) << membership
           hash
         end
-        render json: {
-                      status: :ok, 
-                      user_id: user.id,
-                      layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}}, 
-                      user_display_name: user_display_name
-                      } 
+        render :json => params[:user], :status => :ok
       else
         render json: :unsaved
-      end
+      end 
     else
       render json: {status: :phone_existed}
     end
   end
 
   def update
-    user = User.find_by_email(params["user"]["email"])
+    if (params["user"]["email"])
+      user = User.find_by_email(params["user"]["email"])
+    else
+      user = User.find_by_phone_number(params["reporter_phone"])
+    end
     role = params[:role]
     begin
       if user.update_attributes!(params[:user])
