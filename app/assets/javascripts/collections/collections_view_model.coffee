@@ -47,6 +47,8 @@ onCollections ->
         return if !collection.checked()
       @queryParams = $.url().param()
 
+      # collection may be a collection object (in most of the cases)
+      # or a string representing the collection id (if the collection is being loaded from the url)
       if typeof collection == 'string'
         collection = @findCollectionById parseInt(collection)
 
@@ -79,7 +81,7 @@ onCollections ->
 
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
-
+      window.model.updateSitesInfo()
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 

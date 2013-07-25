@@ -19,3 +19,5 @@ vendor/cache
 spec/fixtures/instant_file.xml
 dump.rdb
 vendor/bundle
+REVISION
+VERSION

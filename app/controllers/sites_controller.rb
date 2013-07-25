@@ -1,15 +1,15 @@
 class SitesController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
+  before_filter :authenticate_user!, :except => [:index, :search], :unless => Proc.new { collection && collection.public }
 
-  expose(:sites) {if current_snapshot && collection then collection.site_histories.at_date(current_snapshot.date) else collection.sites end}
+  authorize_resource :only => [:index, :search], :decent_exposure => true
+
+  expose(:sites) {if !current_user_snapshot.at_present? && collection then collection.site_histories.at_date(current_user_snapshot.snapshot.date) else collection.sites end}
   expose(:site) { Site.find(params[:site_id] || params[:id]) }
 
   def index
-    if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
-    else
-      search = collection.new_search current_user_id: current_user.id
-    end
+    search = new_search
+
     search.name_start_with params[:name] if params[:name].present?
     search.alerted_search params[:_alert] if params[:_alert] == "true"
     search.offset params[:offset]
@@ -19,11 +19,8 @@ class SitesController < ApplicationController
   end
 
   def show
-    if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
-    else
-      search = collection.new_search current_user_id: current_user.id
-    end
+    search = new_search
+
     search.id params[:id]
     # If site does not exists, return empty object
     result = search.ui_results.first['_source'] rescue {}
@@ -32,11 +29,10 @@ class SitesController < ApplicationController
 
   def create
     site_params = JSON.parse params[:site]
-
-    site = collection.sites.new(site_params.merge(user: current_user))
+    ui_attributes = prepare_from_ui(site_params)
+    site = collection.sites.new(ui_attributes.merge(user: current_user))
     if site.valid?
       site.save!
-
       Site::UploadUtils.uploadFile(params[:fileUpload])
       current_user.site_count += 1
       current_user.update_successful_outcome_status
@@ -51,7 +47,7 @@ class SitesController < ApplicationController
     site_params = JSON.parse params[:site]
     site.user = current_user
     site.properties_will_change!
-    site.attributes = site_params
+    site.attributes = prepare_from_ui(site_params)
     if site.valid?
       site.save!
       Site::UploadUtils.uploadFile(params[:fileUpload])
@@ -72,7 +68,7 @@ class SitesController < ApplicationController
     site.user = current_user
     site.properties_will_change!
 
-    site.properties[params[:es_code]] = params[:value]
+    site.properties[params[:es_code]] = field.decode_from_ui(params[:value])
     if site.valid?
       site.save!
       render json: site, :status => 200, :layout => false
@@ -106,10 +102,24 @@ class SitesController < ApplicationController
 
   def destroy
     site.user = current_user
-    puts 'sssssssssssssssssssssssssssss'
     Site::UploadUtils.purgeUploadedPhotos(site)
     site.destroy
     render json: site
   end
-  
+
+  private
+
+  def prepare_from_ui(parameters)
+    fields = collection.fields.index_by(&:es_code)
+    decoded_properties = {}
+    site_properties = parameters.delete "properties"
+    site_properties ||= {}
+    site_properties.each_pair do |es_code, value|
+      decoded_properties[es_code] = fields[es_code].decode_from_ui(value)
+    end
+
+    parameters["properties"] = decoded_properties
+    parameters
+  end
+
 end

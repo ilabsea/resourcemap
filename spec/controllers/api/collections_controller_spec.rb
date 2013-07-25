@@ -29,7 +29,7 @@ describe Api::CollectionsController do
     select_many.es_code => [1, 2],
     hierarchy.es_code => 'dad',
     site_ref.es_code => site2.id,
-    date.es_code => "2012-10-24T03:00:00.000Z",
+    date.es_code => "2012-10-24T00:00:00Z",
     director.es_code => user.email }
   }
 
@@ -163,7 +163,7 @@ describe Api::CollectionsController do
     it "should validate numeric fields in equal queries" do
       get :show, id: collection.id, format: 'csv', numeric.code => "invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid numeric value in #{numeric.name}(#{numeric.code}) field")
+      response.body.should include("Invalid numeric value in field numeric")
       get :show, id: collection.id, format: 'csv', numeric.code => "2"
       response.response_code.should be(200)
     end
@@ -171,16 +171,8 @@ describe Api::CollectionsController do
     it "should validate numeric fields in other operations" do
       get :show, id: collection.id, format: 'csv', numeric.code => "<=invalid"
       response.response_code.should be(400)
-      response.body.should include("Invalid numeric value in #{numeric.name}(#{numeric.code}) field")
+      response.body.should include("Invalid numeric value in field numeric")
       get :show, id: collection.id, format: 'csv', numeric.code => "<=2"
-      response.response_code.should be(200)
-    end
-
-    it "should validate presence of value" do
-      get :show, id: collection.id, format: 'csv', text.code => ""
-      response.response_code.should be(400)
-      response.body.should include("Missing text value")
-      get :show, id: collection.id, format: 'csv', text.code => "text"
       response.response_code.should be(200)
     end
 

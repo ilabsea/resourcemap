@@ -17,7 +17,7 @@ class Field < ActiveRecord::Base
   validates_uniqueness_of :code, :scope => :collection_id
   validates_uniqueness_of :name, :scope => :collection_id
 
-  serialize :config
+  serialize :config, MarshalZipSerializable
   serialize :metadata
 
   def self.reserved_codes
@@ -98,6 +98,27 @@ class Field < ActiveRecord::Base
 
   def history_concern_foreign_key
     'field_id'
+  end
+
+  def default_value_for_create(collection)
+    nil
+  end
+
+  def value_type_description
+    "#{kind} values"
+  end
+
+  def value_hint
+    nil
+  end
+
+  def error_description_for_invalid_values(exception)
+    "are not valid for the type #{kind}"
+  end
+
+  # Enables caching options and other info for a read-only usage
+  # of this field, so that validations and such can be performed faster.
+  def cache_for_read
   end
 
   private

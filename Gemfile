@@ -4,7 +4,7 @@ gem 'rails', '3.2.11'
 gem 'mysql2'
 gem 'devise'
 gem 'haml-rails'
-gem 'decent_exposure'
+gem 'decent_exposure', '1.0.2'
 gem "instedd-rails", '0.0.17'
 gem "breadcrumbs_on_rails"
 gem "tire"
@@ -20,6 +20,8 @@ gem 'foreman'
 gem 'uuidtools'
 gem 'rack-offline'
 gem 'rmagick', '2.13.2'
+gem 'newrelic_rpm'
+gem 'cancan'
 
 group :test do
   gem 'shoulda-matchers'
@@ -46,7 +48,8 @@ group :test, :development do
 end
 
 group :development do
-  gem 'dist', :git => 'git://github.com/manastech/dist.git'
+  gem 'dist', :git => 'https://github.com/manastech/dist.git'
+  gem 'ruby-prof', git: 'https://github.com/ruby-prof/ruby-prof.git'
 end
 
 # Gems used only for assets and not required

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec_helper'
 
 describe ImportWizard do
@@ -92,7 +93,7 @@ describe ImportWizard do
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Beds']
       csv << ["#{site1.id}", 'Foo', '1.2', '3.4', '10']
       csv << ["#{site2.id}", 'Bar', '5.6', '7.8', '20']
-      csv << ['', '', '', '']
+      csv << ['', '', '', '', '']
     end
 
     specs = [
@@ -132,7 +133,7 @@ describe ImportWizard do
     csv_string = CSV.generate do |csv|
       csv << ['resmap-id', 'Name', 'Lat', 'Lon', 'Beds']
       csv << ["", 'Foo', '1.2', '3.4', '10']
-      csv << ['', '', '', '']
+      csv << ['', '', '', '', '']
     end
 
     specs = [
@@ -241,7 +242,7 @@ describe ImportWizard do
       csv << ['Name', 'Column']
       csv << ['Foo', 'hi']
       csv << ['Bar', 'bye']
-      csv << ['', '', '', '']
+      csv << ['', '']
     end
 
     specs = [
@@ -269,7 +270,7 @@ describe ImportWizard do
       csv << ['Name', 'Column']
       csv << ['Foo', '10']
       csv << ['Bar', '20']
-      csv << ['', '', '', '']
+      csv << ['', '']
     end
 
     specs = [
@@ -297,7 +298,7 @@ describe ImportWizard do
       csv << ['Name', 'Column']
       csv << ['Foo', 'one']
       csv << ['Bar', 'two']
-      csv << ['', '', '', '']
+      csv << ['', '']
     end
 
     specs = [
@@ -320,51 +321,12 @@ describe ImportWizard do
     sites[1].properties.should eq({select_one.es_code => 2})
   end
 
-  it "imports with name and existing select_one property but creates new option" do
-    csv_string = CSV.generate do |csv|
-      csv << ['Name', 'Column']
-      csv << ['Foo', 'three']
-      csv << ['Bar', 'four']
-      csv << ['', '', '', '']
-    end
-
-    specs = [
-      {header: 'Name', use_as: 'name'},
-      {header: 'Column', use_as: 'existing_field', field_id: select_one.id},
-      ]
-
-    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
-    ImportWizard.execute user, collection, specs
-
-    collection.layers.all.should eq([layer])
-
-    select_one.reload
-    select_one.config['options'].length.should eq(4)
-
-    select_one.config['options'][2]['id'].should eq(3)
-    select_one.config['options'][2]['code'].should eq('three')
-    select_one.config['options'][2]['label'].should eq('three')
-
-    select_one.config['options'][3]['id'].should eq(4)
-    select_one.config['options'][3]['code'].should eq('four')
-    select_one.config['options'][3]['label'].should eq('four')
-
-    sites = collection.sites.all
-    sites.length.should eq(2)
-
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({select_one.es_code => 3})
-
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({select_one.es_code => 4})
-  end
-
   it "imports with name and existing select_many property" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Column']
       csv << ['Foo', 'one']
       csv << ['Bar', 'one, two']
-      csv << ['', '', '', '']
+      csv << ['', '']
     end
 
     specs = [
@@ -385,45 +347,6 @@ describe ImportWizard do
 
     sites[1].name.should eq('Bar')
     sites[1].properties.should eq({select_many.es_code => [1, 2]})
-  end
-
-  it "imports with name and existing select_many property creates new options" do
-    csv_string = CSV.generate do |csv|
-      csv << ['Name', 'Column']
-      csv << ['Foo', 'one, three']
-      csv << ['Bar', 'two, four']
-      csv << ['', '', '', '']
-    end
-
-    specs = [
-      {header: 'Name', use_as: 'name'},
-      {header: 'Column', use_as: 'existing_field', field_id: select_many.id},
-      ]
-
-    ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
-    ImportWizard.execute user, collection, specs
-
-    collection.layers.all.should eq([layer])
-
-    select_many.reload
-    select_many.config['options'].length.should eq(4)
-
-    select_many.config['options'][2]['id'].should eq(3)
-    select_many.config['options'][2]['code'].should eq('three')
-    select_many.config['options'][2]['label'].should eq('three')
-
-    select_many.config['options'][3]['id'].should eq(4)
-    select_many.config['options'][3]['code'].should eq('four')
-    select_many.config['options'][3]['label'].should eq('four')
-
-    sites = collection.sites.all
-    sites.length.should eq(2)
-
-    sites[0].name.should eq('Foo')
-    sites[0].properties.should eq({select_many.es_code => [1, 3]})
-
-    sites[1].name.should eq('Bar')
-    sites[1].properties.should eq({select_many.es_code => [2, 4]})
   end
 
   it "should update hierarchy fields in bulk update using name" do
@@ -451,7 +374,9 @@ describe ImportWizard do
       sites[1].properties.should eq({hierarchy.es_code => "101"})
   end
 
-  it "should update hierarchy fields in bulk update using id" do
+  # The updates will be performed using the hierarchy name for now
+  # but soon they this is going to change when solving Issue #459
+  pending "should update hierarchy fields in bulk update using id" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Column']
       csv << ['Foo', '100']
@@ -482,7 +407,7 @@ describe ImportWizard do
        csv << ['Name', 'Column']
        csv << ['Foo', '12/24/2012']
        csv << ['Bar', '10/23/2033']
-       csv << ['', '', '', '']
+       csv << ['', '']
      end
 
      specs = [
@@ -512,7 +437,7 @@ describe ImportWizard do
     csv_string = CSV.generate do |csv|
      csv << ['Name', 'Column']
      csv << ['Foo', '123']
-     csv << ['', '', '', '']
+     csv << ['', '']
     end
 
     specs = [
@@ -542,7 +467,7 @@ describe ImportWizard do
       select_one.es_code => 1,
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
-      date.es_code => "2012-10-24T03:00:00.000Z",
+      date.es_code => "2012-10-24T00:00:00Z",
       director.es_code => user.email
     }
     site1.properties[site.es_code] = site1.id
@@ -608,7 +533,7 @@ describe ImportWizard do
       select_one.es_code => 1,
       select_many.es_code => [1, 2],
       hierarchy.es_code => 60,
-      date.es_code => "2012-10-24T03:00:00.000Z",
+      date.es_code => "2012-10-24T00:00:00Z",
       director.es_code => user.email
     }
     site1.properties[site.es_code] = site1.id
@@ -786,22 +711,22 @@ describe ImportWizard do
     data_errors[0][:column].should eq(1)
     data_errors[0][:rows].should eq([1, 2])
 
-    data_errors[1][:description].should eq("Some option values in column 3 don't exist.")
+    data_errors[1][:description].should eq("Some of the values in column 3 don't match any existing option.")
     data_errors[1][:column].should eq(2)
     data_errors[1][:type].should eq('option values')
     data_errors[1][:rows].should eq([1, 2])
 
-    data_errors[2][:description].should eq("Some option values in column 4 don't exist.")
+    data_errors[2][:description].should eq("Some of the values in column 4 don't match any existing option.")
     data_errors[2][:column].should eq(3)
     data_errors[2][:type].should eq('option values')
     data_errors[2][:rows].should eq([1, 2])
 
-    data_errors[3][:description].should eq("Some values in column 5 don't exist in the corresponding hierarchy.")
+    data_errors[3][:description].should eq("Some of the values in column 5 don't exist in the corresponding hierarchy.")
     data_errors[3][:column].should eq(4)
     data_errors[3][:type].should eq('values that can be found in the defined hierarchy')
     data_errors[3][:rows].should eq([1, 2])
 
-    data_errors[4][:description].should eq("Some site ids in column 6 don't match any existing site in this collection.")
+    data_errors[4][:description].should eq("Some of the values in column 6 don't match any existing site id in this collection.")
     data_errors[4][:column].should eq(5)
     data_errors[4][:rows].should eq([1, 2])
 
@@ -810,7 +735,7 @@ describe ImportWizard do
     data_errors[5][:type].should eq('dates')
     data_errors[5][:rows].should eq([1, 2])
 
-    data_errors[6][:description].should eq("Some email addresses in column 8 don't belong to any member of this collection.")
+    data_errors[6][:description].should eq("Some of the values in column 8 don't match any email address of a member of this collection.")
     data_errors[6][:column].should eq(7)
     data_errors[6][:type].should eq('email addresses')
     data_errors[6][:rows].should eq([1, 2])
@@ -908,31 +833,27 @@ describe ImportWizard do
     sites_errors[:existing_label].should eq({})
 
     data_errors = sites_errors[:data_errors]
-    data_errors.length.should eq(6)
+    data_errors.length.should eq(5)
 
     data_errors[0][:description].should eq("Some of the values in column 2 are not valid for the type numeric.")
     data_errors[0][:column].should eq(1)
     data_errors[0][:rows].should eq([1, 2])
 
-    data_errors[1][:description].should eq("Hierarchy fields can only be created via web in the Layers page.")
-    data_errors[1][:column].should eq(4)
-    data_errors[1][:rows].should eq([0, 1, 2])
+    data_errors[1][:description].should eq("Some of the values in column 6 don't match any existing site id in this collection.")
+    data_errors[1][:column].should eq(5)
+    data_errors[1][:rows].should eq([1])
 
-    data_errors[2][:description].should eq("Some site ids in column 6 don't match any existing site in this collection.")
-    data_errors[2][:column].should eq(5)
-    data_errors[2][:rows].should eq([1])
+    data_errors[2][:description].should eq("Some of the values in column 7 are not valid for the type date.")
+    data_errors[2][:column].should eq(6)
+    data_errors[2][:rows].should eq([1, 2])
 
-    data_errors[3][:description].should eq("Some of the values in column 7 are not valid for the type date.")
-    data_errors[3][:column].should eq(6)
-    data_errors[3][:rows].should eq([1, 2])
+    data_errors[3][:description].should eq("Some of the values in column 8 don't match any email address of a member of this collection.")
+    data_errors[3][:column].should eq(7)
+    data_errors[3][:rows].should eq([1])
 
-    data_errors[4][:description].should eq("Some email addresses in column 8 don't belong to any member of this collection.")
-    data_errors[4][:column].should eq(7)
-    data_errors[4][:rows].should eq([1])
-
-    data_errors[5][:description].should eq("Some of the values in column 9 are not valid for the type email.")
-    data_errors[5][:column].should eq(8)
-    data_errors[5][:rows].should eq([1, 2])
+    data_errors[4][:description].should eq("Some of the values in column 9 are not valid for the type email.")
+    data_errors[4][:column].should eq(8)
+    data_errors[4][:rows].should eq([1, 2])
 
     ImportWizard.delete_file(user, collection)
   end
@@ -952,13 +873,13 @@ describe ImportWizard do
       {header: 'Text', use_as: 'new_field', kind: 'text', code: 'text', label: 'Non Existing field'},
     ]
 
-    expect {ImportWizard.validate_columns_does_not_exist_in_collection collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with code 'text' already exists in the layer named #{layer.name}")
+    expect {ImportWizard.execute_with_entities(user, collection, column_spec)}.to raise_error(RuntimeError, "Can't save field from column Text: A field with code 'text' already exists in the layer named #{layer.name}")
 
     column_spec = [
      {header: 'Text', use_as: 'new_field', kind: 'text', code: 'newtext', label: 'Existing field'},
     ]
 
-    expect {ImportWizard.validate_columns_does_not_exist_in_collection collection, column_spec}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
+    expect {ImportWizard.execute_with_entities(user, collection, column_spec)}.to raise_error(RuntimeError, "Can't save field from column Text: A field with label 'Existing field' already exists in the layer named #{layer.name}")
 
     ImportWizard.delete_file(user, collection)
   end
@@ -1038,8 +959,8 @@ describe ImportWizard do
       end
 
      column_specs = [
-       {header: 'Column 1', use_as: 'new_field', "#{value}" => "repeated" },
-       {header: 'Column 2', use_as: 'new_field', "#{value}" => "repeated" }
+       {header: 'Column 1', use_as: 'new_field', kind: 'select_one', "#{value}" => "repeated" },
+       {header: 'Column 2', use_as: 'new_field', kind: 'select_one', "#{value}" => "repeated" }
        ]
 
       ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
@@ -1068,8 +989,8 @@ describe ImportWizard do
       end
 
        column_specs = [
-         {header: 'Column 1', use_as: 'new_field', "#{value}" => "repeated" },
-         {header: 'Column 2', use_as: 'new_field', "#{value}" => "repeated" }
+         {header: 'Column 1', use_as: 'new_field', kind: 'select_one', "#{value}" => "repeated" },
+         {header: 'Column 2', use_as: 'new_field', kind: 'select_one', "#{value}" => "repeated" }
          ]
 
       ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
@@ -1276,4 +1197,94 @@ describe ImportWizard do
 
   end
 
+  it "shouldn't fail with blank lines at the end" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', 'Lat', 'Lon', 'Beds']
+      csv << ['Foo', '1.2', '3.4', '10']
+      csv << ['Bar', '5.6', '7.8', '20']
+      csv << []
+      csv << []
+      csv << []
+    end
+
+    specs = [
+      {header: 'Name', use_as: 'name'},
+      {header: 'Lat', use_as: 'lat'},
+      {header: 'Lon', use_as: 'lng'},
+      {header: 'Beds', use_as: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
+      ]
+
+    ImportWizard.import user, collection, 'foo.csv', csv_string
+    ImportWizard.mark_job_as_pending user, collection
+
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    sites_errors = (ImportWizard.validate_sites_with_columns user, collection, column_spec)[:errors]
+    # do nothing (the test is that it shouldn't raise)
+  end
+
+  it "should not import files with invalid extension" do
+    File.open("example.txt", "w") do |f|
+      f.write("one, two")
+    end
+    expect { ImportWizard.import user, collection, 'example.txt', "one, two" }.to raise_error
+  end
+
+  it "should not import malformed csv files" do
+    csv_string = CSV.generate do |csv|
+      csv << ['Name', '2']
+      csv << ['Foo', '1.2', '3.4', '10']
+    end
+    expect { ImportWizard.import user, collection, 'foo.csv', csv_string }.to raise_error
+  end
+
+  it "should not fail when there is latin1 characters" do
+    csv_string = CSV.open("utf8.csv", "wb", encoding: "ISO-8859-1") do |csv|
+      csv << ["é", "ñ", "ç", "ø"]
+      csv << ["é", "ñ", "ç", "ø"]
+    end
+
+    specs = [
+      {header: 'é', use_as: 'name'},
+      {header: 'ñ', use_as: 'new_field', kind: 'text', code: 'text1', label: 'text 1'},
+      {header: 'ç', use_as: 'new_field', kind: 'text', code: 'text2', label: 'text 2'},
+      {header: 'ø', use_as: 'new_field', kind: 'text', code: 'text3', label: 'text 3'}
+      ]
+
+    expect { ImportWizard.import user, collection, 'utf8.csv', csv_string }.to_not raise_error
+    expect { ImportWizard.mark_job_as_pending user, collection }.to_not raise_error
+    expect { column_spec = ImportWizard.guess_columns_spec user, collection}.to_not raise_error
+    column_spec = ImportWizard.guess_columns_spec user, collection
+    expect {ImportWizard.validate_sites_with_columns user, collection, column_spec}.to_not raise_error
+  end
+
+  describe 'updates' do
+    it 'only some fields of a valid site in a collection with one or more select one fields' do
+      # The collection has a valid site before the import
+      site1 = collection.sites.make name: 'Foo old', properties: {text.es_code => 'coco', select_one.es_code => 1}
+
+      # User uploads a CSV with only the resmap-id, name and text fields set.
+      # At the time of writing (1 Jul 2013), this causes the import to fail.
+      csv_string = CSV.generate do |csv|
+        csv << ['resmap-id', 'Name', text.name]
+        csv << [site1.id, 'Foo old', 'coco2']
+      end
+
+      specs = [
+        {header: 'resmap-id', use_as: :id},
+        {header: 'Name', use_as: 'name'},
+        {header: text.name , use_as: 'existing_field', field_id: text.id},
+      ]
+
+      ImportWizard.import user, collection, 'foo.csv', csv_string
+      ImportWizard.mark_job_as_pending user, collection
+
+      ImportWizard.execute user, collection, specs
+      sites = collection.sites.all
+      sites.length.should eq(1)
+
+      sites[0].name.should eq('Foo old')
+      sites[0].properties[text.es_code].should eq('coco2')
+      sites[0].properties[select_one.es_code].should eq(1)
+    end
+  end
 end

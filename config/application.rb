@@ -63,6 +63,8 @@ module ResourceMap
 
     config.action_mailer.delivery_method = :sendmail
     config.google_analytics = 'UA-17030081-1'
-    config.version_name = File.read('REVISION').strip rescue 'Development'
+
+    config.version_name = File.read('VERSION').strip rescue "Development"
+    config.revision = File.read('REVISION').strip rescue "Development"
   end
 end

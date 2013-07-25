@@ -20,7 +20,7 @@
     %h2 Layers
     %p Manage layers and fields of this collection's sites
 
-    - if current_snapshot
+    - if !current_user_snapshot.at_present?
       = render '/current_snapshot_message'
 
     %br/
@@ -77,17 +77,18 @@
                 - Field::BaseKinds.clone.concat(Field::plugin_kinds.map{|k,v| v}).in_groups_of(6).each do |field_row|
                   .feditor-field-type-row
                   - field_row.compact.each do |field|
-                    %span{ko(click: "function() { $root.newField('#{field[:name]}') }")}
-                      %button{ style: "margin-left:10px; margin-bottom:4px;", class: field[:css_class], title: "Add new #{field[:name].titleize.downcase} field" }
-                      %br/
-                      = field[:name].titleize
+                    - if field
+                      %span{ko(click: "function() { $root.newField('#{field[:name]}') }")}
+                        %button{ style: "margin-left:10px; margin-bottom:4px;", class: field[:css_class], title: "Add new #{field[:name].titleize.downcase} field" }
+                        %br/
+                        = field[:name].titleize
                   %br/
                   %br/
 
         = render 'layers/field_editor'
 
       %hr/
-      - if !current_snapshot
+      - if current_user_snapshot.at_present?
         .bottom-actions
           / ko if: $root.savingLayer()
           Saving layer, please wait...
@@ -109,7 +110,7 @@
         -#%em{ko(visible: :public)} Public layer
         -#%em{ko(visible: '!public()')} Private layer
 
-      - if !current_snapshot
+      - if current_user_snapshot.at_present?
         .rightbuttons
           / ko if: !$root.savingLayer() && !$root.currentLayer()
           .btupdn
@@ -117,7 +118,7 @@
             %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'}), title: 'Move layer down'}
           / /ko
           / ko if: !$root.savingLayer() && !$root.currentLayer()
-          - if !current_snapshot && collection_admin?
+          - if current_user_snapshot.at_present? && collection_admin?
             %button.fdelete{ko(click: '$root.deleteLayer'), title: 'Remove layer'}
           / /ko
 
@@ -126,7 +127,7 @@
         %div{ko(attr: {class: 'iconClass()'}, text: :name), :style => 'line-height:21px;color:black;'}
         //ko
 
-      - if !current_snapshot && collection_admin?
+      - if current_user_snapshot.at_present? && collection_admin?
         /ko if: !$root.savingLayer()
         %button.farrow{ko(click: '$root.editLayer'), style:'margin-bottom:0px;margin-top:0px', title: 'Edit layer'} Edit
         //ko
@@ -135,7 +136,7 @@
     %br/
     //ko
 
-    - if !current_snapshot && collection_admin?
+    - if current_user_snapshot.at_present? && collection_admin?
       /ko if: !savingLayer()
       -# New layer link
       .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none;'}

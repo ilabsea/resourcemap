@@ -7,14 +7,10 @@ class Api::SitesController < ApplicationController
   skip_before_filter  :verify_authenticity_token
 
   expose(:site)
+  expose(:collection) { site.collection }
 
   def show
-    current_snapshot = site.collection.snapshot_for(current_user)
-    if current_snapshot
-      search = site.collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
-    else
-      search = site.collection.new_search current_user_id: current_user.id
-    end
+    search = new_search
 
     search.id(site.id)
     @result = search.api_results[0]
