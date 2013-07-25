@@ -11,6 +11,7 @@ set :user, 'ubuntu'
 set :group, 'ubuntu'
 set :deploy_via, :remote_cache
 set :branch, `hg branch`.strip
+
 default_run_options[:pty] = true
 default_environment['TERM'] = ENV['TERM']
 
@@ -27,6 +28,10 @@ namespace :deploy do
     %W(settings.yml google_maps.key nuntium.yml).each do |file|
       run "ln -nfs #{shared_path}/#{file} #{release_path}/config/"
     end
+  end
+
+  task :generate_revision_and_version do
+    run "cd #{current_path} && rake deploy:generate_revision_and_version RAILS_ENV=production"
   end
 end
 
@@ -60,4 +65,7 @@ before "deploy:restart", "deploy:migrate"
 after "deploy:update_code", "deploy:symlink_configs"
 
 after "deploy:update", "foreman:export"    # Export foreman scripts
+
+after "deploy:update", "deploy:generate_revision_and_version"
+
 after "deploy:restart", "foreman:restart"   # Restart application scripts

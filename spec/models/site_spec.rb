@@ -24,7 +24,7 @@ describe Site do
   let(:desk) { layer.text_fields.make name: 'desk'  }
   let(:creation) { layer.date_fields.make name: 'creation'}
 
-  let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '2012-09-22T03:00:00.000Z' } }
+  let(:site) { collection.sites.make properties: { room.id.to_s => '50', desk.id.to_s => 'bla bla', creation.id.to_s => '2012-09-22T00:00:00Z' } }
 
   it "return as a hash of field_name and its value" do
     site.human_properties.should eq({'room' => 50, 'desk' => 'bla bla', 'creation' => '09/22/2012' })
@@ -64,4 +64,12 @@ describe Site do
     Site.get_id_and_name([site.id]).should eq([{'id' => site.id, 'name' => site.name}])
   end
 
+  it "should save without problems after field is deleted" do
+    site # This line is needed because let(:site) is lazy
+
+    room.destroy
+
+    site.properties = site.properties
+    site.save!
+  end
 end

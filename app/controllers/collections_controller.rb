@@ -1,7 +1,22 @@
 class CollectionsController < ApplicationController
-  before_filter :current_user_or_guest, :only => [:index]
-  before_filter :authenticate_user!
-  before_filter :authenticate_collection_admin!, :only => [:destroy, :create_snapshot]
+
+  before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
+  before_filter :authenticate_user!, :except => [:render_breadcrumbs], :unless => Proc.new { collection && collection.public }
+
+  authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
+
+  expose(:collections) {
+    if current_user && !current_user.is_guest
+      # public collections are accesible by all users
+      # here we only need the ones in which current_user is a member
+      current_user.collections.reject{|c| c.id.nil?}
+    else
+      Collection.accessible_by(current_ability)
+    end
+  }
+
+  expose(:collections_with_snapshot) { select_each_snapshot(collections) }
+
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
   before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
@@ -12,24 +27,16 @@ class CollectionsController < ApplicationController
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
-      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if !current_user.is_guest
+      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
       respond_to do |format|
         format.html
-        collections_with_snapshot = []
-        collections.all.each do |collection|
-          attrs = collection.attributes
-          attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
-          attrs["is_admin"] = collection.memberships.find_by_user_id(current_user.id).admin
-          attrs["layers"] = collection.visible_layers_for(current_user)
-          collections_with_snapshot = collections_with_snapshot + [attrs]
-        end
-        format.json {render json: collections_with_snapshot }
+        format.json { render json: collections_with_snapshot }
       end
     end
   end
 
   def render_breadcrumbs
-    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if !current_user.is_guest
+    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
     if params.has_key? :collection_id
       add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
@@ -57,20 +64,6 @@ class CollectionsController < ApplicationController
 
   def update
     if collection.update_attributes params[:collection]
-
-      if collection.public
-        u = User.find_by_email 'guest@resourcemap.org'
-        guest_user = if (u != nil)
-          u
-        else
-           u = User.new(email: 'guest@resourcemap.org', password: 'guest_resourcemap', is_guest: true)
-           u.skip_confirmation!
-           u.save
-           u
-        end
-        guest_user.register_guest_membership(collection.id)
-      end
-
       collection.recreate_index
       redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
     else
@@ -127,45 +120,50 @@ class CollectionsController < ApplicationController
     if @snapshot.valid?
       redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} created"
     else
-      flash.now[:error] = "Snapshot could not be created"
-      render :show
+      flash[:error] = "Snapshot could not be created: #{@snapshot.errors.to_a.join ", "}"
+      redirect_to collection_path(collection)
     end
   end
 
   def unload_current_snapshot
-    current_snapshot && current_snapshot.user_snapshots.where(user_id: current_user.id).first.destroy
+    loaded_snapshot = current_user_snapshot.snapshot
+    current_user_snapshot.go_back_to_present!
 
     respond_to do |format|
       format.html {
-        flash[:notice] = "Snapshot #{current_snapshot.name} unloaded" if current_snapshot
+        flash[:notice] = "Snapshot #{loaded_snapshot.name} unloaded" if loaded_snapshot
         redirect_to  collection_path(collection) }
       format.json { render json: :ok }
     end
   end
 
   def load_snapshot
-    snp_to_load = collection.snapshots.where(name: params[:name]).first
-    if snp_to_load.user_snapshots.create user: current_user
+    if current_user_snapshot.go_to!(params[:name])
       redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} loaded"
     end
-
   end
 
   def max_value_of_property
     render json: collection.max_value_of_property(params[:property])
   end
 
-  def sites_by_term
-    if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
-    else
-      search = collection.new_search current_user_id: current_user.id
+  def select_each_snapshot(collections)
+    collections_with_snapshot = []
+    collections.each do |collection|
+      attrs = collection.attributes
+      # If user is guest (=> current_user will be nil) she will not be able to load a snapshot. At least for the moment
+      attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name) rescue nil
+      collections_with_snapshot = collections_with_snapshot + [attrs]
     end
+    collections_with_snapshot
+  end
+
+  def sites_by_term
+    search = new_search
 
     search.full_text_search params[:term] if params[:term]
     search.alerted_search params[:_alert] if params[:_alert] 
     search.select_fields(['id', 'name'])
-
     search.apply_queries
 
     results = search.results.map{ |item| item["fields"]}
@@ -178,12 +176,8 @@ class CollectionsController < ApplicationController
   end
 
   def search
+    search = new_search
 
-    if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
-    else
-      search = collection.new_search current_user_id: current_user.id
-    end
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search]
     search.offset params[:offset]
@@ -281,5 +275,24 @@ class CollectionsController < ApplicationController
     channel = collection.channels.first
     SmsNuntium.notify_sms [params[:phone_number]], "Your single-use Resource Map pin code is #{random_code}", channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
     render json: {status: 200, secret_code: random_code}
+  end
+
+  def sites_info
+    options = new_search_options
+
+    total = collection.new_tire_count(options).value
+    no_location = collection.new_tire_count(options) do
+      filtered do
+        query { all }
+        filter :not, exists: {field: :location}
+      end
+    end.value
+
+    info = {}
+    info[:total] = total
+    info[:no_location] = no_location > 0
+    info[:new_site_properties] = collection.new_site_properties
+
+    render json: info
   end
 end

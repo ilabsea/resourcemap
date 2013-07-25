@@ -196,7 +196,7 @@ describe Activity do
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => 'Foo', 'changes' => {'name' => ['Foo', 'Bar']}},
+        'data' => {'name' => 'Foo', 'changes' => {'name' => ['Foo', 'Bar']}, 'lat' => 10.0, 'lng' => 20.0, 'properties' => {beds.es_code => 20}},
         'description' => "Site 'Foo' was renamed to 'Bar'"
     end
 

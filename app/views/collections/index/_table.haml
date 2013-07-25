@@ -34,8 +34,7 @@
 <!-- ko with: currentCollection -->
 .tableheader.expanded{style: 'height:34px;'}
   %div
-    - if !current_user.is_guest
-      %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
+    %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
     %span
     %span{ko(text: :name)}
     - if !current_user.is_guest
@@ -97,7 +96,7 @@
   <!-- /ko -->
 .tablebottom
   <!-- ko if: !currentSnapshot-->
-  - if !current_user.is_guest
+  - if can? :create, Site
     = render 'collections/index/create_site'
   <!-- /ko -->
 <!-- /ko -->

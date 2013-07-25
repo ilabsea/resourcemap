@@ -59,6 +59,8 @@ ResourceMap::Application.routes.draw do
     get 'search'
     post 'decode_hierarchy_csv'
 
+    get 'sites_info'
+
     resource :import_wizard, only: [] do
        get 'index'
        post 'upload_csv'
@@ -69,7 +71,10 @@ ResourceMap::Application.routes.draw do
        get 'get_visible_sites/:page' => 'import_wizards#get_visible_sites'
        get 'import_in_progress'
        get 'import_finished'
+       get 'import_failed'
        get 'job_status'
+       get 'cancel_pending_jobs'
+       get 'logs'
      end
   end
 

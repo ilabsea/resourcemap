@@ -2,8 +2,13 @@ onCollections ->
   class @MapViewModel
     @constructor: ->
       @showingMap = ko.observable(true)
-      @sitesCount = ko.observable(0)
-      @sitesCountText = ko.computed => if @sitesCount() == 1 then '1 site' else "#{@sitesCount()} sites"
+      @mapSitesCount = ko.observable(0)
+      @mapSitesCountText = ko.computed =>
+        sitesText = if @mapSitesCount() == 1 then "site" else "sites"
+        if @currentCollection()
+          "Viewing #{@mapSitesCount()} #{sitesText} out of #{@sitesCount()}"
+        else
+          "Viewing #{@mapSitesCount()} #{sitesText}"
 
       @sitesChangedListeners = []
 
@@ -127,7 +132,7 @@ onCollections ->
           @ghostMarkers = @drawOriginalGhost data.original_ghost
           @reloadMapSitesAutomatically = true
           @adjustZIndexes()
-          @updateSitesCount()
+          @updateMapSitesCount()
           @notifySitesChanged()
 
         callback() if callback && typeof(callback) == 'function'
@@ -332,8 +337,8 @@ onCollections ->
            '_target'
         else
           ''
-    # will removed it as soon as possible 
-    # we changed color code but on ES not change so we need this method 
+    # will removed it as soon as possible
+    # we changed color code but on ES not change so we need this method
     @alertMarker: (color_code) ->
       switch color_code
         when '#b30b0b'
@@ -404,7 +409,7 @@ onCollections ->
       for clusterId, cluster of @clusters
         cluster.adjustZIndex()
 
-    @updateSitesCount: ->
+    @updateMapSitesCount: ->
       count = 0
       bounds = @map.getBounds()
       for siteId, marker of @markers
@@ -414,7 +419,7 @@ onCollections ->
         if bounds.contains cluster.position
           count += cluster.count
       count += 1 if @selectedSite()
-      @sitesCount count
+      @mapSitesCount count
 
     @showTable: ->
       @queryParams = $.url().param()

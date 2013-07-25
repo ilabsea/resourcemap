@@ -3,9 +3,8 @@ require 'spec_helper'
 describe CollectionsController do
   include Devise::TestHelpers
   render_views
-  let!(:guest_user) { User.make is_guest: true }
   let!(:user) { User.make }
-  let!(:collection) { user.create_collection(Collection.make public: true) }
+  let!(:collection) { user.create_collection(Collection.make public: false) }
 
   before(:each) {sign_in user}
 
@@ -78,31 +77,96 @@ describe CollectionsController do
       json[0]["name"].should eq(@site2.name)
       json[0]["value"].should eq(@site2.name)
     end
+  end
+
+  describe "Permissions" do
+    let!(:public_collection) { user.create_collection(Collection.make public: true) }
+    let!(:not_member) { User.make }
+    let!(:member) { User.make }
+
+
+    before(:each) do
+      sign_out user
+      collection.memberships.create! :user_id => member.id, admin: false
+      public_collection.memberships.create! :user_id => member.id, admin: false
+    end
+
+    it 'should return forbidden in delete if user tries to delete a collection of which he is not member'  do
+      sign_in not_member
+      delete :destroy, id: collection.id
+      response.status.should eq(403)
+      delete :destroy, id: public_collection.id
+      response.status.should eq(403)
+    end
+
+    it 'should return forbidden on delete if user is not collection admin' do
+      sign_in member
+      delete :destroy, collection_id: collection.id
+      response.status.should eq(403)
+      delete :destroy, id: public_collection.id
+      response.status.should eq(403)
+    end
+
+    it 'should return forbidden on create_snapshot if user is not collection admin' do
+      sign_in member
+      post :create_snapshot, collection_id: public_collection.id, snapshot: {name: 'my snapshot'}
+      response.status.should eq(403)
+      post :create_snapshot, collection_id: collection.id, snapshot: {name: 'my snapshot'}
+      response.status.should eq(403)
+    end
 
   end
 
   describe "analytic" do 
     it 'should changed user.collection_count by 1' do
-      expect{ 
+      expect{
         post :create, collection: { name: 'collection_1', icon: 'default'}
       }.to change{
         u = User.find user
         u.collection_count
       }.from(0).to(1)
-   
+
     end
   end
 
   describe "public access" do
+    let!(:public_collection) { user.create_collection(Collection.make public: true) }
     before(:each) { sign_out :user }
-    it 'should login as guest automatically with passed parameter collection' do
-      get :index, collection: collection.id
+
+    it 'should get index as guest' do
+      get :index, collection_id: public_collection.id
       response.should be_success
     end
 
-    it 'should login failed without passed parameter collection' do
+    it 'should not get index if collection_id is not passed' do
       get :index
       response.should_not be_success
     end
   end
+
+  describe "sites info"  do
+    it "gets when all have location" do
+      collection.sites.make
+      collection.sites.make
+
+      get :sites_info, collection_id: collection.id
+
+      info = JSON.parse response.body
+      info["total"].should eq(2)
+      info["no_location"].should be_false
+    end
+
+    it "gets when some have no location" do
+      collection.sites.make
+      collection.sites.make
+      collection.sites.make lat: nil, lng: nil
+
+      get :sites_info, collection_id: collection.id
+
+      info = JSON.parse response.body
+      info["total"].should eq(3)
+      info["no_location"].should be_true
+    end
+  end
+
 end
