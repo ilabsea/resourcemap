@@ -102,6 +102,7 @@ ResourceMap::Application.routes.draw do
     resources :collections do      
       member do 
         put 'update_sites'
+        get 'get_fields'
       end
       resources :sites
     end
