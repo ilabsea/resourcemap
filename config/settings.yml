@@ -1,4 +1,4 @@
-mobile_id: off
+mobile_id: on
 host: localhost:3000
 
 plugins:
