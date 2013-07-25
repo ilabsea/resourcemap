@@ -19,7 +19,7 @@
               <!-- ko if: currentSnapshot -->
               .snapshot_on.right{style: 'padding-right:0'}
                 .i18g-snapshot
-                %button.farrow{ko(click: '$root.enterCollection'), type: :button,  style: 'float:none'}
+                %button.farrow{ko(click: '$root.enterCollection'), type: :button, style: 'float:none'}
               .clear
               <!-- /ko -->
               <!-- ko if: !currentSnapshot -->
@@ -71,7 +71,7 @@
       %span{ko(text: :name)}
       - #if can? :show, collection
       - if current_user && !current_user.is_guest
-        %button.fconfiguration.right{ko(click: '$root.editCollection', visible: :isAdmin), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+        %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
     .tablescroll.sites
