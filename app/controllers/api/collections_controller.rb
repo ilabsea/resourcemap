@@ -79,6 +79,20 @@ class Api::CollectionsController < ApplicationController
     render json: {status: 201}
   end
 
+  def get_fields
+    fields = Collection.find(params[:id]).fields
+    list = []
+    fields.each do |f|
+      obj = {}
+      obj["code"] = f.code
+      obj["id"] = f.id
+      obj["name"] = f.name
+      obj["options"] = f.config["options"]
+      list.push obj
+    end
+    render :json => list.to_json
+  end
+
   private
 
   def perform_search(*options)
@@ -143,7 +157,7 @@ class Api::CollectionsController < ApplicationController
 
   def rescue_with_check_api_docs
     yield
-  rescue => ex
+    rescue => ex
 
     Rails.logger.info ex.message
     Rails.logger.info ex.backtrace
@@ -151,5 +165,4 @@ class Api::CollectionsController < ApplicationController
     render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
   end
 
- 
 end
