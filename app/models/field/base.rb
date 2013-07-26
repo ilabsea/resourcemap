@@ -44,7 +44,7 @@ module Field::Base
   end
 
   def allow_decimals?
-    config && config.with_indifferent_access[:allows_decimals] == "true"
+    config && (config[:allows_decimals] == "true" || config["allows_decimals"] == "true")
   end
 
   def strongly_type(value)
@@ -116,7 +116,7 @@ module Field::Base
     elsif numeric?
       value = -39.2
     elsif date?
-      value = Site.format_date_iso_string(Site.parse_date('4/23/1851'))
+      value = Field::DateField.new.decode('4/23/1851')
     elsif user?
       return '' if user.nil?
       value = user.email

@@ -28,6 +28,11 @@ onCollections ->
         pos = @originalSiteLocation = @map.getCenter()
         site = new Site(@currentCollection(), lat: pos.lat(), lng: pos.lng())
         site.copyPropertiesToCollection(@currentCollection())
+        if window.model.newSiteProperties
+          for esCode, value of window.model.newSiteProperties
+            field = @currentCollection().findFieldByEsCode esCode
+            field.setValueFromSite(value) if field
+
         @unselectSite()
         @editingSite site
         @editingSite().startEditLocationInMap()
@@ -126,6 +131,7 @@ onCollections ->
           @exitSite()
 
         $('a#previewimg').fancybox()
+        window.model.updateSitesInfo()
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
       @editingSite().fillPhotos(@currentCollection())
@@ -133,7 +139,6 @@ onCollections ->
       if @editingSite().id()
         @editingSite().update_site(@editingSite().toJSON(), callback)
       else
-        
         @editingSite().create_site(@editingSite().toJSON(), callback)
 
     @exitSite: ->
@@ -169,11 +174,12 @@ onCollections ->
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
         @unselectSite()
         @currentCollection().removeSite(@editingSite())
-        $.post "/sites/#{@editingSite().id()}", {_method: 'delete'}, =>
+        $.post "/sites/#{@editingSite().id()}", {collection_id: @currentCollection().id, _method: 'delete'}, =>
           @currentCollection().fetchLocation()
           @editingSite().deleteMarker()
           @exitSite()
           @reloadMapSites() if @showingMap()
+          window.model.updateSitesInfo()
 
     @selectSite: (site) ->
       if @selectedHierarchy()

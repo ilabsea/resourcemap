@@ -1,17 +1,24 @@
 class Field::UserField < Field
+  def value_type_description
+    "email addresses"
+  end
 
-  def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
-  	value.blank? ? nil : check_user_exists(value, collection)
-	end
+  def error_description_for_invalid_values(exception)
+    "don't match any email address of a member of this collection"
+  end
+
+  def valid_value?(user_email, site=nil)
+    check_user_exists(user_email)
+  end
 
 	private
 
-	def check_user_exists(user_email, collection)
+	def check_user_exists(user_email)
     user_emails = collection.users.map {|u| u.email}
 
     if !user_emails.include? user_email
       raise "Non-existent user email address in field #{code}"
     end
-    user_email
+    true
   end
 end

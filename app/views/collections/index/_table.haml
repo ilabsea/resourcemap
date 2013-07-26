@@ -34,12 +34,11 @@
 <!-- ko with: currentCollection -->
 .tableheader.expanded{style: 'height:34px;'}
   %div
-    - if !current_user.is_guest
-      %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
+    %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
     %span
     %span{ko(text: :name)}
     - if !current_user.is_guest
-      %button.fconfiguration.right{ko(click: '$root.editCollection', visible: :isAdmin), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+      %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
   = render 'collections/index/export'
   .mapheader.right
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
@@ -97,7 +96,7 @@
   <!-- /ko -->
 .tablebottom
   <!-- ko if: !currentSnapshot-->
-  - if !current_user.is_guest
+  - if can? :create, Site
     = render 'collections/index/create_site'
   <!-- /ko -->
 <!-- /ko -->

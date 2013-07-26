@@ -18,7 +18,7 @@
     <!-- /ko -->
 - else 
   - if single_editing_mode
-    %input{ko(event: {change: "fileSelected"}, attr: {name: :code, id: :code}), type: 'file', accept: 'image/*'}
+    %input{ko(event: {change: "fileSelected"}, attr: {name: :code, id: :code}), size: '8px', type: 'file', accept: 'image/*'}
     <!-- ko if: hasValue() -->
     %div{ko(attr: {id: "'divUpload-' + code"}), style: "position: relative "}
       %img{ko(attr: {id: "'imgUpload-' + code", src: "photoPath + value()"}), width: "100px", style: "float: right; border: 2px solid #BBB;"}
@@ -26,7 +26,7 @@
     .clear
     <!-- /ko -->
   - else
-    %input.right.w20{ko(event: {change: "fileSelected"}, attr: {name: :code, id: :code}), type: 'file', accept: 'image/*'}
+    %input.right.w20{ko(event: {change: "fileSelected"}, attr: {name: :code, id: :code}), size: '8px', type: 'file', accept: 'image/*'}
     <!-- ko if: hasValue() --> 
     %div{ko(attr: {id: "'divUpload-' + code"}), style: "position: relative"}
       %img{ko(attr: {id: "'imgUpload-' + code", src: "photoPath + value()"}), width: "100px", style: "float: right; border: 2px solid #BBB;"}

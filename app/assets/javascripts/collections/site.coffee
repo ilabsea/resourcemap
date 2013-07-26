@@ -66,19 +66,20 @@ onCollections ->
         data: {es_code: esCode, value: value},
         success: ((data) =>
           field.errorMessage("")
-          @propagateUpdatedAt(data.updated_at)),
+          @propagateUpdatedAt(data.updated_at)
+          window.model.updateSitesInfo()),
         global: false
       })
       .fail((data) =>
         try
-          responseMessage = JSON.parse(data.responseText) 
+          responseMessage = JSON.parse(data.responseText)
           if data.status == 422 && responseMessage && responseMessage.error_message
-            field.errorMessage(responseMessage.error_message) 
+            field.errorMessage(responseMessage.error_message)
           else
             $.handleAjaxError(data)
         catch error
           $.handleAjaxError(data))
-          
+
     fillPhotos: (collection) =>
       @photo = {}
       for field in collection.fields()
@@ -114,7 +115,7 @@ onCollections ->
         if @properties()
           for field in collection.fields()
             value = @properties()[field.esCode]
-            field.value(value)
+            field.setValueFromSite(value)
 
     update_site: (json, callback) =>
       data = {site: JSON.stringify json}
@@ -140,7 +141,7 @@ onCollections ->
             for field in @collection.fields()
                 field.errorMessage("")
             if data.status == 422 && propertyErrors
-              for prop in propertyErrors 
+              for prop in propertyErrors
                 for es_code, value of prop
                   f = @collection.findFieldByEsCode(es_code)
                   f.errorMessage(value)
@@ -175,7 +176,7 @@ onCollections ->
             for field in @collection.fields()
                 field.errorMessage("")
             if data.status == 422 && propertyErrors
-              for prop in propertyErrors 
+              for prop in propertyErrors
                 for es_code, value of prop
                   f = @collection.findFieldByEsCode(es_code)
                   f.errorMessage(value)
@@ -259,6 +260,7 @@ onCollections ->
         @update_site lat: @lat(), lng: @lng(), (data) =>
           @collection.fetchLocation()
           @endEditLocationInMap(@extractPosition data)
+          window.model.updateSitesInfo()
 
       @parseLocation
         success: (position) => @position(position); save()
@@ -270,9 +272,14 @@ onCollections ->
     newLocationKeyPress: (site, event) =>
       switch event.keyCode
         when 13
-          @moveLocation()
-          false
-        else true
+          if $.trim(@locationTextTemp).length == 0
+            @position(null)
+            return true
+          else
+            @moveLocation()
+            false
+        else
+          true
 
     moveLocation: =>
       callback = (position) =>

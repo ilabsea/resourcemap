@@ -1,26 +1,24 @@
 class ImportWizardsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :show_properties_breadcrumb
+  before_filter :authenticate_collection_admin!, only: :logs
 
-  expose(:import_job) {
-    ImportJob.last_in_status_pending_for current_user, collection
-  }
-
-  expose(:finished_job) {
-    ImportJob.last_in_status_finished_for current_user, collection
-  }
+  expose(:import_job) { ImportJob.last_for current_user, collection }
+  expose(:failed_import_jobs) { ImportJob.where(collection_id: collection.id).where(status: 'failed').order('id desc').page(params[:page]).per_page(10) }
 
   def index
-    return redirect_to import_in_progress_collection_import_wizard_path(collection) if import_job
+    return redirect_to import_in_progress_collection_import_wizard_path(collection) if (import_job && (import_job.status_pending? || import_job.status_in_progress?))
 
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
 
   def upload_csv
-    ImportWizard.import current_user, collection, params[:file].original_filename, params[:file].read
-    redirect_to adjustments_collection_import_wizard_path(collection)
-  rescue => ex
-    redirect_to collection_import_wizard_path(collection), :notice => "The file was not a valid CSV file"
+    begin
+      ImportWizard.import current_user, collection, params[:file].original_filename, params[:file].read
+      redirect_to adjustments_collection_import_wizard_path(collection)
+    rescue => ex
+      redirect_to collection_import_wizard_path(collection), :alert => ex.message
+    end
   end
 
   def guess_columns_spec
@@ -46,7 +44,7 @@ class ImportWizardsController < ApplicationController
   end
 
   def import_in_progress
-    redirect_to import_finished_collection_import_wizard_path(collection) unless import_job
+    redirect_to import_finished_collection_import_wizard_path(collection) if import_job.status_finished?
 
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
@@ -55,8 +53,21 @@ class ImportWizardsController < ApplicationController
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
 
+  def import_failed
+    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
+  end
+
+  def cancel_pending_jobs
+    ImportWizard.cancel_pending_jobs(current_user, collection)
+    flash[:notice] = "Import canceled"
+    redirect_to collection_import_wizard_path
+  end
+
   def job_status
-    return render json: :pending if import_job
-    render json: :finished
+    render json: {:status => import_job.status}
+  end
+
+  def logs
+    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
 end

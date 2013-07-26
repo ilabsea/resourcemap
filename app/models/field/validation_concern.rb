@@ -2,12 +2,37 @@ module Field::ValidationConcern
   extend ActiveSupport::Concern
 
   def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
-    check_precense_of_value(value)
+    check_presence_of_value(value)
     value
   end
 
-  def apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
-    value.blank? ? nil : value
+  def apply_format_and_validate(value, use_codes_instead_of_es_codes, collection, site = nil)
+    decoded_value = value.blank? ? nil : decode(value)  
+    if decoded_value 
+      standadrize(decoded_value) if valid_value?(decoded_value, site)
+    else
+      decoded_value
+    end
+  end
+
+  def decode(value)
+    value
+  end
+
+  def valid_value?(value, site = nil)
+    true
+  end
+
+  def standadrize(value)
+    value
+  end
+
+  def decode_from_ui(value)
+    value
+  end
+
+  def decode_fred(value)
+    decode(value)
   end
 
   module ClassMethods
@@ -18,7 +43,7 @@ module Field::ValidationConcern
 
   private
 
-  def check_precense_of_value(value)
+  def check_presence_of_value(value)
     raise "Missing #{code} value" if value.blank?
   end
 

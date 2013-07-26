@@ -11,11 +11,10 @@ class Site < ActiveRecord::Base
   validates_presence_of :name
 
   serialize :properties, Hash
-  before_validation :convert_codes_to_es_codes
   validate :valid_properties
+  after_validation :standardize_properties
+  before_validation :assign_default_values, :on => :create
 
-
-  attr_accessor :use_codes_instead_of_es_codes
   attr_accessor :from_import_wizard
 
   def history_concern_foreign_key
@@ -83,40 +82,42 @@ class Site < ActiveRecord::Base
 
   private
 
-  def convert_codes_to_es_codes
-    if use_codes_instead_of_es_codes
+  def standardize_properties
+    fields = collection.fields.index_by(&:es_code)
 
-      fields_by_code = collection.fields.index_by(&:code)
-      fields_by_es_code = collection.fields.index_by(&:es_code)
-
-      properties_by_es_code = {}
-      properties.each do |code, value|
-        field = fields_by_code[code] || fields_by_es_code[code]
-        raise "Invalid field identifier: There is not a field with code = '#{code}' or es_code = '#{code}' in collection number #{collection_id}." unless field
-       properties_by_es_code["#{field.es_code}"] = value
+    standardized_properties = {}
+    properties.each do |es_code, value|
+      field = fields[es_code]
+      if field
+        standardized_properties[es_code] = field.standadrize(value)  
       end
-
-     self.properties = properties_by_es_code
     end
+    self.properties = standardized_properties
   end
-  
+
+  def assign_default_values
+    fields = collection.fields.index_by(&:es_code)
+
+    fields.each do |es_code, field|
+      if properties[field.es_code].blank?
+        value = field.default_value_for_create(collection)
+        properties[field.es_code] = value if value
+      end
+    end   
+  end
+
   def valid_properties
     fields = collection.fields.index_by(&:es_code)
 
-    validated_properties = {}
     properties.each do |es_code, value|
       field = fields[es_code]
-      raise "Invalid field identifier: There is not a field with es_code = '#{es_code}' in collection number #{collection_id}." unless field
-      begin
-        validated_value = field.apply_format_update_validation(value, use_codes_instead_of_es_codes, collection)
-        validated_properties["#{field.es_code}"] = validated_value
-      rescue => ex
-        errors.add(:properties, {field.es_code => ex.message}) 
+      if field
+        begin
+          field.valid_value?(value, self)
+        rescue => ex
+          errors.add(:properties, {field.es_code => ex.message})
+        end
       end
     end
-
-    self.use_codes_instead_of_es_codes = false # Clean the value for next validation calls over the same site
-    self.properties = validated_properties
   end
-
 end

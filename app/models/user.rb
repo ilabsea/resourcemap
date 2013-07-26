@@ -14,15 +14,10 @@ class User < ActiveRecord::Base
   
   validates_uniqueness_of :phone_number, :allow_blank => true
 
-  # Include default devise modules. Others available are:
+  attr_accessor :is_guest
+
   def create_collection(collection)
     return false unless collection.save
-
-    if collection.public
-      u = User.find_by_is_guest true
-      u.memberships.create! collection_id: collection.id, admin: false
-    end
-
     memberships.create! collection_id: collection.id, admin: true
     collection.register_gateways_under_user_owner(self)
     collection
