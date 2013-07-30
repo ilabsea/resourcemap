@@ -30,12 +30,12 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied do |exception|
     render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
-  end 
+  end
 
   def setup_guest_user
     u = User.new is_guest: true
     # Empty membership for the current collection
-    # This is used in SitesPermissionController.index 
+    # This is used in SitesPermissionController.index
     # TODO: Manage permissions passing current_ability to client
     u.memberships = [Membership.new(collection_id: collection.id)]
     @guest_user = u
