@@ -4,7 +4,7 @@ gem 'rails', '3.2.11'
 gem 'mysql2'
 gem 'devise'
 gem 'haml-rails'
-gem 'decent_exposure', '1.0.2'
+gem 'decent_exposure'
 gem "instedd-rails", '0.0.17'
 gem "breadcrumbs_on_rails"
 gem "tire"
