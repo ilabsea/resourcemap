@@ -112,7 +112,8 @@ ResourceMap::Application.routes.draw do
       resources :sites
     end
     match 'collections/:collection_id/memberships' => 'memberships#create', :via => :post
-    match 'collections/:collection_id/memberships' => 'memberships#update', :via => :put 
+    match 'collections/:collection_id/memberships' => 'memberships#update', :via => :put
+    match 'collections/:collection_id/register_new_member' => 'memberships#register_new_member', :via => :post
     
     devise_for :users, :controllers => { :sessions => 'sessions' }
   end

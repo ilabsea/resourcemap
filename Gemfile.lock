@@ -311,7 +311,7 @@ DEPENDENCIES
   ci_reporter
   coffee-rails (~> 3.2.1)
   database_cleaner
-  decent_exposure (= 1.0.2)
+  decent_exposure
   devise
   dist!
   faker

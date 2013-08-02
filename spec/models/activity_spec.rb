@@ -205,15 +205,15 @@ describe Activity do
 
       Activity.delete_all
 
-      site.lat = 15.1234567
+      site.lat = 15.0
       site.save!
 
       assert_activity 'site', 'changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'lat' => [10.0, 15.1234567], 'lng' => [20.0, 20.0]}},
-        'description' => "Site '#{site.name}' changed: location changed from (10.0, 20.0) to (15.123457, 20.0)"
+        'data' => {'name' => site.name, 'changes' => {'lat' => [10.0, 15.0], 'lng' => [20.0, 20.0]}, 'lat' => 15.0, 'lng' => 20.0, 'properties' => {beds.es_code => 20}},
+        'description' => "Site '#{site.name}' changed: location changed from (10.0, 20.0) to (15.0, 20.0)"
     end
 
     it "creates one after adding location in site without location" do
@@ -221,8 +221,8 @@ describe Activity do
 
       Activity.delete_all
 
-      site.lat = 15.1234567
-      site.lng = 34.123456
+      site.lat = 15.0
+      site.lng = 20.0
 
       site.save!
 
@@ -230,8 +230,8 @@ describe Activity do
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'lat' => [ nil, 15.1234567], 'lng' => [nil, 34.123456]}},
-        'description' => "Site '#{site.name}' changed: location changed from (nothing) to (15.123457, 34.123456)"
+        'data' => {'name' => site.name, 'changes' => {'lat' => [ nil, 15.0], 'lng' => [nil, 20.0]}, 'lat' => 15.0, 'lng' => 20.0, 'properties' => {beds.es_code => 20}},
+        'description' => "Site '#{site.name}' changed: location changed from (nothing) to (15.0, 20.0)"
     end
 
     it "creates one after removing location in site with location" do
@@ -248,7 +248,7 @@ describe Activity do
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'lat' => [10.0, nil], 'lng' => [20.0, nil]}},
+        'data' => {'name' => site.name, 'changes' => {'lat' => [10.0, nil], 'lng' => [20.0, nil]}, 'lat' => nil, 'lng' => nil, 'properties' => {beds.es_code => 20}},
         'description' => "Site '#{site.name}' changed: location changed from (10.0, 20.0) to (nothing)"
     end
 
@@ -265,7 +265,7 @@ describe Activity do
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'properties' => [{}, {beds.es_code => 30}]}},
+        'data' => {'name' => site.name, 'changes' => {'properties' => [{}, {beds.es_code => 30}]}, 'lat' => 10.0, 'lng' => 20.0, 'properties' => {beds.es_code => 30}},
         'description' => "Site '#{site.name}' changed: 'beds' changed from (nothing) to 30"
     end
 
@@ -282,7 +282,7 @@ describe Activity do
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'properties' => [{beds.es_code => 20}, {beds.es_code => 30}]}},
+        'data' => {'name' => site.name, 'changes' => {'properties' => [{beds.es_code => 20}, {beds.es_code => 30}]}, 'lat' => 10.0, 'lng' => 20.0, 'properties' => {beds.es_code => 30}},
         'description' => "Site '#{site.name}' changed: 'beds' changed from 20 to 30"
     end
 
@@ -300,7 +300,7 @@ describe Activity do
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
-        'data' => {'name' => site.name, 'changes' => {'properties' => [{beds.es_code => 20, text.es_code => 'foo'}, {beds.es_code => 30, text.es_code => 'bar'}]}},
+        'data' => {'name' => site.name, 'changes' => {'properties' => [{beds.es_code => 20, text.es_code => 'foo'}, {beds.es_code => 30, text.es_code => 'bar'}]}, 'lat' => 10.0, 'lng' => 20.0, 'properties' => {beds.es_code => 30, text.es_code => 'bar'}},
         'description' => "Site '#{site.name}' changed: 'beds' changed from 20 to 30, 'text' changed from 'foo' to 'bar'"
     end
 

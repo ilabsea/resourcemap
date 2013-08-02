@@ -211,7 +211,7 @@ onCollections ->
       @writeable = @originalWriteable
 
     fileSelected: (data, event) =>
-      fileUploads = event.srcElement.files
+      fileUploads = $("#site_photo")[0].files
       if fileUploads.length >0
 
         photoExt = fileUploads[0].name.split('.').pop()

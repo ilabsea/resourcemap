@@ -16,7 +16,7 @@ onMobileCollections -> if $('#mobile-collections-main').length > 0
 
 	if window.navigator.onLine
 		$.ajax
-			url: "/collections.json"
+			url: "/mobile/collections.json"
 			dataType: "text"
 			success: (collections) ->
 				window.localStorage.setItem("collectionSchema", collections)
