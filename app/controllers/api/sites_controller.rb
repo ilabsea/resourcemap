@@ -55,8 +55,11 @@ class Api::SitesController < ApplicationController
       current_user.site_count += 1
       current_user.update_successful_outcome_status
       current_user.save!
-      render json: {site: site, status: 201}
+      render json: {site: site, status: 200}
+    else
+      render :text => "Error",:status => 500
     end
+    
   end
 
   def prepare_site_property params
