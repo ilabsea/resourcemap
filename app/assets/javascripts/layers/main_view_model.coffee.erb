@@ -96,8 +96,8 @@ onLayers ->
       $.post "/collections/#{@collectionId}/layers/#{layer.id()}/set_order.json", json
 
     deleteLayer: (layer) =>
-      if confirm("Are you sure you want to delete layer #{layer.name()}?")
-        $.post "/collections/#{@collectionId}/layers/#{layer.id()}", {_method: 'delete'}, =>
+      if confirm("This layer is being used with #{layer.threshold_ids.length} alerts. The alert associated with this layer will also be deleted.")
+        $.post "/collections/#{@collectionId}/layers/#{layer.id()}", {threshold_ids: layer.threshold_ids, _method: 'delete'}, =>
           idx = @layers().indexOf(layer)
           for nextLayer in @layers().slice(idx + 1)
             nextLayer.ord(nextLayer.ord() - 1)
