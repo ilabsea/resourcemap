@@ -85,6 +85,25 @@ class Layer < ActiveRecord::Base
     field ? field.to_i + 1 : 1
   end
 
+  def get_associated_threshold_ids
+
+    layerFieldIDs = self.fields.map { |field| field.id}
+    associated_threshold_ids = []
+
+    self.collection.thresholds.map { |threshold|
+
+      thresholdFieldIDs = threshold.conditions.map { |condition| condition['field'].to_i}
+
+      if (layerFieldIDs - thresholdFieldIDs).length < layerFieldIDs.length
+        associated_threshold_ids.push(threshold.id)
+      end
+
+    }
+
+    associated_threshold_ids
+
+  end
+
   private
 
   def field_hash(field)
@@ -92,4 +111,5 @@ class Layer < ActiveRecord::Base
     field_hash['config'] = field.config if field.config.present?
     field_hash
   end
+
 end

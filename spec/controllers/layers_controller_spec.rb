@@ -9,6 +9,7 @@ describe LayersController do
   let!(:layer) {Layer.make collection: collection, user: user}
   let!(:layer2) {Layer.make collection: collection, user: user}
   let!(:numeric) {layer.numeric_fields.make }
+  let!(:threshold) {collection.thresholds.make conditions: [ "field" => numeric.es_code, op: :lt, value: '10' ]}
 
   before(:each) {sign_in user}
 
@@ -32,6 +33,15 @@ describe LayersController do
 
     histories.last.valid_to.should be_nil
     histories.last.layer_id.should eq(layer2.id)
+
+  end
+
+  it "should return layer json with associated threshold ids" do
+    get :index, collection_id: collection.id, format: 'json'
+    json = JSON.parse response.body
+    #expect(response.body).to match /threshold_ids/
+
+    json[0]["threshold_ids"].should eq [threshold.id]
 
   end
   

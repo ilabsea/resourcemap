@@ -11,7 +11,12 @@ class LayersController < ApplicationController
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
       if current_user_snapshot.at_present?
-        format.json { render json: layers.includes(:fields).all.as_json(include: :fields) }
+
+        json = layers.includes(:fields).all.as_json(include: :fields).each { |layer|
+          layer['threshold_ids'] = Layer.find(layer['id']).get_associated_threshold_ids
+        }
+
+        format.json { render json:  json}
       else
         format.json {
           render json: layers
@@ -51,6 +56,11 @@ class LayersController < ApplicationController
   end
 
   def destroy
+
+    if params['threshold_ids']
+      Threshold.delete(params['threshold_ids'])
+    end
+
     layer.user = current_user
     layer.destroy
     head :ok
