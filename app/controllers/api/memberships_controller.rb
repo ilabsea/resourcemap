@@ -1,6 +1,5 @@
 class Api::MembershipsController < ApplicationController
-  protect_from_forgery :except => [:create, :update, :register_new_member]
-
+  protect_from_forgery :except => [:create, :update, :register_new_member, :destroy_member]
   USER_NAME, PASSWORD = 'iLab', '1c4989610bce6c4879c01bb65a45ad43'
 
   # POST /user
@@ -12,12 +11,16 @@ class Api::MembershipsController < ApplicationController
       if !user.memberships.where(:collection_id => collection.id).exists?
         if role == "Admin"
           user.memberships.create! admin: false, :collection_id => collection.id
+          membership = collection.memberships.find_by_user_id user.id
+          layer_id = params[:layer_id]? params[:layer_id] : collection.layers.first.id
+          membership.set_layer_access({:verb => "read", :access => true, :layer_id => layer_id})
         elsif role == "Super Admin"
           user.memberships.create! admin: true, :collection_id => collection.id
         end
       end
       render :json => params[:user], :status => :ok
     else
+      p "Errorororro"
       render :json => params[:user], :status => :unauthorized
     end
   end
@@ -64,8 +67,11 @@ class Api::MembershipsController < ApplicationController
     begin
       if user.update_attributes!(params[:user])
         if role == "Admin"
-          member = user.memberships.find_by_collection_id(params[:collection_id])
+          collection = Collection.find(params[:collection_id])
+          member = collection.memberships.find_by_user_id(user.id)
           member.update_attributes! admin: false
+          layer_id = params[:layer_id]? params[:layer_id] : collection.layers.first.id
+          member.set_layer_access({:verb => "read", :access => true, :layer_id => layer_id})
         elsif role == "Super Admin"
           member = user.memberships.find_by_collection_id(params[:collection_id])
           member.update_attributes! admin: true
@@ -77,6 +83,21 @@ class Api::MembershipsController < ApplicationController
     rescue
       render :json => params[:user], :status => :unauthorized
     end
+  end
+
+  def destroy_member
+    if (params["user"]["phone_number"])
+      user = User.find_by_phone_number(params["user"]["phone_number"])
+      role = params[:role]
+      if user.memberships.destroy_all and user.destroy
+        render :json => params[:user], :status => :ok
+      else
+        render :json => params[:user], :status => :unauthorized
+      end
+    else
+      render :json => {}.to_json, :status => :unauthorized
+    end
+    
   end
 
   def authenticate
