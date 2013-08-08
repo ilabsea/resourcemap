@@ -26,7 +26,7 @@ onCollections ->
       @locationText = ko.computed
         read: =>
           if @hasLocation()
-            (Math.round(@lat() * 1000000) / 1000000) + ', ' + (Math.round(@lng() * 1000000) / 1000000)
+            (Math.round(@lat() * 100000000000) / 100000000000) + ', ' + (Math.round(@lng() * 100000000000) / 100000000000)
           else
             ''
         write: (value) => @locationTextTemp = value
