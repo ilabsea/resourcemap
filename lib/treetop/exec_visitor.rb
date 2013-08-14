@@ -84,7 +84,7 @@ class ExecVisitor < Visitor
   def update_properties(site, user, props)
     site.user = user
     props.each do |p|
-      field = Field.find_by_code(p.values[0])
+      field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
       site.properties[field.es_code] = p.values[1]
     end
     site.save!
