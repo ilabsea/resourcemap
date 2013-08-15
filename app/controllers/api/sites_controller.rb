@@ -25,6 +25,7 @@ class Api::SitesController < ApplicationController
     site = Site.find_by_id(params[:id])
     site.lat = params[:lat]
     site.lng = params[:lng]
+    site.name = params[:name]
     properties = prepare_site_property params
     site.properties = properties
     site.user = User.find_by_phone_number(params[:phone_number])
@@ -72,5 +73,19 @@ class Api::SitesController < ApplicationController
     properties.merge!(conflict_intensity_id => params[:conflict_intensity])
 
     return properties
+  end
+
+  def index
+    if(params[:limit] and params[:offset])
+      sites = Collection.find(params[:collection_id]).sites.limit(params[:limit].to_i).offset(params[:offset].to_i)
+    else
+      sites = Collection.find(params[:collection_id]).sites
+    end
+    render :json => sites
+  end
+
+  def show
+    site = Site.find(params[:id])
+    render :json => site
   end
 end
