@@ -227,7 +227,9 @@
                   <!-- /ko -->
                   <!-- ko if: !hasValue() &&  !error() -->
                   <!-- ko if: writeable -->
+                  <!-- ko if: kind != 'photo' -->
                   %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no value)
+                  <!-- /ko -->
                   <!-- /ko -->
                   <!-- ko if: !writeable -->
                   %span.value{style: 'color:grey'} (no value)
