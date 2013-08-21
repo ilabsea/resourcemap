@@ -45,6 +45,7 @@ class ThresholdsController < ApplicationController
 
   def destroy
     threshold.destroy
+    collection.recreate_index
 
     render json: threshold
   end
