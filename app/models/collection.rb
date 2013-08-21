@@ -59,6 +59,19 @@ class Collection < ActiveRecord::Base
     target_fields
   end
 
+  def site_ids_permission(user)
+    membership = user.membership_in self
+    read_sites_permission = membership.read_sites_permission
+    write_sites_permission = membership.write_sites_permission
+    site_ids = []
+
+    site_ids.concat(read_sites_permission['some_sites'].map{ |site| site['id'].to_i}) if read_sites_permission
+    site_ids.concat(write_sites_permission['some_sites'].map{ |site| site['id'].to_i}) if write_sites_permission
+
+    site_ids.uniq
+
+  end
+
   def visible_fields_for(user, options)
     if user.is_guest
       return fields.includes(:layer).all

@@ -63,7 +63,9 @@ class SitesController < ApplicationController
   def update_property
     field = site.collection.fields.where_es_code_is params[:es_code]
 
-    return head :forbidden unless current_user.can_write_field? field, site.collection, params[:es_code]
+    if not site.collection.site_ids_permission(current_user).include? site.id
+      return head :forbidden unless current_user.can_write_field? field, site.collection, params[:es_code]
+    end
 
     site.user = current_user
     site.properties_will_change!
@@ -105,6 +107,39 @@ class SitesController < ApplicationController
     Site::UploadUtils.purgeUploadedPhotos(site)
     site.destroy
     render json: site
+  end
+
+  def visible_layers_for
+    layers = []
+    if site.collection.site_ids_permission(current_user).include? site.id
+      target_fields = fields.includes(:layer).all
+      layers = target_fields.map(&:layer).uniq.map do |layer|
+        {
+          id: layer.id,
+          name: layer.name,
+          ord: layer.ord,
+        }
+      end
+
+      layers.each do |layer|
+        layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
+        layer[:fields].map! do |field|
+          {
+            id: field.es_code,
+            name: field.name,
+            code: field.code,
+            kind: field.kind,
+            config: field.config,
+            ord: field.ord,
+            writeable: true
+          }
+        end
+      end
+      layers.sort! { |x, y| x[:ord] <=> y[:ord] }
+    else
+      layers = site.collection.visible_layers_for(current_user)
+    end
+    render json: layers
   end
 
   private

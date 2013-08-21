@@ -116,6 +116,7 @@ class Search
     fields_by_es_code = @collection.visible_fields_for(@current_user, snapshot_id: @snapshot_id).index_by &:es_code
 
     items = results()
+    site_ids_permission = @collection.site_ids_permission(@current_user)
     items.each do |item|
       if item['_source']['location']
         item['_source']['lat'] = item['_source']['location']['lat']
@@ -124,9 +125,11 @@ class Search
       end
       item['_source']['created_at'] = Site.parse_time item['_source']['created_at']
       item['_source']['updated_at'] = Site.parse_time item['_source']['updated_at']
-      item['_source']['properties'] = item['_source']['properties'].select { |es_code, value|
-        fields_by_es_code[es_code]
-      }
+      if not site_ids_permission.include?(item['_source']['id'])
+        item['_source']['properties'] = item['_source']['properties'].select { |es_code, value|
+          fields_by_es_code[es_code]
+        }
+      end
     end
 
     items
