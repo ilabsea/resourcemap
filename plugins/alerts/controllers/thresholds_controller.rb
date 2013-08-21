@@ -21,6 +21,7 @@ class ThresholdsController < ApplicationController
     threshold = thresholds.new params[:threshold].except(:sites) 
     threshold.sites = Site.get_id_and_name params[:threshold][:sites] if params[:threshold][:sites]#select only id and name
     threshold.save!
+    collection.recreate_index
     render json: threshold
   end
 
