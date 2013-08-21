@@ -5,10 +5,12 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
+    params['user']['phone_number'].delete!('+')
     super
   end
 
   def update
+	params['user']['phone_number'].delete!('+')
     if params[:user][:current_password].blank? && params[:user][:password].empty? && params[:user][:password_confirmation].empty?
       current_user.update_attributes(params.slice(:phone_number))
       redirect_to collections_path, notice: "Account updated successfully"
