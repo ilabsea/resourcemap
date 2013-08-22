@@ -59,6 +59,7 @@ class LayersController < ApplicationController
 
     if params['threshold_ids']
       Threshold.delete(params['threshold_ids'])
+      collection.recreate_index
     end
 
     layer.user = current_user
