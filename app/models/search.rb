@@ -125,6 +125,7 @@ class Search
       end
       item['_source']['created_at'] = Site.parse_time item['_source']['created_at']
       item['_source']['updated_at'] = Site.parse_time item['_source']['updated_at']
+      item['_source']['updated_by'] = Site.find(item['_source']['id']).activities.last.user.email
       if not site_ids_permission.include?(item['_source']['id'])
         item['_source']['properties'] = item['_source']['properties'].select { |es_code, value|
           fields_by_es_code[es_code]

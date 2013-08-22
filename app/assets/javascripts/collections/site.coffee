@@ -20,6 +20,7 @@ onCollections ->
       @idWithPrefix = ko.observable data?.id_with_prefix
       @properties = ko.observable data?.properties
       @updatedAt = ko.observable(data.updated_at)
+      @updatedBy = ko.observable(data.updated_by)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
