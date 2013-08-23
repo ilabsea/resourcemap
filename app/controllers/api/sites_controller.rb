@@ -76,12 +76,12 @@ class Api::SitesController < ApplicationController
   end
 
   def index
-    if(params[:limit] and params[:offset])
-      sites = Collection.find(params[:collection_id]).sites.limit(params[:limit].to_i).offset(params[:offset].to_i)
-    else
-      sites = Collection.find(params[:collection_id]).sites
-    end
-    render :json => sites
+    # if(params[:limit] and params[:offset])
+    #   sites = Collection.find(params[:collection_id]).sites.limit(params[:limit].to_i).offset(params[:offset].to_i)
+    # else
+    #   sites = Collection.find(params[:collection_id]).sites
+    # end
+    render :json => Collection.filter_sites(params)
   end
 
   def show

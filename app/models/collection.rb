@@ -198,6 +198,25 @@ class Collection < ActiveRecord::Base
     end
   end
 
+  def self.filter_sites params
+    builder = Collection.find(params[:collection_id]).sites
+    if !params[:from].blank? && !params[:to].blank?
+      from = params[:from]
+      to   = params[:to]
+      builder = builder.where(['sites.created_at BETWEEN :from AND :to', :from => from, :to => to])
+    elsif !params[:from].blank?
+      from = params[:from]
+      builder = builder.where(['sites.created_at >= :from', :from => from])
+    elsif !params[:to].blank? 
+      to = params[:to]
+      builder = builder.where(['sites.created_at <= :to', :to => to])
+    end
+    
+    builder = builder.limit params[:limit]   if !params[:limit].blank?
+    builder = builder.offset params[:offset] if !params[:offset].blank?
+    builder
+  end
+
   def new_site_properties
     self.fields.each_with_object({}) do |field, hash|
       value = field.default_value_for_create(self)
