@@ -1,7 +1,6 @@
 onCollections ->
 
   class @SitesViewModel
-    $('a#previewimg').fancybox()
     @constructor: ->
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
@@ -42,12 +41,18 @@ onCollections ->
     @editSite: (site) ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
+
         site.copyPropertiesToCollection(site.collection)
+
         if @selectedSite() && @selectedSite().id() == site.id()
           @unselectSite()
 
-        site.collection.updatePermission site, => @editingSite(site)
+        if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
+          site.fetchFields()
+
+
         @selectSite(site)
+        @editingSite(site)
         @currentCollection(site.collection)
 
         @loadBreadCrumb()

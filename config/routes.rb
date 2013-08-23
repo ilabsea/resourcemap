@@ -22,7 +22,9 @@ ResourceMap::Application.routes.draw do
     post :register_gateways
     get  :message_quota
     get :sites_by_term
-    resources :sites
+    resources :sites do
+      get :visible_layers_for
+    end
     resources :layers do
       member do
         put :set_order

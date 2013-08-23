@@ -127,7 +127,7 @@
                   = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: 'Search or drag the pin'}
                   .clear
                 / ko if: collection.readable($data)
-                <!-- ko foreach: $root.currentCollection().layers() -->
+                <!-- ko foreach: layers -->
                 %div
                   %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
                   %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
@@ -198,8 +198,15 @@
                   %div{style: 'margin-bottom:14px'}
                     %label ID With Prefix:
                     %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
+                %div{style: 'margin-bottom:14px'}
+                  %label Updated At:
+                  %span.value{ko(text: :updatedAt)}
+                %div{style: 'margin-bottom:14px'}
+                  %label Updated By:
+                  %span.value{ko(text: :updatedBy)}
+
                 / ko if: collection.readable($data)
-                <!-- ko foreach: collection.layers -->
+                <!-- ko foreach: layers -->
                 / col = collection
                 %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
                   %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}

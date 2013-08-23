@@ -8,6 +8,7 @@ class Site < ActiveRecord::Base
   include HistoryConcern
 
   belongs_to :collection
+  has_many :activities, dependent: :destroy
   validates_presence_of :name
 
   serialize :properties, Hash

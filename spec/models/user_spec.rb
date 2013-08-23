@@ -27,6 +27,16 @@ describe User do
     user.collections.should be_empty
   end
 
+  context "duplicate phone numbers" do
+    let!(:user) { User.make :phone_number => '85592811844' }
+
+    it "should not allow to add a new user with duplicate phone" do
+      user2 = User.make
+      User.create(:email => 'test@instedd.org', :password => '123', :phone_number => '85592811844').should_not be_valid
+    end
+
+  end
+
   context "admins?" do
     let!(:user) { User.make }
     let!(:collection) { user.create_collection Collection.make_unsaved }

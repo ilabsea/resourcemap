@@ -12,11 +12,15 @@ onCollections ->
       @selected = ko.observable()
       @id = ko.observable data?.id
       @name = ko.observable data?.name
+      @layers = ko.observableArray()
+      @fields = ko.observableArray()
+      @fieldsInitialized = false
       @icon = data?.icon ? 'default'
       @color = data?.color
       @idWithPrefix = ko.observable data?.id_with_prefix
       @properties = ko.observable data?.properties
       @updatedAt = ko.observable(data.updated_at)
+      @updatedBy = ko.observable(data.updated_by)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
@@ -40,6 +44,9 @@ onCollections ->
 
     hasName: => $.trim(@name()).length > 0
 
+
+
+
     propertyValue: (field) =>
       value = @properties()[field.esCode]
       field.valueUIFor(value)
@@ -53,8 +60,10 @@ onCollections ->
         @updatedAt(data.updated_at)
       @collection.fetchLocation()
 
+    findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
+
     updateProperty: (esCode, value) =>
-      field = @collection.findFieldByEsCode(esCode)
+      field = @findFieldByEsCode(esCode)
       if field.showInGroupBy && window.model.currentCollection()
         window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[esCode], newValue: value}])
 
@@ -82,9 +91,9 @@ onCollections ->
 
     fillPhotos: (collection) =>
       @photo = {}
-      for field in collection.fields()
+      for field in @fields()
         if field.kind == 'photo'
-          if !!field.value()
+          if !!field.value() and !!field.photo
             @photos[field.value()] = field.photo
           if field.originalValue and !field.value()
             @photosToRemove.push(field.originalValue)
@@ -95,7 +104,7 @@ onCollections ->
       hierarchyChanges = []
 
       @properties({})
-      for field in collection.fields()
+      for field in @fields()
         if field.kind == 'hierarchy' && @id()
           hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode], newValue: field.value()})
 
@@ -111,11 +120,14 @@ onCollections ->
 
     copyPropertiesToCollection: (collection) =>
       collection.fetchFields =>
-        collection.clearFieldValues()
-        if @properties()
+        if @fields().length == 0
+          collection.clearFieldValues()
           for field in collection.fields()
-            value = @properties()[field.esCode]
-            field.setValueFromSite(value)
+            @fields.push(field)
+
+          for layer in collection.layers()
+            @layers.push(layer)
+          @copyPropertiesToFields()
 
     update_site: (json, callback) =>
       data = {site: JSON.stringify json}
@@ -130,7 +142,7 @@ onCollections ->
           url: "/collections/#{@collection.id}/sites/#{@id()}.json",
           data: data,
           success: ((data) =>
-            for field in @collection.fields()
+            for field in @fields()
               field.errorMessage("")
             @propagateUpdatedAt(data.updated_at)
             callback(data) if callback && typeof(callback) == 'function' )
@@ -138,7 +150,7 @@ onCollections ->
         }).fail((data) =>
           try
             propertyErrors = JSON.parse(data.responseText)["properties"]
-            for field in @collection.fields()
+            for field in @fields()
                 field.errorMessage("")
             if data.status == 422 && propertyErrors
               for prop in propertyErrors
@@ -162,7 +174,7 @@ onCollections ->
           data: data,
           success: ((data) =>
             @photos = {}
-            for field in @collection.fields()
+            for field in @fields()
               field.errorMessage("")
             @propagateUpdatedAt(data.updated_at)
             @id(data.id)
@@ -173,7 +185,7 @@ onCollections ->
         }).fail((data) =>
           try
             propertyErrors = JSON.parse(data.responseText)["properties"]
-            for field in @collection.fields()
+            for field in @fields()
                 field.errorMessage("")
             if data.status == 422 && propertyErrors
               for prop in propertyErrors
@@ -323,7 +335,7 @@ onCollections ->
       # Keep the original values, in case the user cancels
       @originalName = @name()
       @originalPosition = @position()
-      for field in window.model.currentCollection().fields()
+      for field in @fields()
         field.editing(false)
         field.originalValue = field.value()
 
@@ -333,7 +345,6 @@ onCollections ->
       window.model.initAutocomplete()
 
     exitEditMode: (saved) =>
-      @collection.updatePermission @
       @inEditMode(false)
 
       @endEditLocationInMap(if saved then @position() else @originalLocation)
@@ -347,7 +358,7 @@ onCollections ->
 
       # Expand fields, clear filters (select_many),
       # and restore original field values if not saved
-      for field in window.model.currentCollection().fields()
+      for field in @fields()
         field.expanded(false)
         field.filter('')
 
@@ -409,6 +420,35 @@ onCollections ->
       json.lng = @lng() if @lng()
       json.properties = @properties() if @properties()
       json
+
+    fetchFields: (callback) =>
+      if @fieldsInitialized
+        callback() if callback && typeof(callback) == 'function'
+        return
+
+      @fieldsInitialized = true
+      $.get "/collections/#{@collection.id}/sites/#{@id()}/visible_layers_for", {}, (data) =>
+        @layers($.map(data, (x) => new Layer(x)))
+
+        fields = []
+        @fields(fields)
+        for layer in @layers()
+          for field in layer.fields
+            fields.push(field)
+        @fields(fields)
+
+        @copyPropertiesToFields()
+        $('a#previewimg').fancybox()
+        callback() if callback && typeof(callback) == 'function'
+
+    copyPropertiesToFields: =>
+      if @properties()
+        for field in @fields()
+          value = @properties()[field.esCode]
+          field.setValueFromSite(value)
+
+    clearFieldValues: =>
+      field.value(null) for field in @fields()
 
     # Ary: I have no idea why, but without this here toJSON() doesn't work
     # in Firefox. It seems a problem with the bindings caused by the fat arrow
