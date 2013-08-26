@@ -9,7 +9,9 @@
       %li
         %a{ko(text: :name, click: '$root.createSite'), style: 'cursor: pointer;'}
       <!-- /ko -->
-      
+  %div{"data-role" => "footer", "data-theme" => "c", 'align' => 'center'}
+    = link_to 'Web Version', collections_path
+
 #site-page{"data-role" => "page", "data-fullscreen" => "true"}
 
   -# Collection's Site
