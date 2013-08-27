@@ -2,7 +2,7 @@ class ExecVisitor < Visitor
   MSG = {
     :query_not_match => "No result. Your query did not match.",
     :update_successfully => "Data has been successfull updated.",
-    :can_not_update => "You have no access right to update. Please contact the layer's owner for more information.", :can_not_query => "You have no access right to view. Please contact the layer's owner for more information.", :can_not_use_gateway => "You cannot use this channel for viewing or updating this layer. Please contact the layer's owner for more information.",
+    :can_not_update => "You have no access right to update. Please contact the collection's owner for more information.", :can_not_query => "You have no access right to view. Please contact the collection's owner for more information.", :can_not_use_gateway => "You cannot use this channel for viewing or updating this collection. Please contact the collection's owner for more information.",
     :can_not_add => "Invalid command.",
     :added_successfully => "Site has been successfull added."
   }
