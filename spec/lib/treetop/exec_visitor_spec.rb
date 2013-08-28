@@ -234,7 +234,7 @@ describe ExecVisitor, "Process add command" do
   end
 
   it 'should added 1 new site when visit_add_command called' do
-    @node = @parser.parse("dyrm a #{@collection.id} lat=12.11,lng=75.11,name=sms_site,doctor=10").command
+    @node = @parser.parse("dyrm a #{@collection.id} lat=12.11,lng=75.11,name=sms_site,doctors=10").command
     @node.sender = @user
     expect{@visitor.visit_add_command(@node)}.to change{
       Collection.find(@collection.id).sites.count
@@ -260,5 +260,25 @@ describe ExecVisitor, "Process add command" do
     @node = @parser.parse("dyrm a lat=12.11,lng=75.11,name=sms_site").command
     @node.sender = @user1
     @visitor.visit_add_command(@node).should eq "Collection id is needed in your message."
+  end
+
+  it 'should return site name is required when sender do not include name' do
+    @node = @parser.parse("dyrm a lat=12.11,lng=75.11").command
+    @node.sender = @user
+    @visitor.visit_add_command(@node).should == ExecVisitor::MSG[:name_is_required]
+  end
+
+  it 'should return key-value properties' do
+    @node = @parser.parse("dyrm a name=abc,doctors=5").command
+    @visitor.node_to_properties(@node.property_list).should eq [{:code=>"name", :value=>"abc"},{:code=>"doctors", :value=>"5"}]
+  end
+
+  it 'should return site properties with id and value' do
+    @node = @parser.parse("dyrm a name=abc,doctors=5,ambulances=10").command
+    @visitor.node_to_site_properties(@visitor.node_to_properties(@node.property_list),@collection.id).should eq({@f2.id.to_s=>"5", @f1.id.to_s=>"10"})
+  end
+  it 'should return a key-value site' do
+    @node = @parser.parse("dyrm a name=abc,lat=12.11,lng=75.11,doctors=5,ambulances=10").command
+    @visitor.node_to_site(@visitor.node_to_properties(@node.property_list)).should eq({"name" => "abc", "lat" => "12.11", "lng" => "75.11"})
   end
 end

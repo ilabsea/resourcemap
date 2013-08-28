@@ -4,7 +4,8 @@ class ExecVisitor < Visitor
     :update_successfully => "Data has been successfull updated.",
     :can_not_update => "You have no access right to update. Please contact the collection's owner for more information.", :can_not_query => "You have no access right to view. Please contact the collection's owner for more information.", :can_not_use_gateway => "You cannot use this channel for viewing or updating this collection. Please contact the collection's owner for more information.",
     :can_not_add => "Invalid command.",
-    :added_successfully => "Site has been successfull added."
+    :added_successfully => "Site has been successfull added.",
+    :name_is_required => "Site name is required."
   }
 
   attr_accessor :context
@@ -46,9 +47,13 @@ class ExecVisitor < Visitor
       collection = Collection.find node.collection_id.value
     end
     
-    if collection  
-      site = node_to_site node.property_list
-      site["properties"] = node_to_site_properties node.property_list,collection.id
+    if collection
+      key_value_properties = node_to_properties(node.property_list)
+      site = node_to_site key_value_properties
+      if not site.keys.include?('name')
+        return MSG[:name_is_required]
+      end
+      site["properties"] = node_to_site_properties key_value_properties,collection.id
       site["user"] = node.sender
       if collection.sites.create site
         MSG[:added_successfully] 
@@ -74,8 +79,6 @@ class ExecVisitor < Visitor
     sender && sender.can_update?(site, properties)
   end
 
-  private
-  
   def update(site, node, sender)
     properties = node_to_properties(node)
     update_properties site, sender, properties
@@ -103,26 +106,24 @@ class ExecVisitor < Visitor
     Field.where("code=? and collection_id=?",field_code, collection_id).first.id
   end
 
-  def node_to_site_properties(node, collection_id)
+  def node_to_site_properties(key_value_properties, collection_id)
     properties = {}
-		until node and node.kind_of? AssignmentExpressionNode
-      code = node.assignment_expression.to_options[:code]
+    key_value_properties.each { |property|
+      code = property[:code]
       if code != 'name' and code != 'lat' and code != 'lng'
         id = get_field_id(code,collection_id)
-        properties[id.to_s] =  node.assignment_expression.to_options[:value] if id
+        properties[id.to_s] =  property[:value] if id
       end
-      node = node.next
-    end
+    }
     properties
   end
   
-  def node_to_site(node)
+  def node_to_site(key_value_properties)
     site = {}
-    until node and node.kind_of? AssignmentExpressionNode
-      code = node.assignment_expression.to_options[:code]
-      site[code] = node.assignment_expression.to_options[:value] if code == 'name' or code == 'lat' or code == 'lng'
-      node = node.next
-    end
+    key_value_properties.each { |property|
+      code = property[:code]
+      site[code] = property[:value] if code == 'name' or code == 'lat' or code == 'lng'
+    }
     site
   end
 end
