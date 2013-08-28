@@ -30,6 +30,10 @@ namespace :deploy do
     end
   end
 
+  task :symlink_photo_field, :roles => :app do
+    run "ln -nfs #{shared_path}/photo_field #{release_path}/public/"
+  end
+
   task :generate_revision_and_version do
     run "cd #{current_path} && rake deploy:generate_revision_and_version RAILS_ENV=production"
   end
@@ -63,6 +67,8 @@ before "deploy:start", "deploy:migrate"
 before "deploy:restart", "deploy:migrate"
 
 after "deploy:update_code", "deploy:symlink_configs"
+
+after "deploy:update_code", "deploy:symlink_photo_field"
 
 after "deploy:update", "foreman:export"    # Export foreman scripts
 
