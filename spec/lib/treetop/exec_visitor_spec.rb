@@ -116,7 +116,7 @@ describe ExecVisitor, "Process update command" do
   end
 
   before(:each) do
-    parser = CommandParser.new
+    @parser = CommandParser.new
     @collection = Collection.make
     @user = User.make(:phone_number => '85512345678')
     @collection.memberships.create(:user => @user, :admin => false)
@@ -126,7 +126,7 @@ describe ExecVisitor, "Process update command" do
     @site = @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
     @site.user = @user
     @collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
-    @node = parser.parse('dyrm u AB1 ambulances=15,doctors=20').command
+    @node = @parser.parse('dyrm u AB1 ambulances=15,doctors=20').command
     @node.sender = @user
   end
 
@@ -185,6 +185,12 @@ describe ExecVisitor, "Process update command" do
     site.properties[@f1.es_code].to_i.should == 15
     site.properties[@f2.es_code].to_i.should == 20
   end
+
+  it 'should return cannot find site id when trying to update a site that does not exist' do
+    @node11 = @parser.parse('dyrm u 44 ambulances=15').command
+    expect{@visitor.visit_update_command(@node11)}.to raise_error(ExecVisitor::MSG[:can_not_find_site]+'44')
+  end
+
 end
 
 
@@ -281,4 +287,5 @@ describe ExecVisitor, "Process add command" do
     @node = @parser.parse("dyrm a name=abc,lat=12.11,lng=75.11,doctors=5,ambulances=10").command
     @visitor.node_to_site(@visitor.node_to_properties(@node.property_list)).should eq({"name" => "abc", "lat" => "12.11", "lng" => "75.11"})
   end
+
 end

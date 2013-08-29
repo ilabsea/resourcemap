@@ -5,7 +5,8 @@ class ExecVisitor < Visitor
     :can_not_update => "You have no access right to update. Please contact the collection's owner for more information.", :can_not_query => "You have no access right to view. Please contact the collection's owner for more information.", :can_not_use_gateway => "You cannot use this channel for viewing or updating this collection. Please contact the collection's owner for more information.",
     :can_not_add => "Invalid command.",
     :added_successfully => "Site has been successfull added.",
-    :name_is_required => "Site name is required."
+    :name_is_required => "Site name is required.",
+    :can_not_find_site => "Can't find site with ID="
   }
 
   attr_accessor :context
@@ -31,7 +32,7 @@ class ExecVisitor < Visitor
       update site, node.property_list, node.sender
       MSG[:update_successfully]
     else
-      raise "Can't find site with ID=#{id}" if site.nil?
+      raise MSG[:can_not_find_site] + id if site.nil?
     end
   end
 
