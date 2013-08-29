@@ -2,8 +2,10 @@ class Api::CollectionsController < ApplicationController
   include Api::JsonHelper
   include Api::GeoJsonHelper
 
-  before_filter :authenticate_user!
+  # before_filter :authenticate_user!
   around_filter :rescue_with_check_api_docs
+
+  skip_before_filter  :verify_authenticity_token
 
   def index
     respond_to do |format|
@@ -57,16 +59,47 @@ class Api::CollectionsController < ApplicationController
     render json: collection_geo_json(collection, @results)
   end
 
+  def update_sites
+    index = 0
+    array_site_ids = params[:site_id].split(",")
+    array_user_email = params[:user_email].split(",")
+    array_site_ids.each do |el|
+      site = Site.find_by_id(el)
+      site.user = User.find_by_email(array_user_email[index])
+      site.user = User.first
+      site.lat = params[:lat]
+      site.lng = params[:lng]
+      if site.valid?
+        site.save!
+      else
+        render json: site.errors.messages, status: :unprocessable_entity, :layout => false
+      end
+      index = index + 1
+    end
+    render json: {status: 201}
+  end
+
+  def get_fields
+    fields = Collection.find(params[:id]).fields
+    list = []
+    fields.each do |f|
+      obj = {}
+      obj["code"] = f.code
+      obj["id"] = f.id
+      obj["name"] = f.name
+      obj["options"] = f.config["options"]
+      list.push obj
+    end
+    render :json => list.to_json
+  end
+
   private
 
   def perform_search(*options)
     except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius]
 
-    if current_snapshot
-      search = collection.new_search snapshot_id: current_snapshot.id, current_user_id: current_user.id
-    else
-      search = collection.new_search current_user_id: current_user.id
-    end
+    search = new_search
+
     search.use_codes_instead_of_es_codes
 
     if options.include? :page
@@ -124,11 +157,12 @@ class Api::CollectionsController < ApplicationController
 
   def rescue_with_check_api_docs
     yield
-  rescue => ex
+    rescue => ex
 
     Rails.logger.info ex.message
     Rails.logger.info ex.backtrace
 
     render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
   end
+
 end

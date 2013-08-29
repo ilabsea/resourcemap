@@ -8,12 +8,13 @@ onImportInProgress -> if $('#import-in-progress').length > 0
 
   poll_status = ->
     $.get "/collections/#{collectionId}/import_wizard/job_status.json", {}, (data) =>
-      if (data == 'finished')
-        window.location = "/collections/#{collectionId}/import_wizard/import_finished"
-      else
-        setTimeout(poll_status, 2000)
+      status = data.status
+      if status == 'finished' || status == 'failed'
+        window.location = "/collections/#{collectionId}/import_wizard/import_#{status}"
+      else if status == 'in_progress'
+        $(".pending_jobs").hide()
+        $(".in_progress").show()
+
+      setTimeout(poll_status, 2000)
 
   poll_status()
-
-
-

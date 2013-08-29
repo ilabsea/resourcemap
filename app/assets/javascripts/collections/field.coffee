@@ -32,11 +32,12 @@ onCollections ->
                   else
                     []
         @optionsIds = $.map @options, (x) => x.id
-        if @kind == 'select_one'
-          @optionsUI = [new Option {id: '', label: '(no value)' }].concat(@options)
-          @optionsUIIds = $.map @optionsUI, (x) => x.id
-        else
-          @optionsUI = @options
+
+        # Add the 'no value' option
+        @optionsIds.unshift('')
+        @optionsUI = [new Option {id: '', label: '(no value)' }].concat(@options)
+        @optionsUIIds = $.map @optionsUI, (x) => x.id
+
         @hierarchy = @options
 
       if @kind == 'hierarchy'
@@ -62,6 +63,17 @@ onCollections ->
       @errorMessage = ko.observable ""
       @error = ko.computed => !!@errorMessage()
 
+    setValueFromSite: (value) =>
+      if @kind == 'date' && $.trim(value).length > 0
+        # Value from server comes with utc time zone and creating a date here gives one
+        # with the client's (browser) time zone, so we convert it back to utc
+        date = new Date(value)
+        date.setTime(date.getTime() + date.getTimezoneOffset() * 60000)
+        value = @datePickerFormat(date)
+
+      value = '' unless value
+
+      @value(value)
 
     codeForLink: (api = false) =>
       if api then @code else @esCode
@@ -77,20 +89,15 @@ onCollections ->
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
       else if @kind == 'hierarchy'
         if value then @fieldHierarchyItemsMap[value] else ''
-      else if @kind == 'date'
-        if value then @datePickerFormat(new Date(value)) else ''
       else if @kind == 'site'
         name = window.model.currentCollection()?.findSiteNameById(value)
         if value && name then name else ''
-      else if @kind == 'photo'
-        
+
       else
         if value then value else ''
 
     valueUIFrom: (value) =>
-      if @kind == 'date'
-        value
-      else if @kind == 'site'
+      if @kind == 'site'
         # Return site_id or "" if the id for this name is not found (deleting the value or invalid value)
         window.model.currentCollection()?.findSiteIdByName(value) || ""
       else
@@ -102,10 +109,16 @@ onCollections ->
     buildHierarchyItems: =>
       @fieldHierarchyItemsMap = {}
       @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@, x))
+      @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: '(no value)'})
 
     edit: =>
       if !window.model.currentCollection()?.currentSnapshot
         @originalValue = @value()
+
+        # For select many, if it's an array we need to duplicate it
+        if @kind == 'select_many' && typeof(@) == 'object'
+          @originalValue = @originalValue.slice(0)
+
         @editing(true)
         optionsDatePicker = {}
         optionsDatePicker.onSelect = (dateText) =>
@@ -123,7 +136,7 @@ onCollections ->
         else true
 
     exit: =>
-      @value(@originalValue) if @originalValue?
+      @value(@originalValue)
       @editing(false)
       @filter('')
       delete @originalValue
@@ -198,12 +211,15 @@ onCollections ->
       @writeable = @originalWriteable
 
     fileSelected: (data, event) =>
-      fileUploads = event.srcElement.files
+      fileUploads = $("#" + data.code)[0].files
       if fileUploads.length >0
 
         photoExt = fileUploads[0].name.split('.').pop()
-        value = (new Date()).getTime() + "." + photoExt 
-        @value(value)
+        if @originalValue and !@value()
+          @value(@originalValue)
+        if !@value()
+          value = (new Date()).getTime() + "." + photoExt
+          @value(value)
         
         reader = new FileReader()
         reader.onload = (event) =>
@@ -216,7 +232,7 @@ onCollections ->
         @photo = ''
         @value('')
 
-    removeImage: => 
+    removeImage: =>
       @photo = ''
       @value('')
       $("#" + @code).attr("value",'')

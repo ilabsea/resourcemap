@@ -1,5 +1,9 @@
 <!-- ko if: newOrEditSite() -->
-%form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post}
+%form{ko(with: :newOrEditSite, submit: '$root.saveSite'), method: :post, id: "siteform"}
+  %div{"data-role" => "header", "data-theme" => "c"}
+    %h1{ko(text: '$root.currentCollection().name')}
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "nofollow", "data-ajax" => "false" }Sign out
+
   %h4{:style => "margin:0px"} New Site
   %div{"data-role" => "content"}
     <!-- ko if: saveFailed -->
@@ -7,7 +11,7 @@
     <!-- /ko -->
     %div
       %label{:for => "basic"} Name: 
-      %input#basic{:name => "name", :type => "text", 'data-bind' => kov(value: :name, valueUpdate: :afterkey, hasfocus: true), :autofocus => true}
+      %input#basic{:name => "name", :type => "text", 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true), :autofocus => true}
       .clear
     %br     
     %div
@@ -29,7 +33,7 @@
     <!-- ko foreach: fields -->
     %div{"data-role" => "controlgroup", style: "margin-left:10px"}
       <!-- ko if: show -->
-      = label_tag '', '', ko(text: "name + '(' + code() + '):'")
+      = label_tag '', '', ko(text: "name + '(' + code + '):'")
       <!-- /ko -->
       //%span.value{ko(text: :valueUI)}
       - Field::kinds.each do |kind|
@@ -43,6 +47,6 @@
   <!-- ko if: !valid() -->
   %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red; margin-left:20px'}
   <!-- /ko -->
-  %button{ko(enable: :valid),type: 'submit'} Save Site
+  %button{ko(mobileenable: :valid),"data-role" => "button", type: 'submit'} Save Site
   %a{ko(click: '$root.exitSite'), "data-role" => "button", "data-icon" => "delete", "data-theme" => "b"} Cancel
 <!-- /ko -->

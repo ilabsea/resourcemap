@@ -18,7 +18,6 @@ onCollections ->
       params["collection_id"] = @currentCollection().id if @currentCollection()
 
       $('.BreadCrumb').load("/collections/breadcrumbs", params)
-
     @editingSiteLocation: ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
@@ -28,6 +27,11 @@ onCollections ->
         pos = @originalSiteLocation = @map.getCenter()
         site = new Site(@currentCollection(), lat: pos.lat(), lng: pos.lng())
         site.copyPropertiesToCollection(@currentCollection())
+        if window.model.newSiteProperties
+          for esCode, value of window.model.newSiteProperties
+            field = @currentCollection().findFieldByEsCode esCode
+            field.setValueFromSite(value) if field
+
         @unselectSite()
         @editingSite site
         @editingSite().startEditLocationInMap()
@@ -37,15 +41,23 @@ onCollections ->
     @editSite: (site) ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
+
         site.copyPropertiesToCollection(site.collection)
+
         if @selectedSite() && @selectedSite().id() == site.id()
           @unselectSite()
 
-        site.collection.updatePermission site, => @editingSite(site)
+        if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
+          site.fetchFields()
+
+
         @selectSite(site)
+        @editingSite(site)
         @currentCollection(site.collection)
 
         @loadBreadCrumb()
+
+      $('a#previewimg').fancybox()
 
     @editSiteFromId: (siteId, collectionId) ->
       site = @siteIds[siteId]
@@ -94,10 +106,22 @@ onCollections ->
           site = new Site(collection, data)
           @editSite site
 
+    @showProgress: ->
+      $("#editorContent").css({opacity: 0.2})
+      $('#uploadProgress').fadeIn()
+      $("#editorContent :input").attr("disabled", true)
+
+    @hideProgress: ->
+      $("#editorContent").css({opacity: 1})
+      $('#uploadProgress').fadeOut()
+      $("#editorContent :input").removeAttr('disabled')
+
     @saveSite: ->
       return unless @editingSite().valid()
-
+      @showProgress()
       callback = (data) =>
+        @hideProgress()
+
         @currentCollection().reloadSites()
 
         @editingSite().updatedAt(data.updated_at)
@@ -111,13 +135,15 @@ onCollections ->
           @editingSite().deleteMarker()
           @exitSite()
 
+        $('a#previewimg').fancybox()
+        window.model.updateSitesInfo()
+
       @editingSite().copyPropertiesFromCollection(@currentCollection())
       @editingSite().fillPhotos(@currentCollection())
 
       if @editingSite().id()
         @editingSite().update_site(@editingSite().toJSON(), callback)
       else
-        
         @editingSite().create_site(@editingSite().toJSON(), callback)
 
     @exitSite: ->
@@ -143,6 +169,7 @@ onCollections ->
       @loadBreadCrumb()
       @rewriteUrl()
 
+      $('a#previewimg').fancybox()
       # Return undefined because otherwise some browsers (i.e. Miss Firefox)
       # would render the Object returned when called from a 'javascript:___'
       # value in an href (and this is done in the breadcrumb links).
@@ -152,11 +179,12 @@ onCollections ->
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
         @unselectSite()
         @currentCollection().removeSite(@editingSite())
-        $.post "/sites/#{@editingSite().id()}", {_method: 'delete'}, =>
+        $.post "/sites/#{@editingSite().id()}", {collection_id: @currentCollection().id, _method: 'delete'}, =>
           @currentCollection().fetchLocation()
           @editingSite().deleteMarker()
           @exitSite()
           @reloadMapSites() if @showingMap()
+          window.model.updateSitesInfo()
 
     @selectSite: (site) ->
       if @selectedHierarchy()

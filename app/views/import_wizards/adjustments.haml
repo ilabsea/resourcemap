@@ -11,10 +11,10 @@
   %p Now specify how to map each column to a field.
   %br/
 
-  - if current_snapshot
-    = render '/current_snapshot_message'
-  - else
+  - if current_user_snapshot.at_present?
     = render 'steps', :step => 2
+  - else
+    = render '/current_snapshot_message'
     %br
 
   %h2.loading Curate Data
@@ -28,12 +28,19 @@
     This may take a while depending on the size of your file.
 
   #import-wizard-main.hidden-until-loaded
-    /ko if: !hasId()
-    - if collection.sites.exists?
-      .info-box.flash_error.drop_shadow
-        = raw "All sites will be imported as new. If you want to modify the existing ones #{link_to "go back", :back, :class => 'black'} to the previous page."
-      %br
-    //ko
+    
+    .info-box.drop_shadow
+      .i18g-information.left
+      .info-items.left
+        /ko if: !hasId()
+        - if collection.sites.exists?
+          %span
+            = raw "All sites will be imported as new. If you want to modify the existing ones, follow the instructions in the #{link_to "previous page", :back, :class => 'black', :style => 'text-decoration:underline'}."
+          %br
+        //ko
+        %span If you notice issues with some characters (such as accents) try exporting the CSV with UTF-8 encoding.
+      .clear
+    %br
 
     /ko if: (validationErrors() && validationErrors().hasErrors())
     .box.error_description
@@ -59,7 +66,7 @@
 
     %br
 
-    .box.nopadd
+    .box.nopadd#preview
       .tablescroll{style: 'margin-top: 0'}
         %table.GralTable.fht-table.fht-table-init{style: 'table-layout: fixed;'}
           %colgroup
@@ -85,7 +92,9 @@
 
 
     %br/
+    / ko if: sitesCount() > 10
     Showing first 10 records.
+    / /ko
     %br/
     /ko if: importing()
     Importing, please wait. This might take several minutes.

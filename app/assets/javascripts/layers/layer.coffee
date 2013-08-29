@@ -5,6 +5,7 @@ onLayers ->
       @name = ko.observable data?.name
       @public = ko.observable data?.public
       @ord = ko.observable data?.ord
+      @threshold_ids = if data.threshold_ids == undefined then [] else data.threshold_ids
       if data?.fields
         @fields = ko.observableArray($.map(data.fields, (x) => new Field(@, x)))
       else

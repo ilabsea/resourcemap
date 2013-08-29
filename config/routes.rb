@@ -22,7 +22,9 @@ ResourceMap::Application.routes.draw do
     post :register_gateways
     get  :message_quota
     get :sites_by_term
-    resources :sites
+    resources :sites do
+      get :visible_layers_for
+    end
     resources :layers do
       member do
         put :set_order
@@ -59,6 +61,8 @@ ResourceMap::Application.routes.draw do
     get 'search'
     post 'decode_hierarchy_csv'
 
+    get 'sites_info'
+
     resource :import_wizard, only: [] do
        get 'index'
        post 'upload_csv'
@@ -69,7 +73,10 @@ ResourceMap::Application.routes.draw do
        get 'get_visible_sites/:page' => 'import_wizards#get_visible_sites'
        get 'import_in_progress'
        get 'import_finished'
+       get 'import_failed'
        get 'job_status'
+       get 'cancel_pending_jobs'
+       get 'logs'
      end
   end
 
@@ -96,8 +103,21 @@ ResourceMap::Application.routes.draw do
     get 'collections/:id/geo' => 'collections#geo_json',as: :geojson
     get 'sites/:id' => 'sites#show', as: :site
     get 'activity' => 'activities#index', as: :activity
+    # match 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', :via => :put
+    # put 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', as: :collections
     resources :tokens, :only => [:index, :destroy]
-    resources :collections
+    resources :collections do      
+      member do 
+        put 'update_sites'
+        get 'get_fields'
+      end
+      resources :sites
+    end
+    match 'collections/:collection_id/memberships' => 'memberships#create', :via => :post
+    match 'collections/:collection_id/memberships' => 'memberships#update', :via => :put
+    match 'collections/:collection_id/register_new_member' => 'memberships#register_new_member', :via => :post
+    match 'collections/:collection_id/destroy_member' => 'memberships#destroy_member', :via => :delete
+    
     devise_for :users, :controllers => { :sessions => 'sessions' }
   end
 

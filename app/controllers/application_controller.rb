@@ -3,40 +3,49 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   #before_filter :prepare_for_mobile
 
-  expose(:collections) { current_user.collections }
   expose(:collection)
-  expose(:current_snapshot) { collection.snapshot_for(current_user) }
+  expose(:current_user_snapshot) { UserSnapshot.for current_user, collection }
   expose(:collection_memberships) { collection.memberships.includes(:user) }
-  expose(:layers) {if current_snapshot && collection then collection.layer_histories.at_date(current_snapshot.date) else collection.layers end}
+  expose(:layers) {if !current_user_snapshot.at_present? && collection then collection.layer_histories.at_date(current_user_snapshot.snapshot.date) else collection.layers end}
   expose(:layer)
-  expose(:fields) {if current_snapshot && collection then collection.field_histories.at_date(current_snapshot.date) else collection.fields end}
+  expose(:fields) {if !current_user_snapshot.at_present? && collection then collection.field_histories.at_date(current_user_snapshot.snapshot.date) else collection.fields end}
   expose(:activities) { current_user.activities }
   expose(:thresholds) { collection.thresholds.order :ord }
   expose(:threshold)
   expose(:reminders) { collection.reminders }
   expose(:reminder)
 
+  expose(:new_search_options) do
+    if current_user_snapshot.at_present?
+      {current_user: current_user}
+    else
+      {snapshot_id: current_user_snapshot.snapshot.id, current_user_id: current_user.id}
+    end
+  end
+  expose(:new_search) { collection.new_search new_search_options }
+
   rescue_from ActiveRecord::RecordNotFound do |x|
     render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true
   end
 
+  rescue_from CanCan::AccessDenied do |exception|
+    render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
+  end
+
+  def setup_guest_user
+    u = User.new is_guest: true
+    # Empty membership for the current collection
+    # This is used in SitesPermissionController.index
+    # TODO: Manage permissions passing current_ability to client
+    u.memberships = [Membership.new(collection_id: collection.id)]
+    @guest_user = u
+  end
+
+  def current_user
+    super || @guest_user
+  end
+
   #before_filter :prepare_for_mobile
-
-  private
-
-  def mobile_device?
-    if session[:mobile_param]
-      session[:mobile_param] == "1"
-    else
-      request.user_agent =~ /Mobile|webOS/
-    end
-  end
-  helper_method :mobile_device?
-
-  def prepare_for_mobile
-    session[:mobile_param] = params[:mobile] if params[:mobile]
-    #request.format = :mobile if mobile_device?
-  end
 
   def current_user_or_guest
     if user_signed_in?
@@ -86,12 +95,14 @@ class ApplicationController < ActionController::Base
   def show_collection_breadcrumb
     show_collections_breadcrumb
     add_breadcrumb "Collections", collections_path
-    add_breadcrumb collection.name, collections_path + "?collection=#{collection.id}"
+    add_breadcrumb collection.name, collections_path + "?collection_id=#{collection.id}"
   end
 
   def show_properties_breadcrumb
     add_breadcrumb "Properties", collection_path(collection)
   end
+
+  private
 
   def mobile_device?
     if session[:mobile_param]

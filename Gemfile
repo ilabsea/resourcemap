@@ -19,6 +19,9 @@ gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
 gem 'uuidtools'
 gem 'rack-offline'
+gem 'rmagick', '2.13.2'
+gem 'newrelic_rpm'
+gem 'cancan'
 
 group :test do
   gem 'shoulda-matchers'
@@ -45,7 +48,8 @@ group :test, :development do
 end
 
 group :development do
-  gem 'dist', :git => 'git://github.com/manastech/dist.git'
+  gem 'dist', :git => 'https://github.com/manastech/dist.git'
+  gem 'ruby-prof', git: 'https://github.com/ruby-prof/ruby-prof.git'
 end
 
 # Gems used only for assets and not required

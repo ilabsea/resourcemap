@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130510183328) do
+ActiveRecord::Schema.define(:version => 20130705170420) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -19,9 +19,9 @@ ActiveRecord::Schema.define(:version => 20130510183328) do
     t.integer  "layer_id"
     t.integer  "field_id"
     t.integer  "site_id"
-    t.text     "data"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.binary   "data",          :limit => 2147483647
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.string   "item_type"
     t.string   "action"
   end
@@ -79,9 +79,9 @@ ActiveRecord::Schema.define(:version => 20130510183328) do
     t.string   "name"
     t.string   "code"
     t.string   "kind"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-    t.text     "config"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
+    t.binary   "config",        :limit => 2147483647
     t.integer  "ord"
     t.text     "metadata"
   end
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(:version => 20130510183328) do
     t.datetime "updated_at",        :null => false
     t.integer  "user_id"
     t.integer  "collection_id"
+    t.text     "exception"
   end
 
   create_table "layer_histories", :force => true do |t|
@@ -274,8 +275,9 @@ ActiveRecord::Schema.define(:version => 20130510183328) do
   create_table "user_snapshots", :force => true do |t|
     t.integer  "user_id"
     t.integer  "snapshot_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.integer  "collection_id"
   end
 
   create_table "users", :force => true do |t|
@@ -303,8 +305,6 @@ ActiveRecord::Schema.define(:version => 20130510183328) do
     t.integer  "site_count",             :default => 0
     t.integer  "gateway_count",          :default => 0
     t.boolean  "success_outcome"
-    t.boolean  "is_login"
-    t.boolean  "is_guest"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

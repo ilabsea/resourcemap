@@ -10,15 +10,20 @@ class LayersController < ApplicationController
         add_breadcrumb "Properties", collection_path(collection)
         add_breadcrumb "Layers", collection_layers_path(collection)
       end
-      if current_snapshot
+      if current_user_snapshot.at_present?
+
+        json = layers.includes(:fields).all.as_json(include: :fields).each { |layer|
+          layer['threshold_ids'] = Layer.find(layer['id']).get_associated_threshold_ids
+        }
+
+        format.json { render json:  json}
+      else
         format.json {
           render json: layers
             .includes(:field_histories)
-            .where("field_histories.valid_since <= :date && (:date < field_histories.valid_to || field_histories.valid_to is null)", date: current_snapshot.date)
+            .where("field_histories.valid_since <= :date && (:date < field_histories.valid_to || field_histories.valid_to is null)", date: current_user_snapshot.snapshot.date)
             .as_json(include: :field_histories)
           }
-      else
-        format.json { render json: layers.includes(:fields).all.as_json(include: :fields) }
       end
     end
   end
@@ -51,6 +56,12 @@ class LayersController < ApplicationController
   end
 
   def destroy
+
+    if params['threshold_ids']
+      Threshold.delete(params['threshold_ids'])
+      collection.recreate_index
+    end
+
     layer.user = current_user
     layer.destroy
     head :ok

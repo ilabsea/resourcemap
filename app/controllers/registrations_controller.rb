@@ -14,11 +14,11 @@ class RegistrationsController < Devise::RegistrationsController
     password_changed = !params[:user][:password].empty?
     params['user']['phone_number'].delete!('+')
     successfully_updated = if email_changed or password_changed
-      current_user.update_with_password(params[:user])
-    else
-      params[:user].delete(:current_password)
-      current_user.update_without_password(params[:user])
-    end
+                             current_user.update_with_password(params[:user])
+                           else
+                             params[:user].delete(:current_password)
+                             current_user.update_without_password(params[:user])
+                           end
     current_user.reset_authentication_token!
     if successfully_updated
       # Sign in the user bypassing validation in case his password changed

@@ -1,8 +1,14 @@
 GIT
-  remote: git://github.com/manastech/dist.git
-  revision: 79283f13f8c57ef944fd4175367624187890f2bd
+  remote: https://github.com/manastech/dist.git
+  revision: 44e5deadb0d9f63919fd68de5fce4ffdae2728a7
   specs:
     dist (0.0.1)
+
+GIT
+  remote: https://github.com/ruby-prof/ruby-prof.git
+  revision: 8b248d16b12fc8c0ddbdf7ff2666d7b422690206
+  specs:
+    ruby-prof (0.13.0)
 
 GEM
   remote: https://rubygems.org/
@@ -39,6 +45,7 @@ GEM
     bcrypt-ruby (3.0.1)
     breadcrumbs_on_rails (2.3.0)
     builder (3.0.4)
+    cancan (1.6.10)
     capistrano (2.15.4)
       highline
       net-scp (>= 1.0.0)
@@ -70,8 +77,8 @@ GEM
       debugger-linecache (~> 1.2.0)
       debugger-ruby_core_source (~> 1.2.1)
     debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.2.2)
-    decent_exposure (2.2.0)
+    debugger-ruby_core_source (1.2.3)
+    decent_exposure (1.0.2)
     devise (2.2.4)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -151,6 +158,7 @@ GEM
     net-ssh (2.6.7)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
+    newrelic_rpm (3.6.5.130)
     nokogiri (1.5.9)
     nuntium_api (0.21)
       json
@@ -216,6 +224,7 @@ GEM
       rspec (>= 2.5.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    rmagick (2.13.2)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
@@ -296,6 +305,7 @@ PLATFORMS
 
 DEPENDENCIES
   breadcrumbs_on_rails
+  cancan
   capistrano
   capybara
   ci_reporter
@@ -316,6 +326,7 @@ DEPENDENCIES
   lodash-rails
   machinist (= 1.0.6)
   mysql2
+  newrelic_rpm
   nokogiri
   nuntium_api (~> 0.13)
   pry
@@ -325,8 +336,10 @@ DEPENDENCIES
   resque
   resque-scheduler
   resque_spec
+  rmagick (= 2.13.2)
   rspec
   rspec-rails
+  ruby-prof!
   rvm
   rvm-capistrano (= 1.2.2)
   sass-rails (~> 3.2.3)

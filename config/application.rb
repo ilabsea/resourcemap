@@ -55,11 +55,16 @@ module ResourceMap
     # Enable the asset pipeline
     config.assets.enabled = true
 
+    # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
+    config.assets.precompile += %w( jquery.mobile-1.3.1.min.css jquery.js jquery_ujs.js knockout-2.2.1.js custom_bindings/mobileenable.js mobile/mobilecache.js mobile/collections.js mobile/events.js jquery.mobile-1.3.1.min.js )
+
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
     config.action_mailer.delivery_method = :sendmail
     config.google_analytics = 'UA-17030081-1'
-    config.version_name = File.read('REVISION').strip rescue 'Development'
+
+    config.version_name = File.read('VERSION').strip rescue "Development"
+    config.revision = File.read('REVISION').strip rescue "Development"
   end
 end

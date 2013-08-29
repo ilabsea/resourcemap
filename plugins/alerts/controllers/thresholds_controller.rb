@@ -21,6 +21,7 @@ class ThresholdsController < ApplicationController
     threshold = thresholds.new params[:threshold].except(:sites) 
     threshold.sites = Site.get_id_and_name params[:threshold][:sites] if params[:threshold][:sites]#select only id and name
     threshold.save!
+    collection.recreate_index
     render json: threshold
   end
 
@@ -37,13 +38,15 @@ class ThresholdsController < ApplicationController
     threshold.update_attributes! params[:threshold].except(:sites)
     if params[:threshold][:sites]
       threshold.sites = Site.get_id_and_name params[:threshold][:sites]
-      threshold.save 
-    end 
+      threshold.save
+    end
+    collection.recreate_index
     render json: threshold
   end
 
   def destroy
     threshold.destroy
+    collection.recreate_index
 
     render json: threshold
   end

@@ -59,7 +59,24 @@ class Collection < ActiveRecord::Base
     target_fields
   end
 
+  def site_ids_permission(user)
+    membership = user.membership_in self
+    read_sites_permission = membership.read_sites_permission
+    write_sites_permission = membership.write_sites_permission
+    site_ids = []
+
+    site_ids.concat(read_sites_permission['some_sites'].map{ |site| site['id'].to_i}) if read_sites_permission
+    site_ids.concat(write_sites_permission['some_sites'].map{ |site| site['id'].to_i}) if write_sites_permission
+
+    site_ids.uniq
+
+  end
+
   def visible_fields_for(user, options)
+    if user.is_guest
+      return fields.includes(:layer).all
+    end
+
     membership = user.membership_in self
     return [] unless membership
     if options[:snapshot_id]
@@ -69,8 +86,6 @@ class Collection < ActiveRecord::Base
       target_fields = fields.includes(:layer)
     end
     if membership.admin?
-      target_fields = target_fields.all
-    elsif user.is_guest
       target_fields = target_fields.all
     else
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
@@ -95,7 +110,7 @@ class Collection < ActiveRecord::Base
     end
 
     membership = user.membership_in self
-    if !membership.admin?
+    if !user.is_guest && !membership.admin?
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
         hash
@@ -181,10 +196,44 @@ class Collection < ActiveRecord::Base
   end
 
   def get_gateway_under_user_owner
-    get_user_owner.get_gateway 
+    get_user_owner.get_gateway
   end
 
   def register_gateways_under_user_owner(owner_user)
     self.channels = owner_user.channels.find_all_by_is_enable true
+  end
+
+  # Returns a dictionary of :code => :es_code of all the fields in the collection
+  def es_codes_by_field_code
+    self.fields.inject({}) do |dict, field|
+      dict[field.code] = field.es_code
+      dict
+    end
+  end
+
+  def self.filter_sites params
+    builder = Collection.find(params[:collection_id]).sites
+    if !params[:from].blank? && !params[:to].blank?
+      from = params[:from]
+      to   = params[:to]
+      builder = builder.where(['sites.created_at BETWEEN :from AND :to', :from => from, :to => to])
+    elsif !params[:from].blank?
+      from = params[:from]
+      builder = builder.where(['sites.created_at >= :from', :from => from])
+    elsif !params[:to].blank? 
+      to = params[:to]
+      builder = builder.where(['sites.created_at <= :to', :to => to])
+    end
+    
+    builder = builder.limit params[:limit]   if !params[:limit].blank?
+    builder = builder.offset params[:offset] if !params[:offset].blank?
+    builder
+  end
+
+  def new_site_properties
+    self.fields.each_with_object({}) do |field, hash|
+      value = field.default_value_for_create(self)
+      hash[field.es_code] = value if value
+    end
   end
 end
