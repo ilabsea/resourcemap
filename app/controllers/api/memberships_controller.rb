@@ -20,7 +20,6 @@ class Api::MembershipsController < ApplicationController
       end
       render :json => params[:user], :status => :ok
     else
-      p "Errorororro"
       render :json => params[:user], :status => :unauthorized
     end
   end

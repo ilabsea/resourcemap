@@ -224,7 +224,10 @@ class Collection < ActiveRecord::Base
       to = params[:to]
       builder = builder.where(['sites.created_at <= :to', :to => to])
     end
-    
+    builder    
+  end
+
+  def self.filter_page params, builder
     builder = builder.limit params[:limit]   if !params[:limit].blank?
     builder = builder.offset params[:offset] if !params[:offset].blank?
     builder
