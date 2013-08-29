@@ -198,12 +198,6 @@
                   %div{style: 'margin-bottom:14px'}
                     %label ID With Prefix:
                     %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
-                %div{style: 'margin-bottom:14px'}
-                  %label Updated At:
-                  %span.value{ko(text: :updatedAt)}
-                %div{style: 'margin-bottom:14px'}
-                  %label Updated By:
-                  %span.value{ko(text: :updatedBy)}
 
                 / ko if: collection.readable($data)
                 <!-- ko foreach: layers -->

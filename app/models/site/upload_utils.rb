@@ -7,7 +7,9 @@ module Site::UploadUtils
       fileHash.each do |key, value|
         img = Magick::Image::from_blob(Base64.decode64(value)).first
         img.resize_to_fit!(800)
-        img.write("public/photo_field/" + key)
+        path = "public/photo_field/"
+        Dir.mkdir(path) unless File.exists?(path)
+        img.write(path + key)
       end
     end
   end

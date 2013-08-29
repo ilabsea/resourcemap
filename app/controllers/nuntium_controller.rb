@@ -39,7 +39,10 @@ class NuntiumController < ApplicationController
       message.reply = err.message
     ensure
     if (message.reply != "Invalid command")
-      message[:collection_id] = get_collection_id(params[:body])
+      collection_id = get_collection_id(params[:body])
+      if collection_id >0
+        message[:collection_id] = collection_id
+      end
     end
     message.save
     render :text => message.reply, :content_type => "text/plain"
@@ -57,8 +60,12 @@ class NuntiumController < ApplicationController
       collectionId = Message.getCollectionId(bodyMsg, 7)
     elsif (bodyMsg[5] == "u")
       siteCode = Message.getCollectionId(bodyMsg, 7)
-      site = Site.find_by_id_with_prefix(siteCode)  
-      collectionId = site.collection_id
+      site = Site.find_by_id_with_prefix(siteCode)
+      if site
+        collectionId = site.collection_id
+      else
+        collectionId = -1
+      end
     end
     return collectionId
   end

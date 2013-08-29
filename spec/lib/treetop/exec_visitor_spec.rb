@@ -116,7 +116,7 @@ describe ExecVisitor, "Process update command" do
   end
 
   before(:each) do
-    parser = CommandParser.new
+    @parser = CommandParser.new
     @collection = Collection.make
     @user = User.make(:phone_number => '85512345678')
     @collection.memberships.create(:user => @user, :admin => false)
@@ -126,7 +126,7 @@ describe ExecVisitor, "Process update command" do
     @site = @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
     @site.user = @user
     @collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
-    @node = parser.parse('dyrm u AB1 ambulances=15,doctors=20').command
+    @node = @parser.parse('dyrm u AB1 ambulances=15,doctors=20').command
     @node.sender = @user
   end
 
@@ -185,6 +185,12 @@ describe ExecVisitor, "Process update command" do
     site.properties[@f1.es_code].to_i.should == 15
     site.properties[@f2.es_code].to_i.should == 20
   end
+
+  it 'should return cannot find site id when trying to update a site that does not exist' do
+    @node11 = @parser.parse('dyrm u 44 ambulances=15').command
+    expect{@visitor.visit_update_command(@node11)}.to raise_error(ExecVisitor::MSG[:can_not_find_site]+'44')
+  end
+
 end
 
 
@@ -234,7 +240,7 @@ describe ExecVisitor, "Process add command" do
   end
 
   it 'should added 1 new site when visit_add_command called' do
-    @node = @parser.parse("dyrm a #{@collection.id} lat=12.11,lng=75.11,name=sms_site,doctor=10").command
+    @node = @parser.parse("dyrm a #{@collection.id} lat=12.11,lng=75.11,name=sms_site,doctors=10").command
     @node.sender = @user
     expect{@visitor.visit_add_command(@node)}.to change{
       Collection.find(@collection.id).sites.count
@@ -261,4 +267,25 @@ describe ExecVisitor, "Process add command" do
     @node.sender = @user1
     @visitor.visit_add_command(@node).should eq "Collection id is needed in your message."
   end
+
+  it 'should return site name is required when sender do not include name' do
+    @node = @parser.parse("dyrm a lat=12.11,lng=75.11").command
+    @node.sender = @user
+    @visitor.visit_add_command(@node).should == ExecVisitor::MSG[:name_is_required]
+  end
+
+  it 'should return key-value properties' do
+    @node = @parser.parse("dyrm a name=abc,doctors=5").command
+    @visitor.node_to_properties(@node.property_list).should eq [{:code=>"name", :value=>"abc"},{:code=>"doctors", :value=>"5"}]
+  end
+
+  it 'should return site properties with id and value' do
+    @node = @parser.parse("dyrm a name=abc,doctors=5,ambulances=10").command
+    @visitor.node_to_site_properties(@visitor.node_to_properties(@node.property_list),@collection.id).should eq({@f2.id.to_s=>"5", @f1.id.to_s=>"10"})
+  end
+  it 'should return a key-value site' do
+    @node = @parser.parse("dyrm a name=abc,lat=12.11,lng=75.11,doctors=5,ambulances=10").command
+    @visitor.node_to_site(@visitor.node_to_properties(@node.property_list)).should eq({"name" => "abc", "lat" => "12.11", "lng" => "75.11"})
+  end
+
 end
