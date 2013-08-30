@@ -93,6 +93,43 @@ class Api::CollectionsController < ApplicationController
     render :json => list.to_json
   end
 
+  def get_sites_conflict
+    if params[:con_type]
+      sites = []
+      con_type = params[:con_type].split(",")
+      properties = Field.find_by_code("con_type").id
+      if (params[:from].blank? && params[:to].blank?)
+        from = parse_date_format("#{Time.now.mon}/01/#{Time.now.year}") - 1
+        to = parse_date_format("#{Time.now.mon}/31/#{Time.now.year}") + 1
+        tmp_sites = Collection.find(params[:id]).sites.where(:created_at => from..to).each do |x|
+          con_type.each do |el|
+            if x.properties["#{properties}"] == el.to_i
+              sites << x
+            end
+          end
+        end
+      else
+        from = parse_date_format(params[:from]) - 1
+        to = parse_date_format(params[:to]) + 1
+        tmp_sites = Collection.find(params[:collection_id]).sites.where(:created_at => from..to).each do |x|
+          con_type.each do |el|
+            if x.properties["#{properties}"] == el.to_i
+              sites << x
+            end
+          end
+        end
+      end  
+    else
+      sites = Collection.find(params[:collection_id]).sites
+    end
+    render :json => sites
+  end
+
+  def parse_date_format date 
+    array_date = date.split("/")
+    return Date.new(array_date[2].to_i, array_date[0].to_i, array_date[1].to_i)
+  end
+
   private
 
   def perform_search(*options)
