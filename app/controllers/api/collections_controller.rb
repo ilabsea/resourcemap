@@ -111,7 +111,7 @@ class Api::CollectionsController < ApplicationController
       else
         from = parse_date_format(params[:from]) - 1
         to = parse_date_format(params[:to]) + 1
-        tmp_sites = Collection.find(params[:collection_id]).sites.where(:created_at => from..to).each do |x|
+        tmp_sites = Collection.find(params[:id]).sites.where(:created_at => from..to).each do |x|
           con_type.each do |el|
             if x.properties["#{properties}"] == el.to_i
               sites << x
@@ -120,7 +120,7 @@ class Api::CollectionsController < ApplicationController
         end
       end  
     else
-      sites = Collection.find(params[:collection_id]).sites
+      sites = Collection.find(params[:id]).sites
     end
     render :json => sites
   end
