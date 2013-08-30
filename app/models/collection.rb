@@ -227,9 +227,9 @@ class Collection < ActiveRecord::Base
     builder    
   end
 
-  def self.filter_page params, builder
-    builder = builder.limit params[:limit]   if !params[:limit].blank?
-    builder = builder.offset params[:offset] if !params[:offset].blank?
+  def self.filter_page limit, offset, builder
+    builder = builder.limit limit   if limit
+    builder = builder.offset offset if offset
     builder
   end
 

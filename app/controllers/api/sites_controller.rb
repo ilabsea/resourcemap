@@ -78,7 +78,7 @@ class Api::SitesController < ApplicationController
   def index
     builder = Collection.filter_sites(params)
     sites_size = builder.size
-    sites_by_page  = Collection.filter_page(params, builder)
+    sites_by_page  = Collection.filter_page(params[:limit], params[:offset], builder)
     render :json => {:sites => sites_by_page, :total => sites_size}
   end
 
