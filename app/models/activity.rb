@@ -132,9 +132,11 @@ class Activity < ActiveRecord::Base
                          
         
         column_keys = {} #column properties of csv stored in "field"
-        
+        field_kinds = {}
+
         collection.fields.each do |field|
           column_keys[field.id] = field.name
+          field_kinds[field.id.to_s] = field.kind
         end
       
         # add column properties to csv column header
@@ -171,7 +173,10 @@ class Activity < ActiveRecord::Base
                activity.updated_at               
              ]            
              properties_row.each do |col_key, col_value|
-               row << col_value   
+               if field_kinds[col_key] == 'photo' and not col_value.empty?
+                col_value = "http://" + Settings.host + "/public/photo_field/" + col_value
+               end
+               row << col_value
              end
              
              row << activity.action
