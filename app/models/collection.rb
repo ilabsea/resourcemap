@@ -224,13 +224,13 @@ class Collection < ActiveRecord::Base
       to = params[:to]
       builder = builder.where(['sites.created_at <= :to', :to => to])
     end
-    builder    
+    builder 
   end
 
   def self.filter_page limit, offset, builder
     builder = builder.limit limit   if limit
     builder = builder.offset offset if offset
-    builder
+    builder.find(:all, :order => "sites.created_at DESC") 
   end
 
   def new_site_properties
