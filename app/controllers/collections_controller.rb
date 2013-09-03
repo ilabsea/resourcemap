@@ -240,7 +240,9 @@ class CollectionsController < ApplicationController
   end
 
   def register_gateways
-    collection.channels = Channel.find params["gateways"]
+    channels = []
+    channels = Channel.find params[:gateways] if params[:gateways].present?
+    collection.channels = channels
     render json: collection.as_json
   end
 
@@ -272,9 +274,12 @@ class CollectionsController < ApplicationController
   def send_new_member_sms
     random_code = (0..3).map{(rand(9))}.join
     collection = Collection.find_by_id(params[:collection_id])
-    channel = collection.channels.first
-    SmsNuntium.notify_sms [params[:phone_number]], "Your single-use Resource Map pin code is #{random_code}", channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
-    render json: {status: 200, secret_code: random_code}
+    if channel = collection.channels.first
+      SmsNuntium.notify_sms [params[:phone_number]], "Your single-use Resource Map pin code is #{random_code}", channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
+      render json: {status: 200, secret_code: random_code}
+    else
+      render json: {status: 200, errors: 'There is no channel on the collection.'}
+    end
   end
 
   def sites_info
