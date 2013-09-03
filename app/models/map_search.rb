@@ -31,9 +31,6 @@ class MapSearch
   def apply_cluster_status
     sites = self.results
     count = get_sites_size sites
-    p "************************"
-    p count
-    p "************************"
     if(count < 150)
       self.set_cluster_status(false)
     else

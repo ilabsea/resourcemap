@@ -19,9 +19,9 @@ class RegistrationsController < Devise::RegistrationsController
                              params[:user].delete(:current_password)
                              current_user.update_without_password(params[:user])
                            end
-    current_user.reset_authentication_token!
     if successfully_updated
       # Sign in the user bypassing validation in case his password changed
+      current_user.reset_authentication_token!
       sign_in current_user, :bypass => true
       redirect_to collections_path, notice: "Account updated successfully"
     else

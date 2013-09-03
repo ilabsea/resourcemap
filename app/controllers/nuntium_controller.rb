@@ -40,7 +40,7 @@ class NuntiumController < ApplicationController
     ensure
     if (message.reply != "Invalid command")
       collection_id = get_collection_id(params[:body])
-      if collection_id >0
+      if collection_id and collection_id >0
         message[:collection_id] = collection_id
       end
     end
