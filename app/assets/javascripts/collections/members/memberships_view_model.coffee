@@ -47,8 +47,11 @@ class @MembershipsViewModel
     _self = this;
     if (@phoneNumber())
       $.post "/collections/#{ @collectionId() }/send_new_member_sms.json", phone_number: @phoneNumber(), (data) ->
-        _self.secretCode = data.secret_code
-        _self.codeVerificationMsg('The pin code has been sent to the phone number above. Please enter the pin code in the textbox for verification.')
+        if data.errors
+          _self.codeVerificationMsg(data.errors)
+        else
+          _self.secretCode = data.secret_code
+          _self.codeVerificationMsg('The pin code has been sent to the phone number above. Please enter the pin code in the textbox for verification.')
 
   showRegisterMembership: () =>
     @showRegisterNewMember(true)
