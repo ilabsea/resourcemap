@@ -100,7 +100,7 @@ class Api::CollectionsController < ApplicationController
       properties = Field.find_by_code("con_type").id
       if (params[:from].blank? && params[:to].blank?)
         from = parse_date_format("#{Time.now.mon}/01/#{Time.now.year}") - 1
-        to = parse_date_format("#{Time.now.mon}/31/#{Time.now.year}") + 1
+        to = parse_date_format("#{Time.now.mon}/30/#{Time.now.year}").end_of_month + 1
         tmp_sites = Collection.find(params[:id]).sites.where(:created_at => from..to).each do |x|
           con_type.each do |el|
             if x.properties["#{properties}"] == el.to_i
