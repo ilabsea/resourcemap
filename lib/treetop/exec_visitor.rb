@@ -54,6 +54,14 @@ class ExecVisitor < Visitor
       if not site.keys.include?('name')
         return MSG[:name_is_required]
       end
+      properties = node_to_site_properties key_value_properties,collection.id
+      if properties["not_exist"]
+        if properties["not_exist"].length > 1
+          return 'Field codes: ' + properties["not_exist"].join(',') + ' are not exist.'
+        else
+          return 'Field code: ' + properties["not_exist"].join(',') + ' is not exist.'
+        end
+      end
       site["properties"] = node_to_site_properties key_value_properties,collection.id
       site["user"] = node.sender
       if collection.sites.create site
@@ -104,7 +112,12 @@ class ExecVisitor < Visitor
   end
 
   def get_field_id(field_code, collection_id)
-    Field.where("code=? and collection_id=?",field_code, collection_id).first.id
+    field = Field.where("code=? and collection_id=?",field_code, collection_id).first
+    if field
+      field.id
+    else
+      nil
+    end
   end
 
   def node_to_site_properties(key_value_properties, collection_id)
@@ -113,7 +126,12 @@ class ExecVisitor < Visitor
       code = property[:code]
       if code != 'name' and code != 'lat' and code != 'lng'
         id = get_field_id(code,collection_id)
-        properties[id.to_s] =  property[:value] if id
+        if id
+          properties[id.to_s] =  property[:value]
+        else
+          properties['not_exist'] = [] if properties['not_exist'].nil?
+          properties['not_exist'].push code
+        end
       end
     }
     properties
