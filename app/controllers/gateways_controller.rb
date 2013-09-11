@@ -11,11 +11,16 @@ class GatewaysController < ApplicationController
   end
 
   def create
-    channel = current_user.channels.create params[:gateway]
-    current_user.gateway_count += 1
-    current_user.update_successful_outcome_status
-    current_user.save!
-    render json: channel.as_json
+    channel = current_user.channels.new params[:gateway]
+    if channel.valid?
+      channel.save!
+      current_user.gateway_count += 1
+      current_user.update_successful_outcome_status
+      current_user.save!
+      render json: channel.as_json
+    else
+      render json: {status: 200, errors: channel.errors.full_messages}
+    end
   end
 
   def update
