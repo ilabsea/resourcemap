@@ -111,6 +111,7 @@ ResourceMap::Application.routes.draw do
         put 'update_sites'
         get 'get_fields'
         get 'get_sites_conflict'
+        get 'get_some_sites'
       end
       resources :sites
     end

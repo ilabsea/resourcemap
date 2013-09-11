@@ -82,6 +82,13 @@ class Api::SitesController < ApplicationController
     render :json => {:sites => sites_by_page, :total => sites_size}
   end
 
+  def get_reporter_site
+    builder = Collection.filter_sites(params)
+    sites_size = builder.size
+    sites_by_page  = Collection.filter_page(params[:limit], params[:offset], builder)
+    render :json => {:sites => sites_by_page, :total => sites_size}
+  end
+
   def show
     site = Site.find(params[:id])
     render :json => site

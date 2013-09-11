@@ -125,6 +125,12 @@ class Api::CollectionsController < ApplicationController
     render :json => sites
   end
 
+  def get_some_sites
+    site_ids = params[:sites]
+    sites = Site.where("id in (" + site_ids + ")")
+    render :json => sites
+  end
+
   def parse_date_format date 
     array_date = date.split("/")
     return Date.new(array_date[2].to_i, array_date[0].to_i, array_date[1].to_i)
