@@ -6,7 +6,8 @@ class ExecVisitor < Visitor
     :can_not_add => "Invalid command.",
     :added_successfully => "Site has been successfull added.",
     :name_is_required => "Site name is required.",
-    :can_not_find_site => "Can't find site with ID="
+    :can_not_find_site => "Can't find site with ID=",
+    :can_not_add_site => "You don't have permission to add site."
   }
 
   attr_accessor :context
@@ -45,6 +46,7 @@ class ExecVisitor < Visitor
         collection = collections.first
       end
     else
+      return MSG[:can_not_add_site] if node.sender.nil? or not node.sender.can_add?(node.collection_id.value)
       collection = Collection.find node.collection_id.value
     end
     
