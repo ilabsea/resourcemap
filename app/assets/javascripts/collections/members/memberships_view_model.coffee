@@ -16,7 +16,14 @@ class @MembershipsViewModel
     @secretCode = null
     @phoneExiste = ko.observable false
     @codeVerificationMsg = ko.observable('Click "Text Me!". You will receive an SMS pin code for verification.')
-    @emailError = ko.computed => null
+    @emailError = ko.computed =>
+      if @hasEmail()
+        atPos = @email().indexOf('@')
+        dotPos = @email().indexOf('.')
+        if atPos<1 || dotPos < atPos + 2 || dotPos + 2 >= @email().length
+          'Email is invalid'
+        else
+          null
     @phoneError = ko.computed => 
       if @hasPhone()
         if @phoneExiste()
@@ -24,7 +31,10 @@ class @MembershipsViewModel
         else 
           null
       else
-        "Phone number is required"      
+        "Phone number is required"
+
+    @hasError = ko.computed =>
+      return true if @phoneError() || @emailError() || @smsCodeExiste()
 
     @groupBy = ko.observable("Users")
     @groupByOptions = ["Users", "Layers"]
