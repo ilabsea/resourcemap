@@ -26,8 +26,8 @@ onGateways ->
         @currentGateway().serverError(data.errors.join(';'))
       else
         @currentGateway().id = data.id
+        @currentGateway().serverError(null)
         @currentGateway null
-        @currentGateway.serverError(null)
 
     cancelGateway: =>
       if @currentGateway().id
