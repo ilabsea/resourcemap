@@ -15,6 +15,7 @@ onImportWizard ->
       @sitesCount = ko.observable(0)
       @visibleSites = ko.observableArray()
       @showingColumns = ko.observable('all')
+      @columnTemplateVisibility = ko.observable(false)
 
       @selectedColumn = ko.observable()
       @loadUsages(@selectedColumn())
@@ -87,7 +88,7 @@ onImportWizard ->
     selectColumn: (column) =>
       @loadUsages(column)
       @selectedColumn(column)
-      true
+      @columnTemplateVisibility(true)
 
     blockTable: =>
       $('#preview').block({
@@ -146,3 +147,6 @@ onImportWizard ->
         error: =>
           @importing(false)
           @importError(true)
+
+    set_column_visibility: (state) =>
+      @columnTemplateVisibility(state)

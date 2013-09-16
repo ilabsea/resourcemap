@@ -67,10 +67,12 @@ onImportWizard ->
 
     saveAndClose: =>
       $.fancybox.close()
+      window.model.set_column_visibility(false)
       @commit()
       window.model.validateSites()
 
     discardAndClose: =>
       $.fancybox.close()
+      window.model.set_column_visibility(false)
       @rollback()
 

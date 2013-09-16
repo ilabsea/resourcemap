@@ -22,8 +22,8 @@ onImportWizard -> if $('#import-wizard-main').length > 0
         $('#generating_preview').hide()
         $('h2').removeClass('loading')
         $('.hidden-until-loaded').show()
-        $(".fancybox").fancybox({
+        $("a.fancybox").fancybox({
           minWidth: '450px',
-          afterClose: ->
+          onClosed: ->
             window.model.selectedColumn().discardAndClose()
         })
