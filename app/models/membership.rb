@@ -33,17 +33,24 @@ class Membership < ActiveRecord::Base
     end
 
     lm = collection.layer_memberships.where(:layer_id => options[:layer_id], :user_id => user_id).first
-    if lm
-      lm.read = read unless read.nil?
-      lm.write = write unless write.nil?
+    lm.destroy if lm
 
-      if lm.read || lm.write
-        lm.save!
-      else
-        lm.destroy
-      end
-    else
+    if options[:access] == "true"
       collection.layer_memberships.create! :layer_id => options[:layer_id], :user_id => user_id, :read => read, :write => write
     end
+
+    # lm = collection.layer_memberships.where(:layer_id => options[:layer_id], :user_id => user_id).first
+    # if lm
+    #   lm.read = read unless read.nil?
+    #   lm.write = write unless write.nil?
+
+    #   if lm.read || lm.write
+    #     lm.save!
+    #   else
+    #     lm.destroy
+    #   end
+    # else
+      # collection.layer_memberships.create! :layer_id => options[:layer_id], :user_id => user_id, :read => read, :write => write
+    # end
   end
 end
