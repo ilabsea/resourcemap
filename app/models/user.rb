@@ -83,7 +83,7 @@ class User < ActiveRecord::Base
       return false if field.nil?
       lm = LayerMembership.where(user_id: self.id, collection_id: site.collection_id, layer_id: field.layer_id).first
       return false if lm.nil?
-      return false if(!lm && lm.write)
+      return false if(lm.write == false)
     end
     return true
   end
