@@ -21,7 +21,8 @@
     %input{ko(value: :smsCode, valueUpdate: :afterkeydown), :name => "text_verify", :type => "text"}
   %div{:style => "margin-left: 130px; width: 250px;"}
     %span{ko(text: :codeVerificationMsg)}
-  %div{ style: "margin-left: 130px; padding-top: 20px;"}
+  %div{ko(text: :noChannelMsg), :style => "margin-left: 130px; padding-top: 10px; color: red"}
+  %div{ style: "margin-left: 130px; padding-top: 10px;"}
     %button{ko(click: '$root.createMembership', css: {disabled: '$root.hasError()'}), type: "button", value: "Save", class: "white", id: "btn_create_member" } Submit
     
     %button{ko(click: '$root.hideRegisterMembership'), type: "button", value: "Cancel", class: "white", id: "btn_close_member" } Cancel

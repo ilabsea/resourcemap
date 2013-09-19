@@ -273,12 +273,18 @@ class CollectionsController < ApplicationController
 
   def send_new_member_sms
     random_code = (0..3).map{(rand(9))}.join
+    method = Channel.nuntium_info_methods
     collection = Collection.find_by_id(params[:collection_id])
     if channel = collection.channels.first
-      SmsNuntium.notify_sms [params[:phone_number]], "Your single-use Resource Map pin code is #{random_code}", channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
-      render json: {status: 200, secret_code: random_code}
+      channel_detail = channel.as_json(methods: method)
+      if channel_detail[:client_connected]
+        SmsNuntium.notify_sms [params[:phone_number]], "Your single-use Resource Map pin code is #{random_code}", channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
+        render json: {status: 200, secret_code: random_code}
+      else
+        render json: {status: 'channel_disconnected', notice: 'The channel is disconnected.'}
+      end
     else
-      render json: {status: 200, errors: 'There is no channel on the collection.'}
+      render json: {status: 'no_channel', notice: 'There is no channel on the collection.'}
     end
   end
 

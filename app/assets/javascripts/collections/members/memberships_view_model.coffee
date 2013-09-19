@@ -15,6 +15,7 @@ class @MembershipsViewModel
     @smsCode = ko.observable()
     @secretCode = null
     @phoneExiste = ko.observable false
+    @noChannelMsg = ko.observable("")
     @codeVerificationMsg = ko.observable('Click "Text Me!". You will receive an SMS pin code for verification.')
     @emailError = ko.computed =>
       if @hasEmail()
@@ -59,6 +60,10 @@ class @MembershipsViewModel
       $.post "/collections/#{ @collectionId() }/send_new_member_sms.json", phone_number: @phoneNumber(), (data) ->
         if data.errors
           _self.codeVerificationMsg(data.errors)
+        else if data.status == "no_channel"
+          _self.noChannelMsg("There is no SMS Gateway.")
+        else if data.status == "channel_disconnected"
+          _self.noChannelMsg("The channel is disconnected.")
         else
           _self.secretCode = data.secret_code
           _self.codeVerificationMsg('The pin code has been sent to the phone number above. Please enter the pin code in the textbox for verification.')
@@ -74,6 +79,7 @@ class @MembershipsViewModel
     @phoneNumber("")
     @email("")
     @codeVerificationMsg('Click "Text Me!". You will receive an SMS pin code for verification.')
+    @noChannelMsg("")
 
   runSomething: () =>
     alert("test")
