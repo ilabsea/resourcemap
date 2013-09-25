@@ -20,9 +20,10 @@
     %button{ko(click: '$root.sentCodeMsg', css: {disabled: '$root.phoneNumberExist()'}), type: "button", value: "text", class: "white" } Text Me!
     %input{ko(value: :smsCode, valueUpdate: :afterkeydown), :name => "text_verify", :type => "text"}
   %div{:style => "margin-left: 130px; width: 250px;"}
-    %span{ko(text: :codeVerificationMsg)}
-  %div{ko(text: :noChannelMsg), :style => "margin-left: 130px; padding-top: 10px; color: red"}
-  %div{ style: "margin-left: 130px; padding-top: 10px;"}
+    %span{ko(html: :codeVerificationMsg)}
+  %div{style: "margin-bottom: 5px;"}
+    %a{ko(text: :noChannelMsg), :href => collection_channels_path(collection), :style => "margin-left: 130px; color: red; text-decoration: underline;"}
+  %div{ style: "margin-left: 130px;"}
     %button{ko(click: '$root.createMembership', css: {disabled: '$root.hasError()'}), type: "button", value: "Save", class: "white", id: "btn_create_member" } Submit
     
     %button{ko(click: '$root.hideRegisterMembership'), type: "button", value: "Cancel", class: "white", id: "btn_close_member" } Cancel

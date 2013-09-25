@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130902065727) do
+ActiveRecord::Schema.define(:version => 20130705170420) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -61,9 +61,9 @@ ActiveRecord::Schema.define(:version => 20130902065727) do
     t.string   "name"
     t.string   "code"
     t.string   "kind"
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
-    t.binary   "config",        :limit => 2147483647
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.text     "config"
     t.integer  "ord"
     t.datetime "valid_since"
     t.datetime "valid_to"
@@ -309,7 +309,6 @@ ActiveRecord::Schema.define(:version => 20130902065727) do
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
-  add_index "users", ["phone_number"], :name => "index_users_on_phone_number", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
 end

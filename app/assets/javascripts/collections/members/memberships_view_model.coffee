@@ -16,7 +16,7 @@ class @MembershipsViewModel
     @secretCode = null
     @phoneExiste = ko.observable false
     @noChannelMsg = ko.observable("")
-    @codeVerificationMsg = ko.observable('Click "Text Me!". You will receive an SMS pin code for verification.')
+    @codeVerificationMsg = ko.observable('<p>Click "Text Me!". You will receive an SMS pin code for verification.</p>')
     @emailError = ko.computed =>
       if @hasEmail()
         atPos = @email().indexOf('@')
@@ -66,7 +66,7 @@ class @MembershipsViewModel
           _self.noChannelMsg("The channel is disconnected.")
         else
           _self.secretCode = data.secret_code
-          _self.codeVerificationMsg('The pin code has been sent to the phone number above. Please enter the pin code in the textbox for verification.')
+          _self.codeVerificationMsg('<p style="color: green;">The pin code has been sent to the phone number above. Please enter the pin code in the textbox for verification.</p>')
 
   showRegisterMembership: () =>
     @showRegisterNewMember(true)
