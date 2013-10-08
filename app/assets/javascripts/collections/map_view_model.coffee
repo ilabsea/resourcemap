@@ -219,8 +219,8 @@ onCollections ->
           if site.ghost_radius?
             projection = @map.dummyOverlay.getProjection()
             pointInPixels = projection.fromLatLngToContainerPixel(position)
-            pointInPixels.x += 40 * Math.cos(site.ghost_radius)
-            pointInPixels.y += 40 * Math.sin(site.ghost_radius)
+            pointInPixels.x += 30 * Math.cos(site.ghost_radius)
+            pointInPixels.y += 30 * Math.sin(site.ghost_radius)
             position = projection.fromContainerPixelToLatLng(pointInPixels)
 
             disambiguationPath = new google.maps.Polyline(
