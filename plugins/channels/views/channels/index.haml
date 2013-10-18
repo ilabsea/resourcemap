@@ -4,8 +4,6 @@
   #channels-main.hidden-until-loaded
     %h2 SMS Settings
     %p Please select the SMS gateways to be used for this collection. When using more than one gateway the system will use one of the other gateways if the primary fails. 
-    %div{:style => "margin-bottom: 10px;"}
-      %span{ko(text: :update_success), :style => "color: green"}
     <!-- ko foreach: gateways -->
     %input{ko(checked: '$root.selectedGateways', value: :id), type: "checkbox" }
     %span{ko(text: :name )}
