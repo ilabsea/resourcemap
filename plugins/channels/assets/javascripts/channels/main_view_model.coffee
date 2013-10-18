@@ -3,10 +3,11 @@ onChannels ->
     constructor: (@collectionId)->
       @gateways         = ko.observableArray()
       @selectedGateways = ko.observableArray()
+      @update_success 	= ko.observable("")
       @collectionId     = ko.observable collectionId 
     
     saveChannel: =>
       $.post "/collections/#{@collectionId()}/register_gateways.json", gateways: @selectedGateways(), @saveChannelCallback
 
     saveChannelCallback: (data) =>
-      console.log data
+    	@update_success("Successfully updated gateways")
