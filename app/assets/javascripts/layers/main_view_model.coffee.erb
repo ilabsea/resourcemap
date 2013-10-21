@@ -96,7 +96,6 @@ onLayers ->
       $.post "/collections/#{@collectionId}/layers/#{layer.id()}/set_order.json", json
 
     deleteLayer: (layer) =>
-      console.dir(layer.threshold_ids)
       # if confirm("This layer is being used with #{layer.threshold_ids.length} alerts. The alert associated with this layer will also be deleted.")
       if layer.threshold_ids.length == 0
         $.post "/collections/#{@collectionId}/layers/#{layer.id()}", {threshold_ids: layer.threshold_ids, _method: 'delete'}, =>
