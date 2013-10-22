@@ -162,11 +162,10 @@ onCollections ->
               $.handleAjaxError(data))
 
 
-    create_site: (json, callback) =>
+    create_site: (json, callback, callbackError) =>
       data = {site: JSON.stringify json}
       if JSON.stringify(@photos) != "{}"
         data["fileUpload"] = @photos
-
       $.ajax({
           type: "POST",
           url: "/collections/#{@collection.id}/sites",
@@ -180,6 +179,8 @@ onCollections ->
             @idWithPrefix(data.id_with_prefix)
             $.status.showNotice "Site '#{@name()}' successfully created", 2000
             callback(data) if callback && typeof(callback) == 'function' )
+          error: ((request, status, error) =>
+            callbackError())
           global: false
         }).fail((data) =>
           try

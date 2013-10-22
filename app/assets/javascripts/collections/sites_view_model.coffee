@@ -138,13 +138,16 @@ onCollections ->
         $('a#previewimg').fancybox()
         window.model.updateSitesInfo()
 
+      callbackError = () =>
+        @hideProgress()
+
       @editingSite().copyPropertiesFromCollection(@currentCollection())
       @editingSite().fillPhotos(@currentCollection())
 
       if @editingSite().id()
         @editingSite().update_site(@editingSite().toJSON(), callback)
       else
-        @editingSite().create_site(@editingSite().toJSON(), callback)
+        @editingSite().create_site(@editingSite().toJSON(), callback, callbackError)
 
     @exitSite: ->
       if !@editingSite()?.inEditMode()
