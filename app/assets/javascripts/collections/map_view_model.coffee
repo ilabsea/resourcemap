@@ -484,4 +484,8 @@ onCollections ->
       @initInsteddPlatform()
       # fix dinamic DOM
       # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
-      $(".ux-datepicker").removeClass('hasDatepicker').datepicker(options)
+      $(".ux-datepicker").removeClass('hasDatepicker').datepicker(
+                                                                    yearRange: "-100:+5",
+                                                                    changeMonth: true,
+                                                                    changeYear: true
+                                                                  )
