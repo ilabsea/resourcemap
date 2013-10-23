@@ -128,7 +128,7 @@ onCollections ->
             @layers.push(layer)
           @copyPropertiesToFields()
 
-    update_site: (json, callback) =>
+    update_site: (json, callback, callbackError) =>
       data = {site: JSON.stringify json}
       if JSON.stringify(@photos) != "{}"
         data["fileUpload"] = @photos
@@ -145,6 +145,8 @@ onCollections ->
               field.errorMessage("")
             @propagateUpdatedAt(data.updated_at)
             callback(data) if callback && typeof(callback) == 'function' )
+          error: ((request, status, error) =>
+            callbackError())
           global: false
         }).fail((data) =>
           try

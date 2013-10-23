@@ -145,7 +145,7 @@ onCollections ->
       @editingSite().fillPhotos(@currentCollection())
 
       if @editingSite().id()
-        @editingSite().update_site(@editingSite().toJSON(), callback)
+        @editingSite().update_site(@editingSite().toJSON(), callback, callbackError)
       else
         @editingSite().create_site(@editingSite().toJSON(), callback, callbackError)
 
