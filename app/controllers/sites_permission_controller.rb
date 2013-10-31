@@ -7,7 +7,7 @@ class SitesPermissionController < ApplicationController
 
   def index
     membership = current_user.memberships.find{|m| m.collection_id == params[:collection_id].to_i}
-    render json: membership.sites_permission
+    render json: membership.try(:sites_permission) || SitesPermission.no_permission
   end
 
   def create

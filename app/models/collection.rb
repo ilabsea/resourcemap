@@ -60,16 +60,16 @@ class Collection < ActiveRecord::Base
   end
 
   def site_ids_permission(user)
-    membership = user.membership_in self
-    read_sites_permission = membership.read_sites_permission
-    write_sites_permission = membership.write_sites_permission
-    site_ids = []
+    site_ids, membership = [], user.membership_in(self)
+    if membership
+      read_sites_permission = membership.read_sites_permission
+      write_sites_permission = membership.write_sites_permission
 
-    site_ids.concat(read_sites_permission['some_sites'].map{ |site| site['id'].to_i}) if read_sites_permission
-    site_ids.concat(write_sites_permission['some_sites'].map{ |site| site['id'].to_i}) if write_sites_permission
+      site_ids.concat(read_sites_permission['some_sites'].map{ |site| site['id'].to_i}) if read_sites_permission
+      site_ids.concat(write_sites_permission['some_sites'].map{ |site| site['id'].to_i}) if write_sites_permission
+    end
 
     site_ids.uniq
-
   end
 
   def visible_fields_for(user, options)
@@ -110,7 +110,7 @@ class Collection < ActiveRecord::Base
     end
 
     membership = user.membership_in self
-    if !user.is_guest && !membership.admin?
+    if !user.is_guest && !membership.try(:admin?)
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
         hash

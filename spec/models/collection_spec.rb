@@ -1,4 +1,5 @@
 require 'spec_helper'
+
 describe Collection do
   it { should validate_presence_of :name }
   it { should have_many :memberships }
@@ -150,6 +151,29 @@ describe Collection do
       dict['B'].should eq(field_b.es_code)
       dict['C'].should eq(field_c.es_code)
       dict['D'].should eq(field_d.es_code)
+    end
+  end
+
+  describe 'site_ids_permission' do
+    let(:collection) { user.create_collection Collection.make_unsaved }
+    let(:user_2) { User.make }
+
+    context 'when no memberships' do
+      it "should have empty site ids permission" do
+        collection.site_ids_permission(user_2).should be_empty
+      end
+    end
+  end
+
+  describe 'visible_layers_for' do
+    let(:collection) { user.create_collection Collection.make_unsaved }
+
+    context 'when user is not a collection member' do
+      let(:user_2) { User.make }
+
+      it "should have no layer" do
+        collection.visible_layers_for(user_2).should be_empty
+      end
     end
   end
 end

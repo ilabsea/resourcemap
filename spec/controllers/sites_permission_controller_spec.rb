@@ -19,13 +19,23 @@ describe SitesPermissionController do
     let!(:read_sites_permission) { membership.create_read_sites_permission all_sites: true }
     let!(:write_sites_permission) { membership.create_write_sites_permission all_sites: false, some_sites: [{id: 1, name: 'Bayon clinic'}] }
 
-    before(:each) { get :index, "collection_id" => collection.id }
     it "should response include read sites permission" do
+      get :index, collection_id: collection.id
       response.body.should include "\"read\":#{read_sites_permission.to_json}"
     end
 
-    pending "should response include write sites permission" do
+    it "should response include write sites permission" do
+      get :index, collection_id: collection.id
       response.body.should include "\"write\":#{write_sites_permission.to_json}"
+    end
+
+    context "when user is not a member of collection" do
+      let(:collection_2) { Collection.make }
+
+      it "should response no permission" do
+        get :index, collection_id: collection_2.id
+        response.body.should == SitesPermission.no_permission.to_json
+      end
     end
   end
 end
