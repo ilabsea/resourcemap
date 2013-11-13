@@ -47,26 +47,72 @@ def index
 					collections_id = ["0"]
 				end
 			end
+			
+			# collections_id = "("+collections_id.join(",")+")"
+			before_id = params[:before_id] ? params[:before_id].to_i + 1 : 0 
+			if collections_id.include?(nil)
+				collections_id.slice!(collections_id.size-1)
+				if collections_id.count == 0
+					if params[:phone_number]
+						phone_number = params[:phone_number]
+						msgs = ActiveRecord::Base.connection.execute("Select * from messages where messages.collection_id is null and messages.from like '%#{phone_number}%' order by created_at desc limit #{before_id},#{size}")
+					else
+						msgs = ActiveRecord::Base.connection.execute("Select * from messages where messages.collection_id is null order by created_at desc limit #{before_id},#{size}")
+					end
+				else
+					collections_id = "("+collections_id.join(",")+")"
+					if params[:phone_number]
+						phone_number = params[:phone_number]
+						msgs = ActiveRecord::Base.connection.execute("Select * from messages where (messages.collection_id in #{collections_id} or messages.collection_id is null) and messages.from like '%#{phone_number}%' order by created_at desc limit #{before_id},#{size}")
+					else
+						msgs = ActiveRecord::Base.connection.execute("Select * from messages where messages.collection_id in #{collections_id} or messages.collection_id is null order by created_at desc limit #{before_id},#{size}")
+					end
+				end
+			else
+				if collections_id.count == 0
+					if params[:phone_number]
+						phone_number = params[:phone_number]
+						msgs = ActiveRecord::Base.connection.execute("Select * from messages where messages.collection_id is null and messages.from like '%#{phone_number}%' order by created_at desc limit #{before_id},#{size}")
+					else
+						msgs = ActiveRecord::Base.connection.execute("Select * from messages where messages.collection_id is null order by created_at desc limit #{before_id},#{size}")
+					end
+				else
+					collections_id = "("+collections_id.join(",")+")"
+					if params[:phone_number]
+						phone_number = params[:phone_number]
+						msgs = ActiveRecord::Base.connection.execute("Select * from messages where (messages.collection_id in #{collections_id}) and messages.from like '%#{phone_number}%' order by created_at desc limit #{before_id},#{size}")
+					else
+						msgs = ActiveRecord::Base.connection.execute("Select * from messages where messages.collection_id in #{collections_id} order by created_at desc limit #{before_id},#{size}")
+					end
+				end
+			end	
 
-			msgs = Message.order('id desc').where(collection_id: collections_id)
-			msgs = msgs.limit(25)
-      msgs = msgs.where('id < ?', params[:before_id]) if params[:before_id]
 
-			if params[:phone_number]
-				phone_number = "%#{params[:phone_number]}%"
-				msgs = msgs.where('`from` like ?', phone_number)
-			end
+			# debugger
 
-			activities_json = msgs.map do |message|
-				collection_name = message.collection_id.nil? ? "" : message.collection.name
-				{
-					id: message.id,
+			# msgs = Message.order('id desc').where(collection_id: collections_id)
+			# msgs = msgs.limit(25)
+   #    msgs = msgs.where('id < ?', params[:before_id]) if params[:before_id]
+
+			# if params[:phone_number]
+			# 	phone_number = "%#{params[:phone_number]}%"
+			# 	msgs = msgs.where('`from` like ?', phone_number)
+			# end
+
+			activities_json = []
+			msgs.each do |message|
+				collection_name = message[13].nil? ? "" : Collection.find(message[13]).name
+				# debugger
+				tmp = {
+					id: message[0],
 					collection: collection_name,
-					user: message.from.split("//")[1],
-					description: message.body,
-					created_at: message.created_at
+					user: message[6].split("//")[1],
+					description: message[9],
+					created_at: message[10]
 				}
+				activities_json.push(tmp)
 			end
+			# debugger
 			render json: activities_json
 		end
 	end

@@ -56,8 +56,8 @@
       @hasMore(true)
 
       q = @setQueryParams({})
-      # q.before_id = @activities().length - 1
-      q.before_id = @activities()[@activities().length - 1].id() if @activities().length > 0
+      q.before_id = @activities().length - 1
+      # q.before_id = @activities()[@activities().length - 1].id() if @activities().length > 0
 
       $.get "/message.json", q, (activities) =>
         @pushActivities(activities)
