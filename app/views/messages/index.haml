@@ -1,0 +1,71 @@
+- content_for :head do
+  :javascript
+    $(function() { initMessages(); });
+
+= render '/tab_sms_gateway'
+
+.hidden-until-loaded
+  .tabsline
+
+    %table{width: '100%'}
+      %tr
+        %td{width: '50%'}
+          %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
+            %legend Collections
+            %div{style: 'height:80px;overflow:auto'}
+              %table
+                - collections.sort_by(&:name).each do |collection|
+                  %tr
+                    %td
+                      %input.collection_id{ko(checked: 'selectedCollectionIds'), type: 'checkbox', checked: 'checked', value: collection.id}= collection.name
+        %td{width: '50%'}
+          %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
+            %legend Phone Numbers
+            %div{style: 'height:80px;overflow:auto'}
+              %table
+                - users.sort_by(&:id).each do |user|
+                  %tr
+                    %td
+                      %input.user_phone_number{ko(checked: 'selectedPhoneNumbers'), type: 'checkbox', checked: 'checked', value: user.phone_number}= user.phone_number
+      %tr
+        %td
+          %span{ko(click: 'checkAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'} check all
+          |
+          %span{ko(click: 'uncheckAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer'} uncheck all
+        %td
+          %span{ko(click: 'checkAllPhoneNumbers'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'} check all
+          |
+          %span{ko(click: 'uncheckAllPhoneNumbers'), style: 'text-decoration:underline;cursor:pointer'} uncheck all
+    
+    / %p{style: 'margin-top:0px; float: right;'}
+    / Find By Phone Number 
+    / %input{:type=>"text"}
+
+    .tablewrapp
+      %table.GralTable
+        %tr
+          %th Collection
+          %th User
+          %th Message
+          %th Time
+        <!-- ko foreach: activities -->
+        %tr{style: 'height:32px'}
+          %td{ko(text: :collection), style: 'min-width:120px'}
+          %td{ko(text: :user)}
+          %td
+            %span{ko(text: :displayedDescription), style: 'display:inline'}
+            <!-- ko if: !expanded() && canBeExpanded() -->
+            %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'} show more
+            <!-- /ko -->
+          %td.timeago{ko(attr: {title: :createdAt}, text: :createdAt), style: 'min-width:150px'}
+        <!-- /ko -->
+        <!-- ko if: hasMore() && !loading() -->
+        %tr{style: 'height:32px'}
+          %td{ko(click: :loadMore), colspan: 4, align: :center, style: 'text-decoration:underline;cursor:pointer'}
+            Load more
+        <!-- /ko -->
+        <!-- ko if: loading() -->
+        %tr{style: 'height:32px'}
+          %td{colspan: 4, align: :center}
+            Loading...
+        <!-- /ko -->

@@ -62,6 +62,8 @@
       %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat)}
       %br/
 
+      %input.bfh-countries{"data-country" => "US", "data-flags" => "true"}
+
       %label{ko(css: {error: :reminderMessageError})} Message
       %br/
       %textarea.ux-wajbar.w30{ko(value: :reminderMessage, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
