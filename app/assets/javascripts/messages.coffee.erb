@@ -24,18 +24,23 @@
       @activities = ko.observableArray []
       @hasMore = ko.observable true
       @loading = ko.observable false
+      @phone_number = ko.observable()
       @pushActivities activities
       @selectedCollectionIds = ko.observableArray $.map($('.collection_id'), (x) -> x.value)
       @selectedPhoneNumbers = ko.observableArray $.map($('.user_phone_number'), (x) -> x.value)
       @selectedKinds = ko.observableArray <%= Activity::Kinds.to_json %>
+      @selectedRawMessage = ko.observableArray $.map($('.raw_message'), (x) -> x.value)
 
       @collectionsCount = $('.collection_id').length
       @phoneNumbersCount = $('.user_phone_number').length
       @kindsCount = <%= Activity::Kinds.length %>
+      # @rawMessageCount = $('.raw_message').length
 
       @selectedCollectionIds.subscribe => @refreshActivities()
       @selectedPhoneNumbers.subscribe => @refreshActivities()
       @selectedKinds.subscribe => @refreshActivities()
+      @selectedRawMessage.subscribe => @refreshActivities()
+      @phone_number.subscribe => @refreshActivities()
 
     pushActivities: (activities) =>
       if activities.length == 26
@@ -51,8 +56,8 @@
       @hasMore(true)
 
       q = @setQueryParams({})
-      q.before_id = @activities().length - 1
-      # q.before_id = @activities()[@activities().length - 1].id() if @activities().length > 0
+      # q.before_id = @activities().length - 1
+      q.before_id = @activities()[@activities().length - 1].id() if @activities().length > 0
 
       $.get "/message.json", q, (activities) =>
         @pushActivities(activities)
@@ -76,9 +81,18 @@
       else if @selectedKinds().length < @kindsCount
         q.kinds = @selectedKinds()
 
+      if @selectedRawMessage().length == 0
+        q.raws = [0]
+      else
+        q.raws = @selectedRawMessage()
+
+      if @phone_number()
+        q.phone_number = @phone_number()
+
       q
 
     refreshActivities: =>
+      # alert(@phone_number())
       @activities([])
       @loadMore()
       @refreshTimeago()

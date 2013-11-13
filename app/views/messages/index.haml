@@ -9,6 +9,24 @@
 
     %table{width: '100%'}
       %tr
+        %td{width: "50%"}
+          %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
+            %div{style: 'height:40px;overflow:auto'}
+              %table
+                %tr
+                  %td
+                    Phone Number
+                    %input.phone_number{ko(value: 'phone_number'), placeholder: "Type and press enter", type: 'text', valueUpdate: 'afterkeydown'}
+    %table{width: '100%'}
+      %tr
+        %td{width: "50%"}
+          %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
+            %div{style: 'height:20px;overflow:auto'}
+              %table
+                %tr
+                  %td
+                    %input.raw_message{ko(checked: 'selectedRawMessage'), value: 'raw', type: 'checkbox', checked: 'checked'} Raw messages
+      %tr
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
             %legend Collections
@@ -18,28 +36,11 @@
                   %tr
                     %td
                       %input.collection_id{ko(checked: 'selectedCollectionIds'), type: 'checkbox', checked: 'checked', value: collection.id}= collection.name
-        %td{width: '50%'}
-          %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
-            %legend Phone Numbers
-            %div{style: 'height:80px;overflow:auto'}
-              %table
-                - users.sort_by(&:id).each do |user|
-                  %tr
-                    %td
-                      %input.user_phone_number{ko(checked: 'selectedPhoneNumbers'), type: 'checkbox', checked: 'checked', value: user.phone_number}= user.phone_number
       %tr
         %td
           %span{ko(click: 'checkAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'} check all
           |
           %span{ko(click: 'uncheckAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer'} uncheck all
-        %td
-          %span{ko(click: 'checkAllPhoneNumbers'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'} check all
-          |
-          %span{ko(click: 'uncheckAllPhoneNumbers'), style: 'text-decoration:underline;cursor:pointer'} uncheck all
-    
-    / %p{style: 'margin-top:0px; float: right;'}
-    / Find By Phone Number 
-    / %input{:type=>"text"}
 
     .tablewrapp
       %table.GralTable
