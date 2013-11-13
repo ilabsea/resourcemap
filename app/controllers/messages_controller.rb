@@ -55,6 +55,9 @@ def index
 				msgs = msgs.where('`from` like ?', phone_number)
 			end
 
+			msgs = msgs.limit(25)
+      msgs = msgs.where('id < ?', params[:before_id]) if params[:before_id]
+
 			activities_json = msgs.map do |message|
 				collection_name = message.collection_id.nil? ? "" : message.collection.name
 				{

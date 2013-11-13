@@ -43,7 +43,7 @@
       @phone_number.subscribe => @refreshActivities()
 
     pushActivities: (activities) =>
-      if activities.length == 26
+      if activities.length == 25
         activities = activities.slice(0, activities.length - 1)
       else
         @hasMore false
