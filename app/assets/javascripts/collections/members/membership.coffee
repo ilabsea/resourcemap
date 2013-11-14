@@ -6,6 +6,10 @@ class @Membership extends Expandable
     # Defined this before callModuleConstructors because it's used by MembershipLayout
     @userId = ko.observable data?.user_id
     @userDisplayName = ko.observable data?.user_display_name
+    if data.user_phone_number
+      @userPhoneNumber = ko.observable('('+data?.user_phone_number+')')
+    else
+      @userPhoneNumber = ""
     @admin = ko.observable data?.admin
     @collectionId = ko.observable root.collectionId()
 

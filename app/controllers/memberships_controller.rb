@@ -9,9 +9,16 @@ class MembershipsController < ApplicationController
     end
     memberships = collection.memberships.includes([:user, :read_sites_permission, :write_sites_permission]).all.map do |membership|
       user_display_name = User.generate_user_display_name membership.user
+      if user_display_name == membership.user.phone_number
+        user_phone_number = ""
+      else
+        user_phone_number = membership.user.phone_number
+      end
+      
       {
         user_id: membership.user_id,
         user_display_name: user_display_name,
+        user_phone_number: user_phone_number,
         admin: membership.admin?,
         layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
         sites: {
