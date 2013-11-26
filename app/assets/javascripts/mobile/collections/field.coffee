@@ -34,10 +34,12 @@ onMobileCollections ->
         if @kind == 'select_one'
           @optionsUI = [new Option {id: '', label: '(no value)' }].concat(@options)
           @optionsUIIds = $.map @optionsUI, (x) => x.id
+
         else
           @optionsUI = @options
-        @hierarchy = @options
 
+        @hierarchy = @options
+      @expanded = ko.observable false # For select_many
       if @kind == 'hierarchy'
         @hierarchy = data.config?.hierarchy
 
@@ -87,8 +89,10 @@ onMobileCollections ->
       date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear()
 
     isShow: (kind) =>
-      return false  if kind == 'identifier' || kind == 'select_one' || kind == 'date' || kind == 'select_many' || kind == 'site' || kind == 'user'
+      return false  if kind == 'identifier' || kind == 'site' || kind == 'user'
       true
+
+    expand: => @expanded(true)
 
     fileSelected: (data, event) =>
       fileUploads = event.currentTarget.files

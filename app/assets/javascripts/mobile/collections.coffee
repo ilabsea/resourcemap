@@ -3,6 +3,7 @@
 #= require mobile/collections/collection
 #= require mobile/collections/collections_view_model
 #= require mobile/collections/field_hierarchy_item
+#= require mobile/collections/option
 onMobileCollections -> if $('#mobile-collections-main').length > 0
 
 	removeFromSitesCache: (id) => 

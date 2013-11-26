@@ -5,6 +5,8 @@
 #= require mobile/collections/collections_view_model
 #= require mobile/collections/sites_view_model
 #= require mobile/collections/field_hierarchy_item
+#= require mobile/collections/option
+
 onMobileCollections ->
   class @MainViewModel extends Module
     @include CollectionsViewModel

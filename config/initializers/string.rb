@@ -15,7 +15,7 @@ class String
           if key == "Site Name" 
             template = value
           else
-            template = key
+            template = value
           end
           break
         end
