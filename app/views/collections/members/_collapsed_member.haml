@@ -1,8 +1,12 @@
 %td.member{style: 'cursor:pointer;', colspan: 6}
   .memberHeaderRow
-    .memberHeaderColumn.collapsed
+    .memberHeaderColumn.collapsed{style: 'height: 35px;'}
       %img.members-collapse-icon{ko(click: :toggleExpanded, attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrowRight.png'"})}
       %span{ko(text: :userDisplayName, click: :toggleExpanded)}
+      - if 'userPhoneNumber'
+        %br/
+        %span{ko(text: :userPhoneNumber), style: 'margin-left: 15px; font-size: 12px;'}
+
 
     - ['None', 'Read', 'Update'].each do |permission|
       .permissionColumn.collapsed{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}

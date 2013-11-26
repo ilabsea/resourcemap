@@ -87,6 +87,7 @@ ResourceMap::Application.routes.draw do
     post 'update_property'
   end
 
+  resources :messages, :only => [:index], :path => 'message'
   resources :activities, :only => [:index], :path => 'activity'
   resources :quotas
   resources :gateways do
