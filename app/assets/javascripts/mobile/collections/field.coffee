@@ -45,10 +45,24 @@ onMobileCollections ->
 
       @buildHierarchyItems() if @hierarchy?
 
-      
+      if @kind == 'select_many'
+
+        @filter = ko.observable('') # The text for filtering options in a select_many
+        @remainingOptions = ko.observableArray(@options)
+        window.remainingOptions = @remainingOptions()
+      else
+        @filter = ->
+
       @editing = ko.observable false
       @expanded = ko.observable false # For select_many
-  
+
+    selectOption: (option) =>     
+      i = 0
+      while i < @remainingOptions().length
+        if @remainingOptions()[i].id == option.id
+          @remainingOptions()[i].selected(!@remainingOptions()[i].selected()) 
+        i++
+
     valueUIFor: (value) =>
       if @kind == 'yes_no'
         if value then 'yes' else 'no'
