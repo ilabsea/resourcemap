@@ -42,7 +42,7 @@ Collection.prototype.saveSite = function(){
   
   var collectionId = $("#collectionId").val();
   if(Collection.prototype.validateData()){
-    Collection.prototype.fixDateMissingTimeZone(collectionId);
+    // Collection.prototype.fixDateMissingTimeZone(collectionId);
     var formData = new FormData($('form')[0]);
     $.ajax({
         url: '/mobile/collections/' + collectionId + '/sites',  //Server script to process data
@@ -55,14 +55,13 @@ Collection.prototype.saveSite = function(){
         //     return myXhr;
         // },
         success: function(){
-          alert("Success");
+          Collection.prototype.goHome();
+          Collection.prototype.showErrorMessage("Successfully saved.");
         },
-        error: function(){
-          alert("Error");
+        error: function(data){
+          Collection.prototype.showErrorMessage("Save new site failed!");
         },
-        // Form data
         data: formData,
-        //Options to tell jQuery not to process data or worry about content-type.
         cache: false,
         contentType: false,
         processData: false
@@ -107,10 +106,9 @@ Collection.prototype.fixDateMissingTimeZone = function(collectionId){
 }
 
 Collection.prototype.modifyDate = function(code){
-  console.log(code);
   origin = $("#" + code).val();
-  arrValue = origin.split("/");
-  $("#" + code).val(arrValue[2] + "-" + arrValue[0] + "-" + arrValue[1] + "T00:00:00Z");
+  newDate = origin + "T00:00:00Z" ;
+  $("#" + code).val(newDate);
   return true;
 }
 
@@ -211,5 +209,6 @@ Collection.prototype.showPosition = function(position){
 Collection.prototype.goHome = function(){
   $("#mobile-collections-main").show();
   $("#mobile-sites-main").hide();
+  $("#name").val("");
 }
 

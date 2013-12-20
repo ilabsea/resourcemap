@@ -13,6 +13,7 @@ class Mobile::SitesController < SitesController
       site_params[:lng] = params[:lng]
       site_params[:lat] = params[:lat]
       site_params[:properties] = params[:properties]
+      site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
       site_params[:properties] = self.store_image_file(site_params[:properties])
       site = collection.sites.create(site_params.merge(user: current_user))
       if site.valid?
@@ -38,4 +39,12 @@ class Mobile::SitesController < SitesController
     properties
   end
 
+  def fix_timezone_on_date_properties(properties)
+    properties.each do |key, value|
+      if Field.find_by_id(key.to_i) and Field.find_by_id(key.to_i).kind == "date"        
+        properties[key] = value + "T00:00:00Z"
+      end
+    end
+    properties
+  end
 end
