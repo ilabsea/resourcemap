@@ -7,13 +7,13 @@
     =javascript_include_tag "/assets/jquery"
     =javascript_include_tag "/assets/jquery_ujs"
     %script{:src => "/assets/mobile/mobilecache.js"}
-    %script{:src => "/assets/mobile/collections.js"}
+    %script{:src => "/assets/mobile/home.js"}
     %script{:src => "/assets/mobile/field.js"}
     %script{:src => "/assets/mobile/option.js"}
     %script{:src => "/assets/mobile/events.js"}
     %script{:src => "/assets/jquery.mobile-1.3.1.min.js"}
     %link{:href => "/images/favicon.ico", :rel => "shortcut icon", :type => "image/x-icon"}
-  %body
+  %body{ :onload => "initialize()"}
     = flash_message
     = yield
     //#footer-span
