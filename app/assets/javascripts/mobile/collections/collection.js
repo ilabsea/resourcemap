@@ -54,7 +54,6 @@ Collection.prototype.showFormAddSite = function(schema){
 Collection.prototype.saveSite = function(){  
   var collectionId = $("#collectionId").val();
   if(Collection.prototype.validateData()){
-    // Collection.prototype.fixDateMissingTimeZone(collectionId);
     var formData = new FormData($('form')[0]);
     if(window.navigator.onLine){
       Collection.prototype.ajaxCreateSite(collectionId, formData);

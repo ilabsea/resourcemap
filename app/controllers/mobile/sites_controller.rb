@@ -7,6 +7,7 @@ class Mobile::SitesController < SitesController
 
   def create
     begin
+      debugger
       # site_params = JSON.parse params[:site]
       site_params = {}
       site_params[:name] = params[:name]
@@ -31,9 +32,11 @@ class Mobile::SitesController < SitesController
   def store_image_file(properties)
     properties.each do |key, value|
       if Field.find_by_id(key.to_i) and Field.find_by_id(key.to_i).kind == "photo"
-        file_name = properties[key].original_filename
-        Site::UploadUtils.uploadSingleFile(file_name, properties[key].read.to_s)
-        properties[key] = file_name
+        if value
+          file_name = properties[key].original_filename
+          Site::UploadUtils.uploadSingleFile(file_name, properties[key].read.to_s)
+          properties[key] = file_name
+        end
       end
     end
     properties
@@ -41,8 +44,11 @@ class Mobile::SitesController < SitesController
 
   def fix_timezone_on_date_properties(properties)
     properties.each do |key, value|
-      if Field.find_by_id(key.to_i) and Field.find_by_id(key.to_i).kind == "date"        
-        properties[key] = value + "T00:00:00Z"
+      if Field.find_by_id(key.to_i) and Field.find_by_id(key.to_i).kind == "date"   
+        p value 
+        unless(value.strip == "")
+          properties[key] = value + "T00:00:00Z"
+        end 
       end
     end
     properties
