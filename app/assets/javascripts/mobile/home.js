@@ -1,5 +1,9 @@
 //= require mobile/collections/on_mobile_collections
 //= require mobile/collections/collection
+//= require mobile/events
+//= require mobile/field
+//= require mobile/option
+
 function initialize(){
   var cachedSites, collectionSchema, i, id;
   onMobileCollections(function() {
@@ -24,6 +28,9 @@ function initialize(){
   });
 
   if (window.navigator.onLine) {
+
+    Collection.prototype.pushingPendingSites();
+
     $.ajax({
       url: "/mobile/collections.json",
       dataType: "text",

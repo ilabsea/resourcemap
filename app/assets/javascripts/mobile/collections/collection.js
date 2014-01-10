@@ -1,3 +1,6 @@
+//= require mobile/events
+//= require mobile/field
+//= require mobile/option
 
 function Collection (collection) {
   this.id = collection != null ? collection.id : void 0;
@@ -5,6 +8,16 @@ function Collection (collection) {
   this.layers = collection != null ? collection.layers : void 0;
   this.fields = [];
 };
+
+Collection.prototype.pushingPendingSites = function(){
+  pendingSites = JSON.parse(window.localStorage.getItem("offlineSites"));
+  if(pendingSites != null){
+    for(var i=0; i< pendingSites.length; i++){
+      Collection.prototype.ajaxCreateSite(pendingSites[i]["collectionId"], pendingSites[i]["formData"]);
+    }
+    window.localStorage.setItem("offlineSites", JSON.stringify([]));
+  }
+}
 
 Collection.prototype.fetchFields = function() {
   var fields = [];
@@ -38,35 +51,49 @@ Collection.prototype.showFormAddSite = function(schema){
   Collection.prototype.handleFieldUI(schema);
 }
 
-Collection.prototype.saveSite = function(){
-  
+Collection.prototype.saveSite = function(){  
   var collectionId = $("#collectionId").val();
   if(Collection.prototype.validateData()){
     // Collection.prototype.fixDateMissingTimeZone(collectionId);
     var formData = new FormData($('form')[0]);
-    $.ajax({
-        url: '/mobile/collections/' + collectionId + '/sites',  //Server script to process data
-        type: 'POST',
-        // xhr: function() {  // Custom XMLHttpRequest
-        //     var myXhr = $.ajaxSettings.xhr();
-        //     if(myXhr.upload){ // Check if upload property exists
-        //         myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-        //     }
-        //     return myXhr;
-        // },
-        success: function(){
-          Collection.prototype.goHome();
-          Collection.prototype.showErrorMessage("Successfully saved.");
-        },
-        error: function(data){
-          Collection.prototype.showErrorMessage("Save new site failed!");
-        },
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false
-    });
+    if(window.navigator.onLine){
+      Collection.prototype.ajaxCreateSite(collectionId, formData);
+    }
+    else{
+      Collection.prototype.storeOfflineData(collectionId, formData);
+    }
   }
+}
+
+Collection.prototype.storeOfflineData = function(collectionId, formData){
+  pendingSites = JSON.parse(window.localStorage.getItem("offlineSites"));
+  if(pendingSites != null && pendingSites.length > 0){
+    pendingSites.push({"collectionId" : collectionId, "formData" : formData});
+  }
+  else{
+    pendingSites = [{"collectionId" : collectionId, "formData" : formData}];
+  }
+  window.localStorage.setItem("offlineSites", JSON.stringify(pendingSites));
+  Collection.prototype.goHome();
+  Collection.prototype.showErrorMessage("Successfully store data in offline.");
+}
+
+Collection.prototype.ajaxCreateSite = function(collectionId, formData){
+  $.ajax({
+      url: '/mobile/collections/' + collectionId + '/sites',  //Server script to process data
+      type: 'POST',
+      success: function(){
+        Collection.prototype.goHome();
+        Collection.prototype.showErrorMessage("Successfully saved.");
+      },
+      error: function(data){
+        Collection.prototype.showErrorMessage("Save new site failed!");
+      },
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false
+  });
 }
 
 Collection.prototype.validateData = function(){
