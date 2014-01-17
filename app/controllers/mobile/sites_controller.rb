@@ -12,9 +12,11 @@ class Mobile::SitesController < SitesController
       site_params[:name] = params[:name]
       site_params[:lng] = params[:lng]
       site_params[:lat] = params[:lat]
-      site_params[:properties] = params[:properties]
-      site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
-      site_params[:properties] = self.store_image_file(site_params[:properties])
+      if params[:properties]
+        site_params[:properties] = params[:properties]
+        site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
+        site_params[:properties] = self.store_image_file(site_params[:properties])
+      end
       site = collection.sites.create(site_params.merge(user: current_user))
       if site.valid?
         Site::UploadUtils.uploadFile(params[:fileUpload])
@@ -35,9 +37,11 @@ class Mobile::SitesController < SitesController
       site_params[:name] = params[:name]
       site_params[:lng] = params[:lng]
       site_params[:lat] = params[:lat]
-      site_params[:properties] = params[:properties]
-      site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
-      site_params[:properties] = self.store_offline_image_file(site_params[:properties])
+      if params[:properties]
+        site_params[:properties] = params[:properties]
+        site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
+        site_params[:properties] = self.store_offline_image_file(site_params[:properties])
+      end
       site = collection.sites.create(site_params.merge(user: current_user))
       if site.valid?
         Site::UploadUtils.uploadFile(params[:fileUpload])
