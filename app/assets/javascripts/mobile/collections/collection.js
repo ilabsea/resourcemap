@@ -77,7 +77,7 @@ Collection.prototype.storeOfflineData = function(collectionId, formData){
   }
   window.localStorage.setItem("offlineSites", JSON.stringify(pendingSites));
   Collection.prototype.goHome();
-  Collection.prototype.showErrorMessage("Successfully store data in offline.");
+  Collection.prototype.showErrorMessage("Offline site saved locally.");
 }
 
 Collection.prototype.ajaxCreateSite = function(collectionId, formData){
@@ -104,10 +104,10 @@ Collection.prototype.ajaxCreateOfflineSite = function(collectionId, formData){
       type: 'POST',
       success: function(){
         Collection.prototype.goHome();
-        Collection.prototype.showErrorMessage("Successfully saved.");
+        Collection.prototype.showErrorMessage("Locally saved sites synced successfully.");
       },
       error: function(data){
-        Collection.prototype.showErrorMessage("Save new site failed!");
+        Collection.prototype.showErrorMessage("Locally saved sites synced failed.");
       },
       data: formData,
       cache: false
@@ -160,7 +160,7 @@ Collection.prototype.modifyDate = function(code){
 Collection.prototype.showErrorMessage = function(text){
   $.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, text, true );
   // hide after delay
-  setTimeout( $.mobile.hidePageLoadingMsg, 1500 );
+  setTimeout( $.mobile.hidePageLoadingMsg, 3000 );
 }
 
 Collection.prototype.progressHandlingFunction =function(e){
