@@ -13,7 +13,8 @@ Collection.prototype.pushingPendingSites = function(){
   pendingSites = JSON.parse(window.localStorage.getItem("offlineSites"));
   if(pendingSites != null){
     for(var i=0; i< pendingSites.length; i++){
-      Collection.prototype.ajaxCreateSite(pendingSites[i]["collectionId"], pendingSites[i]["formData"]);
+      data = pendingSites[i]["formData"];
+      Collection.prototype.ajaxCreateOfflineSite(pendingSites[i]["collectionId"], data);
     }
     window.localStorage.setItem("offlineSites", JSON.stringify([]));
   }
@@ -54,12 +55,14 @@ Collection.prototype.showFormAddSite = function(schema){
 Collection.prototype.saveSite = function(){  
   var collectionId = $("#collectionId").val();
   if(Collection.prototype.validateData()){
-    var formData = new FormData($('form')[0]);
+    
     if(window.navigator.onLine){
+      var formData = new FormData($('form')[0]);
       Collection.prototype.ajaxCreateSite(collectionId, formData);
     }
     else{
-      Collection.prototype.storeOfflineData(collectionId, formData);
+      var offlineData = Collection.prototype.getFormValue();
+      Collection.prototype.storeOfflineData(collectionId, offlineData);
     }
   }
 }
@@ -89,9 +92,25 @@ Collection.prototype.ajaxCreateSite = function(collectionId, formData){
         Collection.prototype.showErrorMessage("Save new site failed!");
       },
       data: formData,
-      cache: false,
       contentType: false,
-      processData: false
+      processData: false,
+      cache: false
+  });
+}
+
+Collection.prototype.ajaxCreateOfflineSite = function(collectionId, formData){
+  $.ajax({
+      url: '/mobile/collections/' + collectionId + '/create_offline_site',  //Server script to process data
+      type: 'POST',
+      success: function(){
+        Collection.prototype.goHome();
+        Collection.prototype.showErrorMessage("Successfully saved.");
+      },
+      error: function(data){
+        Collection.prototype.showErrorMessage("Save new site failed!");
+      },
+      data: formData,
+      cache: false
   });
 }
 
@@ -238,3 +257,48 @@ Collection.prototype.goHome = function(){
   $("#name").val("");
 }
 
+Collection.prototype.getFormValue = function(){
+  var site = {};
+  var properties = {};
+  var elements = $("#formSite")[0].elements;
+  var propertyIds = []
+  for(var i=0; i< elements.length; i++){
+    console.log(elements[i]);
+    if(elements[i].name.indexOf("properties") == 0 ){
+      index = elements[i].name.replace(/[^0-9]/g, '')
+      if($.inArray(index, propertyIds) == -1){
+        if(elements[i].type == "file"){
+          properties[index] = elements[i].getAttribute("data");
+        }
+        else{          
+          properties[index] = elements[i].value;
+        }
+        propertyIds.push(index);
+      }
+      else{
+        if(elements[i].checked){
+          if(!(Object.prototype.toString.call( properties[index] ) === '[object Array]')){
+            properties[index] = [properties[index]];
+          } 
+          properties[index].push(elements[i].value);
+        }
+      }
+    }
+    else{
+      if(elements[i].name != ""){
+        site[elements[i].name] = elements[i].value;
+      }      
+    }
+  }
+  site["properties"] = properties;
+  return site;
+}
+
+Collection.prototype.handleFileUpload = function(el){
+  var file = el.files[0];
+  var reader = new FileReader();
+  reader.readAsDataURL(file)
+  reader.onload = function (event) {    
+    el.setAttribute('data', reader.result);
+  };
+}

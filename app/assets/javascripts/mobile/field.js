@@ -130,8 +130,7 @@ Field.prototype.getSelectManyField = function() {
   list = "";
   for(var i=0; i< this.options.length; i++){ 
     list = list +   
-      '<div class="ui-checkbox">' + 
-        '<input type="checkbox" value="' + this.options[i]["code"] + '" name="' + this.options[i]["code"] + '" id="' + this.options[i]["code"] + '" class="custom">' +
+      '<div class="ui-checkbox">' +         
           '<label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c"  style="margin:0px;">' +
             '<span class="ui-btn-inner ui-corner-top">'+
               '<span style="font-weight:normal;">' + this.options[i]["name"] + '</span>' +
@@ -180,7 +179,7 @@ Field.prototype.getPhotoField = function() {
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.name + '</label>'+
         '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input id="file" class="ui-input-text ui-body-c" type="file" data-clear-btn="true" value="" name="properties[' + this.id + ']" id="' + this.code + '">'+          
+          '<input id="file" onchange="Collection.prototype.handleFileUpload(this)" class="ui-input-text ui-body-c" type="file" data-clear-btn="true" value="" name="properties[' + this.id + ']" id="' + this.code + '">'+          
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+
