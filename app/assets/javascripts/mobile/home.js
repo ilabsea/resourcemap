@@ -6,6 +6,7 @@
 
 function initialize(){
   var cachedSites, collectionSchema, i, id;
+  prepareFlushMessage("#flash_message");
   onMobileCollections(function() {
     var cachedSites, i, id,
       _this = this;
@@ -66,4 +67,23 @@ function initialize(){
     window.collectionSchema = window.JSON.parse(window.localStorage.getItem("collectionSchema"));
     Collection.prototype.addDataToCollectionList(window.collectionSchema);
   }
+}
+
+function prepareFlushMessage(id){
+  var content = $(id).html();
+  console.log(content);
+  if(content.trim() != ""){
+    console.log("Have content");
+    parent = $(id).children()[0];
+    console.log(parent);
+    if(parent){
+      text = parent.children[0].innerHTML;
+      showFlushMessage(text);
+    }
+  }
+}
+
+function showFlushMessage(message){
+  $.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, message, true );
+    setTimeout( $.mobile.hidePageLoadingMsg, 3000 );
 }

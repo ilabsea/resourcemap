@@ -1,19 +1,18 @@
 
 #mobile-collections-main{ "data-fullscreen" => "true" }
-  %div{"data-role"=> "header", "data-theme" => "c"}  
+  %div{"data-role"=> "header", "data-theme" => "b"}  
     %h1= @title || 'My Collections'
 
-    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false" }Sign out
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false", "data-theme" => "c" }Sign out
   %div{"data-role" => "content"}
     %ul{ id: "listview", "data-role" => "listview", "data-inset" => "true"}
 
-  %div{"data-role" => "footer", "data-theme" => "c", 'align' => 'center'}
-    = link_to 'Web Version', collections_path
+  = link_to ' Desktop View ', collections_path, "data-role" => "footer", "data-theme" => "f", 'align' => 'center', "data-position" => "fixed", "style" => "padding-bottom:20px;"
 
 #mobile-sites-main{"data-fullscreen" => "true", :style => "display:none;"}
-  %div{"data-role" => "header", "data-theme" => "c"}
-    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.prototype.goHome()'} Back
-    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false" }Sign out
+  %div{"data-role" => "header", "data-theme" => "b"}
+    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.prototype.goHome()', "data-theme" => "c" } Back
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false", "data-theme" => "c"  }Sign out
     %h1{:id => "title"}
 
   %h4{:style => "margin:15px"} New Site
@@ -34,6 +33,5 @@
         .clear
       %div{"id" => "fields", "data-role" => "content", "style" => "padding-left:0px; padding-right:0px"}
     %button{onclick: 'Collection.prototype.saveSite()', "data-theme" => "b"} Save Site
-    %a{"data-role" => "button", "data-theme" => "c", onclick: 'Collection.prototype.goHome()'} Cancel
   %div{"data-role" => "footer", "data-theme" => "c", 'align' => 'center'}
     = link_to 'Web Version', collections_path

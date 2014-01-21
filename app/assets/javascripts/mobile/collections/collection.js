@@ -198,14 +198,23 @@ Collection.prototype.handleFieldUI = function(schema){
 
 Collection.prototype.addDataToCollectionList = function(collection_schema){
   for(var i=0; i< collection_schema.length; i++){
-    item = Collection.prototype.getListTemplate(collection_schema[i])
+    if(collection_schema.length > 1 && i == 0){
+      classListName = "ui-first-child" 
+    }
+    else if(collection_schema.length > 1 && i == (collection_schema.length - 1)){
+      classListName = "ui-last-child"
+    }
+    else{
+      classListName = ""
+    }
+    item = Collection.prototype.getListTemplate(collection_schema[i], classListName)
     $("#listview").append(item);
   }
   $("#mobile-sites-main").hide();
 }
 
-Collection.prototype.getListTemplate = function(collection){
-  item = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-last-child">' + 
+Collection.prototype.getListTemplate = function(collection, classListName){
+  item = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ' + classListName + '" >' + 
             '<div class="ui-btn-inner ui-li">' + 
               '<div class="ui-btn-text">' +
                 '<a style="cursor: pointer;" onclick="Collection.prototype.createSite(' + collection["id"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + collection["name"] + '</a>' + 

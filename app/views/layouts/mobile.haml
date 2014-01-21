@@ -3,7 +3,7 @@
   %head
     %title= application_name.titleize
     %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
-    %link{:href => "/assets/jquery.mobile-1.3.1.min.css", :rel => "stylesheet"}
+    %link{:href => "/assets/jquery.mobile-1.3.2.min.css", :rel => "stylesheet"}
     =javascript_include_tag "/assets/jquery"
     =javascript_include_tag "/assets/jquery_ujs"
     %script{:src => "/assets/mobile/mobilecache.js"}
@@ -11,10 +11,11 @@
     %script{:src => "/assets/mobile/field.js"}
     %script{:src => "/assets/mobile/option.js"}
     %script{:src => "/assets/mobile/events.js"}
-    %script{:src => "/assets/jquery.mobile-1.3.1.min.js"}
+    %script{:src => "/assets/jquery.mobile-1.3.2.min.js"}
     %link{:href => "/images/favicon.ico", :rel => "shortcut icon", :type => "image/x-icon"}
   %body{ :onload => "initialize()"}
-    = flash_message
+    %div#flash_message{"style" => "display:none;", "data-role" => "popup"}
+      = flash_message
     = yield
     //#footer-span
     //  #footer
