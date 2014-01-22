@@ -33,5 +33,5 @@
         .clear
       %div{"id" => "fields", "data-role" => "content", "style" => "padding-left:0px; padding-right:0px"}
     %button{onclick: 'Collection.prototype.saveSite()', "data-theme" => "b"} Save Site
-  %div{"data-role" => "footer", "data-theme" => "c", 'align' => 'center'}
-    = link_to 'Web Version', collections_path
+  %div{"align" => "center"}
+    = link_to ' Desktop View ', collections_path, "data-role" => "footer", "data-theme" => "f", 'align' => 'center'

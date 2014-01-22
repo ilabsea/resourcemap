@@ -279,6 +279,9 @@ Collection.prototype.getFormValue = function(){
         if(elements[i].type == "file"){
           properties[index] = elements[i].getAttribute("data");
         }
+        else if(elements[i].type == "checkbox"){
+          properties[index] = elements[i].checked;
+        }
         else{          
           properties[index] = elements[i].value;
         }
