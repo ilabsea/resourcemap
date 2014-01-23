@@ -95,14 +95,15 @@ class Mobile::SitesController < SitesController
   end
 
   def fix_select_many_errors_string(properties)
+    data = []
     properties.each do |key, value|
-      if Field.find_by_id(key.to_i).kind == "select_many"
-        data = []
+      if Field.find_by_id(key.to_i).kind == "select_many"        
         value.each do |v|
           data.push(v.to_i)
         end 
       end
-      properties[key] = value
+      properties[key] = data
+      data = []
     end
     properties
   end
