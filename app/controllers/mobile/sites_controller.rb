@@ -59,7 +59,7 @@ class Mobile::SitesController < SitesController
     properties.each do |key, value|
       if Field.find_by_id(key.to_i) and Field.find_by_id(key.to_i).kind == "photo"
         if value
-          file_name = properties[key].original_filename
+          file_name = "#{key}#{DateTime.now.to_i}#{properties[key].original_filename}"
           Site::UploadUtils.uploadSingleFile(file_name, properties[key].read.to_s)
           properties[key] = file_name
         end
