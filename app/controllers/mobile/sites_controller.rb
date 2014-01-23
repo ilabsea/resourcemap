@@ -98,7 +98,7 @@ class Mobile::SitesController < SitesController
     properties.each do |key, value|
       if Field.find_by_id(key.to_i).kind == "select_many"
         data = []
-        value.each do v
+        value.each do |v|
           data.push(v.to_i)
         end 
       end
