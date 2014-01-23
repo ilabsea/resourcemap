@@ -16,6 +16,7 @@ class Mobile::SitesController < SitesController
         site_params[:properties] = params[:properties]
         site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
         site_params[:properties] = self.store_image_file(site_params[:properties])
+        site_params[:properties] = fix_select_many_errors_string(site_params[:properties])
       end
       site = collection.sites.create(site_params.merge(user: current_user))
       if site.valid?
@@ -85,11 +86,23 @@ class Mobile::SitesController < SitesController
   def fix_timezone_on_date_properties(properties)
     properties.each do |key, value|
       if Field.find_by_id(key.to_i) and Field.find_by_id(key.to_i).kind == "date"   
-        p value 
         unless(value.strip == "")
           properties[key] = value + "T00:00:00Z"
         end 
       end
+    end
+    properties
+  end
+
+  def fix_select_many_errors_string(properties)
+    properties.each do |key, value|
+      if Field.find_by_id(key.to_i).kind == "select_many"
+        data = []
+        value.each do v
+          data.push(v.to_i)
+        end 
+      end
+      properties[key] = value
     end
     properties
   end

@@ -272,7 +272,6 @@ Collection.prototype.getFormValue = function(){
   var elements = $("#formSite")[0].elements;
   var propertyIds = []
   for(var i=0; i< elements.length; i++){
-    console.log(elements[i]);
     if(elements[i].name.indexOf("properties") == 0 ){
       index = elements[i].name.replace(/[^0-9]/g, '')
       if($.inArray(index, propertyIds) == -1){
@@ -280,7 +279,14 @@ Collection.prototype.getFormValue = function(){
           properties[index] = elements[i].getAttribute("data");
         }
         else if(elements[i].type == "checkbox"){
-          properties[index] = elements[i].checked;
+          if(elements[i].checked){
+            if(elements[i].getAttribute("datatype") == "yes_no"){
+              properties[index] = elements[i].checked;
+            }
+            else if(elements[i].getAttribute("datatype") == "select_many"){
+              properties[index] = elements[i].value;
+            }
+          }          
         }
         else{          
           properties[index] = elements[i].value;
@@ -290,9 +296,9 @@ Collection.prototype.getFormValue = function(){
       else{
         if(elements[i].checked){
           if(!(Object.prototype.toString.call( properties[index] ) === '[object Array]')){
-            properties[index] = [properties[index]];
+            properties[index] = [parseInt(properties[index])];
           } 
-          properties[index].push(elements[i].value);
+          properties[index].push(parseInt(elements[i].value));
         }
       }
     }
@@ -303,6 +309,7 @@ Collection.prototype.getFormValue = function(){
     }
   }
   site["properties"] = properties;
+  console.log(properties);
   return site;
 }
 

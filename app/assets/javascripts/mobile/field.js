@@ -67,7 +67,7 @@ Field.prototype.getTextField = function() {
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.name + '</label>'+
         '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="text">'+
+          '<input name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="text" datatype="text">'+
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+
@@ -79,7 +79,7 @@ Field.prototype.getNumericField = function() {
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.name + '</label>'+
         '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="number">'+
+          '<input name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="number" datatype="numberic">'+
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+
@@ -91,7 +91,7 @@ Field.prototype.getDateField = function() {
             '<div class="ui-controlgroup-controls">'+
               '<label>' + this.name + '</label>'+
               '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-                '<input name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="date">'+
+                '<input name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="date"  datatype="date">'+
               '</div>'+
               '<div class="clear"></div>'+
             '</div>'+
@@ -105,7 +105,7 @@ Field.prototype.getYesNoField = function() {
           '<label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c">' +
             '<span class="ui-btn-inner">'+
               '<span style="font-weight:normal;">' + this.name + '</span>' +
-              '<input type="checkbox" name="properties[' + this.id + ']" id="' + this.code + '" class="custom">' +
+              '<input type="checkbox" name="properties[' + this.id + ']" id="' + this.code + '" class="custom"  datatype="yes_no">' +
             '</span>'+
           '</label>'+
       '</div>'+
@@ -120,7 +120,7 @@ Field.prototype.getSelectOneField = function() {
 
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.name + '</label>'+
-              '<select name="properties[' + this.id + ']" id="' + this.code + '">' +
+              '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="select_one">' +
                 list +
               '</select>' +
           '</div>';
@@ -134,7 +134,7 @@ Field.prototype.getSelectManyField = function() {
           '<label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c"  style="margin:0px;">' +
             '<span class="ui-btn-inner ui-corner-top">'+
               '<span style="font-weight:normal;">' + this.options[i]["name"] + '</span>' +
-              '<input type="checkbox" value="' + (i+1) + '" name="properties[' + this.id + '][]" id="' + this.options[i]["code"] + '" class="custom">' +
+              '<input type="checkbox" value="' + (i+1) + '" name="properties[' + this.id + '][]" id="' + this.options[i]["code"] + '" class="custom"  datatype="select_many">' +
             '</span>'+
           '</label>'+
       '</div>';
@@ -155,7 +155,7 @@ Field.prototype.getPhoneNumberField = function() {
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.name + '</label>'+
         '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="tel">'+
+          '<input name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="tel"  datatype="phone number">'+
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+
@@ -167,7 +167,7 @@ Field.prototype.getEmailField = function() {
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.name + '</label>'+
         '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="email">'+
+          '<input name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="email"  datatype="email">'+
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+
@@ -179,7 +179,7 @@ Field.prototype.getPhotoField = function() {
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.name + '</label>'+
         '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input id="file" onchange="Collection.prototype.handleFileUpload(this)" class="ui-input-text ui-body-c" type="file" data-clear-btn="true" value="" name="properties[' + this.id + ']" id="' + this.code + '">'+          
+          '<input id="file" onchange="Collection.prototype.handleFileUpload(this)" class="ui-input-text ui-body-c" type="file" data-clear-btn="true" value="" name="properties[' + this.id + ']" id="' + this.code + '"  datatype="photo">'+          
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+
