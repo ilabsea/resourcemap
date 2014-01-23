@@ -101,8 +101,8 @@ class Mobile::SitesController < SitesController
         value.each do |v|
           data.push(v.to_i)
         end 
-      end
-      properties[key] = data
+        properties[key] = data
+      end      
       data = []
     end
     properties
