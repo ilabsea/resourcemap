@@ -16,7 +16,6 @@ class Mobile::SitesController < SitesController
         site_params[:properties] = params[:properties]
         site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
         site_params[:properties] = self.store_image_file(site_params[:properties])
-        site_params[:properties] = fix_select_many_errors_string(site_params[:properties])
       end
       site = collection.sites.create(site_params.merge(user: current_user))
       if site.valid?
