@@ -94,17 +94,4 @@ class Mobile::SitesController < SitesController
     properties
   end
 
-  def fix_select_many_errors_string(properties)
-    data = []
-    properties.each do |key, value|
-      if Field.find_by_id(key.to_i).kind == "select_many"        
-        value.each do |v|
-          data.push(v.to_i)
-        end 
-        properties[key] = data
-      end      
-      data = []
-    end
-    properties
-  end
 end

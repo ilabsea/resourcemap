@@ -115,7 +115,7 @@ Field.prototype.getYesNoField = function() {
 Field.prototype.getSelectOneField = function() {
   list = "";
   for(var i=0; i< this.options.length; i++){
-    list = list + "<option value='" + (i+1) + "' >" + this.options[i]["name"] + "</option>" ;
+    list = list + "<option value='" + this.options[i]["id"] + "' >" + this.options[i]["name"] + "</option>" ;
   }
 
   return  '<div class="ui-select" style="margin-left:10px;">' +
@@ -134,7 +134,7 @@ Field.prototype.getSelectManyField = function() {
           '<label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c"  style="margin:0px;">' +
             '<span class="ui-btn-inner ui-corner-top">'+
               '<span style="font-weight:normal;">' + this.options[i]["name"] + '</span>' +
-              '<input type="checkbox" value="' + (i+1) + '" name="properties[' + this.id + '][]" id="' + this.options[i]["code"] + '" class="custom"  datatype="select_many">' +
+              '<input type="checkbox" value="' + this.options[i]["id"] + '" name="properties[' + this.id + '][]" id="' + this.options[i]["code"] + '" class="custom"  datatype="select_many">' +
             '</span>'+
           '</label>'+
       '</div>';
