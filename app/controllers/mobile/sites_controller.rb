@@ -6,27 +6,31 @@ class Mobile::SitesController < SitesController
   end
 
   def create
-    begin     
-      # site_params = JSON.parse params[:site]
-      site_params = {}
-      site_params[:name] = params[:name]
-      site_params[:lng] = params[:lng]
-      site_params[:lat] = params[:lat]
-      if params[:properties]
-        site_params[:properties] = params[:properties]
-        site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
-        site_params[:properties] = self.store_image_file(site_params[:properties])
+    # site_params = JSON.parse params[:site]
+    site_params = {}
+    site_params[:name] = params[:name]
+    site_params[:lng] = params[:lng]
+    site_params[:lat] = params[:lat]
+    if params[:properties]
+      site_params[:properties] = params[:properties]
+      site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
+      site_params[:properties] = self.store_image_file(site_params[:properties])
+    end
+    site = collection.sites.create(site_params.merge(user: current_user))
+    if site.valid?
+      Site::UploadUtils.uploadFile(params[:fileUpload])
+      current_user.site_count += 1
+      current_user.update_successful_outcome_status
+      current_user.save!
+      render json: {site: site}, :status => 201
+    else
+      errors = []
+      site.errors.messages[:properties].each do |error|
+        error.each do |key, value|
+          errors.push(value)
+        end
       end
-      site = collection.sites.create(site_params.merge(user: current_user))
-      if site.valid?
-        Site::UploadUtils.uploadFile(params[:fileUpload])
-        current_user.site_count += 1
-        current_user.update_successful_outcome_status
-        current_user.save!
-        render json: {site: site, status: 201}
-      end
-    rescue => ex
-      render json: {message: ex.message, status: 500 }
+      render json: errors, :status => 500
     end
   end
 

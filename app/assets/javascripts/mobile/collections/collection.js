@@ -54,8 +54,7 @@ Collection.prototype.showFormAddSite = function(schema){
 
 Collection.prototype.saveSite = function(){  
   var collectionId = $("#collectionId").val();
-  if(Collection.prototype.validateData()){
-    
+  if(Collection.prototype.validateData()){    
     if(window.navigator.onLine){
       var formData = new FormData($('form')[0]);
       Collection.prototype.ajaxCreateSite(collectionId, formData);
@@ -89,7 +88,12 @@ Collection.prototype.ajaxCreateSite = function(collectionId, formData){
         Collection.prototype.showErrorMessage("Successfully saved.");
       },
       error: function(data){
-        Collection.prototype.showErrorMessage("Save new site failed!");
+        var properties = JSON.parse(data.responseText);
+        var error = "";
+        for(var i=0;i<properties.length; i++){
+          error = error + properties[i] + " .";
+        }
+        Collection.prototype.showErrorMessage("Save new site failed!" + error);
       },
       data: formData,
       contentType: false,
@@ -130,37 +134,10 @@ Collection.prototype.validateData = function(){
   return true;
 }
 
-Collection.prototype.fixDateMissingTimeZone = function(collectionId){
-  form = "";
-  for(h=0; h<window.collectionSchema.length;h++){
-    schema = window.collectionSchema[h];
-    if(schema.id == collectionId){
-      for(i=0; i<schema["layers"].length;i++){
-        form = form + '<div><h5>' + schema["layers"][i]["name"] + '</h5>';
-        for(j=0; j<schema["layers"][i]["fields"].length; j++){
-          var field = schema["layers"][i]["fields"][j];
-          if(field.kind == 'date' && $("#" + field.code).val() != ""){
-            Collection.prototype.modifyDate(field.code);
-          }
-        }
-        form = form + "</div>";
-      }
-    }
-  }
-  return form;
-}
-
-Collection.prototype.modifyDate = function(code){
-  origin = $("#" + code).val();
-  newDate = origin + "T00:00:00Z" ;
-  $("#" + code).val(newDate);
-  return true;
-}
-
 Collection.prototype.showErrorMessage = function(text){
   $.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, text, true );
   // hide after delay
-  setTimeout( $.mobile.hidePageLoadingMsg, 3000 );
+  setTimeout( $.mobile.hidePageLoadingMsg, 2000 );
 }
 
 Collection.prototype.progressHandlingFunction =function(e){
