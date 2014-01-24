@@ -54,7 +54,7 @@ Collection.prototype.showFormAddSite = function(schema){
 
 Collection.prototype.saveSite = function(){  
   var collectionId = $("#collectionId").val();
-  if(Collection.prototype.validateData()){    
+  if(Collection.prototype.validateData(collectionId)){    
     if(window.navigator.onLine){
       var formData = new FormData($('form')[0]);
       Collection.prototype.ajaxCreateSite(collectionId, formData);
@@ -118,7 +118,7 @@ Collection.prototype.ajaxCreateOfflineSite = function(collectionId, formData){
   });
 }
 
-Collection.prototype.validateData = function(){
+Collection.prototype.validateData = function(collectionId){
   if($("#name").val() == ""){
     Collection.prototype.showErrorMessage("Name can not be empty.");
     return false;
@@ -131,7 +131,57 @@ Collection.prototype.validateData = function(){
     Collection.prototype.showErrorMessage("Location's longitude can not be empty.");
     return false;
   }
+
+  for(var i=0; i< window.collectionSchema.length; i++){
+    if(window.collectionSchema[i]["id"] == collectionId){
+      schema = window.collectionSchema[i];
+      for(i=0; i<schema["layers"].length;i++){
+        for(j=0; j<schema["layers"][i]["fields"].length; j++){
+          var field = schema["layers"][i]["fields"][j];
+          switch(field["kind"])
+          {
+            case "email":
+              value = $("#" + field["code"]).val();
+              if(Collection.prototype.validateEmail(value) == false){
+                Collection.prototype.showErrorMessage(field["name"] + "is not a valid email value.");
+                return false;
+              }              
+              break;
+            case "numeric":
+              value = $("#" + field["code"]).val();
+              if(Collection.prototype.validateNumeric(value) == false){
+                Collection.prototype.showErrorMessage(field["name"] + "is not valid numeric value.");
+                return false;
+              }              
+              break;
+          }
+        }
+        form = form + "</div>";
+      }
+    }
+  }
+
   return true;
+}
+
+Collection.prototype.validateEmail = function(email) { 
+  if(email == ""){
+    return true;
+  }
+  else{
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
+}
+
+Collection.prototype.validateNumeric = function(number) { 
+  if(number == ""){
+    return true;
+  }
+  else{
+    var RE = /^-{0,1}\d*\.{0,1}\d+$/;
+    return (RE.test(number));
+  }
 }
 
 Collection.prototype.showErrorMessage = function(text){
@@ -286,7 +336,6 @@ Collection.prototype.getFormValue = function(){
     }
   }
   site["properties"] = properties;
-  console.log(properties);
   return site;
 }
 
