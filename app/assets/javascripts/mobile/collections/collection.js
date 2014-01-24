@@ -302,8 +302,10 @@ Collection.prototype.getFormValue = function(){
     if(elements[i].name.indexOf("properties") == 0 ){
       index = elements[i].name.replace(/[^0-9]/g, '')
       if($.inArray(index, propertyIds) == -1){
-        if(elements[i].type == "file" && elements[i].getAttribute("data") != null){
-          properties[index] = elements[i].getAttribute("data");
+        if(elements[i].type == "file"){
+          if(elements[i].getAttribute("data") != null){
+            properties[index] = elements[i].getAttribute("data");
+          }          
         }
         else if(elements[i].type == "checkbox"){
           if(elements[i].checked){

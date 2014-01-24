@@ -62,7 +62,7 @@ class Mobile::SitesController < SitesController
   def store_image_file(properties)
     properties.each do |key, value|
       if Field.find_by_id(key.to_i) and Field.find_by_id(key.to_i).kind == "photo"
-        if value
+        if value and value != ""
           file_name = "#{key}#{DateTime.now.to_i}#{properties[key].original_filename}"
           Site::UploadUtils.uploadSingleFile(file_name, properties[key].read.to_s)
           properties[key] = file_name
@@ -75,7 +75,7 @@ class Mobile::SitesController < SitesController
   def store_offline_image_file(properties)
     properties.each do |key, value|
       if Field.find_by_id(key.to_i) and Field.find_by_id(key.to_i).kind == "photo"
-        if value
+        if value and value != ""
           file_name = "#{key}#{DateTime.now.to_i}.jpg"
           # File.open("public/photo_field/#{file_name}", 'w') {|f| f.write(Base64.decode64(value)) }
           Site::UploadUtils.uploadSingleFile(file_name, Base64.decode64(value[(value.index(",")+1)..value.size]))
