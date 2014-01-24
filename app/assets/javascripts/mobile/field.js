@@ -179,7 +179,7 @@ Field.prototype.getPhotoField = function() {
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.name + '</label>'+
         '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input id="file" onchange="Collection.prototype.handleFileUpload(this)" class="ui-input-text ui-body-c" type="file" data-clear-btn="true" value="" name="properties[' + this.id + ']" id="' + this.code + '"  datatype="photo">'+          
+          '<input onchange="Collection.prototype.handleFileUpload(this)" class="ui-input-text ui-body-c" type="file" data-clear-btn="true" value="" name="properties[' + this.id + ']" id="' + this.code + '"  datatype="photo">'+          
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+

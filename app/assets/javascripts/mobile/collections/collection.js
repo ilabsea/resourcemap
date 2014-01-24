@@ -143,14 +143,14 @@ Collection.prototype.validateData = function(collectionId){
             case "email":
               value = $("#" + field["code"]).val();
               if(Collection.prototype.validateEmail(value) == false){
-                Collection.prototype.showErrorMessage(field["name"] + "is not a valid email value.");
+                Collection.prototype.showErrorMessage(field["name"] + " is not a valid email value.");
                 return false;
               }              
               break;
             case "numeric":
               value = $("#" + field["code"]).val();
               if(Collection.prototype.validateNumeric(value) == false){
-                Collection.prototype.showErrorMessage(field["name"] + "is not valid numeric value.");
+                Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
                 return false;
               }              
               break;
@@ -302,7 +302,7 @@ Collection.prototype.getFormValue = function(){
     if(elements[i].name.indexOf("properties") == 0 ){
       index = elements[i].name.replace(/[^0-9]/g, '')
       if($.inArray(index, propertyIds) == -1){
-        if(elements[i].type == "file"){
+        if(elements[i].type == "file" && elements[i].getAttribute("data") != null){
           properties[index] = elements[i].getAttribute("data");
         }
         else if(elements[i].type == "checkbox"){
