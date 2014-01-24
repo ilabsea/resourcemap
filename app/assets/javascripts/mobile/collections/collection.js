@@ -74,9 +74,14 @@ Collection.prototype.storeOfflineData = function(collectionId, formData){
   else{
     pendingSites = [{"collectionId" : collectionId, "formData" : formData}];
   }
-  window.localStorage.setItem("offlineSites", JSON.stringify(pendingSites));
-  Collection.prototype.goHome();
-  Collection.prototype.showErrorMessage("Offline site saved locally.");
+  try {
+    window.localStorage.setItem("offlineSites", JSON.stringify(pendingSites));
+    Collection.prototype.goHome();
+    Collection.prototype.showErrorMessage("Offline site saved locally.");
+  }catch (e) {
+    Collection.prototype.showErrorMessage("Unable to save record because your data is too big.");
+  }
+  
 }
 
 Collection.prototype.ajaxCreateSite = function(collectionId, formData){
