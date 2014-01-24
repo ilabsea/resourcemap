@@ -71,7 +71,6 @@ function initialize(){
 
 function prepareFlushMessage(id){
   var content = $(id).html();
-  console.log(content);
   if(content.trim() != ""){
     console.log("Have content");
     parent = $(id).children()[0];

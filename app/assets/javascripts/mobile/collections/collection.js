@@ -132,9 +132,9 @@ Collection.prototype.validateData = function(collectionId){
     return false;
   }
 
-  for(var i=0; i< window.collectionSchema.length; i++){
-    if(window.collectionSchema[i]["id"] == collectionId){
-      schema = window.collectionSchema[i];
+  for(var k=0; k< window.collectionSchema.length; k++){
+    if(window.collectionSchema[k]["id"] == collectionId){
+      schema = window.collectionSchema[k];
       for(i=0; i<schema["layers"].length;i++){
         for(j=0; j<schema["layers"][i]["fields"].length; j++){
           var field = schema["layers"][i]["fields"][j];
