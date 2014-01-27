@@ -314,7 +314,7 @@ Collection.prototype.getFormValue = function(){
             }              
             break;
           case "select_many":
-            if(elements[i].checked){
+            if(elements[i].checked && (elements[i].value != null || elements[i].value != "")){
               properties[index] = elements[i].value;         
             }
             break;
@@ -324,7 +324,9 @@ Collection.prototype.getFormValue = function(){
             }
             break;
           default:
-            properties[index] = elements[i].value;
+            if(elements[i].value != null || elements[i].value != ""){
+              properties[index] = elements[i].value;
+            }            
         }
         propertyIds.push(index);     
       }

@@ -12,7 +12,6 @@ $(function() {
 });
 
 $(".numeric").keydown(function(event) {
-	alert("Hello");
     // Allow: backspace, delete, tab, escape, enter and .
     if ( $.inArray(event.keyCode,[46,8,9,27,13,190]) !== -1 ||
          // Allow: Ctrl+A
