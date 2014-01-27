@@ -331,8 +331,8 @@ Collection.prototype.getFormValue = function(){
         propertyIds.push(index);     
       }
       else{
-        if(elements[i].checked){
-          if(!(Object.prototype.toString.call( properties[index] ) === '[object Array]')){
+        if(elements[i].getAttribute("datatype") == "select_many" && elements[i].checked && elements[i].value != null){
+          if(!(Object.prototype.toString.call( properties[index] ) === '[object Array]') && properties[index] != null){
             properties[index] = [parseInt(properties[index])];
           } 
           properties[index].push(parseInt(elements[i].value));
