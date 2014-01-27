@@ -334,7 +334,10 @@ Collection.prototype.getFormValue = function(){
         if(elements[i].getAttribute("datatype") == "select_many" && elements[i].checked && elements[i].value != null){
           if(!(Object.prototype.toString.call( properties[index] ) === '[object Array]') && properties[index] != null){
             properties[index] = [parseInt(properties[index])];
-          } 
+          }
+          else if (!(Object.prototype.toString.call( properties[index] ) === '[object Array]') && properties[index] == null){
+            properties[index] = [];
+          }
           properties[index].push(parseInt(elements[i].value));
         }
       }
