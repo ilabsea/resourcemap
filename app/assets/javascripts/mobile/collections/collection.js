@@ -124,15 +124,15 @@ Collection.prototype.ajaxCreateOfflineSite = function(collectionId, formData){
 }
 
 Collection.prototype.validateData = function(collectionId){
-  if($("#name").val() == ""){
+  if($("#name").val().trim() == ""){
     Collection.prototype.showErrorMessage("Name can not be empty.");
     return false;
   }
-  if($("#lat").val() == ""){
+  if($("#lat").val().trim() == ""){
     Collection.prototype.showErrorMessage("Location's latitude can not be empty.");
     return false;
   }
-  if($("#lng").val() == ""){
+  if($("#lng").val().trim() == ""){
     Collection.prototype.showErrorMessage("Location's longitude can not be empty.");
     return false;
   }
