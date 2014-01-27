@@ -307,25 +307,26 @@ Collection.prototype.getFormValue = function(){
     if(elements[i].name.indexOf("properties") == 0 ){
       index = elements[i].name.replace(/[^0-9]/g, '')
       if($.inArray(index, propertyIds) == -1){
-        if(elements[i].type == "file"){
-          if(elements[i].getAttribute("data") != null){
-            properties[index] = elements[i].getAttribute("data");
-          }          
-        }
-        else if(elements[i].type == "checkbox"){
-          if(elements[i].checked){
-            if(elements[i].getAttribute("datatype") == "yes_no"){
+        switch(elements[i].getAttribute("datatype")){
+          case "photo":
+            if(elements[i].getAttribute("data") != null){
+              properties[index] = elements[i].getAttribute("data");
+            }              
+            break;
+          case "select_many":
+            if(elements[i].checked){
+              properties[index] = elements[i].value;         
+            }
+            break;
+          case "yes_no":
+            if(elements[i].checked){
               properties[index] = elements[i].checked;
             }
-            else if(elements[i].getAttribute("datatype") == "select_many"){
-              properties[index] = elements[i].value;
-            }
-          }          
+            break;
+          default:
+            properties[index] = elements[i].value;
         }
-        else{          
-          properties[index] = elements[i].value;
-        }
-        propertyIds.push(index);
+        propertyIds.push(index);     
       }
       else{
         if(elements[i].checked){
