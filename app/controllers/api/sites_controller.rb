@@ -26,7 +26,8 @@ class Api::SitesController < ApplicationController
     site.lat = params[:lat]
     site.lng = params[:lng]
     site.name = params[:name]
-    properties = prepare_site_property params
+    # properties = prepare_site_property params
+    properties = params[:properties]
     site.properties = properties
     site.user = User.find_by_phone_number(params[:phone_number])
     if site.valid?
@@ -43,11 +44,11 @@ class Api::SitesController < ApplicationController
 
   def create
     site_params = {}
-    properties = prepare_site_property params
+    # properties = prepare_site_property params
     site_params.merge!("name" => params[:name])
     site_params.merge!("lat" => params[:lat])
     site_params.merge!("lng" => params[:lng])
-    site_params.merge!("properties" => properties)
+    site_params.merge!("properties" => params[:properties])
     current_user = User.find_by_phone_number(params[:phone_number])
     collection = Collection.find_by_id(params[:collection_id])
     site = collection.sites.new(site_params.merge!(user: current_user))

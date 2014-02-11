@@ -87,7 +87,8 @@ class Api::CollectionsController < ApplicationController
       obj["code"] = f.code
       obj["id"] = f.id
       obj["name"] = f.name
-      obj["options"] = f.config["options"]
+      obj["kind"] = f.kind
+      obj["options"] = f.config["options"] if f.config["options"]
       list.push obj
     end
     render :json => list.to_json
@@ -97,7 +98,8 @@ class Api::CollectionsController < ApplicationController
     if params[:con_type]
       sites = []
       con_type = params[:con_type].split(",")
-      properties = Field.find_by_code("con_type").id
+      collection = Collection.find_by_id(params[:id])
+      properties = collection.fields.find_by_code(params[:field_code]).id
       if (params[:from].blank? && params[:to].blank?)
         from = parse_date_format("#{Time.now.mon}/01/#{Time.now.year}") - 1
         to = parse_date_format("#{Time.now.mon}/30/#{Time.now.year}").end_of_month + 1
