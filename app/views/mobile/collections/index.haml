@@ -1,20 +1,37 @@
-#mobile-collections-main{"data-role" => "page", "data-fullscreen" => "true" }
-  %div{"data-role"=> "header", "data-theme" => "c"}  
+
+#mobile-collections-main{ "data-fullscreen" => "true" }
+  %div{"data-role"=> "header", "data-theme" => "b"}  
     %h1= @title || 'My Collections'
 
-    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false" }Sign out
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false", "data-theme" => "c" }Sign out
   %div{"data-role" => "content"}
     %ul{ id: "listview", "data-role" => "listview", "data-inset" => "true"}
-      <!-- ko foreach: collections -->
-      %li
-        %a{ko(text: :name, click: '$root.createSite'), style: 'cursor: pointer;'}
-      <!-- /ko -->
-  %div{"data-role" => "footer", "data-theme" => "c", 'align' => 'center'}
-    = link_to 'Web Version', collections_path
 
-#site-page{"data-role" => "page", "data-fullscreen" => "true"}
+  = link_to ' Desktop View ', collections_path, "data-role" => "footer", "data-theme" => "f", 'align' => 'center', "data-position" => "fixed", "style" => "padding-bottom:20px;"
 
-  -# Collection's Site
-  <!-- ko if: currentCollection() -->
-  = render 'mobile/collections/index/site'
-  <!-- /ko -->
+#mobile-sites-main{"data-fullscreen" => "true", :style => "display:none;"}
+  %div{"data-role" => "header", "data-theme" => "b"}
+    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.prototype.goHome()', "data-theme" => "c" } Back
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false", "data-theme" => "c"  }Sign out
+    %h1{:id => "title"}
+
+  %h4{:style => "margin:15px"} New Site
+  %hidden{id: "collectionId"}
+  %form#formSite{ action: 'javascript:void(0)', method: :post}
+    %div{"data-role" => "content"}
+      %div
+        %label{:for => "basic"} Name: 
+        %input#name{:name => "name", :type => "text", :autofocus => true}
+        .clear
+      %div
+        %label Location:
+        %div{"data-role" => "controlgroup", style: "margin-left:10px"}
+          %label Location'Lat
+          %input#lat{:name => "lat", placeholder: "Enter your location's lat"}
+          %label Location'Lng
+          %input#lng{:name => "lng", placeholder: "Enter your location's lng"}
+        .clear
+      %div{"id" => "fields", "data-role" => "content", "style" => "padding-left:0px; padding-right:0px"}
+    %button{onclick: 'Collection.prototype.saveSite()', "data-theme" => "b"} Save Site
+  %div{"align" => "center"}
+    = link_to ' Desktop View ', collections_path, "data-role" => "footer", "data-theme" => "f", 'align' => 'center'

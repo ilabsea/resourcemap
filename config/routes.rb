@@ -14,6 +14,7 @@ ResourceMap::Application.routes.draw do
   match 'collections/alerted-collections' => 'collections#alerted_collections', :via => :get
   #match 'analytics' => 'analytics#index', :via => :get
   get 'download/activity' => "activities#download"
+  match 'load_app_cache' => 'home#load_app_cache', :via => 'get'
 
   
   resources :repeats
@@ -127,6 +128,7 @@ ResourceMap::Application.routes.draw do
   namespace :mobile do
     resources :collections do
       resources :sites
+      match 'create_offline_site' => 'sites#create_offline_site', :via => :post
     end
   end
 

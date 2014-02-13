@@ -2,6 +2,14 @@ module Site::UploadUtils
   extend self
   require 'RMagick'
 
+  def uploadSingleFile(key, value)
+    img = Magick::Image::from_blob(value).first
+    img.resize_to_fit!(800)
+    path = "public/photo_field/"
+    Dir.mkdir(path) unless File.exists?(path)
+    img.write(path + key)
+  end
+
   def uploadFile(fileHash)
     if fileHash
       fileHash.each do |key, value|
@@ -13,6 +21,7 @@ module Site::UploadUtils
       end
     end
   end
+
   def purgePhotos(photosToRemove)
     path = "public/photo_field/"
     photosToRemove.each { |photo|
@@ -22,6 +31,7 @@ module Site::UploadUtils
       end
     }
   end
+
   def purgeUploadedPhotos(site)
     photoFields = Field.where(:collection_id => site.collection_id, :kind => 'photo')
     puts photoFields.length
