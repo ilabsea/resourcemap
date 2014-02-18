@@ -6,11 +6,11 @@ module Concerns::MobileDeviceDetection
   end
 
   def mobile_device?
-    if session[:mobile_param]
-      session[:mobile_param] == "1"
-    else
-      request.user_agent =~ /Mobile|webOS/
-    end
+    from_mobile_browser? || session[:mobile_param] == "1"
+  end
+
+  def from_mobile_browser?
+    !!(request.user_agent =~ /Mobile|webOS/)
   end
 
   def prepare_for_mobile
