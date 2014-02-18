@@ -7,8 +7,18 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 Repeat.destroy_all
-Repeat.connection.execute %Q(insert into `repeats` values (6, 'Everyday', 1, now(), now(), '--- !ruby/object:IceCube::DailyRule\nvalidations:\n  :interval:\n  - !ruby/object:IceCube::Validations::DailyInterval::Validation\n    interval: 1\n  :base_hour:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :hour\n  :base_min:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :min\n  :base_sec:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :sec\n'))
-Repeat.connection.execute %Q(insert into `repeats` values (7, 'Monday to Friday', 2, now(), now(), '--- !ruby/object:IceCube::WeeklyRule\nvalidations:\n  :interval:\n  - !ruby/object:IceCube::Validations::WeeklyInterval::Validation\n    interval: 1\n    week_start: :sunday\n  :base_hour:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :hour\n  :base_min:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :min\n  :base_sec:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :sec\n  :day:\n  - !ruby/object:IceCube::Validations::Day::Validation\n    day: 1\n  - !ruby/object:IceCube::Validations::Day::Validation\n    day: 2\n  - !ruby/object:IceCube::Validations::Day::Validation\n    day: 3\n  - !ruby/object:IceCube::Validations::Day::Validation\n    day: 4\n  - !ruby/object:IceCube::Validations::Day::Validation\n    day: 5\n'))
-Repeat.connection.execute %Q(insert into `repeats` values (8, 'Every Week', 3, now(), now(), '--- !ruby/object:IceCube::WeeklyRule\nvalidations:\n  :interval:\n  - !ruby/object:IceCube::Validations::WeeklyInterval::Validation\n    interval: 1\n    week_start: :sunday\n  :base_wday:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :wday\n  :base_hour:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :hour\n  :base_min:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :min\n  :base_sec:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :sec\n'))
-Repeat.connection.execute %Q(insert into `repeats` values (9, 'Every 2 Weeks', 4, now(), now(), '--- !ruby/object:IceCube::WeeklyRule\nvalidations:\n  :interval:\n  - !ruby/object:IceCube::Validations::WeeklyInterval::Validation\n    interval: 2\n    week_start: :sunday\n  :base_wday:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :wday\n  :base_hour:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :hour\n  :base_min:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :min\n  :base_sec:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :sec\n'))
-Repeat.connection.execute %Q(insert into `repeats` values (10, 'Every Month', 5, now(), now(), '--- !ruby/object:IceCube::MonthlyRule\nvalidations:\n  :interval:\n  - !ruby/object:IceCube::Validations::MonthlyInterval::Validation\n    interval: 1\n  :base_day:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :day\n  :base_hour:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :hour\n  :base_min:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :min\n  :base_sec:\n  - !ruby/object:IceCube::Validations::ScheduleLock::Validation\n    type: :sec\n'))
+
+daily = IceCube::Rule.daily
+Repeat.connection.execute %Q(insert into `repeats` values (6, 'Everyday', 1, now(), now(), '#{daily.psych_to_yaml}'))
+
+mon_to_fri = IceCube::Rule.weekly.day :monday, :tuesday, :wednesday, :thursday, :friday
+Repeat.connection.execute %Q(insert into `repeats` values (7, 'Monday to Friday', 2, now(), now(), '#{mon_to_fri.psych_to_yaml}'))
+
+weekly = IceCube::Rule.weekly
+Repeat.connection.execute %Q(insert into `repeats` values (8, 'Every Week', 3, now(), now(), '#{weekly.psych_to_yaml}'))
+
+every_2_weeks = IceCube::Rule.weekly 2
+Repeat.connection.execute %Q(insert into `repeats` values (9, 'Every 2 Weeks', 4, now(), now(), '#{every_2_weeks.psych_to_yaml}'))
+
+monthly = IceCube::Rule.monthly
+Repeat.connection.execute %Q(insert into `repeats` values (10, 'Every Month', 5, now(), now(), '#{monthly.psych_to_yaml}'))
