@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::Base
   helper :all
   protect_from_forgery
-  #before_filter :prepare_for_mobile
+
+  include Concerns::MobileDeviceDetection
 
   expose(:collection)
   expose(:current_user_snapshot) { UserSnapshot.for current_user, collection }
@@ -44,8 +45,6 @@ class ApplicationController < ActionController::Base
   def current_user
     super || @guest_user
   end
-
-  #before_filter :prepare_for_mobile
 
   def current_user_or_guest
     if user_signed_in?
@@ -100,21 +99,5 @@ class ApplicationController < ActionController::Base
 
   def show_properties_breadcrumb
     add_breadcrumb "Properties", collection_path(collection)
-  end
-
-  private
-
-  def mobile_device?
-    if session[:mobile_param]
-      session[:mobile_param] == "1"
-    else
-      request.user_agent =~ /Mobile|webOS/
-    end
-  end
-  helper_method :mobile_device?
-
-  def prepare_for_mobile
-    session[:mobile_param] = params[:mobile] if params[:mobile]
-    request.format = :mobile if mobile_device?
   end
 end
