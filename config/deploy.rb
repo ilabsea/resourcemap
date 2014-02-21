@@ -4,8 +4,7 @@ require 'rvm/capistrano'
 set :rvm_ruby_string, '1.9.3'
 set :rvm_type, :system
 set :application, "resource_map"
-set :repository,  "https://sreng@bitbucket.org/ilab/resource_map_sea"
-#set :repository,  "https://bitbucket.org/instedd/resource_map"
+set :repository,  "https://bitbucket.org/ilab/resource_map_sea"
 set :scm, :mercurial
 set :user, 'ubuntu'
 set :group, 'ubuntu'
