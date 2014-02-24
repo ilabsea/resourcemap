@@ -6,18 +6,18 @@ class Channel < ActiveRecord::Base
   validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :advanced_setup
   validates :ticket_code, :presence => {:on => :create}, :if => :basic_setup
     
-  after_create  :register_nuntium_channel
-  after_update  :update_nuntium_channel 
-  after_destroy :delete_nuntium_channel 
+  before_create :assign_nuntium_channel_name
+  after_create  :register_nuntium_channel, :unless => :national_setup
+  after_update  :update_nuntium_channel, :unless => :national_setup
+  after_destroy :delete_nuntium_channel, :unless => :national_setup
   attr_accessor  :ticket_code
   attr_accessor  :phone_number
 
-  def generate_nuntium_name
-    sprintf("#{self.name}-#{self.id}")
+  def assign_nuntium_channel_name
+    self.nuntium_channel_name = national_setup ? self.name : "#{self.name}-#{self.id}"
   end
 
   def register_nuntium_channel
-    self.nuntium_channel_name = generate_nuntium_name if self.nuntium_channel_name.blank?
     self.password = SecureRandom.base64(6) if self.password.blank?
 
     config = {

@@ -278,7 +278,7 @@ class CollectionsController < ApplicationController
     if channel = collection.channels.first
       channel_detail = channel.as_json(methods: method)
       if channel_detail[:client_connected]
-        SmsNuntium.notify_sms [params[:phone_number]], "Your single-use Resource Map pin code is #{random_code}", channel.national_setup ? channel.nuntium_channel_name[0, channel.nuntium_channel_name.index('-')] : channel.nuntium_channel_name, nil
+        SmsNuntium.notify_sms [params[:phone_number]], "Your single-use Resource Map pin code is #{random_code}", channel.nuntium_channel_name, nil
         render json: {status: 200, secret_code: random_code}
       else
         render json: {status: 'channel_disconnected', notice: 'The channel is disconnected.'}
