@@ -2,22 +2,12 @@ class Api::CollectionsController < ApplicationController
   include Api::JsonHelper
   include Api::GeoJsonHelper
 
-  # before_filter :authenticate_user!
   around_filter :rescue_with_check_api_docs
-
+  before_filter :authenticate_api_user!
   skip_before_filter  :verify_authenticity_token
 
   def index
-    respond_to do |format|
-      format.html
-      collections_with_snapshot = []
-      collections.all.each do |collection|
-        attrs = collection.attributes
-        attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
-        collections_with_snapshot = collections_with_snapshot + [attrs]
-      end
-      format.json {render json: collections_with_snapshot }
-    end
+    render json: current_user.collections
   end
 
   def show
