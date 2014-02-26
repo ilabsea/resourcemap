@@ -122,7 +122,11 @@ ResourceMap::Application.routes.draw do
     match 'collections/:collection_id/register_new_member' => 'memberships#register_new_member', :via => :post
     match 'collections/:collection_id/destroy_member' => 'memberships#destroy_member', :via => :delete
     
-    devise_for :users, :controllers => { :sessions => 'api/sessions' }
+    devise_scope :user do
+      post '/users' => 'registrations#create'
+      post '/users/sign_in' => 'sessions#create'
+      delete '/users/sign_out' => 'sessions#destroy'
+    end
   end
 
   namespace :mobile do
