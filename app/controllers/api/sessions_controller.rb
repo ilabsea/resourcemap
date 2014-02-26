@@ -1,5 +1,6 @@
 class Api::SessionsController < Devise::SessionsController
   before_filter :check_params, only: :create
+  skip_before_filter :require_no_authentication
 
   def create
     user = User.find_for_database_authentication email: params[:user][:email]
@@ -20,12 +21,12 @@ class Api::SessionsController < Devise::SessionsController
   end
 
   protected
-  def invalid_login_attempt 
-    warden.custom_failure!
-    render json: { success: false, message: 'Error with your login or password' }, status: 401
-  end
+    def invalid_login_attempt 
+      warden.custom_failure!
+      render json: { success: false, message: 'Error with your login or password' }, status: 401
+    end
 
-  def check_params
-    return invalid_login_attempt unless params[:user]
-  end
+    def check_params
+      return invalid_login_attempt unless params[:user]
+    end
 end
