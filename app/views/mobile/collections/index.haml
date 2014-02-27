@@ -3,16 +3,16 @@
   %div{"data-role"=> "header", "data-theme" => "b"}  
     %h1= @title || 'My Collections'
 
-    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false", "data-theme" => "c" }Sign out
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c" }Sign out
   %div{"data-role" => "content"}
     %ul{ id: "listview", "data-role" => "listview", "data-inset" => "true"}
 
-  = link_to ' Desktop View ', collections_path, "data-role" => "footer", "data-theme" => "f", 'align' => 'center', "data-position" => "fixed", "style" => "padding-bottom:20px;"
+  = link_to 'Desktop View', collections_path, "data-role" => "footer", "data-theme" => "f", 'align' => 'center', "data-position" => "fixed", "data-ajax" => "false", "style" => "padding-bottom:20px;"
 
 #mobile-sites-main{"data-fullscreen" => "true", :style => "display:none;"}
   %div{"data-role" => "header", "data-theme" => "b"}
     %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.prototype.goHome()', "data-theme" => "c" } Back
-    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => "false", "data-theme" => "c"  }Sign out
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c"  }Sign out
     %h1{:id => "title"}
 
   %h4{:style => "margin:15px"} New Site
@@ -34,4 +34,4 @@
       %div{"id" => "fields", "data-role" => "content", "style" => "padding-left:0px; padding-right:0px"}
     %button{onclick: 'Collection.prototype.saveSite()', "data-theme" => "b"} Save Site
   %div{"align" => "center"}
-    = link_to ' Desktop View ', collections_path, "data-role" => "footer", "data-theme" => "f", 'align' => 'center'
+    = link_to 'Desktop View', collections_path, "data-role" => "footer", "data-theme" => "f", "data-ajax" => false, 'align' => 'center'
