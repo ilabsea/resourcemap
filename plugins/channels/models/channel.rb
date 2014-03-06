@@ -6,7 +6,7 @@ class Channel < ActiveRecord::Base
   validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :advanced_setup
   validates :ticket_code, :presence => {:on => :create}, :if => :basic_setup
     
-  before_create :assign_nuntium_channel_name
+  after_create :assign_nuntium_channel_name
   after_create  :register_nuntium_channel, :unless => :national_setup
   after_update  :update_nuntium_channel, :unless => :national_setup
   after_destroy :delete_nuntium_channel, :unless => :national_setup
