@@ -99,7 +99,13 @@ class Api::SitesController < ApplicationController
 
   ###  Private function ###
   private
+
   def authentication_check
+    user = User.find_by_authentication_token(params.delete :auth_token) and sign_in user
+    http_basic_authentication unless user
+  end
+
+  def http_basic_authentication
     authenticate_or_request_with_http_basic do |user, password|
       user == USER && password == PASSWORD
     end
