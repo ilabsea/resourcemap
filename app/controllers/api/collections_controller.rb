@@ -1,8 +1,8 @@
 class Api::CollectionsController < ApplicationController
   include Api::JsonHelper
   include Api::GeoJsonHelper
+  include Concerns::CheckApiDocs
 
-  around_filter :rescue_with_check_api_docs
   before_filter :authenticate_api_user!
   skip_before_filter  :verify_authenticity_token
 
@@ -189,15 +189,4 @@ class Api::CollectionsController < ApplicationController
     sites_csv = collection.to_csv results
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
-
-  def rescue_with_check_api_docs
-    yield
-    rescue => ex
-
-    Rails.logger.info ex.message
-    Rails.logger.info ex.backtrace
-
-    render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/ilab/resource_map_sea/wiki/API", status: 400
-  end
-
 end
