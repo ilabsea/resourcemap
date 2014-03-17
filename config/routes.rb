@@ -115,6 +115,7 @@ ResourceMap::Application.routes.draw do
         get 'get_sites_conflict'
         get 'get_some_sites'
       end
+      resources :fields, only: [:index]
       resources :sites
     end
     match 'collections/:collection_id/memberships' => 'memberships#create', :via => :post
