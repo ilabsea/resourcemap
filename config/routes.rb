@@ -128,6 +128,13 @@ ResourceMap::Application.routes.draw do
       post '/users/sign_in' => 'sessions#create'
       delete '/users/sign_out' => 'sessions#destroy'
     end
+
+    # v1
+    namespace :v1 do
+      resources :collections do
+        resources :sites, only: [:create]
+      end
+    end
   end
 
   namespace :mobile do
