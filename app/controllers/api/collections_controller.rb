@@ -197,7 +197,7 @@ class Api::CollectionsController < ApplicationController
     Rails.logger.info ex.message
     Rails.logger.info ex.backtrace
 
-    render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
+    render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/ilab/resource_map_sea/wiki/API", status: 400
   end
 
 end
