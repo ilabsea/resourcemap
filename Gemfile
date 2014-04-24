@@ -23,6 +23,7 @@ gem 'rmagick', '2.13.2'
 gem 'newrelic_rpm'
 gem 'cancan'
 gem 'aws-sdk'
+gem 'whenever', :require => false
 
 group :test do
   gem 'shoulda-matchers'
