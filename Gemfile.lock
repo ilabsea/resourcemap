@@ -42,6 +42,10 @@ GEM
       multi_json (~> 1.0)
     ansi (1.4.3)
     arel (3.0.2)
+    aws-sdk (1.38.0)
+      json (~> 1.4)
+      nokogiri (>= 1.4.4)
+      uuidtools (~> 2.1)
     bcrypt-ruby (3.0.1)
     breadcrumbs_on_rails (2.3.0)
     builder (3.0.4)
@@ -320,6 +324,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aws-sdk
   breadcrumbs_on_rails
   cancan
   capistrano

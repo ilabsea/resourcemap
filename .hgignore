@@ -22,3 +22,4 @@ dump.rdb
 vendor/ruby
 REVISION
 VERSION
+config/aws.yml

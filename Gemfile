@@ -22,6 +22,7 @@ gem 'rack-offline'
 gem 'rmagick', '2.13.2'
 gem 'newrelic_rpm'
 gem 'cancan'
+gem 'aws-sdk'
 
 group :test do
   gem 'shoulda-matchers'
