@@ -63,7 +63,7 @@ class Backup
 
   def copy_files
 
-    command = "cp -r #{Rails.root}/public/photo_field #{@directory[:current]}"
+    command = "cp -rH #{Rails.root}/public/photo_field #{@directory[:current]}"
     log_message "running command #{command} " 
     system command
   end

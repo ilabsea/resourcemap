@@ -1,9 +1,8 @@
-set :whenever_command, "bundle exec whenever"
-set :whenever_environment, defer { stage }
-
-require "whenever/capistrano"
-require 'bundler/capistrano'
 require 'rvm/capistrano'
+require 'bundler/capistrano'
+
+set :whenever_command, "bundle exec whenever"
+require "whenever/capistrano"
 
 set :rvm_ruby_string, '1.9.3'
 set :rvm_type, :system
@@ -14,6 +13,8 @@ set :user, 'ubuntu'
 set :group, 'ubuntu'
 set :deploy_via, :remote_cache
 set :branch, `hg branch`.strip
+
+server 'resmap-stg-ilab.instedd.org', :app, :web, :db, primary: true
 
 default_run_options[:pty] = true
 default_environment['TERM'] = ENV['TERM']
@@ -27,8 +28,12 @@ namespace :deploy do
     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
   end
 
+  task :whenever do
+    run "cd #{release_path} && RAILS_ENV=production bundle exec whenever --update-crontab resource_map "
+  end
+
   task :symlink_configs, :roles => :app do
-    %W(settings.yml google_maps.key nuntium.yml).each do |file|
+    %W(settings.yml google_maps.key nuntium.yml aws.yml).each do |file|
       run "ln -nfs #{shared_path}/#{file} #{release_path}/config/"
     end
   end
@@ -76,5 +81,6 @@ after "deploy:update_code", "deploy:symlink_photo_field"
 after "deploy:update", "foreman:export"    # Export foreman scripts
 
 after "deploy:update", "deploy:generate_revision_and_version"
+after 'deploy:update_code', 'deploy:whenever'
 
 after "deploy:restart", "foreman:restart"   # Restart application scripts
