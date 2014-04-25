@@ -18,6 +18,8 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
-every 1.day, :at => '11:99 PM' do
+# Time.zone = 'Bangkok'
+
+every 1.day, :at => '5 PM' do
   rake "db:backup_with_assets"
 end
