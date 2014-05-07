@@ -33,7 +33,6 @@ class SitesController < ApplicationController
     site = collection.sites.new(ui_attributes.merge(user: current_user))
     if site.valid?
       site.save!
-      Site::UploadUtils.uploadFile(params[:fileUpload])
       current_user.site_count += 1
       current_user.update_successful_outcome_status
       current_user.save!
@@ -50,7 +49,6 @@ class SitesController < ApplicationController
     site.attributes = prepare_from_ui(site_params)
     if site.valid?
       site.save!
-      Site::UploadUtils.uploadFile(params[:fileUpload])
       if params[:photosToRemove]
         Site::UploadUtils.purgePhotos(params[:photosToRemove])
       end
@@ -150,6 +148,7 @@ class SitesController < ApplicationController
     site_properties = parameters.delete "properties"
     site_properties ||= {}
     site_properties.each_pair do |es_code, value|
+      value = [ value, params[:fileUpload][value] ] if fields[es_code].kind_of? Field::PhotoField
       decoded_properties[es_code] = fields[es_code].decode_from_ui(value)
     end
 
