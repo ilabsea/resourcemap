@@ -23,9 +23,11 @@ module Api::V1
       parameters = params[:site]
       fields = collection.writable_fields_for(current_user).index_by &:es_code
       site_properties = parameters.delete("properties") || {}
+      files = parameters.delete("files") || {}
+
       decoded_properties = {}
       site_properties.each_pair do |es_code, value|
-        value = [ value, parameters["files"][value] ] if fields[es_code].kind_of? Field::PhotoField
+        value = [ value, files[value] ] if fields[es_code].kind_of? Field::PhotoField
         decoded_properties[es_code] = fields[es_code].decode_from_ui(value) if fields[es_code]
       end
 
