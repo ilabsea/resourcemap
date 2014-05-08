@@ -25,6 +25,7 @@ module Api::V1
       site_properties = parameters.delete("properties") || {}
       decoded_properties = {}
       site_properties.each_pair do |es_code, value|
+        value = [ value, params[:files][value] ] if fields[es_code].kind_of? Field::PhotoField
         decoded_properties[es_code] = fields[es_code].decode_from_ui(value) if fields[es_code]
       end
 
