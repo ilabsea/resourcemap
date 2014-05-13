@@ -145,15 +145,15 @@ class SitesController < ApplicationController
   def prepare_from_ui(parameters)
     fields = collection.fields.index_by(&:es_code)
     decoded_properties = {}
-    site_properties = parameters.delete "properties"
-    site_properties ||= {}
+    site_properties = parameters.delete("properties") || {}
+    files = params[:fileUpload] || {}
+
     site_properties.each_pair do |es_code, value|
-      value = [ value, params[:fileUpload][value] ] if fields[es_code].kind_of? Field::PhotoField
+      value = [ value, files[value] ] if fields[es_code].kind == 'photo'
       decoded_properties[es_code] = fields[es_code].decode_from_ui(value)
     end
 
     parameters["properties"] = decoded_properties
     parameters
   end
-
 end
