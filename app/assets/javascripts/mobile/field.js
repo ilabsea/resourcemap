@@ -102,7 +102,7 @@ Field.prototype.getYesNoField = function() {
   return '<div class="ui-controlgroup-controls">' +
       '<div class="ui-checkbox " style="margin-left:10px;margin-top:10px">' + 
           
-          '<label for="' + this.code + '" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c">' +
+          '<label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c">' +
             '<span class="ui-btn-inner">'+
               '<span style="font-weight:normal;">' + this.name + '</span>' +
               '<input type="checkbox" name="properties[' + this.id + ']" id="' + this.code + '" class="custom"  datatype="yes_no">' +
@@ -131,8 +131,7 @@ Field.prototype.getSelectManyField = function() {
   for(var i=0; i< this.options.length; i++){ 
     list = list +   
       '<div class="ui-checkbox">' +         
-          // '<label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c"  style="margin:0px;">' +
-          '<label for="' + this.options[i]["code"] + '"  for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c"  style="margin:0px;">' +  
+          '<label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c"  style="margin:0px;">' +
             '<span class="ui-btn-inner ui-corner-top">'+
               '<span style="font-weight:normal;">' + this.options[i]["name"] + '</span>' +
               '<input type="checkbox" value="' + this.options[i]["id"] + '" name="properties[' + this.id + '][]" id="' + this.options[i]["code"] + '" class="custom"  datatype="select_many">' +
