@@ -3,18 +3,15 @@ describe 'Condition', ->
     window.runOnCallbacks 'thresholds'
 
     @collectionId = 1
+    @field = new Field id: 1, code: 'beds', kind: 'numeric'
     window.model = new MainViewModel @collectionId
-    window.model.fields [new Field id: 1, code: 'beds']
+    window.model.fields [@field]
     @condition = new Condition field: '1', op: 'eq', value: 10, type: 'value'
 
   it 'should convert to json', ->
     expect(@condition.toJSON()).toEqual {field: '1', op: 'eq', value: 10, type: 'value', compare_field: '1'}
 
   describe 'formatted value', ->
-    beforeEach ->
-      @field = new Field id: 1, kind: 'numeric'
-      spyOn(window.model, 'findField').andReturn @field
-
     it 'should format value', ->
       condition = new Condition field: '1', type: 'value', value: 12
       expect(condition.formattedValue()).toEqual '12'
@@ -25,12 +22,11 @@ describe 'Condition', ->
 
     describe 'select', ->
       beforeEach ->
-        options = [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}]
-        @field.options $.map options, (option) -> new Option option
+        @options = [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}]
+        @field = new Field id: 1, kind: 'select_one', config: { options: @options }
+        window.model.fields [@field]
 
       describe '_one', ->
-        beforeEach -> @field.kind 'select_one'
-
         it 'should get option label', ->
           condition = new Condition field: '1', value: 1
           expect(condition.formattedValue()).toEqual 'One'

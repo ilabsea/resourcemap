@@ -42,3 +42,10 @@ describe 'Threshold', ->
 
       it 'should has is operator', ->
         expect(@field.operators()).toContain Operator.EQ
+
+    describe 'kind is yes_no', ->
+      beforeEach ->
+        @field = new Field kind: 'yes_no'
+
+      it 'should have equal to operator', ->
+        expect(@field.operators()).toContain Operator.EQ
