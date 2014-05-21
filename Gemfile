@@ -32,6 +32,7 @@ group :test do
   gem 'nokogiri'
   gem 'capybara'
   gem 'database_cleaner'
+  gem 'resque_spec'
 end
 
 group :test, :development do
