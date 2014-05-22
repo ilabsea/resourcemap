@@ -22,7 +22,7 @@ onThresholds ->
       @field = field
 
     getOptions: => []
-    getOperators: => []
+    getOperators: => [Operator.EQ]
 
   class @Field_text extends @FieldImpl
     getOperators: =>
@@ -32,26 +32,29 @@ onThresholds ->
     getOperators: =>
       [Operator.EQ, Operator.LT, Operator.GT]
 
+  class @Field_yes_no extends @FieldImpl
+    getOptions: =>
+      [new Option({id: 'true', label: 'Yes'}), new Option({id: 'false', label: 'No'})]
+
   class @FieldSelect extends @FieldImpl
     getOptions: =>
       $.map @field.config?.options ? [], (option) -> new Option option
-
-    getOperators: =>
-      [Operator.EQ]
 
   class @Field_select_one extends @FieldSelect
 
   class @Field_select_many extends @FieldSelect
 
-  class @Field_yes_no extends @FieldImpl
-    getOptions: =>
-      [new Option({id: 'true', label: 'Yes'}), new Option({id: 'false', label: 'No'})]
-
-    getOperators: => [Operator.EQ]
+  class @Field_hierarchy extends @FieldImpl
 
   class @Field_date extends @FieldImpl
-    getOperators: => [Operator.EQ]
 
   class @Field_site extends @FieldImpl
-    getOperators: => [Operator.EQ]
+
+  class @Field_user extends @FieldImpl
+
+  class @Field_email extends @FieldImpl
+
+  class @Field_phone extends @FieldImpl
+
+  class @Field_identifier extends @FieldImpl
 
