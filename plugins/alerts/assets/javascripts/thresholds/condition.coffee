@@ -14,9 +14,9 @@ onThresholds ->
           when 'select_one', 'select_many'
             @field().findOptionById(@value())?.label()
           when 'yes_no'
-            if @value() == 'true' then 'Yes' else 'No'
+            if @value() then 'Yes' else 'No'
           else "#{@valueType()?.format @value()}"
-      @error = ko.computed => return "value is missing" unless @value()
+      @error = ko.computed => return "value is missing" unless @value()?
       @valid = ko.computed => not @error()?
 
       @field.subscribe => @value null

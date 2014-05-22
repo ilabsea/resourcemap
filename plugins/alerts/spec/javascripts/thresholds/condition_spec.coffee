@@ -20,6 +20,19 @@ describe 'Condition', ->
       condition = new Condition field: '1', type: 'percentage', value: 12
       expect(condition.formattedValue()).toEqual '12%'
 
+    describe 'yes_no', ->
+      beforeEach ->
+        @field = new Field id: 1, kind: 'yes_no'
+        window.model.fields [@field]
+
+      it 'should format "true"', ->
+        condition = new Condition field: '1', value: true
+        expect(condition.formattedValue()).toEqual 'Yes'
+
+      it 'should format "false"', ->
+        condition = new Condition field: '1', value: false
+        expect(condition.formattedValue()).toEqual 'No'
+
     describe 'select', ->
       beforeEach ->
         @options = [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}]

@@ -111,6 +111,14 @@ describe Field do
   describe "cast strongly type" do
     let!(:config_options) { [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}] }
 
+    describe "select_one" do
+      let!(:field) { Field::SelectOneField.make config: {options: config_options} }
+
+      it "should convert value" do
+        field.strongly_type('1').should eq 1
+      end
+    end
+
     describe "select_many" do
       let!(:field) { Field::SelectManyField.make config: {options: config_options} }
 
@@ -121,6 +129,19 @@ describe Field do
 
       pending "should not convert value when option does not exist" do
         field.strongly_type('3').should eq 0
+      end
+    end
+
+    describe 'yes_no' do
+      let!(:field) { Field::YesNoField.make }
+
+      it "should convert to 'true'" do
+        field.strongly_type('true').should eq true
+      end
+
+      it "should convert to 'false'" do
+        field.strongly_type('false').should eq false
+        field.strongly_type(nil).should eq false
       end
     end
   end

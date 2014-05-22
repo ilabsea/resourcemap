@@ -34,7 +34,7 @@ onThresholds ->
 
   class @Field_yes_no extends @FieldImpl
     getOptions: =>
-      [new Option({id: 'true', label: 'Yes'}), new Option({id: 'false', label: 'No'})]
+      [new Option({id: true, label: 'Yes'}), new Option({id: false, label: 'No'})]
 
   class @FieldSelect extends @FieldImpl
     getOptions: =>
