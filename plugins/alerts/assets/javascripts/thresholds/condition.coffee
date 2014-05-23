@@ -19,7 +19,11 @@ onThresholds ->
       @error = ko.computed => return "value is missing" unless @value()?
       @valid = ko.computed => not @error()?
 
-      @field.subscribe => @value null
+      @field.subscribe =>
+        @op Operator.EQ
+        @compareField null
+        @valueType ValueType.VALUE
+        @value null
 
     toJSON: =>
       field: @field().esCode()

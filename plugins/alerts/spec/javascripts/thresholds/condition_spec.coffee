@@ -50,3 +50,23 @@ describe 'Condition', ->
         it 'should get option label', ->
           condition = new Condition field: '1', value: 2
           expect(condition.formattedValue()).toEqual 'Two'
+
+  describe 'field change', ->
+    beforeEach ->
+      @field_2 = new Field id: 2, code: 'doctors', kind: 'numeric'
+      window.model.fields [@field, @field_2]
+
+      @condition = new Condition field: '1', op: 'lt', type: 'percentage', compare_field: '2', value: 50
+      @condition.field @field_2
+
+    it 'should reset operator', ->
+      expect(@condition.op()).toEqual Operator.EQ
+
+    it 'should reset compare field', ->
+      expect(@condition.compareField()).toBeNull()
+
+    it 'should reset value', ->
+      expect(@condition.value()).toBeNull()
+
+    it 'should reset operator', ->
+      expect(@condition.valueType()).toEqual ValueType.VALUE
