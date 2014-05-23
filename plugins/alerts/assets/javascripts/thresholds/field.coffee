@@ -36,25 +36,12 @@ onThresholds ->
     getOptions: =>
       [new Option({id: true, label: 'Yes'}), new Option({id: false, label: 'No'})]
 
-  class @FieldSelect extends @FieldImpl
+  class @Field_select_one extends @FieldImpl
     getOptions: =>
       $.map @field.config?.options ? [], (option) -> new Option option
 
-  class @Field_select_one extends @FieldSelect
-
-  class @Field_select_many extends @FieldSelect
-
-  class @Field_hierarchy extends @FieldImpl
-
   class @Field_date extends @FieldImpl
-
-  class @Field_site extends @FieldImpl
-
-  class @Field_user extends @FieldImpl
 
   class @Field_email extends @FieldImpl
 
   class @Field_phone extends @FieldImpl
-
-  class @Field_identifier extends @FieldImpl
-
