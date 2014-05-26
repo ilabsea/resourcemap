@@ -1,0 +1,3 @@
+%script{type: "text/html", id: "email-field-template"}
+  %span{ ko(text: 'field().operators()[0].label') }
+  %select{ ko(options: 'field().options', optionsText: "'label'", optionsValue:"'id'", value: :value) }
