@@ -16,8 +16,10 @@ onThresholds -> if $('#thresholds-main').length > 0
 
   $.get "/collections/#{collectionId}/fields.json", (layers) ->
     fields = $.map(layers, (layer) -> layer.fields)
-    window.model.compareFields $.map fields, (field) -> new Field field if field.kind in supportedKinds
-    window.model.fields $.map fields, (field) -> new Field field if field.kind in supportedKinds
+    supportedFields = $.map(fields, (field) -> new Field field if !!~supportedKinds.indexOf field.kind)
+
+    window.model.compareFields supportedFields
+    window.model.fields supportedFields
 
     $.get "/plugin/alerts/collections/#{collectionId}/thresholds.json", (thresholds) ->
       thresholds = $.map thresholds, (threshold) -> new Threshold threshold, window.model.collectionIcon
