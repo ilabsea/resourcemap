@@ -144,6 +144,14 @@ describe Field do
         field.strongly_type(nil).should eq false
       end
     end
+
+    describe 'date' do
+      let!(:field) { Field::DateField.make }
+
+      it "should convert nil" do
+        field.strongly_type(nil).should eq nil
+      end
+    end
   end
 
   it "should have kind 'user'" do

@@ -1,3 +1,3 @@
 %script{type: "text/html", id: "date-field-template"}
-  %span{ ko(text: 'field().operators()[0].label') }
-  %select{ ko(options: 'field().options', optionsText: "'label'", optionsValue:"'id'", value: :value) }
+  %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
+  = ko_html_field_tag :value, html: {class: 'ux-datepicker w10'}

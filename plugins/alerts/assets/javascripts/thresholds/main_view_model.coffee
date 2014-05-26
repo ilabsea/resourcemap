@@ -88,3 +88,16 @@ onThresholds ->
     setThresholdOrderCallback: (data) =>
 
     refresh: => @thresholds.sort (x, y) -> x.ord() > y.ord() ? -1 : 1
+
+    initInsteddPlatform:  ->
+      $.instedd.init_components() if $.instedd
+
+    initDatePicker: (options = {}) =>
+      @initInsteddPlatform()
+      # fix dinamic DOM
+      # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
+      $(".ux-datepicker").removeClass('hasDatepicker').datepicker(
+                                                                    yearRange: "-100:+5",
+                                                                    changeMonth: true,
+                                                                    changeYear: true
+                                                                  )

@@ -104,7 +104,7 @@
         <!-- ko foreach :conditions -->
         %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
 
-        /      ko template: {name: field().kind() + '-field-template'}
+        /      ko template: {name: field().kind() + '-field-template', afterRender: $root.initDatePicker}
         /      /ko
         
         %button.premove{ ko(click: '$parent.removeCondition') }

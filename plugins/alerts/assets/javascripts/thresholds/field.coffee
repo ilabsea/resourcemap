@@ -41,6 +41,8 @@ onThresholds ->
       $.map @field.config?.options ? [], (option) -> new Option option
 
   class @Field_date extends @FieldImpl
+    getOperators: =>
+      [Operator.EQ, Operator.LT, Operator.GT]
 
   class @Field_email extends @FieldImpl
 
