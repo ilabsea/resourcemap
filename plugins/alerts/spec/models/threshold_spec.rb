@@ -66,9 +66,20 @@ describe Threshold do
       expect { threshold.test({field.es_code => 'hello'}) }.to throw_symbol :threshold, threshold
     end
 
-    it "for inclusion" do
-      threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :con, value: 'hello'}]
-      expect { threshold.test({field.es_code => 'This is hello world.'}) }.to throw_symbol :threshold, threshold
+    context "for inclusion" do
+      let!(:threshold) { collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :con, value: 'hello'}] }
+
+      it "matched" do
+        expect { threshold.test({field.es_code => 'This is hello world.'}) }.to throw_symbol :threshold, threshold
+      end
+
+      it "not matched" do
+        expect { threshold.test({field.es_code => 'This is my world.'}) }.to_not throw_symbol
+      end
+
+      it "case insensitive" do
+        expect { threshold.test({field.es_code => 'HeLLo world.'}) }.to throw_symbol :threshold, threshold
+      end
     end
   end
 

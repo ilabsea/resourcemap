@@ -22,6 +22,6 @@ module Threshold::ComparisonConcern
   end
 
   def con(a, b)
-    not a.scan(/#{a}/).empty?
+    not a.scan(/#{b}/i).empty?
   end
 end
