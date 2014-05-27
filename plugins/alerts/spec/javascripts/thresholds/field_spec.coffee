@@ -7,8 +7,8 @@ describe 'Threshold', ->
       beforeEach ->
         @field = new Field kind: 'text'
 
-      it 'should have equal to operator', ->
-        expect(@field.operators()).toContain Operator.EQ
+      it 'should have equal to ignore case operator', ->
+        expect(@field.operators()).toContain Operator.EQI
 
       it 'should have contain operator', ->
         expect(@field.operators()).toContain Operator.CON
@@ -42,3 +42,36 @@ describe 'Threshold', ->
 
       it 'should have equal to operator', ->
         expect(@field.operators()).toContain Operator.EQ
+
+    describe 'kind is date', ->
+      beforeEach ->
+        @field = new Field kind: 'date'
+
+      it 'should have equal to operator', ->
+        expect(@field.operators()).toContain Operator.EQ
+
+      it 'should have less than operator', ->
+        expect(@field.operators()).toContain Operator.LT
+
+      it 'should have larger than operator', ->
+        expect(@field.operators()).toContain Operator.GT
+
+    describe 'kind is email', ->
+      beforeEach ->
+        @field = new Field kind: 'email'
+
+      it 'should have equal to ignore case operator', ->
+        expect(@field.operators()).toContain Operator.EQI
+
+      it 'should have contain operator', ->
+        expect(@field.operators()).toContain Operator.CON
+
+    describe 'kind is phone', ->
+      beforeEach ->
+        @field = new Field kind: 'phone'
+
+      it 'should have equal to ignore case operator', ->
+        expect(@field.operators()).toContain Operator.EQI
+
+      it 'should have contain operator', ->
+        expect(@field.operators()).toContain Operator.CON

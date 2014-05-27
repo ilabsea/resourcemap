@@ -30,7 +30,7 @@ onThresholds ->
 
   class @Field_text extends @FieldImpl
     getOperators: =>
-      [Operator.EQ, Operator.CON]
+      [Operator.EQI, Operator.CON]
 
   class @Field_numeric extends @FieldImpl
     getOperators: =>
@@ -59,8 +59,8 @@ onThresholds ->
 
   class @Field_email extends @FieldImpl
     getOperators: =>
-      [Operator.EQ, Operator.CON]
+      [Operator.EQI, Operator.CON]
 
   class @Field_phone extends @FieldImpl
     getOperators: =>
-      [Operator.EQ, Operator.CON]
+      [Operator.EQI, Operator.CON]
