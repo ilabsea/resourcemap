@@ -9,10 +9,13 @@ onThresholds ->
       @op = ko.observable Operator.findByCode data?.op
       @value = ko.observable data?.value
       @valueType = ko.observable ValueType.findByCode data?.type ? 'value'
+      @valueUI = ko.computed
+        read: => @field()?.format @value()
+        write: (value) => @value value
       @formattedValue = ko.computed =>
         switch @field()?.kind()
           when 'numeric' then "#{@valueType()?.format @value()}"
-          else @field()?.format @value()
+          else @valueUI()
       @error = ko.computed => return "value is missing" unless @value()? and !!@value()
       @valid = ko.computed => not @error()?
 
