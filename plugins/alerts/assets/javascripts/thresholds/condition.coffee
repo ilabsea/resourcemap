@@ -18,7 +18,7 @@ onThresholds ->
           when 'date'
             @field().format @value()
           else "#{@valueType()?.format @value()}"
-      @error = ko.computed => return "value is missing" unless @value()?
+      @error = ko.computed => return "value is missing" unless @value()? and !!@value()
       @valid = ko.computed => not @error()?
 
       @field.subscribe =>
