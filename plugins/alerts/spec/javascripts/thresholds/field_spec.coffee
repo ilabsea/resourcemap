@@ -36,13 +36,6 @@ describe 'Threshold', ->
       it 'should have options', ->
         expect(@field.options().length).toEqual 2
 
-    describe 'kind is select many', ->
-      beforeEach ->
-        @field = new Field kind: 'select_many'
-
-      it 'should has is operator', ->
-        expect(@field.operators()).toContain Operator.EQ
-
     describe 'kind is yes_no', ->
       beforeEach ->
         @field = new Field kind: 'yes_no'

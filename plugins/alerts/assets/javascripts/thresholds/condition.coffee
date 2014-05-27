@@ -11,13 +11,8 @@ onThresholds ->
       @valueType = ko.observable ValueType.findByCode data?.type ? 'value'
       @formattedValue = ko.computed =>
         switch @field()?.kind()
-          when 'select_one', 'select_many'
-            @field().findOptionById(@value())?.label()
-          when 'yes_no'
-            if @value() then 'Yes' else 'No'
-          when 'date'
-            @field().format @value()
-          else "#{@valueType()?.format @value()}"
+          when 'numeric' then "#{@valueType()?.format @value()}"
+          else @field()?.format @value()
       @error = ko.computed => return "value is missing" unless @value()? and !!@value()
       @valid = ko.computed => not @error()?
 
