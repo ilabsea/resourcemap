@@ -15,6 +15,8 @@ onThresholds ->
             @field().findOptionById(@value())?.label()
           when 'yes_no'
             if @value() then 'Yes' else 'No'
+          when 'date'
+            @field().format @value()
           else "#{@valueType()?.format @value()}"
       @error = ko.computed => return "value is missing" unless @value()?
       @valid = ko.computed => not @error()?

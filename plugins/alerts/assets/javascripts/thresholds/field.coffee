@@ -14,6 +14,9 @@ onThresholds ->
       @options = ko.computed => @impl.getOptions()
       @operators = ko.computed => @impl.getOperators()
 
+    format: (value) ->
+      @impl.format value
+
     findOptionById: (optionId) ->
       return option for option in @options() when option.id() == optionId
 
@@ -21,6 +24,7 @@ onThresholds ->
     constructor: (field) ->
       @field = field
 
+    format: (value) -> value
     getOptions: => []
     getOperators: => [Operator.EQ]
 
@@ -41,6 +45,9 @@ onThresholds ->
       $.map @field.config?.options ? [], (option) -> new Option option
 
   class @Field_date extends @FieldImpl
+    format: (value) ->
+      value.toDate().strftime '%m/%d/%Y'
+
     getOperators: =>
       [Operator.EQ, Operator.LT, Operator.GT]
 
