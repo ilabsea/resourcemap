@@ -5,6 +5,11 @@ module Threshold::ComparisonConcern
     a == b
   end
 
+  # eqi - equal ignore case operator
+  def eqi(a, b)
+    a.casecmp(b) == 0
+  end
+
   def lt(a, b)
     a < b
   end

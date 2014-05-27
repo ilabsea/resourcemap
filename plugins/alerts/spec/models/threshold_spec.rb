@@ -61,9 +61,18 @@ describe Threshold do
   describe "should test text field" do
     let!(:field) { layer.text_fields.make code: 'txt' }
 
-    it "for equality" do
-      threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 'hello'}]
-      expect { threshold.test({field.es_code => 'hello'}) }.to throw_symbol :threshold, threshold
+    context "for equality" do
+      it "case sensitive" do
+        threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 'hello'}]
+        expect { threshold.test({field.es_code => 'hello'}) }.to throw_symbol :threshold, threshold
+        expect { threshold.test({field.es_code => 'HeLLo'}) }.to_not throw_symbol
+      end
+
+      it "ignore case" do
+        threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eqi, value: 'hello'}]
+        expect { threshold.test({field.es_code => 'hello'}) }.to throw_symbol :threshold, threshold
+        expect { threshold.test({field.es_code => 'HeLLo'}) }.to throw_symbol :threshold, threshold
+      end
     end
 
     context "for inclusion" do
