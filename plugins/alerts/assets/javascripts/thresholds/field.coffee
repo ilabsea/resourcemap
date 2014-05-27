@@ -58,5 +58,7 @@ onThresholds ->
       [Operator.EQ, Operator.LT, Operator.GT]
 
   class @Field_email extends @FieldImpl
+    getOperators: =>
+      [Operator.EQ, Operator.CON]
 
   class @Field_phone extends @FieldImpl
