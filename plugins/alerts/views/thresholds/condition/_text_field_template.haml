@@ -2,4 +2,4 @@
   %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
   %label{ ko(css: { error: '!valid()' }) }
     %span.w06
-      %input{ ko(value: :value, valueUpdate: :afterkeydown, css: { error: '!valid()' }), type: :text, style: 'width:60px' }
+      = ko_html_field_tag :value, css: { error: '!valid()' }
