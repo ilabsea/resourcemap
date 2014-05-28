@@ -28,9 +28,11 @@ onThresholds ->
     getOptions: => []
     getOperators: => [Operator.EQ]
 
-  class @Field_text extends @FieldImpl
+  class @FieldText extends @FieldImpl
     getOperators: =>
       [Operator.EQI, Operator.CON]
+
+  class @Field_text extends @FieldText
 
   class @Field_numeric extends @FieldImpl
     getOperators: =>
@@ -57,10 +59,6 @@ onThresholds ->
     getOperators: =>
       [Operator.EQ, Operator.LT, Operator.GT]
 
-  class @Field_email extends @FieldImpl
-    getOperators: =>
-      [Operator.EQI, Operator.CON]
+  class @Field_email extends @FieldText
 
-  class @Field_phone extends @FieldImpl
-    getOperators: =>
-      [Operator.EQI, Operator.CON]
+  class @Field_phone extends @FieldText
