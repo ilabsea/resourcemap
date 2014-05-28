@@ -1,0 +1,5 @@
+%script{type: "text/html", id: "email-field-template"}
+  %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
+  %label{ ko(css: { error: '!valid()' }) }
+    %span.w10
+      = ko_html_field_tag :value, css: { error: '!valid()' }

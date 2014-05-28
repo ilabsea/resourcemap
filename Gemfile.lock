@@ -235,6 +235,11 @@ GEM
       redis (>= 2.0.1)
       resque (>= 1.20.0)
       rufus-scheduler
+    resque_spec (0.15.0)
+      resque (>= 1.19.0)
+      rspec-core (>= 2.5.0)
+      rspec-expectations (>= 2.5.0)
+      rspec-mocks (>= 2.5.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rmagick (2.13.2)
@@ -361,6 +366,7 @@ DEPENDENCIES
   rails (= 3.2.11)
   resque
   resque-scheduler
+  resque_spec
   rmagick (= 2.13.2)
   rspec
   rspec-rails

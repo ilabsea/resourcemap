@@ -3,6 +3,7 @@ onThresholds ->
     @LT = new Operator('lt', 'is less than')
     @GT = new Operator('gt', 'is greater than')
     @EQ = new Operator('eq', 'is equal to')
+    @EQI = new Operator('eqi', 'is equal to')
     @CON = new Operator('con', 'contains')
 
     constructor: (code, label) ->

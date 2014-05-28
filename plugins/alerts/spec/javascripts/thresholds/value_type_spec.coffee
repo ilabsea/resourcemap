@@ -1,7 +1,8 @@
-describe 'ValueType', ->
+describe 'Alerts plugin', ->
   beforeEach ->
     window.runOnCallbacks 'thresholds'
 
-  it 'finds by code', ->
-    expect(ValueType.findByCode 'value').toBe ValueType.VALUE
+  describe 'ValueType', ->
+    it 'finds by code', ->
+      expect(ValueType.findByCode 'value').toBe ValueType.VALUE
 

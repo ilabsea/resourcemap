@@ -7,14 +7,58 @@ onThresholds ->
       @name = ko.observable data.name
       @code = ko.observable data.code
       @kind = ko.observable data.kind
-      @options = ko.observableArray $.map data.config?.options ? [], (option) -> new Option option
-      @operators = ko.computed =>
-        switch @kind()
-          when 'text' then [Operator.EQ, Operator.CON]
-          when 'numeric' then [Operator.EQ, Operator.LT, Operator.GT]
-          when 'select_one' then [Operator.EQ]
-          when 'select_many' then [Operator.EQ]
-          else []
+      @config = data?.config
+
+      @impl = new window["Field_#{@kind()}"](@)
+
+      @options = ko.computed => @impl.getOptions()
+      @operators = ko.computed => @impl.getOperators()
+
+    format: (value) ->
+      @impl.format value
 
     findOptionById: (optionId) ->
       return option for option in @options() when option.id() == optionId
+
+  class @FieldImpl
+    constructor: (field) ->
+      @field = field
+
+    format: (value) -> value
+    getOptions: => []
+    getOperators: => [Operator.EQ]
+
+  class @FieldText extends @FieldImpl
+    getOperators: =>
+      [Operator.EQI, Operator.CON]
+
+  class @Field_text extends @FieldText
+
+  class @Field_numeric extends @FieldImpl
+    getOperators: =>
+      [Operator.EQ, Operator.LT, Operator.GT]
+
+  class @Field_yes_no extends @FieldImpl
+    format: (value) ->
+      if value then 'Yes' else 'No'
+
+    getOptions: =>
+      [new Option({id: true, label: 'Yes'}), new Option({id: false, label: 'No'})]
+
+  class @Field_select_one extends @FieldImpl
+    format: (value) ->
+      @field.findOptionById(value)?.label()
+
+    getOptions: =>
+      $.map @field.config?.options ? [], (option) -> new Option option
+
+  class @Field_date extends @FieldImpl
+    format: (value) ->
+      value?.toDate()?.strftime '%m/%d/%Y'
+
+    getOperators: =>
+      [Operator.EQ, Operator.LT, Operator.GT]
+
+  class @Field_email extends @FieldText
+
+  class @Field_phone extends @FieldText

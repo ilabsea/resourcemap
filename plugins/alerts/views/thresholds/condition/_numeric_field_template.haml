@@ -1,0 +1,11 @@
+%script{type: "text/html", id: "numeric-field-template"}
+  %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
+  %select{ ko(options: 'ValueType.ALL', optionsText: "'label'", value: :valueType) }
+  %label{ ko(css: { error: '!valid()' }) }
+  %span.w06
+    = ko_html_field_tag :value, css: { error: '!valid()' }
+
+  /  ko if: valueType().label() == 'a percentage of'
+  \% compared to
+  %select{ ko(options: '$root.compareFields', optionsText: "'name'", value: :compareField, hasfocus: true) }
+  /  /ko
