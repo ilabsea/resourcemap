@@ -70,7 +70,7 @@ onCollections ->
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
 
-    link: (format) => "/api/collections/#{@id}.#{format}"
+    link: (format, auth_token) => "/api/collections/#{@id}.#{format}?auth_token=#{auth_token}"
 
     level: => -1
 

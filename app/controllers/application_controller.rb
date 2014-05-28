@@ -33,6 +33,13 @@ class ApplicationController < ActionController::Base
     render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
   end
 
+  before_filter :set_timezone
+
+  def set_timezone
+    # current_user.time_zone #=> 'London'
+    Time.zone = current_user.time_zone if current_user
+  end
+
   def setup_guest_user
     u = User.new is_guest: true
     # Empty membership for the current collection
@@ -104,5 +111,9 @@ class ApplicationController < ActionController::Base
 
   def show_properties_breadcrumb
     add_breadcrumb "Properties", collection_path(collection)
+  end
+
+  def get_user_auth_token
+    render :text => current_user.authentication_token, :layout => false
   end
 end

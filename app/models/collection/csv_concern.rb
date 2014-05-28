@@ -9,7 +9,7 @@ module Collection::CsvConcern
     end
   end
 
-  def to_csv(elastic_search_api_results = new_search.unlimited.api_results)
+  def to_csv(elastic_search_api_results = new_search.unlimited.api_results, current_user)
     fields = self.fields.all
 
     CSV.generate do |csv|
@@ -29,7 +29,13 @@ module Collection::CsvConcern
             row << Array(source['properties'][field.code]).join(", ")
           end
         end
-        row << Site.iso_string_to_rfc822(source['updated_at'])
+        if current_user
+          updated_at = DateTime.parse(source['updated_at']).in_time_zone(current_user.time_zone).strftime("%a, %d %B %Y %H:%M:%S %z")
+        else
+          updated_at = Site.iso_string_to_rfc822(source['updated_at'])
+        end
+        # row << Site.iso_string_to_rfc822(source['updated_at'])
+        row << updated_at
         csv << row
       end
     end
