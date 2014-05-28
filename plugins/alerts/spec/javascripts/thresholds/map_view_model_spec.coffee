@@ -1,4 +1,4 @@
-describe 'Thresholds', ->
+describe 'Alerts plugin', ->
   beforeEach ->
     window.runOnCallbacks 'collections'
     window.model = new MainViewModel []

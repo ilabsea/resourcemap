@@ -1,4 +1,4 @@
-describe 'Threshold', ->
+describe 'Alerts plugin', ->
   beforeEach ->
     window.runOnCallbacks 'thresholds'
 
