@@ -1,9 +1,19 @@
 class SerializeExistingActivityData < ActiveRecord::Migration
   def up
     connection.select_rows("SELECT id, data FROM activities").each do |id, data|
-      next if data.blank?
 
-      data = YAML.load(data)
+      next if data.blank?
+      begin
+        data = YAML.load(data)
+      rescue Exception => ex
+        begin
+         data.force_encoding "iso8859-1"
+         data = YAML.load(data)
+        rescue Exception => ex2
+          next
+        end
+      end
+
       binary_data = MarshalZipSerializable.dump(data)
       if binary_data.nil?
         connection.execute("UPDATE activities SET data=NULL WHERE id=#{id}")

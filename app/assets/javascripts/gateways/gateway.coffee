@@ -4,6 +4,7 @@ onGateways ->
       @id                     = data?.id
       @collectionId           = data?.collection_id
       @name                   = ko.observable data?.name
+      @serverError            = ko.observable()
       @password               = ko.observable data?.password
       @ticketCode             = ko.observable data?.ticket_code 
       @isEnable               = ko.observable data?.is_enable
@@ -83,7 +84,8 @@ onGateways ->
       @error                  = ko.computed => 
         return @nameError() if @nameError()
         return @passwordError() if @passwordError()
-        return @ticketCodeError() if @ticketCodeError() 
+        return @ticketCodeError() if @ticketCodeError()
+        return @serverError() if @serverError()
       
       @enableCss              = ko.observable 'cb-enable'
       @disableCss             = ko.observable 'cb-disalbe'

@@ -22,7 +22,7 @@ class SitesController < ApplicationController
     search = new_search
 
     search.id params[:id]
-    # If site does not exists, return empty object
+    # If site does not exists, return empty objects
     result = search.ui_results.first['_source'] rescue {}
     render json: result
   end
@@ -33,7 +33,6 @@ class SitesController < ApplicationController
     site = collection.sites.new(ui_attributes.merge(user: current_user))
     if site.valid?
       site.save!
-      Site::UploadUtils.uploadFile(params[:fileUpload])
       current_user.site_count += 1
       current_user.update_successful_outcome_status
       current_user.save!
@@ -50,7 +49,6 @@ class SitesController < ApplicationController
     site.attributes = prepare_from_ui(site_params)
     if site.valid?
       site.save!
-      Site::UploadUtils.uploadFile(params[:fileUpload])
       if params[:photosToRemove]
         Site::UploadUtils.purgePhotos(params[:photosToRemove])
       end
@@ -147,14 +145,15 @@ class SitesController < ApplicationController
   def prepare_from_ui(parameters)
     fields = collection.fields.index_by(&:es_code)
     decoded_properties = {}
-    site_properties = parameters.delete "properties"
-    site_properties ||= {}
+    site_properties = parameters.delete("properties") || {}
+    files = params[:fileUpload] || {}
+
     site_properties.each_pair do |es_code, value|
+      value = [ value, files[value] ] if fields[es_code].kind == 'photo'
       decoded_properties[es_code] = fields[es_code].decode_from_ui(value)
     end
 
     parameters["properties"] = decoded_properties
     parameters
   end
-
 end

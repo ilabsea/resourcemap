@@ -19,8 +19,8 @@ module Membership::SitesPermissionConcern
 
   def sites_permission
     permission = { read: read_sites_permission, write: write_sites_permission }
-    permission = { read: build_read_sites_permission, write: build_write_sites_permission } if admin
-    permission
+    # permission = { read: build_read_sites_permission, write: build_write_sites_permission } if admin
+    # permission
   end
 end
 

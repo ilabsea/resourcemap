@@ -28,6 +28,7 @@
             %span
         %button.fdelete{ ko(click: '$root.deleteReminder') }
       .message
+        %br
         %span{ko(text: :reminderMessage)}
       %button.farrow{ko(click: '$root.editReminder')} Edit
     <!-- /ko -->
@@ -60,6 +61,8 @@
       %label repeat
       %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat)}
       %br/
+
+      %input.bfh-countries{"data-country" => "US", "data-flags" => "true"}
 
       %label{ko(css: {error: :reminderMessageError})} Message
       %br/

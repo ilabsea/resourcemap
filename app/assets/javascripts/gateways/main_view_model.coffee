@@ -21,9 +21,13 @@ onGateways ->
         $.post "/gateways.json", gateway: json, @saveGatewayCallback
 
     saveGatewayCallback: (data) =>
-      @currentGateway().id = data.id
-      @currentGateway null
       @isSaving false
+      if data.errors
+        @currentGateway().serverError(data.errors.join(';'))
+      else
+        @currentGateway().id = data.id
+        @currentGateway().serverError(null)
+        @currentGateway null
 
     cancelGateway: =>
       if @currentGateway().id

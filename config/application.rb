@@ -19,6 +19,7 @@ module ResourceMap
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += Dir["#{config.root}/plugins"]
     config.autoload_paths += Dir["#{config.root}/plugins/*/{controllers,models,workers}"]
+    config.autoload_paths += %W(#{Rails.root}/lib/extras)
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -56,7 +57,7 @@ module ResourceMap
     config.assets.enabled = true
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w( jquery.mobile-1.3.1.min.css jquery.js jquery_ujs.js knockout-2.2.1.js custom_bindings/mobileenable.js mobile/mobilecache.js mobile/collections.js mobile/events.js jquery.mobile-1.3.1.min.js )
+    config.assets.precompile += %w( jquery.mobile-1.3.1.min.css jquery.js jquery_ujs.js knockout-2.2.1.js custom_bindings/mobileenable.js mobile/mobilecache.js mobile/collections.js mobile/events.js jquery.mobile-1.3.1.min.js mobile.js )
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

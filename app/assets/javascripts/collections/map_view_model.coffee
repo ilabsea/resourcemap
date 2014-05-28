@@ -193,6 +193,13 @@ onCollections ->
       selectedSiteId = @selectedSite()?.id()
       oldSelectedSiteId = @oldSelectedSite?.id() # Optimization to prevent flickering
       # Add markers if they are not already on the map
+      toRemove = []
+      for siteId, marker of @markers
+        toRemove.push siteId
+
+      for siteId in toRemove
+        @deleteMarker siteId
+        
       for site in sites
         dataSiteIds[site.id] = site.id
         if @markers[site.id]
@@ -200,60 +207,59 @@ onCollections ->
             @setMarkerIcon @markers[site.id], 'target'
           else
             @setMarkerIcon @markers[site.id], (if @editingSite() then 'inactive' else 'active')
+        if site.id == oldSelectedSiteId
+          @markers[site.id] = @oldSelectedSite.marker
+          @markers[site.id].site = site
+          @deleteMarkerListeners site.id
+          @setMarkerIcon @markers[site.id], (if @editingSite() then 'inactive' else 'active')
+          @oldSelectedSite.deleteMarker false
+          delete @oldSelectedSite
         else
-          if site.id == oldSelectedSiteId
-            @markers[site.id] = @oldSelectedSite.marker
-            @markers[site.id].site = site
-            @deleteMarkerListeners site.id
-            @setMarkerIcon @markers[site.id], (if @editingSite() then 'inactive' else 'active')
-            @oldSelectedSite.deleteMarker false
-            delete @oldSelectedSite
-          else
-            position = new google.maps.LatLng(site.lat, site.lng)
-            if site.ghost_radius?
-              projection = @map.dummyOverlay.getProjection()
-              pointInPixels = projection.fromLatLngToContainerPixel(position)
-              pointInPixels.x += 40 * Math.cos(site.ghost_radius)
-              pointInPixels.y += 40 * Math.sin(site.ghost_radius)
-              position = projection.fromContainerPixelToLatLng(pointInPixels)
+          position = new google.maps.LatLng(site.lat, site.lng)
+          if site.ghost_radius?
+            projection = @map.dummyOverlay.getProjection()
+            pointInPixels = projection.fromLatLngToContainerPixel(position)
+            pointInPixels.x += 30 * Math.cos(site.ghost_radius)
+            pointInPixels.y += 30 * Math.sin(site.ghost_radius)
+            position = projection.fromContainerPixelToLatLng(pointInPixels)
 
-              disambiguationPath = new google.maps.Polyline(
-                path: [position, new google.maps.LatLng(site.lat, site.lng)]
-                strokeColor: "#O"
-                strokeOpacity: 1.0
-                strokeWeight: 2
-              )
-              @storeDisambiguationPath(site.id, disambiguationPath)
+            disambiguationPath = new google.maps.Polyline(
+              path: [position, new google.maps.LatLng(site.lat, site.lng)]
+              strokeColor: "#O"
+              strokeOpacity: 1.0
+              strokeWeight: 2
+            )
+            @storeDisambiguationPath(site.id, disambiguationPath)
 
-            markerOptions =
-              map: @map
-              position: position
-              zIndex: @zIndex(site.lat)
-              optimized: false
-            newMarker = new google.maps.Marker markerOptions
-            newMarker.name = site.name
-            newMarker.site = site
-            @setMarkerIcon newMarker, (if @editingSite() then 'inactive' else 'active')
+          markerOptions =
+            map: @map
+            position: position
+            zIndex: @zIndex(site.lat)
+            optimized: false
+          newMarker = new google.maps.Marker markerOptions
+          newMarker.name = site.name
+          newMarker.site = site
+          @setMarkerIcon newMarker, (if @editingSite() then 'inactive' else 'active')
 
-            # Show site in grey if editing a site (but not if it's the one being edited)
-            if editing
-              @setMarkerIcon newMarker, 'inactive'
-            else if (selectedSiteId && selectedSiteId == site.id)
-              @setMarkerIcon newMarker, 'target'
+          # Show site in grey if editing a site (but not if it's the one being edited)
+          if editing
+            @setMarkerIcon newMarker, 'inactive'
+          else if (selectedSiteId && selectedSiteId == site.id)
+            @setMarkerIcon newMarker, 'target'
 
-            newMarker.collectionId = site.collection_id
+          newMarker.collectionId = site.collection_id
 
-            @markers[site.id] = newMarker
-          localId = @markers[site.id].siteId = site.id
-          do (localId) => @setupMarkerListeners @markers[localId], localId
+          @markers[site.id] = newMarker
+        localId = @markers[site.id].siteId = site.id
+        do (localId) => @setupMarkerListeners @markers[localId], localId
 
       # Determine which markers need to be removed from the map
-      toRemove = []
+      toRemoveNonRequired = []
       for siteId, marker of @markers
-        toRemove.push siteId unless dataSiteIds[siteId]
+        toRemoveNonRequired.push siteId unless dataSiteIds[siteId]
 
       # And remove them
-      for siteId in toRemove
+      for siteId in toRemoveNonRequired
         @deleteMarker siteId
 
       if @oldSelectedSite
@@ -478,4 +484,8 @@ onCollections ->
       @initInsteddPlatform()
       # fix dinamic DOM
       # http://stackoverflow.com/questions/1059107/why-does-jquery-uis-datepicker-break-with-a-dynamic-dom
-      $(".ux-datepicker").removeClass('hasDatepicker').datepicker(options)
+      $(".ux-datepicker").removeClass('hasDatepicker').datepicker(
+                                                                    yearRange: "-100:+5",
+                                                                    changeMonth: true,
+                                                                    changeYear: true
+                                                                  )

@@ -3,6 +3,8 @@
     .memberHeaderColumn
       %img.members-collapse-icon{ko(click: :toggleExpanded, attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"})}
       %span{ko(click: :toggleExpanded, text: :userDisplayName)}
+      - if 'userPhoneNumber'
+        %span{ko(text: :userPhoneNumber), style: 'font-size: 12px;'}
 
     - ['None', 'Read', 'Update'].each do |permission|
       .permissionColumn{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
@@ -17,7 +19,7 @@
       .defaultLayerPermissionsTitle{ko(click: :toggleDefaultLayerPermissions)}
         %img.members-collapse-icon{ko(attr: {src: "defaultLayerPermissionsArrow('#{InsteddRails.url}')" })}
         %span.memberDetailsTitle
-          Default permissions for all sites
+          Default permissions for all layers
 
     - ['None', 'Read', 'Update'].each do |permission|
       .permissionColumn

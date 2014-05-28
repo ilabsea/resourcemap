@@ -1,29 +1,50 @@
-- if single_editing_mode
-  %ul.superblyTagItems{ko(foreach: :value)}
-    %li.superblyTagItem{ko(click: '$parent.removeOption')}
-      %span{ko(text: '$parent.labelFor($data)')}
-      %a x
-  .superblyTagfieldClearer
-  %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:220px'}
-  %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
-    %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
-      %a{ko(text: :label, click: '$parent.selectOption')}
-  %button{ko(click: :save), style: 'float:right'} Update options
-  %button{ko(click: :exit), style: 'float:right'} Cancel
-  .clear
-
-- else
-  %ul.superblyTagItems{ko(foreach: :value)}
-    %li.superblyTagItem{ko(click: '$parent.removeOption')}
-      %span{ko(text: '$parent.labelFor($data)')}
-      %a x
-  <!-- ko if: !expanded() -->
-  %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer', id: "Add more"} Add more...
-  <!-- /ko -->
-  .superblyTagfieldClearer
-    <!-- ko if: expanded() -->
-    %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
-    %ul.taglist.box{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px;width:100%'}
+- if mobile
+  - if single_editing_mode
+    %ul.superblyTagItems{ko(foreach: :value)}
+      %li.superblyTagItem{ko(click: '$parent.removeOption')}
+        %span{ko(text: '$parent.labelFor($data)')}
+        %a x
+    .superblyTagfieldClearer
+    %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:220px'}
+    %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
       %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
         %a{ko(text: :label, click: '$parent.selectOption')}
+    %button{ko(click: :save), style: 'float:right'} Update options
+    %button{ko(click: :exit), style: 'float:right'} Cancel
+    .clear
+
+  - else
+    %ul.taglist.box{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px;width:100%'}
+      %br
+      %input{ko(checked: :selected, click: '$parent.selectOption'),type: "checkbox",  class: 'right w20'}
+      %label{ko(text: :label)}
+- else
+  - if single_editing_mode
+    %ul.superblyTagItems{ko(foreach: :value)}
+      %li.superblyTagItem{ko(click: '$parent.removeOption')}
+        %span{ko(text: '$parent.labelFor($data)')}
+        %a x
+    .superblyTagfieldClearer
+    %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:220px'}
+    %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
+      %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
+        %a{ko(text: :label, click: '$parent.selectOption')}
+    %button{ko(click: :save), style: 'float:right'} Update options
+    %button{ko(click: :exit), style: 'float:right'} Cancel
+    .clear
+
+  - else
+    %ul.superblyTagItems{ko(foreach: :value)}
+      %li.superblyTagItem{ko(click: '$parent.removeOption')}
+        %span{ko(text: '$parent.labelFor($data)')}
+        %a x
+    <!-- ko if: !expanded() -->
+    %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer', id: "Add more"} Add more...
     <!-- /ko -->
+    .superblyTagfieldClearer
+      <!-- ko if: expanded() -->
+      %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
+      %ul.taglist.box{ko(foreach: :remainingOptions), style: 'margin-right:60px;margin-top:2px;width:100%'}
+        %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
+          %a{ko(text: :label, click: '$parent.selectOption')}
+      <!-- /ko -->

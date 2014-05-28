@@ -14,6 +14,7 @@ ResourceMap::Application.routes.draw do
   match 'collections/alerted-collections' => 'collections#alerted_collections', :via => :get
   #match 'analytics' => 'analytics#index', :via => :get
   get 'download/activity' => "activities#download"
+  match 'load_app_cache' => 'home#load_app_cache', :via => 'get'
 
   
   resources :repeats
@@ -87,6 +88,7 @@ ResourceMap::Application.routes.draw do
     post 'update_property'
   end
 
+  resources :messages, :only => [:index], :path => 'message'
   resources :activities, :only => [:index], :path => 'activity'
   resources :quotas
   resources :gateways do
@@ -111,7 +113,9 @@ ResourceMap::Application.routes.draw do
         put 'update_sites'
         get 'get_fields'
         get 'get_sites_conflict'
+        get 'get_some_sites'
       end
+      resources :fields, only: [:index]
       resources :sites
     end
     match 'collections/:collection_id/memberships' => 'memberships#create', :via => :post
@@ -119,12 +123,24 @@ ResourceMap::Application.routes.draw do
     match 'collections/:collection_id/register_new_member' => 'memberships#register_new_member', :via => :post
     match 'collections/:collection_id/destroy_member' => 'memberships#destroy_member', :via => :delete
     
-    devise_for :users, :controllers => { :sessions => 'sessions' }
+    devise_scope :user do
+      post '/users' => 'registrations#create'
+      post '/users/sign_in' => 'sessions#create'
+      post '/users/sign_out' => 'sessions#destroy'
+    end
+
+    # v1
+    namespace :v1 do
+      resources :collections do
+        resources :sites, only: [:create]
+      end
+    end
   end
 
   namespace :mobile do
     resources :collections do
       resources :sites
+      match 'create_offline_site' => 'sites#create_offline_site', :via => :post
     end
   end
 

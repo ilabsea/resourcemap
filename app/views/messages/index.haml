@@ -1,0 +1,64 @@
+- content_for :head do
+  :javascript
+    $(function() { initMessages(); });
+
+= render '/tab_sms_gateway'
+
+.hidden-until-loaded
+  .tabsline
+
+    %table{width: '100%'}      
+      %tr
+        %td{width: '50%'}
+          %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
+            
+            %div{style: 'height:200px;overflow:auto'}
+              %table
+                %tr
+                  %td
+                    Search
+                    %input.phone_number{ko(value: 'phone_number'), placeholder: "Enter phone number", type: 'text', valueUpdate: 'afterkeydown'}
+                %tr
+                  %td{style: 'padding-top: 10px;'}
+                    Collections
+                %tr
+                  %td{style: 'font-size: 12px;'}
+                    %span{ko(click: 'checkAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer;margin-left:20px; margin-top: 10px;'} check all
+                    |
+                    %span{ko(click: 'uncheckAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer'} uncheck all
+                - collections.sort_by(&:name).each do |collection|
+                  %tr
+                    %td
+                      %input.collection_id{ko(checked: 'selectedCollectionIds'), style: 'margin-left: 20px;', type: 'checkbox', checked: 'checked', value: collection.id}= collection.name
+                %tr
+                  %td
+                    %input.raw_message{ko(checked: 'selectedRawMessage'), style: 'margin-top: 10px;', value: 'raw', type: 'checkbox'} Show undifine messages
+    %br/
+    .tablewrapp
+      %table.GralTable
+        %tr
+          %th Collection
+          %th User
+          %th Message
+          %th Time
+        <!-- ko foreach: activities -->
+        %tr{style: 'height:32px'}
+          %td{ko(text: :collection), style: 'min-width:120px'}
+          %td{ko(text: :user)}
+          %td
+            %span{ko(text: :displayedDescription), style: 'display:inline'}
+            <!-- ko if: !expanded() && canBeExpanded() -->
+            %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'} show more
+            <!-- /ko -->
+          %td.timeago{ko(attr: {title: :createdAt}, text: :createdAt), style: 'min-width:150px'}
+        <!-- /ko -->
+        <!-- ko if: hasMore() && !loading() -->
+        %tr{style: 'height:32px'}
+          %td{ko(click: :loadMore), colspan: 4, align: :center, style: 'text-decoration:underline;cursor:pointer'}
+            Load more
+        <!-- /ko -->
+        <!-- ko if: loading() -->
+        %tr{style: 'height:32px'}
+          %td{colspan: 4, align: :center}
+            Loading...
+        <!-- /ko -->

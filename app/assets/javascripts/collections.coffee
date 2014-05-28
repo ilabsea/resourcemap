@@ -19,8 +19,8 @@ onCollections -> if $('#collections-main').length > 0
     $('#snapshot_loaded_message').show()
 
   # If current_user is guest, she will only have access to the requested collection
-  if window.currentUserIsGuest
-    collectionId = $.url().param('collection_id')
+  collectionId = $.url().param('collection_id')
+  if window.currentUserIsGuest || collectionId
     $.get "/collections/#{collectionId}.json", {}, (collection) ->
       initViewModel [collection]
   else

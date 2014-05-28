@@ -1,9 +1,19 @@
 class SerializeExistingFieldsConfig < ActiveRecord::Migration
   def up
     connection.select_rows("SELECT id, config FROM fields").each do |id, config|
-      next if config.blank?
 
-      config = YAML.load(config)
+      next if config.blank?
+      begin
+        config = YAML.load(config)
+      rescue Exception => ex
+        begin
+         config.force_encoding "iso8859-1"
+          config = YAML.load(config)
+        rescue Exception => ex2
+          next
+        end
+      end
+
       binary_config = MarshalZipSerializable.dump(config)
       if binary_config.nil?
         connection.execute("UPDATE fields SET config=NULL WHERE id=#{id}")

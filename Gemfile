@@ -22,11 +22,12 @@ gem 'rack-offline'
 gem 'rmagick', '2.13.2'
 gem 'newrelic_rpm'
 gem 'cancan'
+gem 'aws-sdk'
+gem 'whenever', :require => false
 
 group :test do
   gem 'shoulda-matchers'
   gem 'ci_reporter'
-  gem 'resque_spec'
   gem 'selenium-webdriver'
   gem 'nokogiri'
   gem 'capybara'
@@ -49,7 +50,8 @@ end
 
 group :development do
   gem 'dist', :git => 'https://github.com/manastech/dist.git'
-  gem 'ruby-prof', git: 'https://github.com/ruby-prof/ruby-prof.git'
+  gem 'ruby-prof', :git => 'https://github.com/ruby-prof/ruby-prof.git'
+  gem 'mailcatcher'
 end
 
 # Gems used only for assets and not required

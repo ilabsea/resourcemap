@@ -1,23 +1,13 @@
 class Api::CollectionsController < ApplicationController
   include Api::JsonHelper
   include Api::GeoJsonHelper
+  include Concerns::CheckApiDocs
 
-  # before_filter :authenticate_user!
-  around_filter :rescue_with_check_api_docs
-
+  before_filter :authenticate_api_user!
   skip_before_filter  :verify_authenticity_token
 
   def index
-    respond_to do |format|
-      format.html
-      collections_with_snapshot = []
-      collections.all.each do |collection|
-        attrs = collection.attributes
-        attrs["snapshot_name"] = collection.snapshot_for(current_user).try(:name)
-        collections_with_snapshot = collections_with_snapshot + [attrs]
-      end
-      format.json {render json: collections_with_snapshot }
-    end
+    render json: current_user.collections
   end
 
   def show
@@ -87,7 +77,8 @@ class Api::CollectionsController < ApplicationController
       obj["code"] = f.code
       obj["id"] = f.id
       obj["name"] = f.name
-      obj["options"] = f.config["options"]
+      obj["kind"] = f.kind
+      obj["options"] = f.config["options"] if f.config["options"]
       list.push obj
     end
     render :json => list.to_json
@@ -97,10 +88,11 @@ class Api::CollectionsController < ApplicationController
     if params[:con_type]
       sites = []
       con_type = params[:con_type].split(",")
-      properties = Field.find_by_code("con_type").id
+      collection = Collection.find_by_id(params[:id])
+      properties = collection.fields.find_by_code(params[:field_code]).id
       if (params[:from].blank? && params[:to].blank?)
         from = parse_date_format("#{Time.now.mon}/01/#{Time.now.year}") - 1
-        to = parse_date_format("#{Time.now.mon}/31/#{Time.now.year}") + 1
+        to = parse_date_format("#{Time.now.mon}/30/#{Time.now.year}").end_of_month + 1
         tmp_sites = Collection.find(params[:id]).sites.where(:created_at => from..to).each do |x|
           con_type.each do |el|
             if x.properties["#{properties}"] == el.to_i
@@ -125,8 +117,14 @@ class Api::CollectionsController < ApplicationController
     render :json => sites
   end
 
+  def get_some_sites
+    site_ids = params[:sites]
+    sites = Site.where("id in (" + site_ids + ")")
+    render :json => sites
+  end
+
   def parse_date_format date 
-    array_date = date.split("/")
+    array_date = date.split("-")
     return Date.new(array_date[2].to_i, array_date[0].to_i, array_date[1].to_i)
   end
 
@@ -191,15 +189,4 @@ class Api::CollectionsController < ApplicationController
     sites_csv = collection.to_csv results
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
-
-  def rescue_with_check_api_docs
-    yield
-    rescue => ex
-
-    Rails.logger.info ex.message
-    Rails.logger.info ex.backtrace
-
-    render text: "#{ex.message} - Check the API documentation: https://bitbucket.org/instedd/resource_map/wiki/API", status: 400
-  end
-
 end

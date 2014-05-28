@@ -9,4 +9,8 @@ class Field::YesNoField < Field
     Field.yes?(value)
   end
 
+  def decode_from_ui value
+    decode value
+  end
+
 end

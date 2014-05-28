@@ -9,4 +9,4 @@ onChannels ->
       $.post "/collections/#{@collectionId()}/register_gateways.json", gateways: @selectedGateways(), @saveChannelCallback
 
     saveChannelCallback: (data) =>
-      console.log data
+      $.status.showNotice("Successfully setting SMS Gateways", 2000)

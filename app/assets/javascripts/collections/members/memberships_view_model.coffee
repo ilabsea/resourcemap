@@ -15,8 +15,16 @@ class @MembershipsViewModel
     @smsCode = ko.observable()
     @secretCode = null
     @phoneExiste = ko.observable false
-    @codeVerificationMsg = ko.observable('Click "Text Me!". You will receive an SMS pin code for verification.')
-    @emailError = ko.computed => null
+    @noChannelMsg = ko.observable("")
+    @codeVerificationMsg = ko.observable('<p>Click "Text Me!". You will receive an SMS pin code for verification.</p>')
+    @emailError = ko.computed =>
+      if @hasEmail()
+        atPos = @email().indexOf('@')
+        dotPos = @email().indexOf('.')
+        if atPos<1 || dotPos < atPos + 2 || dotPos + 2 >= @email().length
+          'Email is invalid'
+        else
+          null
     @phoneError = ko.computed => 
       if @hasPhone()
         if @phoneExiste()
@@ -24,7 +32,10 @@ class @MembershipsViewModel
         else 
           null
       else
-        "Phone number is required"      
+        "Phone number is required"
+
+    @hasError = ko.computed =>
+      return true if @phoneError() || @emailError() || @smsCodeExiste()
 
     @groupBy = ko.observable("Users")
     @groupByOptions = ["Users", "Layers"]
@@ -49,9 +60,13 @@ class @MembershipsViewModel
       $.post "/collections/#{ @collectionId() }/send_new_member_sms.json", phone_number: @phoneNumber(), (data) ->
         if data.errors
           _self.codeVerificationMsg(data.errors)
+        else if data.status == "no_channel"
+          _self.noChannelMsg("There is no SMS Gateway.")
+        else if data.status == "channel_disconnected"
+          _self.noChannelMsg("The channel is disconnected.")
         else
           _self.secretCode = data.secret_code
-          _self.codeVerificationMsg('The pin code has been sent to the phone number above. Please enter the pin code in the textbox for verification.')
+          _self.codeVerificationMsg('<p style="color: green;">The pin code has been sent to the phone number above. Please enter the pin code in the textbox for verification.</p>')
 
   showRegisterMembership: () =>
     @showRegisterNewMember(true)
@@ -64,6 +79,7 @@ class @MembershipsViewModel
     @phoneNumber("")
     @email("")
     @codeVerificationMsg('Click "Text Me!". You will receive an SMS pin code for verification.')
+    @noChannelMsg("")
 
   runSomething: () =>
     alert("test")
