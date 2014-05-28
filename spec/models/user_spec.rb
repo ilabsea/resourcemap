@@ -147,7 +147,7 @@ describe User do
 
   it "should change datetime based on user timezone" do
     User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`, `time_zone`, `created_at`, `updated_at`) VALUES (22, 'foo@example.com', 'bar123', 'Bangkok', CURDATE(), CURDATE())"
-    Time.zone = User.first.time_zone
+    # Time.zone = User.first.time_zone
     User.first.created_at.in_time_zone(User.first.time_zone).should eq User.first.created_at
   end  
 end
