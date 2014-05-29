@@ -1,5 +1,5 @@
 !!!
-%html{:manifest => "/load_app_cache"}
+%html{:manifest => "/application.manifest"}
   %head
     %title= application_name.titleize
     %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
@@ -13,15 +13,3 @@
     %div#flash_message{"style" => "display:none;", "data-role" => "popup"}
       = flash_message
     = yield
-    //#footer-span
-    //  #footer
-    //    #footer-container
-    //      %div
-    //      .left
-    //        %a{:href => "http://instedd.org"} © 2011 InSTEDD
-    //        %a{:href => terms_and_conditions_path} Terms and conditions
-    //        %a{:href => "mailto:support@instedd.org?subject=[#{application_name.titleize}]"} Contact us
-    //      .right
-    //        = yield(:footer_links)
-    //        %span.VersionNumber
-    //        Version #{version_name}

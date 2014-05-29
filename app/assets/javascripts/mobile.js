@@ -11,6 +11,8 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 
+//= require jquery
+//= require jquery_ujs
 //= require mobile/home
 //= require mobile/events
 //= require mobile/field
