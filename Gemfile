@@ -24,6 +24,8 @@ gem 'newrelic_rpm'
 gem 'cancan'
 gem 'aws-sdk'
 gem 'whenever', :require => false
+gem 'georuby'
+gem 'dbf'
 
 group :test do
   gem 'shoulda-matchers'
