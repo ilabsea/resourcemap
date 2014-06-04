@@ -10,6 +10,7 @@ onReminders ->
 
     showAddReminder: =>
       reminder = new Reminder collection_id: @collectionId()
+      reminder.getListTimeZone()
       @currentReminder reminder
       @reminders.push reminder
       

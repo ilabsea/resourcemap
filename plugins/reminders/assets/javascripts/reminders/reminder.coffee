@@ -17,7 +17,13 @@ onReminders ->
         owner: @
       @sites            = ko.observableArray $.map data.sites ? [], (site) -> new Site site
       @sitesName        = ko.computed => $.map(@sites(), (site) -> site.name).join ', '
-      @reminderDateTime = new ReminderDateTime data.reminder_date?.toDate() ? Date.today()
+      @timeZone = ko.observable data?.time_zone
+      @original_reminder_date = ko.observable(data?.reminder_date)
+      if @timeZone()
+        @reminderDateWithTimeZone = TimeZone.convert_to_reminder_zone(data.reminder_date?.toDate() ? Date.today(), data.time_zone)
+        @reminderDateTime = new ReminderDateTime @reminderDateWithTimeZone
+      else
+        @reminderDateTime = new ReminderDateTime data.reminder_date?.toDate() ? Date.today()
       @reminderDate     = ko.observable @reminderDateTime.getDate()
       @reminderTime     = ko.observable @reminderDateTime.getTime()
       @repeat           = ko.observable data?.repeat
@@ -42,6 +48,15 @@ onReminders ->
 
       @error = ko.computed => @nameError() ? @sitesError() ? @reminderDateError() ? @reminderMessageError()
       @valid = ko.computed => !@error()
+      @listTimeZone = ko.observableArray(TimeZone.getListTimeZone())
+      @userTimeZone = ko.observable()
+      
+
+
+    getListTimeZone: =>
+      $.get "/plugin/reminders/get_time_zone.json", (data) =>
+        @userTimeZone(data["user_time_zone"])
+        @timeZone(@userTimeZone())
 
     updateReminderDate: ->
       @reminderDateTime.setDate(@reminderDate()).setTime(@reminderTime())
@@ -51,10 +66,11 @@ onReminders ->
         id                : @id
         name              : @name()
         is_all_site       : @isAllSites()
-        reminder_date     : @reminderDate.toString()
+        reminder_date     : @original_reminder_date()
         repeat            : @repeat()
         reminder_message  : @reminderMessage()
         collection_id     : @collectionId
+        time_zone         : @timeZone()
 
     toJson: =>
       id: @id
@@ -64,6 +80,7 @@ onReminders ->
       repeat_id: @repeat().id()
       collection_id: @collectionId
       is_all_site: @isAllSites()
+      time_zone: @timeZone()
       sites: $.map(@sites(), (x) -> x.id) unless @isAllSites()
    
     getSitesRepeatLabel: =>
