@@ -5,21 +5,23 @@ class Channel < ActiveRecord::Base
   validates :name, :presence => true, :length => {:minimum => 3, :maximum => 30}, :uniqueness => {:scope => :user_id}
   validates :password, :presence => true, :length => {:minimum => 4, :maximum => 6}, :if => :advanced_setup
   validates :ticket_code, :presence => {:on => :create}, :if => :basic_setup
-    
-  after_create :assign_nuntium_channel_name
+
+  before_create :random_password, :unless => :national_setup
   after_create  :register_nuntium_channel, :unless => :national_setup
   after_update  :update_nuntium_channel, :unless => :national_setup
   after_destroy :delete_nuntium_channel, :unless => :national_setup
   attr_accessor  :ticket_code
   attr_accessor  :phone_number
 
-  def assign_nuntium_channel_name
-    self.nuntium_channel_name = national_setup ? self.name : "#{self.name}-#{self.id}"
+  def nuntium_channel_name
+    national_setup ? self.name : "#{name}-#{id}"
+  end
+
+  def random_password
+    self.password = SecureRandom.base64(6) if self.password.blank?
   end
 
   def register_nuntium_channel
-    self.password = SecureRandom.base64(6) if self.password.blank?
-
     config = {
       :name => self.nuntium_channel_name, 
       :kind => 'qst_server',
@@ -39,9 +41,6 @@ class Channel < ActiveRecord::Base
       :ticket_message => "This phone will be used for updates and queries on all collections.",
     }) if basic_setup
     handle_nuntium_channel_response Nuntium.new_from_config.create_channel(config)
-    # Use plain sql query to skip update callback execution
-    Channel.update_all({:password => self.password, :nuntium_channel_name => self.nuntium_channel_name}, {:id => self.id})
-   
   end
   
   def handle_nuntium_channel_response(response)
