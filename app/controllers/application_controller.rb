@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_api_user!
-    user = User.find_by_authentication_token(params.delete :auth_token) and sign_in user
+    user = User.find_by_authentication_token(params.delete :auth_token) || current_user
     head :forbidden unless user
   end
 
