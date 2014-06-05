@@ -1,6 +1,7 @@
 class Collection < ActiveRecord::Base
   include Collection::CsvConcern
   include Collection::GeomConcern
+  include Collection::KmlConcern
   include Collection::TireConcern
   include Collection::PluginsConcern
   include Collection::ImportLayersSchemaConcern
