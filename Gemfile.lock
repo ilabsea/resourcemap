@@ -377,6 +377,7 @@ DEPENDENCIES
   rspec
   rspec-rails
   ruby-prof!
+  rubyzip
   rvm
   rvm-capistrano (= 1.2.2)
   sass-rails (~> 3.2.3)

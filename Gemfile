@@ -25,7 +25,8 @@ gem 'cancan'
 gem 'aws-sdk'
 gem 'whenever', :require => false
 gem 'georuby'
-gem 'dbf'
+gem 'dbf', :require => 'dbf'
+gem 'rubyzip', :require => 'zip/zip'
 
 group :test do
   gem 'shoulda-matchers'
