@@ -76,6 +76,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_api_user!
+    params.delete :auth_token if current_user
     head :forbidden unless current_user
   end
 
