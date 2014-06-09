@@ -349,4 +349,34 @@ describe Field do
       end
     end
   end
+
+  describe "dbf_field" do
+    let(:user) { User.make }
+    let(:collection) { user.create_collection Collection.make_unsaved }
+    let(:layer) { collection.layers.make }
+    let(:field) { layer.yes_no_fields.make :code => 'yes_no'}
+
+    it "should convert to C dbf field" do
+      field.to_dbf_field.type.should eq('C')
+    end
+
+    context "numeric field" do
+      let(:field) { layer.numeric_fields.make :code => 'numeric', :config => {} }
+
+      it "should convert to N dbf field" do
+        field.to_dbf_field.type.should eq('N')
+      end
+
+      context "with decimal value allowed" do
+        let(:field) { layer.numeric_fields.make :code => 'numeric', :config => {allows_decimals: "true"} }
+
+        it "should convert to N dbf field with decimal" do
+          dbf_field = field.to_dbf_field
+
+          dbf_field.type.should eq('N')
+          dbf_field.decimal.should > 0
+        end
+      end
+    end
+  end
 end

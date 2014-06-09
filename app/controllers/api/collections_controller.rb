@@ -26,6 +26,7 @@ class Api::CollectionsController < ApplicationController
       format.rss { render :show, layout: false }
       format.csv { collection_csv(collection, @results) }
       format.json { render json: collection_json(collection, @results) }
+      format.shp { collection_shp(collection, @results) }
     end
   end
 
@@ -188,5 +189,9 @@ class Api::CollectionsController < ApplicationController
   def collection_csv(collection, results)
     sites_csv = collection.to_csv results
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
+  end
+
+  def collection_shp(collection, results)
+    send_data collection.to_shp(results), type: 'application/zip', filename: "#{collection.id}.zip"
   end
 end

@@ -158,6 +158,14 @@ describe Api::CollectionsController do
     end
   end
 
+  describe "GET SHP collection" do
+    before(:each) do
+      get :show, id: collection.id, format: 'shp'
+    end
+
+    it { response.should be_success }
+  end
+
   describe "validate query fields" do
 
     it "should validate numeric fields in equal queries" do

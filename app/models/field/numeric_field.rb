@@ -41,6 +41,11 @@ class Field::NumericField < Field
     true
   end
 
+  def to_dbf_field
+    length, decimal = allow_decimals? ? [8, 1] : [4, 0]
+    Collection.dbf_field_for self.code, type: 'N', length: length, decimal: decimal
+  end
+
   private
 
   def invalid_field_message()
