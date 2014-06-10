@@ -25,6 +25,8 @@ class ApplicationController < ActionController::Base
   end
   expose(:new_search) { collection.new_search new_search_options }
 
+  USER, PASSWORD = 'iLab', '1c4989610bce6c4879c01bb65a45ad43'
+
   rescue_from ActiveRecord::RecordNotFound do |x|
     render :file => '/error/doesnt_exist_or_unauthorized', :status => 404, :layout => true
   end
@@ -77,7 +79,9 @@ class ApplicationController < ActionController::Base
 
   def authenticate_api_user!
     params.delete :auth_token if current_user
-    head :forbidden unless current_user
+    unless current_user
+      basic_authentication_check
+    end
   end
 
   def authenticate_collection_user!
@@ -104,5 +108,16 @@ class ApplicationController < ActionController::Base
 
   def show_properties_breadcrumb
     add_breadcrumb "Properties", collection_path(collection)
+  end
+
+  def basic_authentication_check
+    user = User.find_by_authentication_token(params.delete :auth_token) and sign_in user
+    http_basic_authentication unless user
+  end
+
+  def http_basic_authentication
+    authenticate_or_request_with_http_basic do |user, password|
+      user == USER && password == PASSWORD
+    end
   end
 end
