@@ -222,5 +222,4 @@ describe Api::CollectionsController do
       response.response_code.should be(200)
     end
   end
-
 end

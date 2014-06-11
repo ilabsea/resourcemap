@@ -19,7 +19,6 @@ class Api::CollectionsController < ApplicationController
     else
       options << :page
     end
-
     @results = perform_search *options
 
     respond_to do |format|
@@ -132,6 +131,7 @@ class Api::CollectionsController < ApplicationController
   private
 
   def perform_search(*options)
+
     except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius]
 
     search = new_search
@@ -170,7 +170,6 @@ class Api::CollectionsController < ApplicationController
       except_params << :sort
       except_params << :sort_direction
     end
-
     search.where params.except(*except_params)
     search.api_results
   end

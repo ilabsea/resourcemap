@@ -48,6 +48,7 @@ class Field::SelectOneField < Field
         config['options'].each do |option|
           value_id = option['id'] if option['label'] == value || option['code'] == value
         end
+        raise "Invalid option in field #{code}" if value_id.nil?
       end
     else
       if @cache_for_read

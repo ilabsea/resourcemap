@@ -92,11 +92,6 @@ class Api::SitesController < ApplicationController
     render :json => {:sites => sites_by_page, :total => sites_size}
   end
 
-  def show
-    site = Site.find(params[:id])
-    render :json => site
-  end
-
   ###  Private function ###
   private
 
