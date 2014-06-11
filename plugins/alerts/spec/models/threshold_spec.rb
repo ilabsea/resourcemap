@@ -61,14 +61,34 @@ describe Threshold do
   describe "should test text field" do
     let!(:field) { layer.text_fields.make code: 'txt' }
 
-    it "for equality" do
-      threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 'hello'}]
-      expect { threshold.test({field.es_code => 'hello'}) }.to throw_symbol :threshold, threshold
+    context "for equality" do
+      it "case sensitive" do
+        threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 'hello'}]
+        expect { threshold.test({field.es_code => 'hello'}) }.to throw_symbol :threshold, threshold
+        expect { threshold.test({field.es_code => 'HeLLo'}) }.to_not throw_symbol
+      end
+
+      it "ignore case" do
+        threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eqi, value: 'hello'}]
+        expect { threshold.test({field.es_code => 'hello'}) }.to throw_symbol :threshold, threshold
+        expect { threshold.test({field.es_code => 'HeLLo'}) }.to throw_symbol :threshold, threshold
+      end
     end
 
-    it "for inclusion" do
-      threshold = collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :con, value: 'hello'}]
-      expect { threshold.test({field.es_code => 'This is hello world.'}) }.to throw_symbol :threshold, threshold
+    context "for inclusion" do
+      let!(:threshold) { collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :con, value: 'hello'}] }
+
+      it "matched" do
+        expect { threshold.test({field.es_code => 'This is hello world.'}) }.to throw_symbol :threshold, threshold
+      end
+
+      it "not matched" do
+        expect { threshold.test({field.es_code => 'This is my world.'}) }.to_not throw_symbol
+      end
+
+      it "case insensitive" do
+        expect { threshold.test({field.es_code => 'HeLLo world.'}) }.to throw_symbol :threshold, threshold
+      end
     end
   end
 
@@ -86,5 +106,94 @@ describe Threshold do
 
     expect { threshold.test({field.es_code => 1}) }.to_not throw_symbol
     expect { threshold.test({field.es_code => 2}) }.to throw_symbol :threshold, threshold
+  end
+
+  describe "should test yes_no field for" do
+    let(:field) { layer.yes_no_fields.make }
+
+    describe "true" do
+      let(:threshold) { collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: true}] }
+
+      it "matched" do
+        expect { threshold.test({field.es_code => true}) }.to throw_symbol :threshold, threshold
+      end
+
+      it "not matched" do
+        expect { threshold.test({field.es_code => false}) }.to_not throw_symbol
+      end
+
+      it "null value" do
+        expect { threshold.test({}) }.to_not throw_symbol
+      end
+    end
+
+    describe "false" do
+      let(:threshold) { collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: false}] }
+
+      it "matched" do
+        expect { threshold.test({field.es_code => false}) }.to throw_symbol :threshold, threshold
+      end
+
+      it "not matched" do
+        expect { threshold.test({field.es_code => true}) }.to_not throw_symbol
+      end
+
+      it "null value" do
+        expect { threshold.test({}) }.to throw_symbol :threshold, threshold
+      end
+    end
+  end
+
+  describe "should test numeric field for" do
+    let(:field) { layer.numeric_fields.make }
+
+    describe "equality" do
+      let(:threshold) { collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :eq, value: 50}] }
+
+      it "matched" do
+        expect { threshold.test({field.es_code => 50}) }.to throw_symbol :threshold, threshold
+      end
+
+      it "not matched" do
+        expect { threshold.test({field.es_code => 2}) }.to_not throw_symbol
+      end
+
+      it "null value" do
+        expect { threshold.test({}) }.to_not throw_symbol
+      end
+    end
+
+    describe "in-equality" do
+     let(:threshold) { collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :lt, value: 50}] }
+
+      it "matched" do
+        expect { threshold.test({field.es_code => 25}) }.to throw_symbol :threshold, threshold
+      end
+
+      it "not matched" do
+        expect { threshold.test({field.es_code => 55}) }.to_not throw_symbol
+      end
+
+      it "null value" do
+        expect { threshold.test({}) }.to_not throw_symbol
+      end
+    end
+
+    describe "field comparison" do
+      let(:field_2) { layer.numeric_fields.make }
+      let(:threshold) { collection.thresholds.make is_all_condition: true, conditions: [{field: field.es_code, op: :lt, value: 100, type: 'percentage', compare_field: field_2.es_code}] }
+
+      it "matched" do
+        expect { threshold.test({field.es_code => 25, field_2.es_code => 26}) }.to throw_symbol :threshold, threshold
+      end
+
+      it "not matched" do
+        expect { threshold.test({field.es_code => 55, field_2.es_code => 50}) }.to_not throw_symbol
+      end
+
+      it "null value" do
+        expect { threshold.test({}) }.to_not throw_symbol
+      end
+    end
   end
 end

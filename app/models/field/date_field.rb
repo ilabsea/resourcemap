@@ -19,7 +19,7 @@ class Field::DateField < Field
   
   def decode(m_d_y_value)
     begin
-      convert_to_iso8601_string(m_d_y_value)
+      m_d_y_value.present? ? convert_to_iso8601_string(m_d_y_value) : nil
     rescue
       raise invalid_field_message()
     end

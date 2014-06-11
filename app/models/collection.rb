@@ -1,5 +1,6 @@
 class Collection < ActiveRecord::Base
   include Collection::CsvConcern
+  include Collection::ShpConcern
   include Collection::GeomConcern
   include Collection::KmlConcern
   include Collection::TireConcern
@@ -74,11 +75,11 @@ class Collection < ActiveRecord::Base
   end
 
   def visible_fields_for(user, options)
-    if user.is_guest
+    if user.try(:is_guest)
       return fields.includes(:layer).all
     end
 
-    membership = user.membership_in self
+    membership = user.try :membership_in, self
     return [] unless membership
     if options[:snapshot_id]
       date = Snapshot.where(id: options[:snapshot_id]).first.date

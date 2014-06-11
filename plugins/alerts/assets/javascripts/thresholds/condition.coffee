@@ -9,13 +9,21 @@ onThresholds ->
       @op = ko.observable Operator.findByCode data?.op
       @value = ko.observable data?.value
       @valueType = ko.observable ValueType.findByCode data?.type ? 'value'
+      @valueUI = ko.computed
+        read: => @field()?.format @value()
+        write: (value) => @value value
       @formattedValue = ko.computed =>
         switch @field()?.kind()
-          when 'select_one', 'select_many'
-            @field().findOptionById(@value())?.label()
-          else "#{@valueType()?.format @value()}"
-      @error = ko.computed => return "value is missing" unless @value()
+          when 'numeric' then "#{@valueType()?.format @value()}"
+          else @valueUI()
+      @error = ko.computed => return "value is missing" unless @value()? and !!@value()
       @valid = ko.computed => not @error()?
+
+      @field.subscribe =>
+        @op Operator.EQ
+        @compareField null
+        @valueType ValueType.VALUE
+        @value null
 
     toJSON: =>
       field: @field().esCode()

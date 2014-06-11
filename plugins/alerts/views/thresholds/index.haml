@@ -1,5 +1,14 @@
 - content_for :head do
   = stylesheet_link_tag 'alerts'
+
+= render 'thresholds/condition/text_field_template'
+= render 'thresholds/condition/numeric_field_template'
+= render 'thresholds/condition/yes_no_field_template'
+= render 'thresholds/condition/select_one_field_template'
+= render 'thresholds/condition/date_field_template'
+= render 'thresholds/condition/email_field_template'
+= render 'thresholds/condition/phone_field_template'
+
 = render '/tabs'
 
 .tabsline
@@ -95,30 +104,9 @@
         <!-- ko foreach :conditions -->
         %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
 
-        <!--  ko if: field().operators().length == 1 -->
-        %span{ ko(text: 'field().operators()[0].label') }
-        %select{ ko(options: 'field().options', optionsText: "'label'", optionsValue:"'id'", value: :value) }
-        <!--  /ko -->
-
-        <!--  ko if: field().operators().length > 1 -->
-        %select{ ko(options: 'field().operators', optionsText: "'label'", value: :op) }
-
-        <!--    ko if: !(field().kind() == 'text') -->
-        %select{ ko(options: 'ValueType.ALL', optionsText: "'label'", value: :valueType) }
-        <!--    /ko -->
-
-        %label{ ko(css: { error: '!valid()' }) }
-        %span.w06
-          %input{ ko(value: :value, valueUpdate: :afterkeydown, css: { error: '!valid()' }), type: :text, style: 'width:60px' }
-
-        <!--    ko if: !(field().kind() == 'text') -->
-        <!--      ko if: valueType().label() == 'a percentage of' -->
-        \% compared to
-        %select{ ko(options: '$root.compareFields', optionsText: "'name'", value: :compareField, hasfocus: true) }
-        <!--      /ko -->
-        <!--    /ko -->
-
-        <!--  /ko -->
+        /      ko template: {name: field().kind() + '-field-template', afterRender: $root.initDatePicker}
+        /      /ko
+        
         %button.premove{ ko(click: '$parent.removeCondition') }
         %br
         <!--/ko -->

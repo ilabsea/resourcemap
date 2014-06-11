@@ -24,6 +24,9 @@ gem 'newrelic_rpm'
 gem 'cancan'
 gem 'aws-sdk'
 gem 'whenever', :require => false
+gem 'georuby'
+gem 'dbf', :require => 'dbf'
+gem 'rubyzip', :require => 'zip/zip'
 
 group :test do
   gem 'shoulda-matchers'
@@ -32,6 +35,7 @@ group :test do
   gem 'nokogiri'
   gem 'capybara'
   gem 'database_cleaner'
+  gem 'resque_spec'
 end
 
 group :test, :development do

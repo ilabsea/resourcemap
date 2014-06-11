@@ -166,16 +166,21 @@ ResourceMap::Application.routes.draw do
   end
 
   offline = Rack::Offline.configure do  
-    cache "/assets/application.js"
-    cache "/assets/application.css"
-    cache "/jquery.mobile-1.3.1.min.css"
-    cache "/jquery.mobile-1.3.1.min.js"
-    cache "/images/ajax-loader.gif"
-    cache "/images/icons-18-white.png"
-    cache "http://theme.instedd.org/theme/images/interface/add.png"
-    cache "/images/favicon.ico"
-    network "/"  
-  end   
+    cache "assets/mobile.js"
+    cache "assets/mobile.css"
+
+    cache "assets/jquery.mobile-1.3.2.js"
+    cache "assets/jquery.mobile-1.3.2.css"
+
+    cache "assets/images/ajax-loader.gif"
+    cache "assets/images/icons-18-white.png"
+    cache "assets/images/icons-36-white.png"
+
+    cache "images/add.png"
+    cache "images/remove.ico"
+    cache "images/favicon.ico"
+    network "*"
+  end
   match "/application.manifest" => offline 
 
   # TODO: deprecate later

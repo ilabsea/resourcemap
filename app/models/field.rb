@@ -2,6 +2,7 @@ class Field < ActiveRecord::Base
   include Field::Base
   include Field::TireConcern
   include Field::ValidationConcern
+  include Field::ShpConcern
 
   include HistoryConcern
 
