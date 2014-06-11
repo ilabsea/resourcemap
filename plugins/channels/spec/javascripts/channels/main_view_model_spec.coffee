@@ -27,7 +27,7 @@ describe 'MainViewModel', ->
       
     describe 'edit channel', ->
       beforeEach ->
-        @channel = new Channel {id:1, collection_id: @collectionId, name:'Regional (GSM)', password: '12345', is_enable: true, nuntium_channel_name: 'ch_01', is_manual_configuration: true, is_share: false, collections: [{id: 3, name: 'col 1'}, {id: 2, name: 'col 02'}]}
+        @channel = new Channel {id:1, collection_id: @collectionId, name:'Regional (GSM)', password: '12345', is_enable: true, is_manual_configuration: true, is_share: false, collections: [{id: 3, name: 'col 1'}, {id: 2, name: 'col 02'}]}
         @model.channels.push @channel
         @model.editChannel @channel
       
@@ -48,7 +48,7 @@ describe 'MainViewModel', ->
 
     describe 'delete channel', ->
       beforeEach ->
-        @channel = new Channel {id:1, collection_id: @collectionId, name:'Regional (GSM)', is_enable: true, nuntium_channel_name: 'ch_01', is_manual_configuration: true, is_share: false, collections: [{id: 1, name: 'col 1'}, {id: 2, name: 'col 02'}]}
+        @channel = new Channel {id:1, collection_id: @collectionId, name:'Regional (GSM)', is_enable: true, is_manual_configuration: true, is_share: false, collections: [{id: 1, name: 'col 1'}, {id: 2, name: 'col 02'}]}
         @model.channels.push @channel
 
       it 'should show confirm dialog', ->

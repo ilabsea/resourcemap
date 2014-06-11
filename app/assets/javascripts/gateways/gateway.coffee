@@ -8,7 +8,7 @@ onGateways ->
       @password               = ko.observable data?.password
       @ticketCode             = ko.observable data?.ticket_code 
       @isEnable               = ko.observable data?.is_enable
-      @nuntiumChannelName     = ko.observable data?.nuntium_channel_name
+      @nuntiumChannelName     = ko.observable data?.name
       @clientConnected        = ko.observable data?.client_connected
       @queuedMessageCount     = ko.observable data?.queued_messages_count
       @nationalGateway        = ko.observable()

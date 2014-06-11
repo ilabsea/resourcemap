@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140528032135) do
+ActiveRecord::Schema.define(:version => 20140604041305) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -30,9 +30,8 @@ ActiveRecord::Schema.define(:version => 20140528032135) do
     t.string   "name"
     t.boolean  "is_enable"
     t.string   "password"
-    t.string   "nuntium_channel_name"
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
     t.integer  "user_id"
     t.boolean  "basic_setup"
     t.boolean  "advanced_setup"
