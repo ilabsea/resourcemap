@@ -25,6 +25,7 @@ class Api::CollectionsController < ApplicationController
       format.rss { render :show, layout: false }
       format.csv { collection_csv(collection, @results) }
       format.json { render json: collection_json(collection, @results) }
+      format.kml { collection_kml(collection, @results) }
       format.shp { collection_shp(collection, @results) }
     end
   end
@@ -186,11 +187,18 @@ class Api::CollectionsController < ApplicationController
   end
 
   def collection_csv(collection, results)
-    sites_csv = collection.to_csv results
+    sites_csv = collection.to_csv results, current_user
     send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
   end
 
   def collection_shp(collection, results)
     send_data collection.to_shp(results), type: 'application/zip', filename: "#{collection.id}.zip"
   end
+
+  def collection_kml(collection, results)
+    sites_kml = collection.to_kml results
+    send_data sites_kml, type: 'application/vnd.google-earth.kml+xml', filename: "#{collection.name}_sites.kml"
+  end
+
+
 end

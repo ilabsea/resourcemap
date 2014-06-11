@@ -13,5 +13,7 @@ class Reminders::Plugin < Plugin
         post :set_status, :on => :member
       end
 		end
+
+    match 'get_time_zone' => "reminders#get_time_zone"
 	}
 end

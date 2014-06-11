@@ -85,6 +85,7 @@ Collection.prototype.storeOfflineData = function(collectionId, formData){
 }
 
 Collection.prototype.ajaxCreateSite = function(collectionId, formData){
+  $.mobile.saving('show');
   $.ajax({
       url: '/mobile/collections/' + collectionId + '/sites',  //Server script to process data
       type: 'POST',
@@ -99,6 +100,9 @@ Collection.prototype.ajaxCreateSite = function(collectionId, formData){
           error = error + properties[i] + " .";
         }
         Collection.prototype.showErrorMessage("Save new site failed!" + error);
+      },
+      complete: function() {
+        $.mobile.saving('hide');
       },
       data: formData,
       contentType: false,

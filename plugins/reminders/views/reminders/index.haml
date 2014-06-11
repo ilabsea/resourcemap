@@ -61,9 +61,12 @@
       %label repeat
       %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat)}
       %br/
-
-      %input.bfh-countries{"data-country" => "US", "data-flags" => "true"}
-
+      %br/
+      %label{ko(css: {error: :reminderDateError})} Timezone
+      %br/
+      %select{ko(options: :listTimeZone, optionsValue: "'key'", optionsText: "'name'", value: :timeZone)}
+      %br/      
+      %br/
       %label{ko(css: {error: :reminderMessageError})} Message
       %br/
       %textarea.ux-wajbar.w30{ko(value: :reminderMessage, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }

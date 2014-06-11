@@ -131,7 +131,7 @@ describe User do
   end
 
   it "should encrypt all users password" do
-    User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`) VALUES (22, 'foo@example.com', 'bar123')"
+    User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`, `created_at`, `updated_at`) VALUES (22, 'foo@example.com', 'bar123', CURDATE(), CURDATE())"
     User.encrypt_users_password
     User.first.encrypted_password.should_not == 'bar123'
   end
@@ -144,4 +144,10 @@ describe User do
       user_1.get_gateway.should eq gateway 
     end
   end
+
+  it "should change datetime based on user timezone" do
+    User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`, `time_zone`, `created_at`, `updated_at`) VALUES (22, 'foo@example.com', 'bar123', 'Bangkok', CURDATE(), CURDATE())"
+    Time.zone = User.first.time_zone
+    User.first.created_at.in_time_zone(User.first.time_zone).to_s.should eq User.first.created_at.to_s
+  end  
 end

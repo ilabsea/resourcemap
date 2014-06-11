@@ -55,6 +55,11 @@ class Field::SelectManyField < Field
       config['options'].each do |option|
         value_id = option['id'] if option['label'] == value || option['code'] == value
       end
+      if value_id.nil?
+        config['options'].each do |option|
+          value_id = option['id'] if option['id'].to_s == value.to_s
+        end
+      end
     else
       config['options'].each do |option|
         value_id = option['id'] if option['id'].to_s == value.to_s
