@@ -302,6 +302,103 @@ Collection.prototype.goHome = function(){
   $("#name").val("");
 }
 
+Collection.hidePages = function(){
+  var pages = ["#map-page", "#mobile-collections-main", "#mobile-sites-main"];
+  for(var i=0; i<pages.length; i++) {
+    $(pages[i]).hide();
+  }
+}
+
+Collection.showCollectionPage = function(){
+  Collection.hidePages();
+  $("#mobile-collections-main").show();
+}
+
+Collection.mapContainer = {} 
+
+Collection.hideMapPage = function(){
+  Collection.hidePages();
+}
+
+Collection.showMapPage = function() {
+  Collection.hidePages();
+  Collection.mapContainer.setLatLng( $("#lat").val(),$("#lng").val());
+  $("#map-page").show();
+}
+
+Collection.showMainSitePage = function(){
+  Collection.hidePages();
+  $("#lat").val(Collection.mapContainer.currentLat);
+  $("#lng").val(Collection.mapContainer.currentLng);
+  $("#mobile-sites-main").show();
+}
+
+Collection.mapContainer.setLatLng = function(lat,lng){
+  if(lat && lng) {
+    Collection.mapContainer.currentLat = parseFloat(lat) ;
+    Collection.mapContainer.currentLng = parseFloat(lng) ;
+  }
+  Collection.mapContainer.moveToCurrentMarker();
+}
+
+Collection.mapContainer.moveToCurrentMarker = function(){
+  if(Collection.mapContainer.currentMarker)
+    Collection.mapContainer.currentMarker.setMap(null)
+  Collection.mapContainer.createCurrentMarker(); 
+  
+  var point = Collection.mapContainer.currentMarker.getPosition();
+  Collection.mapContainer.map.panTo(point);
+}
+
+Collection.mapContainer.createCurrentMarker = function() {
+  var latLng = new google.maps.LatLng(Collection.mapContainer.currentLat, Collection.mapContainer.currentLng); 
+  Collection.mapContainer.currentMarker = new google.maps.Marker({
+        position: latLng,
+        map: Collection.mapContainer.map,
+        title: "Drag this to new position",
+        draggable: true
+  });
+
+  google.maps.event.addListener(Collection.mapContainer.currentMarker, 'dragend', function (event) {
+    var lat = Collection.mapContainer.currentMarker.getPosition().lat();
+    var lng = Collection.mapContainer.currentMarker.getPosition().lng();
+
+    Collection.mapContainer.currentLat = lat ;
+    Collection.mapContainer.currentLng = lng ;
+
+    var point = Collection.mapContainer.currentMarker.getPosition();
+    Collection.mapContainer.map.panTo(point);
+
+  });
+}
+
+Collection.mapContainer.currentLatLng = function(){
+  Collection.mapContainer.currentLat = Collection.mapContainer.currentLat || 10.803631 ;
+  Collection.mapContainer.currentLng = Collection.mapContainer.currentLng || 103.793335;
+
+   return new google.maps.LatLng( Collection.mapContainer.currentLat, Collection.mapContainer.currentLng);
+}
+
+Collection.createMap = function(canvasId){
+  var latLng = Collection.mapContainer.currentLatLng();
+  var myOptions = {
+        zoom: 10,
+        center: latLng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+    
+  Collection.mapContainer.map = new google.maps.Map($(canvasId)[0], myOptions);
+  Collection.mapContainer.createCurrentMarker();
+  Collection.mapContainer.refresh();
+}
+
+Collection.mapContainer.refresh =  function(){
+  setTimeout(function() {
+    google.maps.event.trigger(Collection.mapContainer.map,'resize');
+    $("#map-page").hide();
+  }, 500);
+}
+
 Collection.prototype.getFormValue = function(){
   var site = {};
   var properties = {};

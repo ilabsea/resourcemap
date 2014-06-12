@@ -29,7 +29,11 @@ class Api::SitesController < ApplicationController
     # properties = prepare_site_property params
     properties = params[:properties]
     site.properties = properties
-    site.user = User.find_by_phone_number(params[:phone_number])
+    unless current_user
+      site.user = User.find_by_phone_number(params[:phone_number])
+    else
+      site.user = current_user
+    end
     if site.valid?
       site.save!
       render json: {site: site, status: 201}

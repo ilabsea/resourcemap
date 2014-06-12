@@ -22,3 +22,4 @@
 //= require mobile/collections/on_mobile_collections
 //= require mobile/devise
 //= require mobile/jquery.mobile.extensions
+//= require mobile/map

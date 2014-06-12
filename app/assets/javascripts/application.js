@@ -25,6 +25,10 @@
 //= require jquery.blockUI
 //= require lodash
 //= require_tree .
+//available on sprocket 2.2 and above
+//= stub 'mobile/map' 
+
+
 
 // Update the appcache for offline
 
