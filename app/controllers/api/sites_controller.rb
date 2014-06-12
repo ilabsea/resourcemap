@@ -22,13 +22,16 @@ class Api::SitesController < ApplicationController
   end
 
   def update
+    debugger
     site = Site.find_by_id(params[:id])
     site.lat = params[:lat]
     site.lng = params[:lng]
     site.name = params[:name]
     # properties = prepare_site_property params
-    properties = params[:properties]
-    site.properties = properties
+    if params[:properties]
+      properties = params[:properties]
+      site.properties = properties
+    end
     unless current_user
       site.user = User.find_by_phone_number(params[:phone_number])
     else
