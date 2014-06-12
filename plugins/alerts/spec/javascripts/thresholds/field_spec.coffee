@@ -56,6 +56,17 @@ describe 'Alerts plugin', ->
       it 'should have larger than operator', ->
         expect(@field.operators()).toContain Operator.GT
 
+      describe 'encode', ->
+        beforeEach ->
+          @m_d_y = '06/12/2014'
+          @y_m_d = '2014-06-12'
+
+        it 'should support m/d/yyyy', ->
+          expect(@field.encode(@m_d_y)).toEqual @m_d_y
+
+        it 'should support yyyy-mm-dd', ->
+          expect(@field.encode(@y_m_d)).toEqual @m_d_y
+
     describe 'kind is email', ->
       beforeEach ->
         @field = new Field kind: 'email'
