@@ -22,7 +22,6 @@ class Api::SitesController < ApplicationController
   end
 
   def update
-    debugger
     site = Site.find_by_id(params[:id])
     site.lat = params[:lat]
     site.lng = params[:lng]
