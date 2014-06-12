@@ -4,12 +4,10 @@ class Api::SitesController < ApplicationController
   # before_filter :authenticate_user!
   # before_filter :authenticate_site_user!
 
-  before_filter  :authentication_check
+  before_filter  :authenticate_api_user!
 
   expose(:site)
   expose(:collection) { site.collection }
-
-  USER, PASSWORD = 'iLab', '1c4989610bce6c4879c01bb65a45ad43'
 
   def show
     search = new_search
@@ -92,17 +90,4 @@ class Api::SitesController < ApplicationController
     render :json => {:sites => sites_by_page, :total => sites_size}
   end
 
-  ###  Private function ###
-  private
-
-  def authentication_check
-    user = User.find_by_authentication_token(params.delete :auth_token) and sign_in user
-    http_basic_authentication unless user
-  end
-
-  def http_basic_authentication
-    authenticate_or_request_with_http_basic do |user, password|
-      user == USER && password == PASSWORD
-    end
-  end
 end
