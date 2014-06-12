@@ -6,12 +6,20 @@
     %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c" }Sign out
   %div{"data-role" => "content"}
     %ul{ id: "listview", "data-role" => "listview", "data-inset" => "true"}
+  %br{style: 'clear:both;'}  
+  = render "footer"
 
-  = link_to 'Desktop View', collections_path, "data-role" => "footer", "data-theme" => "f", 'align' => 'center', "data-position" => "fixed", "data-ajax" => "false", "style" => "padding-bottom:20px;"
+#map-page{"data-fullscreen" => "true"}
+  %div{"data-role"=> "header", "data-theme" => "b"}
+    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.showMainSitePage()', "data-theme" => "c" } Back  
+    %h1= @title || "Location"
+  %div{"data-role" => "content", "id" => "map-canvas"}
+  %br{style: 'clear:both;'}  
+  = render "footer"
 
 #mobile-sites-main{"data-fullscreen" => "true", :style => "display:none;"}
   %div{"data-role" => "header", "data-theme" => "b"}
-    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.prototype.goHome()', "data-theme" => "c" } Back
+    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.showCollectionPage()', "data-theme" => "c" } Back
     %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c"  }Sign out
     %h1{:id => "title"}
 
@@ -25,6 +33,8 @@
         .clear
       %div
         %label Location:
+        %a{href:'#map', onclick: 'Collection.showMapPage()',}
+          %label Location
         %div{"data-role" => "controlgroup", style: "margin-left:10px"}
           %label Location'Lat
           %input#lat{:name => "lat", placeholder: "Enter your location's lat"}
@@ -34,4 +44,5 @@
       %div{"id" => "fields", "data-role" => "content", "style" => "padding-left:0px; padding-right:0px"}
     %button{onclick: 'Collection.prototype.saveSite()', "data-theme" => "b"} Save Site
   %div{"align" => "center"}
-    = link_to 'Desktop View', collections_path, "data-role" => "footer", "data-theme" => "f", "data-ajax" => false, 'align' => 'center'
+  %br{style: 'clear:both;'}  
+  = render "footer"

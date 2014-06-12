@@ -1,0 +1,42 @@
+.locale-switcher {
+  float: right;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: inline-block;
+    padding: 0 .25em 0 0;
+  }
+
+  li:after {
+    content: " | ";
+    color: #999999;
+    display: inline-block;
+    font-size: 100%;
+    margin: 0 0 0 .5em;
+  }
+
+  // remove the pipe from the last list item
+  li:last-child:after {
+    content: " ";
+  }
+}
+
+html { height: 100% }
+body { height: 100%; margin: 0; padding: 0 }
+
+
+#map-page {
+  height: 350px;
+  width: 100%;
+  padding: 0; 
+}
+
+#map-canvas { 
+   width: 100%; 
+   min-height: 100%; 
+   padding: 0; 
+}
