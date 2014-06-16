@@ -20,6 +20,9 @@ onThresholds ->
     findOptionById: (optionId) ->
       return option for option in @options() when option.id() == optionId
 
+    encode: (value) ->
+      @impl.encode value
+
   class @FieldImpl
     constructor: (field) ->
       @field = field
@@ -27,6 +30,7 @@ onThresholds ->
     format: (value) -> value
     getOptions: => []
     getOperators: => [Operator.EQ]
+    encode: (value) -> value
 
   class @FieldText extends @FieldImpl
     getOperators: =>
@@ -58,6 +62,9 @@ onThresholds ->
 
     getOperators: =>
       [Operator.EQ, Operator.LT, Operator.GT]
+
+    encode: (value) ->
+      value?.toString().toDate()?.strftime '%m/%d/%Y'
 
   class @Field_email extends @FieldText
 

@@ -53,6 +53,15 @@ describe 'Alerts plugin', ->
             condition = new Condition field: '1', value: 2
             expect(condition.formattedValue()).toEqual 'Two'
 
+      describe 'date', ->
+        beforeEach ->
+          @field = new Field id: 1, kind: 'date'
+          window.model.fields [@field]
+
+        it 'should return m/d/yyyy', ->
+          condition = new Condition field: '1', value: '2014-06-12T00:00:00Z'
+          expect(condition.formattedValue()).toEqual '06/12/2014'
+
     describe 'field change', ->
       beforeEach ->
         @field_2 = new Field id: 2, code: 'doctors', kind: 'numeric'
