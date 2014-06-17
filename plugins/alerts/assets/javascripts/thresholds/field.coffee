@@ -34,7 +34,7 @@ onThresholds ->
     getOptions: => []
     getOperators: => [Operator.EQ]
     encode: (value) -> value
-    valid: (value) -> true
+    valid: (value) -> !!value
 
   class @FieldText extends @FieldImpl
     getOperators: =>

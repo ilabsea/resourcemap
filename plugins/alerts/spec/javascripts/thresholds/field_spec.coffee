@@ -19,6 +19,9 @@ describe 'Alerts plugin', ->
       it 'should not validate null', ->
         expect(@field.valid(null)).toBe false
 
+      it 'should not validate white spaces', ->
+        expect(@field.valid('      ')).toBe false
+
     describe 'kind is numeric', ->
       beforeEach ->
         @field = new Field kind: 'numeric'
@@ -101,6 +104,9 @@ describe 'Alerts plugin', ->
       it 'should have contain operator', ->
         expect(@field.operators()).toContain Operator.CON
 
+      it 'should not validate null', ->
+        expect(@field.valid(null)).toBe false
+
     describe 'kind is phone', ->
       beforeEach ->
         @field = new Field kind: 'phone'
@@ -110,3 +116,6 @@ describe 'Alerts plugin', ->
 
       it 'should have contain operator', ->
         expect(@field.operators()).toContain Operator.CON
+
+      it 'should not validate null', ->
+        expect(@field.valid(null)).toBe false
