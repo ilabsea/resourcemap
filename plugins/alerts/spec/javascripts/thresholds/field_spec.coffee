@@ -19,8 +19,8 @@ describe 'Alerts plugin', ->
       it 'should not validate null', ->
         expect(@field.valid(null)).toBe false
 
-      it 'should not validate white spaces', ->
-        expect(@field.valid('      ')).toBe false
+      it 'should validate white spaces', ->
+        expect(@field.valid('      ')).toBe true
 
     describe 'kind is numeric', ->
       beforeEach ->
