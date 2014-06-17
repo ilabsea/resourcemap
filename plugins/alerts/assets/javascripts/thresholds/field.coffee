@@ -41,6 +41,8 @@ onThresholds ->
       [Operator.EQI, Operator.CON]
 
   class @Field_text extends @FieldText
+    valid: (value) ->
+      value? and value.toString().trim().length > 0
 
   class @Field_numeric extends @FieldImpl
     getOperators: =>

@@ -13,6 +13,12 @@ describe 'Alerts plugin', ->
       it 'should have contain operator', ->
         expect(@field.operators()).toContain Operator.CON
 
+      it 'should not validate empty string', ->
+        expect(@field.valid('')).toBe false
+
+      it 'should not validate null', ->
+        expect(@field.valid(null)).toBe false
+
     describe 'kind is numeric', ->
       beforeEach ->
         @field = new Field kind: 'numeric'
