@@ -81,6 +81,9 @@ onThresholds ->
     encode: (value) ->
       value?.toString().toDate()?.strftime '%m/%d/%Y'
 
+    valid: (value) ->
+      !!value
+
   class @Field_email extends @FieldText
 
   class @Field_phone extends @FieldText

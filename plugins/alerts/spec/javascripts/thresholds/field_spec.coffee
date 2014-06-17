@@ -88,6 +88,9 @@ describe 'Alerts plugin', ->
         it 'should support yyyy-mm-dd', ->
           expect(@field.encode(@y_m_d)).toEqual @m_d_y
 
+      it 'should not validate null', ->
+        expect(@field.valid(null)).toBe false
+
     describe 'kind is email', ->
       beforeEach ->
         @field = new Field kind: 'email'
