@@ -26,6 +26,12 @@ describe 'Alerts plugin', ->
       it 'should have larger than operator', ->
         expect(@field.operators()).toContain Operator.GT
 
+      it 'should validate number', ->
+        expect(@field.valid('17')).toBe true
+
+      it 'should not validate character string', ->
+        expect(@field.valid('foo')).toBe false
+
     describe 'kind is select one', ->
       beforeEach ->
         @field = new Field kind: 'select_one', config: {options: [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}]}
@@ -42,6 +48,15 @@ describe 'Alerts plugin', ->
 
       it 'should have equal to operator', ->
         expect(@field.operators()).toContain Operator.EQ
+
+      it 'should validate true', ->
+        expect(@field.valid(true)).toBe true
+
+      it 'should validate false', ->
+        expect(@field.valid(false)).toBe true
+
+      it 'should not validate string', ->
+        expect(@field.valid('true')).toBe false
 
     describe 'kind is date', ->
       beforeEach ->

@@ -23,6 +23,9 @@ onThresholds ->
     encode: (value) ->
       @impl.encode value
 
+    valid: (value) ->
+      @impl.valid value
+
   class @FieldImpl
     constructor: (field) ->
       @field = field
@@ -31,6 +34,7 @@ onThresholds ->
     getOptions: => []
     getOperators: => [Operator.EQ]
     encode: (value) -> value
+    valid: (value) -> true
 
   class @FieldText extends @FieldImpl
     getOperators: =>
@@ -42,12 +46,21 @@ onThresholds ->
     getOperators: =>
       [Operator.EQ, Operator.LT, Operator.GT]
 
+    valid: (value) ->
+      value? and not isNaN value
+
   class @Field_yes_no extends @FieldImpl
     format: (value) ->
       if value then 'Yes' else 'No'
 
     getOptions: =>
       [new Option({id: true, label: 'Yes'}), new Option({id: false, label: 'No'})]
+
+    valid: (value) ->
+      if typeof(value) == 'boolean'
+        true
+      else
+        false
 
   class @Field_select_one extends @FieldImpl
     format: (value) ->
