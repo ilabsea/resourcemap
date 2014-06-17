@@ -23,6 +23,3 @@ module Membership::SitesPermissionConcern
     # permission
   end
 end
-
-{:write=>{:all_sites=>false, :some_sites=>[{:id=>1, :name=>"Bayon clinic"}]}}
-{"write"=>{"all_sites"=>"false", "some_sites"=>{"0"=>{"id"=>"5", "name"=>"Carlos Casares"}}}}
