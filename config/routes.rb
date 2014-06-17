@@ -133,7 +133,7 @@ ResourceMap::Application.routes.draw do
     # v1
     namespace :v1 do
       resources :collections do
-        resources :sites, only: [:create,:index,:update]
+        resources :sites, only: [:create,:index,:update,:show]
       end
     end
   end

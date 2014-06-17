@@ -1,6 +1,7 @@
 module Api::V1
   class SitesController < ApplicationController
     include Concerns::CheckApiDocs
+    include Api::JsonHelper
 
     before_filter :authenticate_api_user!
     skip_before_filter  :verify_authenticity_token
@@ -11,6 +12,18 @@ module Api::V1
       sites_size = builder.size
       sites_by_page  = Collection.filter_page(params[:limit], params[:offset], builder)
       render :json => {:sites => sites_by_page, :total => sites_size}
+    end
+
+    def show
+      search = new_search
+
+      search.id(site.id)
+      @result = search.api_results[0]
+
+      respond_to do |format|
+        format.rss
+        format.json { render json: site_item_json(@result) }
+      end
     end
 
     def update
