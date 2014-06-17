@@ -41,6 +41,9 @@ describe 'Alerts plugin', ->
       it 'should not validate character string', ->
         expect(@field.valid('foo')).toBe false
 
+      it 'should not validate white spaces', -> 
+        expect(@field.valid('   ')).toBe false
+
     describe 'kind is select one', ->
       beforeEach ->
         @field = new Field kind: 'select_one', config: {options: [{id: 1, code: 'one', label: 'One'}, {id: 2, code: 'two', label: 'Two'}]}

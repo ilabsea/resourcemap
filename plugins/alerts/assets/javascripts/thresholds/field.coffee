@@ -47,7 +47,9 @@ onThresholds ->
       [Operator.EQ, Operator.LT, Operator.GT]
 
     valid: (value) ->
-      value? and not isNaN value
+      value? and
+      value.toString().trim().length > 0 and
+      not isNaN value
 
   class @Field_yes_no extends @FieldImpl
     format: (value) ->
