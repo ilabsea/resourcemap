@@ -10,7 +10,7 @@ onCollections ->
       @currentSnapshot = ko.computed =>
         @currentCollection()?.currentSnapshot
 
-    @findCollectionById: (id) -> (x for x in @collections() when x.id == id)[0]
+    @findCollectionById: (id) -> (x for x in @collections() when x.id == parseInt id)[0]
 
     @goToRoot: ->
       @queryParams = $.url().param()
@@ -51,6 +51,7 @@ onCollections ->
       # or a string representing the collection id (if the collection is being loaded from the url)
       if typeof collection == 'string'
         collection = @findCollectionById parseInt(collection)
+
 
       @currentCollection collection
       @unselectSite() if @selectedSite()
