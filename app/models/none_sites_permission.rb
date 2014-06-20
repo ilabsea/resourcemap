@@ -1,0 +1,1 @@
+class NoneSitesPermission < SitesPermission; end

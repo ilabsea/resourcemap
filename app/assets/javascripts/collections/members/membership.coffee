@@ -17,7 +17,6 @@ class @Membership extends Expandable
     @layers = ko.observableArray $.map(root.layers(), (x) => new LayerMembership(x, rootLayers, _self))
 
     @sitesWithCustomPermissions = ko.observableArray SiteCustomPermission.arrayFromJson(data?.sites, @)
-
     @callModuleConstructors(arguments)
     super
 
@@ -120,7 +119,7 @@ class @Membership extends Expandable
           # Check that a site with that name exists
           _.each data, (s) ->
             if s.name == _self.customSite()
-              new_permission = new SiteCustomPermission s.id, s.name, false, false, _self
+              new_permission = new SiteCustomPermission s.id, s.name, true, true, _self
               _self.sitesWithCustomPermissions.push new_permission
               _self.customSite ""
               _self.saveCustomSitePermissions()
@@ -163,7 +162,8 @@ class @Membership extends Expandable
       else true
 
   saveCustomSitePermissions: =>
-    $.post "/collections/#{@collectionId()}/sites_permission", sites_permission: user_id: @userId(), read: SiteCustomPermission.summarizeRead(@sitesWithCustomPermissions()), write: SiteCustomPermission.summarizeWrite(@sitesWithCustomPermissions())
+    window.sitesCustom = @sitesWithCustomPermissions()
+    $.post "/collections/#{@collectionId()}/sites_permission", sites_permission: user_id: @userId(), none: SiteCustomPermission.summarizeNone(@sitesWithCustomPermissions()) , read: SiteCustomPermission.summarizeRead(@sitesWithCustomPermissions()), write: SiteCustomPermission.summarizeWrite(@sitesWithCustomPermissions())
 
   save: =>
   exit: =>
