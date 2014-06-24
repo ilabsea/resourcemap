@@ -1,6 +1,7 @@
 //= require mobile/events
 //= require mobile/field
 //= require mobile/option
+//= require mobile/sub_hierarchy
 
 function Collection (collection) {
   this.id = collection != null ? collection.id : void 0;
@@ -38,7 +39,7 @@ Collection.prototype.fetchFields = function() {
 Collection.prototype.createSite = function(id){
   for(var i=0; i< window.collectionSchema.length; i++){
     if(window.collectionSchema[i]["id"] == id){
-      Collection.prototype.showFormAddSite(window.collectionSchema[i])
+      Collection.prototype.showFormAddSite(window.collectionSchema[i]);
     }
   }
 }
@@ -233,6 +234,7 @@ Collection.prototype.handleFieldUI = function(schema){
 }
 
 Collection.prototype.addDataToCollectionList = function(collection_schema){
+  
   for(var i=0; i< collection_schema.length; i++){
     if(collection_schema.length > 1 && i == 0){
       classListName = "ui-first-child" 
