@@ -127,11 +127,12 @@ describe SitesController do
 
     it 'should update only name' do
       site_params = {:name => "new site"}.to_json
+      site.update_attributes properties: { numeric.es_code => 123 }
       post :update, {:collection_id => collection.id, :id => site.id, :site => site_params }
 
       response.should be_success
       new_site = Site.find_by_name "new site"
-      new_site.should be
+      new_site.properties.should eq site.properties
     end
 
     it 'should update a single property' do

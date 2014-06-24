@@ -4,7 +4,7 @@ describe Api::CollectionsController do
   include Devise::TestHelpers
   render_views
 
-  let!(:user) { User.make }
+  let!(:user) { User.make time_zone: 'UTC' }
   let!(:collection) { user.create_collection(Collection.make) }
   let!(:layer) { collection.layers.make }
 
@@ -34,6 +34,16 @@ describe Api::CollectionsController do
   }
 
   before(:each) { sign_in user }
+
+  describe "GET collection" do
+    before(:each) do
+      get :show, id: collection.id, format: 'json'
+    end
+
+    it 'should assign time_zone from login user' do
+      controller.collection.time_zone.should eq user.time_zone
+    end
+  end
 
   describe "GET JSON collection" do
     before(:each) do

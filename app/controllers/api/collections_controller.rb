@@ -21,6 +21,7 @@ class Api::CollectionsController < ApplicationController
     end
     @results = perform_search *options
 
+    collection.time_zone = current_user.time_zone
     respond_to do |format|
       format.rss { render :show, layout: false }
       format.csv { collection_csv(collection, @results) }
