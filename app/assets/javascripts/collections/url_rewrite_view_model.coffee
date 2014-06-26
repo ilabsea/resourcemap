@@ -6,6 +6,7 @@ onCollections ->
 
       # Append collection parameters (search, filters, hierarchy, etc.)
       @currentCollection().setQueryParams(query) if @currentCollection()
+      
 
       # Append selected site or editing site, if any
       if @editingSite()
