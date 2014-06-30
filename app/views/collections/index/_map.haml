@@ -65,13 +65,15 @@
     <!-- ko if: !editingSite() -->
     <!-- ko with: currentCollection -->
     .tableheader
-      - if can? :index, Collection
-        %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
-      %span
-      %span{ko(text: :name)}
-      - #if can? :show, collection
-      - if current_user && !current_user.is_guest
-        %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+      %div.navBack
+        - if can? :index, Collection
+          %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
+        %span
+      %div
+        %span.colTitle{ko(text: :name,  attr: { title: :name })}
+        - #if can? :show, collection
+        - if current_user && !current_user.is_guest
+          %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
 
 
     .tablescroll.sites
