@@ -251,4 +251,5 @@ a.lbutton{
 
 .BreadCrumb li:last-child, .BreadCrumb li:last-child > a{
    cursor: default !important;
+   pointer-events: none;
 }
