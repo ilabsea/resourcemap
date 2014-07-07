@@ -9,7 +9,7 @@ onCollections ->
       @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
       @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       window.markers = @markers = {}
-
+      
     @loadBreadCrumb: ->
       params = {}
       if @selectedSite()
@@ -50,7 +50,6 @@ onCollections ->
         if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
           site.fetchFields()
 
-
         @selectSite(site)
         @editingSite(site)
         @currentCollection(site.collection)
@@ -65,6 +64,8 @@ onCollections ->
         @editSite site
       else
         @loadingSite(true)
+        # console.log @collections()
+        # console.log window.model.findCollectionById(collectionId)
         $.get "/collections/#{collectionId}/sites/#{siteId}.json", {}, (data) =>
           @loadingSite(false)
           collection = window.model.findCollectionById(collectionId)

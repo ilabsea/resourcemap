@@ -46,8 +46,8 @@ module Collection::ShpConcern
     data  = [ 
       ['resmap-id', source['id']],
       ['name', source['name']],
-      ['created_at', Site.iso_string_to_rfc822(source['created_at'])],
-      ['updated_at', Site.iso_string_to_rfc822(source['updated_at'])] ]
+      ['created_at', Site.iso_string_to_rfc822(source['created_at'], time_zone)],
+      ['updated_at', Site.iso_string_to_rfc822(source['updated_at'], time_zone)] ]
 
     data |= dbf_fields.map { |field, _| [field.code, source['properties'][field.code]] }
 

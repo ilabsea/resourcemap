@@ -69,6 +69,7 @@ onCollections ->
               when 'last_month' then @filterByLastMonth()
           when 'selected_site'
             selectedSiteId = parseInt(value)
+            @editSiteFromId selectedSiteId, collectionId
           when 'selected_collection'
             selectedCollectionId = parseInt(value)
           when 'editing_site'

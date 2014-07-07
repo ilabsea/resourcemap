@@ -169,7 +169,7 @@ class SitesController < ApplicationController
       decoded_properties[es_code] = fields[es_code].decode_from_ui(value)
     end
 
-    parameters["properties"] = decoded_properties
+    parameters["properties"] = decoded_properties unless decoded_properties.blank?
     parameters
   end
 end

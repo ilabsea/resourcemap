@@ -1,11 +1,13 @@
 
 function Field (field) {
+  
   this.id = field != null ? field["id"] : void(0);
   this.name = field != null ? field["name"] : void(0);
   this.kind = field != null ? field["kind"] : void(0);
   this.code = field != null ? field["code"] : void(0);
-  this.value = (field != null && ("value" in field)) ? field["value"] : "";
-  if(this.kind == 'select_one' || this.kind == 'select_many'){
+  if(this.kind == 'hierarchy'){
+    this.sub = setHierarchyData(field);
+  }else if(this.kind == 'select_one' || this.kind == 'select_many'){
     this.options = [];
     for(var i=0; i<field["config"]["options"].length; i++){
       this.options.push(new Option(field["config"]["options"][i]));
@@ -43,6 +45,9 @@ Field.prototype.getField = function() {
     case "photo":
       return this.getPhotoField();
       break;
+    case "hierarchy":
+      return this.getHierarchyField();
+      break;
     default:
       return this.getTextField();
   }
@@ -54,6 +59,9 @@ Field.prototype.completeFieldRequirement = function() {
     case "yes_no":
       // $("#" + this.code).checkboxradio("refresh");
       break;
+    case "hierarchy":
+      $("#" + this.code).selectmenu();
+      break;      
     case "select_one":
       $("#" + this.code).selectmenu();
       break;
@@ -62,6 +70,23 @@ Field.prototype.completeFieldRequirement = function() {
       break;
   }
 }
+Field.prototype.getHierarchyField = function() { 
+
+  list = "";
+  for(var i=0; i< this.sub.length; i++){
+    list = list + "<option value='" + this.sub[i].id + "' >" + this.sub[i].label + "</option>" ;
+  }
+  return  '<div class="ui-select" style="margin-left:10px;">' +
+              '<label>' + this.name + '</label>'+
+              '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="hierarchy">' +
+                list +
+              '</select>' +
+          '</div>';
+
+};
+
+
+
 
 Field.prototype.getTextField = function() {  
   return '<div class="ui-corner-all ui-controlgroup ui-controlgroup-vertical" style="margin-left:10px">'+
@@ -209,3 +234,28 @@ Field.prototype.getPhotoField = function() {
     '</div>';
 };
 
+function setSubHierarchy(sub, field, level){
+  if("sub" in field){
+    for(var i=0; i<field.sub.length; i++){
+      space ="";
+      for(var j=0; j<level; j++){
+        space = space + "&nbsp;";
+      }
+      // console.log(space+field.sub[i].name);
+      sub.push(new SubHierarchy(field.sub[i].id, space+field.sub[i].name));
+      nSpace = level + 3;
+      setSubHierarchy(sub, field.sub[i], nSpace);
+    }
+  }else{
+    return;
+  }
+}
+
+function setHierarchyData(field){
+  var sub = [];
+  for(var i=0; i<field.config.hierarchy.length; i++){     
+    sub.push(new SubHierarchy(field.config.hierarchy[i].id, field.config.hierarchy[i].name));
+    setSubHierarchy(sub, field.config.hierarchy[i], 3);       
+  }  
+  return sub;
+}

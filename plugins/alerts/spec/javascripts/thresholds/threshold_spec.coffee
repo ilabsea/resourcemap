@@ -19,7 +19,7 @@ describe 'Alerts plugin', ->
 
     it 'should not be valid when have invalid condition', ->
       @threshold.conditions()[0].value null
-      expect(@threshold.valid()).toBeFalsy()
+      expect(@threshold.valid()).toBe false
 
     it 'should have default color', ->
       expect(@threshold.icon()).toEqual 'default'
