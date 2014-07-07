@@ -143,6 +143,7 @@ ResourceMap::Application.routes.draw do
       resources :sites
       match 'create_offline_site' => 'sites#create_offline_site', :via => :post
     end
+    match 'collections/:collection_id/sites/:id/update_offline_site' => 'sites#update_offline_site', :via => :put
   end
 
   scope '/plugin' do

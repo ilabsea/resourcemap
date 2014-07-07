@@ -19,13 +19,13 @@
 
 #mobile-sites-main{"data-fullscreen" => "true", :style => "display:none;"}
   %div{"data-role" => "header", "data-theme" => "b"}
-    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.showCollectionPage()', "data-theme" => "c" } Back
+    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.prototype.showListSites(window.currentCollectionId)', "data-theme" => "c" } Back
     %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c"  }Sign out
     %h1{:id => "title"}
 
   %h4{:style => "margin:15px"} New Site
-  %hidden{id: "collectionId"}
   %form#formSite{ action: 'javascript:void(0)', method: :post}
+    %hidden{id: "id"}
     %div{"data-role" => "content"}
       %div
         %label{:for => "basic"} Name: 
@@ -44,5 +44,17 @@
       %div{"id" => "fields", "data-role" => "content", "style" => "padding-left:0px; padding-right:0px"}
     %button{onclick: 'Collection.prototype.saveSite()', "data-theme" => "b"} Save Site
   %div{"align" => "center"}
+  %br{style: 'clear:both;'}  
+  = render "footer"
+
+#mobile-list-sites-main{"data-fullscreen" => "true", :style => "display:none;"}
+  %div{"data-role"=> "header", "data-theme" => "b"}  
+    %h1{:id => "collectionTitle"}
+    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.showCollectionPage()', "data-theme" => "c" } Back
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c" }Sign out
+
+  %div{"data-role" => "content"}
+    %button{onclick: 'Collection.prototype.createSite(window.currentCollectionId)', "data-theme" => "b"} Add site
+    %ul{ id: "listSitesView", "data-role" => "listSitesView", "data-inset" => "true", "class" => "ui-listview ui-listview-inset ui-corner-all ui-shadow"}
   %br{style: 'clear:both;'}  
   = render "footer"
