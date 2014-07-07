@@ -134,6 +134,7 @@ ResourceMap::Application.routes.draw do
     namespace :v1 do
       resources :collections do
         resources :sites, only: [:create,:index,:update,:show]
+        resources :fields, only: [:create,:index,:update,:show]
       end
     end
   end
