@@ -6,6 +6,7 @@ onCollections ->
 
       # Append collection parameters (search, filters, hierarchy, etc.)
       @currentCollection().setQueryParams(query) if @currentCollection()
+      
 
       # Append selected site or editing site, if any
       if @editingSite()
@@ -69,11 +70,12 @@ onCollections ->
               when 'last_month' then @filterByLastMonth()
           when 'selected_site'
             selectedSiteId = parseInt(value)
-            @editSiteFromId selectedSiteId, collectionId
+            @editSiteFromId(selectedSiteId, collectionId)
           when 'selected_collection'
             selectedCollectionId = parseInt(value)
           when 'editing_site'
             editingSiteId = parseInt(value)
+            @editSiteFromId(editingSiteId, collectionId)
           when '_table'
             showTable = true
           when 'hierarchy_code'

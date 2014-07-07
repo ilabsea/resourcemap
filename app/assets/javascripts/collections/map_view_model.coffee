@@ -437,7 +437,7 @@ onCollections ->
       delete @map
       @showingMap(false)
       @refreshTimeago()
-      @makeFixedHeaderTable()
+      setTimeout(@makeFixedHeaderTable, 10)
       setTimeout(window.adjustContainerSize, 10)
 
     @makeFixedHeaderTable: ->

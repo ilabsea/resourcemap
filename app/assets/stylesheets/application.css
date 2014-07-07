@@ -248,3 +248,8 @@ a.lbutton{
   padding-top: 3px !important;
   vertical-align: middle;
 }
+
+.BreadCrumb li:last-child, .BreadCrumb li:last-child > a{
+   cursor: default !important;
+   pointer-events: none;
+}
