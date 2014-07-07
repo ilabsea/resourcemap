@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.17'
 gem 'mysql2'
 gem 'devise'
 gem 'haml-rails'
@@ -19,7 +19,7 @@ gem 'jquery-rails', "~> 2.0.2"
 gem 'foreman'
 gem 'uuidtools'
 gem 'rack-offline'
-gem 'rmagick', '2.13.2'
+gem 'rmagick', '2.13.2', :require => false
 gem 'newrelic_rpm'
 gem 'cancan'
 gem 'aws-sdk'

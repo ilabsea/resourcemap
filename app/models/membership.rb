@@ -5,6 +5,7 @@ class Membership < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :collection
+  has_one :none_sites_permission, dependent: :destroy
   has_one :read_sites_permission, dependent: :destroy
   has_one :write_sites_permission, dependent: :destroy
 
