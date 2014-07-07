@@ -117,19 +117,35 @@ class SitesController < ApplicationController
           ord: layer.ord,
         }
       end
-
-      layers.each do |layer|
-        layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
-        layer[:fields].map! do |field|
-          {
-            id: field.es_code,
-            name: field.name,
-            code: field.code,
-            kind: field.kind,
-            config: field.config,
-            ord: field.ord,
-            writeable: true
-          }
+      if site.collection.site_ids_write_permission(current_user).include? site.id
+        layers.each do |layer|
+          layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
+          layer[:fields].map! do |field|
+            {
+              id: field.es_code,
+              name: field.name,
+              code: field.code,
+              kind: field.kind,
+              config: field.config,
+              ord: field.ord,
+              writeable: true
+            }
+          end
+        end
+      elsif site.collection.site_ids_read_permission(current_user).include? site.id
+        layers.each do |layer|
+          layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
+          layer[:fields].map! do |field|
+            {
+              id: field.es_code,
+              name: field.name,
+              code: field.code,
+              kind: field.kind,
+              config: field.config,
+              ord: field.ord,
+              writeable: false
+            }
+          end
         end
       end
       layers.sort! { |x, y| x[:ord] <=> y[:ord] }

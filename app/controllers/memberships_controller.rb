@@ -22,6 +22,7 @@ class MembershipsController < ApplicationController
         admin: membership.admin?,
         layers: (layer_memberships[membership.user_id] || []).map{|x| {layer_id: x.layer_id, read: x.read?, write: x.write?}},
         sites: {
+          none: membership.none_sites_permission,
           read: membership.read_sites_permission,
           write: membership.write_sites_permission
         }
