@@ -35,7 +35,7 @@ onCollections ->
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
-      @valid = ko.computed => @hasName() 
+      @valid = ko.computed => @hasName() and @hasInputMendatoryProperties()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
 
@@ -43,7 +43,10 @@ onCollections ->
 
     hasName: => $.trim(@name()).length > 0
 
-
+    hasInputMendatoryProperties: =>
+      console.log(@properties())
+      false
+      # @properties($.map(data, (x) => new Layer(x)))
 
 
     propertyValue: (field) =>

@@ -131,6 +131,7 @@ class Collection < ActiveRecord::Base
           kind: field.kind,
           config: field.config,
           ord: field.ord,
+          is_mendatory: field.is_mendatory,
           writeable: user.is_guest ? false : !lms || lms[field.layer_id].write
         }
       end
