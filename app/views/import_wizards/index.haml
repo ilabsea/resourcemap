@@ -1,10 +1,6 @@
 :javascript
   $(function() { $('#upload').change(function() { $('#upload_form').submit() }); });
 
-- content_for :head do
-  :css
-    .error { color: red; }
-    
 = render '/tabs'
 
 .tabsline

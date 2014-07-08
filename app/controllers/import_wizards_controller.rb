@@ -1,5 +1,6 @@
 class ImportWizardsController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :show_collection_breadcrumb
   before_filter :show_properties_breadcrumb
   before_filter :authenticate_collection_admin!, only: :logs
 
@@ -9,7 +10,6 @@ class ImportWizardsController < ApplicationController
   def index
     return redirect_to import_in_progress_collection_import_wizard_path(collection) if (import_job && (import_job.status_pending? || import_job.status_in_progress?))
 
-    show_collection_breadcrumb
     add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
   end
 
@@ -36,12 +36,9 @@ class ImportWizardsController < ApplicationController
 
   def execute
     columns = params[:columns].values
-    p columns
     if columns.find { |x| x[:usage] == 'new_field' } and not current_user.admins? collection
-      p 'non admins'
       render text: "Non-admin users can't create new fields", status: :unauthorized
     else
-      p 'import'
       ImportWizard.enqueue_job current_user, collection, params[:columns].values
       render json: :ok
     end
@@ -68,7 +65,6 @@ class ImportWizardsController < ApplicationController
   end
 
   def job_status
-    p import_job
     render json: {:status => import_job.status}
   end
 
