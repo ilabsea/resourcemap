@@ -3,6 +3,7 @@
 //= require mobile/events
 //= require mobile/field
 //= require mobile/option
+//= require mobile/sub_hierarchy
 
 function initialize(){
   var cachedSites, collectionSchema, i, id;
@@ -43,6 +44,7 @@ function initialize(){
       }
     });
     cachedSites = JSON.parse(window.localStorage.getItem("cachedSites"));
+
     if (cachedSites) {
       i = 0;
       while (i < cachedSites.length) {

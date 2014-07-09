@@ -13,6 +13,15 @@ describe 'Alerts plugin', ->
       it 'should have contain operator', ->
         expect(@field.operators()).toContain Operator.CON
 
+      it 'should not validate empty string', ->
+        expect(@field.valid('')).toBe false
+
+      it 'should not validate null', ->
+        expect(@field.valid(null)).toBe false
+
+      it 'should validate white spaces', ->
+        expect(@field.valid('      ')).toBe true
+
     describe 'kind is numeric', ->
       beforeEach ->
         @field = new Field kind: 'numeric'
@@ -25,6 +34,15 @@ describe 'Alerts plugin', ->
 
       it 'should have larger than operator', ->
         expect(@field.operators()).toContain Operator.GT
+
+      it 'should validate number', ->
+        expect(@field.valid('17')).toBe true
+
+      it 'should not validate character string', ->
+        expect(@field.valid('foo')).toBe false
+
+      it 'should not validate white spaces', -> 
+        expect(@field.valid('   ')).toBe false
 
     describe 'kind is select one', ->
       beforeEach ->
@@ -42,6 +60,15 @@ describe 'Alerts plugin', ->
 
       it 'should have equal to operator', ->
         expect(@field.operators()).toContain Operator.EQ
+
+      it 'should validate true', ->
+        expect(@field.valid(true)).toBe true
+
+      it 'should validate false', ->
+        expect(@field.valid(false)).toBe true
+
+      it 'should not validate string', ->
+        expect(@field.valid('true')).toBe false
 
     describe 'kind is date', ->
       beforeEach ->
@@ -67,6 +94,9 @@ describe 'Alerts plugin', ->
         it 'should support yyyy-mm-dd', ->
           expect(@field.encode(@y_m_d)).toEqual @m_d_y
 
+      it 'should not validate null', ->
+        expect(@field.valid(null)).toBe false
+
     describe 'kind is email', ->
       beforeEach ->
         @field = new Field kind: 'email'
@@ -77,6 +107,9 @@ describe 'Alerts plugin', ->
       it 'should have contain operator', ->
         expect(@field.operators()).toContain Operator.CON
 
+      it 'should not validate null', ->
+        expect(@field.valid(null)).toBe false
+
     describe 'kind is phone', ->
       beforeEach ->
         @field = new Field kind: 'phone'
@@ -86,3 +119,6 @@ describe 'Alerts plugin', ->
 
       it 'should have contain operator', ->
         expect(@field.operators()).toContain Operator.CON
+
+      it 'should not validate null', ->
+        expect(@field.valid(null)).toBe false

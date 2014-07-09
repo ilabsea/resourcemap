@@ -1,6 +1,7 @@
 //= require mobile/events
 //= require mobile/field
 //= require mobile/option
+//= require mobile/sub_hierarchy
 
 function Collection (collection) {
   this.id = collection != null ? collection.id : void 0;
@@ -294,6 +295,7 @@ Collection.prototype.handleFieldUI = function(schema){
 }
 
 Collection.prototype.addDataToCollectionList = function(collection_schema){
+  
   for(var i=0; i< collection_schema.length; i++){
     if(collection_schema.length > 1 && i == 0){
       classListName = "ui-first-child" 
