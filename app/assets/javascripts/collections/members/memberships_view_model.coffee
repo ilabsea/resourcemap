@@ -10,7 +10,6 @@ class @MembershipsViewModel
     @admin = ko.observable admin
 
     @showRegisterNewMember = ko.observable(false)
-    # @deleteMembership = ko.observable(false)
     @email = ko.observable()
     @phoneNumber = ko.observable()
     @smsCode = ko.observable()
@@ -41,14 +40,11 @@ class @MembershipsViewModel
     @groupBy = ko.observable("Users")
     @groupByOptions = ["Users", "Layers"]
 
-  # deleteMembership: () =>
-  #   alert 'delete'
 
   destroyMembership: (membership) =>
-    alert 'Delete'
-    # if confirm("Are you sure you want to remove #{membership.userDisplayName()} from the collection?")
-    #   $.post "/collections/#{collectionId}/memberships/#{membership.userId()}.json", {_method: 'delete'}, =>
-    #     @memberships.remove membership
+    if confirm("Are you sure you want to remove #{membership.userDisplayName()} from the collection?")
+      $.post "/collections/#{collectionId}/memberships/#{membership.userId()}.json", {_method: 'delete'}, =>
+        @memberships.remove membership
 
   phoneNumberExist: () =>
     if (@phoneNumber())
