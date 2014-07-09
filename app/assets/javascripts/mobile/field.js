@@ -5,6 +5,7 @@ function Field (field) {
   this.name = field != null ? field["name"] : void(0);
   this.kind = field != null ? field["kind"] : void(0);
   this.code = field != null ? field["code"] : void(0);
+  this.value = (field != null && ("value" in field)) ? field["value"] : "";
   if(this.kind == 'hierarchy'){
     this.sub = setHierarchyData(field);
   }else if(this.kind == 'select_one' || this.kind == 'select_many'){
