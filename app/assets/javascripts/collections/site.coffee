@@ -44,10 +44,10 @@ onCollections ->
     hasName: => $.trim(@name()).length > 0
 
     hasInputMendatoryProperties: =>
-      console.log(@properties())
-      false
-      # @properties($.map(data, (x) => new Layer(x)))
-
+      for field in @fields()
+        if field.is_mendatory and !field.value()
+          return false
+      return true
 
     propertyValue: (field) =>
       value = @properties()[field.esCode]
