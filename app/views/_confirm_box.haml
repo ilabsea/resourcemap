@@ -14,7 +14,9 @@
   :javascript
     $(function() { initConfirm("#{action_code}"); });
 
-%a{:id => "#{action_code}-collapsed", :class => "icon #{icon_class} black", :href => "#"}
+- class_name = "icon #{icon_class} black" if defined?icon_class 
+
+%a{:id => "#{action_code}-collapsed", :class => "#{class_name}", :href => "#"}
   = action_description
 %div.sbox.grey{:id => "#{action_code}-expanded", style: 'display:none;width:372px;'}
   %div.icon.fclose.black{:id => "#{action_code}-collapse-button", style: 'width:24px;float:left;background-position: 0 -60px;'}

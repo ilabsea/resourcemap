@@ -42,6 +42,9 @@ onCollections ->
       # value in an href (and this is done in the breadcrumb links).
       undefined
 
+    @deleteMembership: () =>
+      alert 'delete'
+
     @enterCollection: (collection) ->
       if @showingAlert()
         return if !collection.checked()
@@ -49,7 +52,7 @@ onCollections ->
 
       # collection may be a collection object (in most of the cases)
       # or a string representing the collection id (if the collection is being loaded from the url)
-      if typeof collection == 'string'
+      if typeof scollection == 'string'
         collection = @findCollectionById parseInt(collection)
 
 
