@@ -244,4 +244,9 @@ class Collection < ActiveRecord::Base
       hash[field.es_code] = value if value
     end
   end
+
+  def get_number_of_admin_membership
+    self.memberships.where(:admin => true).count
+  end
+
 end

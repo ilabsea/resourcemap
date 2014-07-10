@@ -5,6 +5,15 @@ module ApplicationHelper
     javascript_include_tag(raw("http://maps.googleapis.com/maps/api/js?sensor=false&key=#{GoogleMapsKey}&v=3.9"))
   end
 
+  def leave_collection_permission?
+    flag = false
+    if !collection_admin? || collection.get_number_of_admin_membership > 1
+      p collection.get_number_of_admin_membership
+      flag = true
+    end
+    flag
+  end
+
   def collection_admin?
     @collection_admin = current_user.admins?(collection) if @collection_admin.nil?
     @collection_admin
