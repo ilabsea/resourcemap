@@ -135,7 +135,7 @@
                 <!-- ko foreach: fields -->
                 %div
                   %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
-                  <!-- ko if: is_mendatory -->
+                  <!-- ko if: is_mandatory -->
                   %label *
                   <!-- /ko -->
                   = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")

@@ -25,7 +25,7 @@
   %label
     Mendatory
   %p.smalltext This field must be report on every report.
-  = ko_check_box_tag :is_mendatory, css: {error: :codeError}
+  = ko_check_box_tag :is_mandatory, css: {error: :codeError}
 
   /ko if: kind() == 'select_one' || kind() == 'select_many'
   %hr/

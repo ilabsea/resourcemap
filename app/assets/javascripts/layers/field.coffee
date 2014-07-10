@@ -8,7 +8,7 @@ onLayers ->
       @kind = ko.observable data?.kind
       @config = data?.config
       @metadata = data?.metadata
-      @is_mendatory = data?.is_mendatory
+      @is_mandatory = data?.is_mandatory
 
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
@@ -68,7 +68,7 @@ onLayers ->
         kind: @kind()
         ord: @ord()
         layer_id: @layer().id()
-        is_mendatory: @is_mendatory
+        is_mandatory: @is_mandatory
       @impl().toJSON(json)
       json
 

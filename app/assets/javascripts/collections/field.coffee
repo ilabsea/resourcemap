@@ -7,7 +7,7 @@ onCollections ->
       @code = data.code
       @name = data.name
       @kind = data.kind
-      @is_mendatory = data.is_mendatory
+      @is_mandatory = data.is_mandatory
       @photo = '' 
       @photoPath = '/photo_field/'
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
