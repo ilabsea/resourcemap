@@ -3,7 +3,7 @@
   - if collection.description.present?
     %p{style: 'font-size:12px'}= collection.description
   %div.right
-    -if !collection_admin?
+    -if leave_collection_permission?
       = render './confirm_box', :action_code => 'delete-membership', :action_description => 'Leave this collection', :class_name => 'button grey right', :confirm_action_prompt => 'Are you sure you want to leave this collection?', :action_url => collection_membership_path(collection, current_user.id)  
 %div{style: 'clear:both'}
 .div
