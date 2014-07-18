@@ -230,7 +230,7 @@ Collection.prototype.validateData = function(collectionId){
             case "yes_no":
               break;
             case "select_one":
-              state =  Collection.valiateMandatorySelectMany(field);
+              state =  Collection.valiateMandatorySelectOne(field);
               break;
             case "select_many":
               state =  Collection.valiateMandatorySelectMany(field);
@@ -250,7 +250,7 @@ Collection.prototype.validateData = function(collectionId){
               state =  Collection.valiateMandatoryPhoto(field);
               break;
           }
-          if(!astate){
+          if(!state){
             Collection.prototype.showErrorMessage(field["name"] + " is mandatory.");
             return false
           }
@@ -272,7 +272,7 @@ Collection.valiateMandatoryPhoto = function(field){
 
 Collection.valiateMandatorySelectMany = function(field){
   value = $("input[name='properties[" + field["id"] + "][]']:checked").length;
-  if(field["is_mandatory"] == true && value.length == 0){
+  if(field["is_mandatory"] == true && value == 0){
     return false
   }
   return true
