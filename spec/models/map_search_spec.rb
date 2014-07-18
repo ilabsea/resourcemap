@@ -26,32 +26,6 @@ describe MapSearch do
     search.results[:sites][0].should == expected_hash
   end
 
-  it "searches based on collection id found and set cluster status to false if site below 150" do
-    site = Site.make
-    search = MapSearch.new site.collection_id
-    search.zoom = 1
-    search.should_receive(:set_cluster_status).once.with(false)    
-    search.apply_cluster_status
-  end
-
-  it "searches based on collection id found and set cluster status to true if site bigger than 150" do
-    160.times do
-      Site.make(:collection => collection)
-    end
-    search = MapSearch.new Site.first.collection_id
-    search.zoom = 1
-    search.should_receive(:set_cluster_status).once.with(true)    
-    search.apply_cluster_status
-  end
-
-  it "count site in from search" do
-    site = Site.make
-    search = MapSearch.new site.collection_id
-    search.zoom = 1
-    count = search.get_sites_size(search.results)
-    count.should eq(1)
-  end
-
   it "searches with excluded id" do
     site = Site.make
 

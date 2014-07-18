@@ -33,6 +33,7 @@ module ResourceMap
     # config.time_zone = 'Central Time (US & Canada)'
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
+    config.i18n.enforce_available_locales = false
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
@@ -66,7 +67,7 @@ module ResourceMap
     config.action_mailer.delivery_method = :sendmail
     config.google_analytics = 'UA-17030081-1'
 
-    config.version_name = File.read('VERSION').strip rescue "Development"
+    config.version_name = `hg log -r . --template '{latesttag}'` rescue "Development"
     config.revision = File.read('REVISION').strip rescue "Development"
   end
 end

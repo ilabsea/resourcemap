@@ -30,7 +30,7 @@ module Collection::CsvConcern
           end
         end
         if current_user
-          updated_at = DateTime.parse(source['updated_at']).in_time_zone(current_user.time_zone).strftime("%a, %d %B %Y %H:%M:%S %z")
+          updated_at = Site.iso_string_to_rfc822_with_timezone(source['updated_at'], current_user.time_zone)
         else
           updated_at = Site.iso_string_to_rfc822(source['updated_at'])
         end

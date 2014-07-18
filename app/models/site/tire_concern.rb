@@ -42,6 +42,10 @@ module Site::TireConcern
       date.rfc822
     end
 
+    def iso_string_to_rfc822_with_timezone(updated_at, time_zone)
+       DateTime.parse(updated_at).in_time_zone(time_zone).strftime("%a, %d %B %Y %H:%M:%S %z")
+    end
+
     def format_date(date)
       date.strftime DateFormat
     end

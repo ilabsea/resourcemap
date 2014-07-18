@@ -39,24 +39,32 @@ onCollections ->
         window.model.initAutocomplete()
 
     @editSite: (site) ->
-      @goBackToTable = true unless @showingMap()
-      @showMap =>
+      initialized = @initMap()
+      site.collection.panToPosition(true) unless initialized
 
-        site.copyPropertiesToCollection(site.collection)
+      site.collection.fetchSitesMembership()
+      site.collection.fetchFields =>
+        if @processingURL
+          @processURL()
+        else
+          @goBackToTable = true unless @showingMap()
+          @showMap =>
 
-        if @selectedSite() && @selectedSite().id() == site.id()
-          @unselectSite()
+            site.copyPropertiesToCollection(site.collection)
 
-        if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
-          site.fetchFields()
+            if @selectedSite() && @selectedSite().id() == site.id()
+              @unselectSite()
 
-        @selectSite(site)
-        @editingSite(site)
-        @currentCollection(site.collection)
+            if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
+              site.fetchFields()
 
-        @loadBreadCrumb()
+            @selectSite(site)
+            @editingSite(site)
+            @currentCollection(site.collection)
 
-      $('a#previewimg').fancybox()
+            @loadBreadCrumb()
+
+          $('a#previewimg').fancybox()
 
     @editSiteFromId: (siteId, collectionId) ->
       site = @siteIds[siteId]

@@ -7,7 +7,6 @@ class MapSearch
     @search.size 100000
     @bounds = {s: -90, n: 90, w: -180, e: 180}
     @hierarchy = {}
-    @status_cluster = true
   end
 
   def zoom=(zoom)
@@ -28,32 +27,10 @@ class MapSearch
     @hierarchy[:selected] = selected_hierarchy
   end
 
-  def apply_cluster_status
-    sites = self.results
-    count = get_sites_size sites
-    if(count < 150)
-      self.set_cluster_status(false)
-    else
-      self.set_cluster_status(true)
-    end    
-  end
-
-  def get_sites_size result
-    count = 0
-    result[:sites].each do |site|
-        count += 1
-    end if result[:sites]
-    result[:clusters].each do |cluster|
-        count += cluster[:count]
-    end if result[:clusters]
-    count
-  end
-
   def results
     return {} if @collection_ids.empty?
 
     listener = clusterer = Clusterer.new(@zoom)
-    clusterer.set_clustering_enabled @status_cluster
     clusterer.highlight @hierarchy if @hierarchy
     listener = ElasticSearch::SitesAdapter::SkipIdListener.new(listener, @exclude_id) if @exclude_id
 
@@ -68,10 +45,6 @@ class MapSearch
     adapter.parse @search.stream
 
     clusterer.clusters
-  end
-
-  def set_cluster_status status
-    @status_cluster = status
   end
 
   private

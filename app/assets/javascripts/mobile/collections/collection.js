@@ -15,10 +15,17 @@ Collection.prototype.pushingPendingSites = function(){
   if(pendingSites != null){
     for(var i=0; i< pendingSites.length; i++){
       data = pendingSites[i]["formData"];
-      Collection.prototype.ajaxCreateOfflineSite(pendingSites[i]["collectionId"], data);
+      if(data["id"]){
+        Collection.prototype.ajaxUpdateOfflineSite(pendingSites[i]["collectionId"], data);
+      }
+      else{
+        Collection.prototype.ajaxCreateOfflineSite(pendingSites[i]["collectionId"], data);
+      }
     }
     window.localStorage.setItem("offlineSites", JSON.stringify([]));
   }
+  // Collection.prototype.goHome();
+
 }
 
 Collection.prototype.fetchFields = function() {
@@ -37,15 +44,20 @@ Collection.prototype.fetchFields = function() {
 };
 
 Collection.prototype.createSite = function(id){
+  Collection.prototype.showFormAddSite(Collection.getSchemaByCollectionId(id));
+}
+
+Collection.getSchemaByCollectionId = function(id){
   for(var i=0; i< window.collectionSchema.length; i++){
     if(window.collectionSchema[i]["id"] == id){
-      Collection.prototype.showFormAddSite(window.collectionSchema[i]);
+      return window.collectionSchema[i];
     }
   }
 }
 
 Collection.prototype.showFormAddSite = function(schema){
-  $("#mobile-collections-main").hide();
+  Collection.hidePages();
+  Collection.clearFormData();
   $("#mobile-sites-main").show();
   fieldHtml = Collection.prototype.addLayerForm(schema);
   $("#title").html(schema["name"]);
@@ -54,14 +66,23 @@ Collection.prototype.showFormAddSite = function(schema){
 }
 
 Collection.prototype.saveSite = function(){  
-  var collectionId = $("#collectionId").val();
+  var collectionId = window.currentCollectionId;
   if(Collection.prototype.validateData(collectionId)){    
     if(window.navigator.onLine){
-      var formData = new FormData($('form')[0]);
-      Collection.prototype.ajaxCreateSite(collectionId, formData);
+      if(window.currentSiteId){
+        var formData = new FormData($('form')[0]);
+        Collection.prototype.ajaxUpdateSite(collectionId, window.currentSiteId, formData);
+      }
+      else{
+        var formData = new FormData($('form')[0]);
+        Collection.prototype.ajaxCreateSite(collectionId, formData);
+      }
     }
     else{
       var offlineData = Collection.prototype.getFormValue();
+      if(window.currentSiteId){
+        offlineData["id"] = window.currentSiteId;
+      }
       Collection.prototype.storeOfflineData(collectionId, offlineData);
     }
   }
@@ -91,7 +112,7 @@ Collection.prototype.ajaxCreateSite = function(collectionId, formData){
       url: '/mobile/collections/' + collectionId + '/sites',  //Server script to process data
       type: 'POST',
       success: function(){
-        Collection.prototype.goHome();
+        Collection.prototype.showListSites(collectionId);
         Collection.prototype.showErrorMessage("Successfully saved.");
       },
       error: function(data){
@@ -112,16 +133,57 @@ Collection.prototype.ajaxCreateSite = function(collectionId, formData){
   });
 }
 
+Collection.prototype.ajaxUpdateSite = function(collectionId, siteId, formData){
+  $.mobile.saving('show');
+  $.ajax({
+      url: '/mobile/collections/' + collectionId + '/sites/' + siteId + '.json',  //Server script to process data
+      type: 'PUT',
+      success: function(){
+        Collection.prototype.showListSites(collectionId);
+        Collection.prototype.showErrorMessage("Successfully updated.");
+      },
+      error: function(data){
+        var properties = JSON.parse(data.responseText);
+        var error = "";
+        for(var i=0;i<properties.length; i++){
+          error = error + properties[i] + " .";
+        }
+        Collection.prototype.showErrorMessage("Update site failed!" + error);
+      },
+      complete: function() {
+        $.mobile.saving('hide');
+      },
+      data: formData,
+      contentType: false,
+      processData: false,
+      cache: false
+  });
+}
+
 Collection.prototype.ajaxCreateOfflineSite = function(collectionId, formData){
   $.ajax({
       url: '/mobile/collections/' + collectionId + '/create_offline_site',  //Server script to process data
       type: 'POST',
       success: function(){
-        Collection.prototype.goHome();
         Collection.prototype.showErrorMessage("Locally saved sites synced successfully.");
       },
       error: function(data){
         Collection.prototype.showErrorMessage("Locally saved sites synced failed.");
+      },
+      data: formData,
+      cache: false
+  });
+}
+
+Collection.prototype.ajaxUpdateOfflineSite = function(collectionId, formData){
+  $.ajax({
+      url: '/mobile/collections/' + collectionId + '/sites/' + formData["id"]+ '/update_offline_site',  //Server script to process data
+      type: 'PUT',
+      success: function(){
+        Collection.prototype.showErrorMessage("Locally update sites synced successfully.");
+      },
+      error: function(data){
+        Collection.prototype.showErrorMessage("Locally update sites synced failed.");
       },
       data: formData,
       cache: false
@@ -259,9 +321,9 @@ Collection.prototype.showErrorMessage = function(text){
 }
 
 Collection.prototype.progressHandlingFunction =function(e){
-    if(e.lengthComputable){
-        $('progress').attr({value:e.loaded,max:e.total});
-    }
+  if(e.lengthComputable){
+    $('progress').attr({value:e.loaded,max:e.total});
+  }
 }
 
 Collection.prototype.addLayerForm = function(schema){
@@ -288,7 +350,6 @@ Collection.prototype.handleFieldUI = function(schema){
     }
     form = form + "</div>";
   }
-  $("#collectionId").val(schema.id)
 }
 
 Collection.prototype.addDataToCollectionList = function(collection_schema){
@@ -303,23 +364,66 @@ Collection.prototype.addDataToCollectionList = function(collection_schema){
     else{
       classListName = ""
     }
-    item = Collection.prototype.getListTemplate(collection_schema[i], classListName)
+    item = Collection.prototype.getListCollectionTemplate(collection_schema[i], classListName)
     $("#listview").append(item);
   }
-  $("#mobile-sites-main").hide();
+  
 }
 
-Collection.prototype.getListTemplate = function(collection, classListName){
+Collection.prototype.getListCollectionTemplate = function(collection, classListName){
   item = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ' + classListName + '" >' + 
             '<div class="ui-btn-inner ui-li">' + 
               '<div class="ui-btn-text">' +
-                '<a style="cursor: pointer;" onclick="Collection.prototype.createSite(' + collection["id"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + collection["name"] + '</a>' + 
+                '<a style="cursor: pointer;" onclick="Collection.prototype.showListSites(' + collection["id"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + collection["name"] + '</a>' + 
               '</div>' + 
               '<span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>' +
             '</div>' +
           '</li>';
   return item;
 }
+
+Collection.prototype.getListSiteTemplate = function(collectionId, site, classListName){
+  item = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ' + classListName + '" >' + 
+            '<div class="ui-btn-inner ui-li">' + 
+              '<div class="ui-btn-text">' +
+                '<a style="cursor: pointer;" onclick="Collection.prototype.showSite(' + collectionId + ',' + site["id"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + site["name"] + '</a>' + 
+              '</div>' + 
+              '<span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>' +
+            '</div>' +
+          '</li>';
+  return item;
+}
+
+Collection.prototype.showListSites = function(collectionId){
+  $.mobile.saving('show');
+  $("#listSitesView").html("");
+  window.currentCollectionId = collectionId;
+  Collection.clearFormData();
+  $.ajax({
+    url: "/mobile/collections/" + collectionId + "/sites.json",
+    success: function(sites) {
+      for(var i=0; i< sites.length; i++){
+        if(sites.length > 1 && i == 0){
+          classListName = "ui-first-child" 
+        }
+        else if(sites.length > 1 && i == (sites.length - 1)){
+          classListName = "ui-last-child"
+        }
+        else{
+          classListName = ""
+        }
+        item = Collection.prototype.getListSiteTemplate(collectionId, sites[i], classListName)
+        $("#listSitesView").append(item);
+      }
+      Collection.hidePages();
+      $("#mobile-list-sites-main").show();
+      schema = Collection.getSchemaByCollectionId(collectionId);
+      $("#collectionTitle").html(schema["name"]);
+      $.mobile.saving('hide');
+    }
+  });
+}
+
 
 Collection.prototype.applyBrowserLocation = function(){
   Collection.prototype.getLocation();
@@ -363,7 +467,7 @@ Collection.prototype.goHome = function(){
 }
 
 Collection.hidePages = function(){
-  var pages = ["#map-page", "#mobile-collections-main", "#mobile-sites-main"];
+  var pages = ["#map-page", "#mobile-collections-main", "#mobile-sites-main", "#mobile-list-sites-main"];
   for(var i=0; i<pages.length; i++) {
     $(pages[i]).hide();
   }
@@ -452,11 +556,67 @@ Collection.createMap = function(canvasId){
   Collection.mapContainer.refresh();
 }
 
+Collection.assignSite = function(site){
+  Collection.clearFormData();
+  window.currentSiteId = site["id"]
+  $("#name").val(site["name"]);
+  $("#lat").val(site["lat"]);
+  $("#lng").val(site["lng"]);
+  focusSchema = Collection.getSchemaByCollectionId(window.currentCollectionId);
+  var currentSchemaData = jQuery.extend(true, {}, focusSchema);
+  $("#title").html(currentSchemaData["name"]);
+  fieldHtml = Collection.editLayerForm(currentSchemaData, site["properties"]);
+  $("#fields").html(fieldHtml);
+  Collection.prototype.handleFieldUI(currentSchemaData);
+}
+
+Collection.clearFormData = function(){
+  $("#fields").html("");
+  $("#name").val("");
+  $("#lat").val("");
+  $("#lng").val("");
+  window.currentSiteId = null;
+}
+
+Collection.editLayerForm = function(schema, properties){
+  form = "";
+  for(i=0; i<schema["layers"].length;i++){
+    form = form + '<div><h5>' + schema["layers"][i]["name"] + '</h5>';
+    for(j=0; j<schema["layers"][i]["fields"].length; j++){
+      var field = schema["layers"][i]["fields"][j]
+      for(var key in properties){
+        if(key == schema["layers"][i]["fields"][j]["id"]){
+          field["value"] = properties[key];
+        }
+      }
+      myField = new Field(field);
+      form = form + myField.getField();
+    }
+    form = form + "</div>";
+  }
+  return form;
+}
+
 Collection.mapContainer.refresh =  function(){
   setTimeout(function() {
     google.maps.event.trigger(Collection.mapContainer.map,'resize');
     $("#map-page").hide();
   }, 500);
+}
+
+
+Collection.prototype.showSite = function(collectionId, siteId){
+  $.mobile.saving('show');
+  $("#listSitesView").html("");
+  $.ajax({
+    url: "/mobile/collections/" + collectionId + "/sites/" + siteId + ".json",
+    success: function(site) {
+      Collection.hidePages();
+      Collection.assignSite(site);
+      $("#mobile-sites-main").show();
+      $.mobile.saving('hide');
+    }
+  });
 }
 
 Collection.prototype.getFormValue = function(){
@@ -516,7 +676,7 @@ Collection.prototype.getFormValue = function(){
 Collection.prototype.handleFileUpload = function(el){
   var file = el.files[0];
   var reader = new FileReader();
-  reader.readAsDataURL(file)
+  reader.readAsDataURL(file);
   reader.onload = function (event) {    
     el.setAttribute('data', reader.result);
   };

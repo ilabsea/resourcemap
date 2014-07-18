@@ -96,7 +96,6 @@ class SitesController < ApplicationController
     search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
 
     search.apply_queries
-    search.apply_cluster_status
     render json: search.results
   end
 
@@ -118,19 +117,35 @@ class SitesController < ApplicationController
           ord: layer.ord,
         }
       end
-
-      layers.each do |layer|
-        layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
-        layer[:fields].map! do |field|
-          {
-            id: field.es_code,
-            name: field.name,
-            code: field.code,
-            kind: field.kind,
-            config: field.config,
-            ord: field.ord,
-            writeable: true
-          }
+      if site.collection.site_ids_write_permission(current_user).include? site.id
+        layers.each do |layer|
+          layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
+          layer[:fields].map! do |field|
+            {
+              id: field.es_code,
+              name: field.name,
+              code: field.code,
+              kind: field.kind,
+              config: field.config,
+              ord: field.ord,
+              writeable: true
+            }
+          end
+        end
+      elsif site.collection.site_ids_read_permission(current_user).include? site.id
+        layers.each do |layer|
+          layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
+          layer[:fields].map! do |field|
+            {
+              id: field.es_code,
+              name: field.name,
+              code: field.code,
+              kind: field.kind,
+              config: field.config,
+              ord: field.ord,
+              writeable: false
+            }
+          end
         end
       end
       layers.sort! { |x, y| x[:ord] <=> y[:ord] }
