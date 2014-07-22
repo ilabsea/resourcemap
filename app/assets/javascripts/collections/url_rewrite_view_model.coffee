@@ -51,7 +51,6 @@ onCollections ->
 
       if collectionId and not @currentCollection()
         @enterCollection collectionId
-        return
 
       @queryParams = $.url().param()
       for key of @queryParams

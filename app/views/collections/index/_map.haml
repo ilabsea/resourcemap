@@ -291,6 +291,17 @@
         %span.black Show them
       .clear
     <!-- /ko -->
+
     #map
-
-
+    <!-- ko if: currentCollection() -->
+    <!-- ko if: thresholdsCollection().length > 0 -->    
+    %div{style: 'position: absolute; top: 30px; right: 20px; z-index: 99; background-color:white'}
+      %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'padding-left:5px; padding-right:5px; list-style:none'}
+        %li{style: 'border-bottom:1px solid #eeeeee; padding-bottom:5px'}
+          %span{style: 'padding-right:10px;'}
+            %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:10px;' }
+          %span{ko(text: :propertyName)}
+          %span :
+          %span{ko(text: :alertedSitesNum)}
+    <!-- /ko -->
+    <!-- /ko -->

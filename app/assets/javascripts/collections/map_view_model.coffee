@@ -168,7 +168,6 @@ onCollections ->
 
     @onSitesChanged: (listener) ->
       @sitesChangedListeners.push listener
-
     @notifySitesChanged: ->
       for listener in @sitesChangedListeners
         listener()
