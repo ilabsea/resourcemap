@@ -16,6 +16,7 @@ onCollections ->
     
     @goToRoot: ->
       @queryParams = $.url().param()
+      @showingAlert(false)
       @exitSite() if @editingSite()
       @currentCollection(null)
       @unselectSite() if @selectedSite()

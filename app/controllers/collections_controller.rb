@@ -2,7 +2,7 @@ class CollectionsController < ApplicationController
   # include ApplicationHelper
   before_filter :setup_guest_user, :if => Proc.new { (collection && collection.public?) || Collection.public_collections }
   # before_filter :setup_guest_user, :if => Proc.new { collection && collection.public? }
-  before_filter :authenticate_user!, :except => [:render_breadcrumbs, :index], :unless => Proc.new { collection && collection.public? }
+  before_filter :authenticate_user!, :except => [:render_breadcrumbs, :index, :alerted_collections], :unless => Proc.new { collection && collection.public? }
 
   authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
 
@@ -25,9 +25,6 @@ class CollectionsController < ApplicationController
   #before_filter :prepare_for_mobile
 
   def index
-    # if !user_signed_in?
-    #   p 'i am guest 0000000000000000000000000000'
-    # else
 
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
@@ -43,7 +40,6 @@ class CollectionsController < ApplicationController
         format.json { render json:  @collections}
       end
     end
-    # end
   end
 
   def render_breadcrumbs
