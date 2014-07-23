@@ -1,5 +1,4 @@
 class CollectionsController < ApplicationController
-  # include ApplicationHelper
   before_filter :setup_guest_user, :if => Proc.new { (collection && collection.public?) || Collection.public_collections }
   # before_filter :setup_guest_user, :if => Proc.new { collection && collection.public? }
   before_filter :authenticate_user!, :except => [:render_breadcrumbs, :index, :alerted_collections], :unless => Proc.new { collection && collection.public? }
