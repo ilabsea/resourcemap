@@ -4,6 +4,7 @@
 #= require collections/sites_membership
 #= require collections/layer
 #= require collections/field
+#= require collections/thresholds/condition
 onCollections ->
 
   class @CollectionBase extends Module
@@ -18,6 +19,7 @@ onCollections ->
 
       @id = data?.id
       @name = data?.name
+      @icon = data?.icon
       @currentSnapshot = if data?.snapshot_name then data?.snapshot_name else ''
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
@@ -35,6 +37,44 @@ onCollections ->
     findSiteIdByName: (value) =>
       id = (site for site in window.model.currentCollection().allSites() when site.name is value)[0]?.id
       id
+
+
+    
+    findSitesByFieldCondition: (conditions) =>
+      arr = []
+      for site in window.model.currentCollection().sites()
+        if this.operateWithCondition(conditions, site)?
+          arr.push site
+      arr
+
+
+    operateWithCondition: (conditions, site) =>
+      b = true      
+      for key, condition of conditions
+        operator = condition.op().code()
+        switch operator
+          when "eq"
+            if site.properties()[condition.field()] is condition.value()
+              site
+            else
+              b = false
+          when "gt"
+            if site.properties()[condition.field()] > condition.value()
+              site
+            else
+              b = false   
+          when "lt"
+            if site.properties()[condition.field()] < condition.value()
+              site
+            else
+              b = false
+          else
+            null
+        if b == false
+          return null
+
+      return site
+
 
     loadCurrentSnapshotMessage: =>
       @viewingCurrentSnapshotMessage = ko.observable()

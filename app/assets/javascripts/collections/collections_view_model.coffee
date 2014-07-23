@@ -5,6 +5,7 @@ onCollections ->
     @constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
+      @thresholdsCollection = ko.observableArray()
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
@@ -55,19 +56,20 @@ onCollections ->
       if typeof scollection == 'string'
         collection = @findCollectionById parseInt(collection)
 
-
       @currentCollection collection
       @unselectSite() if @selectedSite()
-      @exitSite() if @editingSite()
+      @exitSite() if @editingSite()   
+      
       if @showingAlert()
         $.get "/collections/#{@currentCollection().id}/sites_by_term.json", _alert: true, (sites) =>
           @currentCollection().allSites(sites)
           window.adjustContainerSize()
+          
       else
         $.get "/collections/#{@currentCollection().id}/sites_by_term.json", (sites) =>
           @currentCollection().allSites(sites)
           window.adjustContainerSize()
-
+          
       initialized = @initMap()
       collection.panToPosition(true) unless initialized
 
@@ -81,12 +83,13 @@ onCollections ->
           @refreshTimeago()
           @makeFixedHeaderTable()
           @rewriteUrl()
+
         window.adjustContainerSize()
 
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
       window.model.updateSitesInfo()
-
+      
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
     @openDialog:  ->
@@ -133,8 +136,19 @@ onCollections ->
           $('#collections-main .left').show()
           window.adjustContainerSize()
           $(".oleftexpand").addClass("oleftcollapse")
-          $(".oleftexpand").removeClass("oleftexpand")
+          $(".oleleftexpand").removeClass("oleftexpand")
           @reloadMapSites()
 
 
     @createCollection: -> window.location = "/collections/new"
+
+    @getThresholds: ->      
+      @thresholdsCollection([])  
+      $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>     
+        for key,value of data
+          threshold = new Threshold(value, @currentCollection().icon)    
+          alertedSitesNum = @currentCollection().findSitesByFieldCondition(threshold.conditions()).length
+          threshold.alertedSitesNum(alertedSitesNum)
+          if alertedSitesNum > 0
+            @thresholdsCollection.push threshold
+            

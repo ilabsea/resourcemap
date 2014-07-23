@@ -1,5 +1,5 @@
 class ThresholdsController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => [:index]
 
   before_filter :fix_conditions, only: [:create, :update]
 
