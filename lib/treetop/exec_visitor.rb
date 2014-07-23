@@ -1,10 +1,13 @@
 class ExecVisitor < Visitor
   MSG = {
     :query_not_match => "No result. Your query did not match.",
-    :update_successfully => "Data has been successfull updated.",
-    :can_not_update => "You have no access right to update. Please contact the collection's owner for more information.", :can_not_query => "You have no access right to view. Please contact the collection's owner for more information.", :can_not_use_gateway => "You cannot use this channel for viewing or updating this collection. Please contact the collection's owner for more information.",
-    :can_not_add => "Invalid command.",
-    :added_successfully => "Site has been successfull added.",
+    :update_successfully => "Data has been successfully updated.",
+    :no_rights_not_update => "You have no access rights to update. Please contact the collection's owner for more information.", 
+    :can_not_query => "You have no access rights to view. Please contact the collection's owner for more information.", 
+    :can_not_use_gateway => "You cannot use this channel for viewing or updating this collection. Please contact the collection's owner for more information.",
+    :can_not_update => "Can not update site ",
+    :can_not_add => "Can not create site ",
+    :added_successfully => "Site has been successfully added.",
     :name_is_required => "Site name is required.",
     :can_not_find_site => "Can't find site with ID=",
     :can_not_add_site => "You don't have permission to add site."
@@ -29,8 +32,8 @@ class ExecVisitor < Visitor
     id = node.resource_id.text_value
     if site = Site.find_by_id_with_prefix(id)
       #raise MSG[:can_not_use_gateway] unless can_use_gateway?(site.collection)
-      raise MSG[:can_not_update]      unless can_update?(node.property_list, node.sender, site)
-      update site, node.property_list, node.sender
+      raise MSG[:no_rights_not_update]      unless can_update?(node.property_list, node.sender, site)
+      update site, node.property_list, node.sender 
       MSG[:update_successfully]
     else
       raise MSG[:can_not_find_site] + id if site.nil?
@@ -66,10 +69,18 @@ class ExecVisitor < Visitor
       end
       site["properties"] = node_to_site_properties key_value_properties,collection.id
       site["user"] = node.sender
-      if collection.sites.create site
+      new_site = collection.sites.new site
+      if new_site.valid?
+        new_site.save!
         MSG[:added_successfully] 
       else
-        MSG[:can_not_add]
+        errors = []
+        new_site.errors.messages[:properties].each do |e|
+          e.each do |key, value|
+            errors.push "- " + value
+          end
+        end
+        MSG[:can_not_add] + "\n" + errors.join("\n")
       end
     else
       MSG[:can_not_add]
@@ -101,7 +112,17 @@ class ExecVisitor < Visitor
       field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
       site.properties[field.es_code] = p.values[1]
     end
-    site.save!
+    if site.valid?
+      site.save!
+    else
+      errors = []
+      site.errors.messages[:properties].each do |e|
+        e.each do |key, value|
+          errors.push "- " + value
+        end
+      end
+      raise  MSG[:can_not_update] + "\n" + errors.join("\n")
+    end
   end
 
   def node_to_properties(node)

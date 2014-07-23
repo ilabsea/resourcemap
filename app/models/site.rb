@@ -126,7 +126,7 @@ class Site < ActiveRecord::Base
       end
     end
     fields_mandatory.each do |f|
-      errors.add(:properties, {f.code => "is a mandatory field."})
+      errors.add(:properties, {f.id => "#{f.code} is required."})
     end
 
   end

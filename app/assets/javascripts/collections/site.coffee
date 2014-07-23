@@ -45,7 +45,7 @@ onCollections ->
 
     hasInputMendatoryProperties: =>
       for field in @fields()
-        if field.is_mendatory and !field.value()
+        if field.is_mandatory and !field.value()
           return false
       return true
 
