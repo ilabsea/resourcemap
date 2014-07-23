@@ -249,4 +249,8 @@ class Collection < ActiveRecord::Base
     self.memberships.where(:admin => true).count
   end
 
+  def self.public_collections
+    Collection.where(:public => true)
+  end
+
 end

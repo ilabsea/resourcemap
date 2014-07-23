@@ -34,7 +34,7 @@
 <!-- ko with: currentCollection -->
 .tableheader.expanded{style: 'height:34px;'}
   %div
-    %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
+    %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
     %span
     %span{ko(text: :name)}
     - if !current_user.is_guest

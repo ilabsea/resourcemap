@@ -6,7 +6,6 @@ onCollections ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
       @thresholdsCollection = ko.observableArray()
-      # @alertedSites = ko.observableArray()
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
@@ -48,7 +47,6 @@ onCollections ->
       alert 'delete'
 
     @enterCollection: (collection) ->
-      # alert 'enterCollection'
       if @showingAlert()
         return if !collection.checked()
       @queryParams = $.url().param()
@@ -145,8 +143,7 @@ onCollections ->
     @createCollection: -> window.location = "/collections/new"
 
     @getThresholds: ->      
-      @thresholdsCollection([])   
-      # $('ul#legend_alert_list').empty()   
+      @thresholdsCollection([])  
       $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>     
         for key,value of data
           threshold = new Threshold(value, @currentCollection().icon)    
