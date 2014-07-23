@@ -75,7 +75,10 @@ Field.prototype.getHierarchyField = function() {
 
   list = "";
   for(var i=0; i< this.sub.length; i++){
-    list = list + "<option value='" + this.sub[i].id + "' >" + this.sub[i].label + "</option>" ;
+    if(this.sub[i].id == this.value){
+      list = list + "<option value='" + this.sub[i].id + "' selected='selected'>" + this.sub[i].label + "</option>" ;
+    }else
+      list = list + "<option value='" + this.sub[i].id + "' >" + this.sub[i].label + "</option>" ;
   }
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.name + '</label>'+
