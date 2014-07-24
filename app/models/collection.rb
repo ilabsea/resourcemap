@@ -273,4 +273,8 @@ class Collection < ActiveRecord::Base
     Collection.where(:public => true)
   end
 
+  def self.recreate_site_index collection_id
+    Collection.find(collection_id).recreate_index
+  end
+
 end
