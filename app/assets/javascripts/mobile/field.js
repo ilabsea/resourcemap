@@ -161,6 +161,7 @@ Field.prototype.getSelectOneField = function() {
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.name + '</label>'+
               '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="select_one">' +
+                "<option value='' >(no value)</option>" +
                 list +
               '</select>' +
           '</div>';
