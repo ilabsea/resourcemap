@@ -62,6 +62,7 @@ Collection.prototype.showFormAddSite = function(schema){
   fieldHtml = Collection.prototype.addLayerForm(schema);
   $("#title").html(schema["name"]);
   $("#fields").html(fieldHtml);
+  Collection.prototype.applyBrowserLocation();
   Collection.prototype.handleFieldUI(schema);
 }
 
@@ -210,30 +211,88 @@ Collection.prototype.validateData = function(collectionId){
       for(i=0; i<schema["layers"].length;i++){
         for(j=0; j<schema["layers"][i]["fields"].length; j++){
           var field = schema["layers"][i]["fields"][j];
+          state = true;
           switch(field["kind"])
           {
-            case "email":
-              value = $("#" + field["code"]).val();
-              if(Collection.prototype.validateEmail(value) == false){
-                Collection.prototype.showErrorMessage(field["name"] + " is not a valid email value.");
-                return false;
-              }              
+            case "text":
+              state = Collection.valiateMandatoryText(field);
               break;
             case "numeric":
               value = $("#" + field["code"]).val();
               if(Collection.prototype.validateNumeric(value) == false){
                 Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
                 return false;
-              }              
+              }  
+              state =  Collection.valiateMandatoryText(field);
+              break;
+            case "date":
+              state =  Collection.valiateMandatoryText(field);
+              break;
+            case "yes_no":
+              break;
+            case "select_one":
+              state =  Collection.valiateMandatorySelectOne(field);
+              break;
+            case "select_many":
+              state =  Collection.valiateMandatorySelectMany(field);
+              break;
+            case "phone number":
+              state =  Collection.valiateMandatoryText(field);
+              break;
+            case "email":
+              value = $("#" + field["code"]).val();
+              if(Collection.prototype.validateEmail(value) == false){
+                Collection.prototype.showErrorMessage(field["name"] + " is not a valid email value.");
+                return false;
+              }
+              state =  Collection.valiateMandatoryText(field);
+              break;
+            case "photo":
+              state =  Collection.valiateMandatoryPhoto(field);
               break;
           }
+          if(!state){
+            Collection.prototype.showErrorMessage(field["name"] + " is mandatory.");
+            return false
+          }
         }
-        form = form + "</div>";
       }
     }
   }
 
   return true;
+}
+
+Collection.valiateMandatoryPhoto = function(field){
+  value = $("#" + field["code"]).val();
+  if(field["is_mandatory"] == true && value == ""){
+    return false
+  }
+  return true
+}
+
+Collection.valiateMandatorySelectMany = function(field){
+  value = $("input[name='properties[" + field["id"] + "][]']:checked").length;
+  if(field["is_mandatory"] == true && value == 0){
+    return false
+  }
+  return true
+}
+
+Collection.valiateMandatorySelectOne = function(field){
+  value = $("#" + field["code"]).val();
+  if(field["is_mandatory"] == true && value == 0 ){
+    return false
+  }
+  return true
+}
+
+Collection.valiateMandatoryText = function(field){
+  value = $("#" + field["code"]).val();
+  if(field["is_mandatory"] == true && value == ""){
+    return false
+  }
+  return true
 }
 
 Collection.prototype.validateEmail = function(email) { 
@@ -283,7 +342,7 @@ Collection.prototype.addLayerForm = function(schema){
 }
 
 Collection.prototype.handleFieldUI = function(schema){
-  Collection.prototype.applyBrowserLocation();
+  
   for(i=0; i<schema["layers"].length;i++){
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j]

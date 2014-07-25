@@ -5,6 +5,7 @@ function Field (field) {
   this.name = field != null ? field["name"] : void(0);
   this.kind = field != null ? field["kind"] : void(0);
   this.code = field != null ? field["code"] : void(0);
+  this.value = (field != null && ("value" in field)) ? field["value"] : "";
   if(this.kind == 'hierarchy'){
     this.sub = setHierarchyData(field);
   }else if(this.kind == 'select_one' || this.kind == 'select_many'){
@@ -74,7 +75,10 @@ Field.prototype.getHierarchyField = function() {
 
   list = "";
   for(var i=0; i< this.sub.length; i++){
-    list = list + "<option value='" + this.sub[i].id + "' >" + this.sub[i].label + "</option>" ;
+    if(this.sub[i].id == this.value){
+      list = list + "<option value='" + this.sub[i].id + "' selected='selected'>" + this.sub[i].label + "</option>" ;
+    }else
+      list = list + "<option value='" + this.sub[i].id + "' >" + this.sub[i].label + "</option>" ;
   }
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.name + '</label>'+
@@ -157,6 +161,7 @@ Field.prototype.getSelectOneField = function() {
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.name + '</label>'+
               '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="select_one">' +
+                "<option value='' >(no value)</option>" +
                 list +
               '</select>' +
           '</div>';
