@@ -253,3 +253,11 @@ a.lbutton{
    cursor: default !important;
    pointer-events: none;
 }
+
+.weak-bar{
+  background-color: red;
+}
+
+.strong-bar{
+  background-color: green;
+}

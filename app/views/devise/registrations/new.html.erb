@@ -1,8 +1,8 @@
 <%= devise_error_messages! :class => 'centered w30' %>
 
 
-<div class="box centered w30">
-<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+<div class="box centered w30" >
+<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => {:id => 'create_user' }) do |f| %>
 
 
 
@@ -18,11 +18,19 @@
   <div class="field w30">
     <%= f.label :password %>
     <%= f.password_field :password %>
+    <div style='padding-top:10px; padding-left:5px; line-height:5px;'>
+      <div id='validateMeter' style='height:5px; float:left;'></div>
+      <p id='validateMessage' style='float:right;'></p>
+    </div>
+    
   </div>
 
   <div class="field w30">
     <%= f.label :password_confirmation %>
     <%= f.password_field :password_confirmation %>
+    <div style='padding-top:10px; padding-left:5px; line-height:5px;'>
+      <p id='confirmMessage' style='color:red'></p>
+    </div>
   </div>
 
   <div class="field w30">
