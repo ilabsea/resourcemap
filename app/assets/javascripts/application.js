@@ -24,6 +24,8 @@
 //= require jquery.fancybox
 //= require jquery.blockUI
 //= require lodash
+//= require password_strength
+//= require jquery_strength
 //= require_tree .
 //available on sprocket 2.2 and above
 //= stub 'mobile/map' 
