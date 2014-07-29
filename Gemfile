@@ -27,6 +27,7 @@ gem 'whenever', :require => false
 gem 'georuby'
 gem 'dbf', :require => 'dbf'
 gem 'rubyzip', :require => 'zip/zip'
+gem "password_strength"
 
 group :test do
   gem 'shoulda-matchers'
