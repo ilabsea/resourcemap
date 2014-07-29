@@ -1,5 +1,6 @@
 mobile_id: on
 host: localhost:3000
+number_of_attempt_failed: 5
 
 plugins:
   public_collection: on
