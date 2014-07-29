@@ -38,6 +38,10 @@
     <%= f.telephone_field :phone_number %>
   </div>
 
+  <div>
+    <%= recaptcha_tags(options = {:public_key => '6LfSpPcSAAAAADSTZGpYhG_DdUQvLb287lSkHtvS'}) %>
+  </div>
+
   <div class="actions">
     <button type="submit" class="white">Create account</button>
   </div>

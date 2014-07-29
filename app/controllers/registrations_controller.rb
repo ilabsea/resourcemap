@@ -4,12 +4,17 @@ class RegistrationsController < Devise::RegistrationsController
   before_filter :prepare_for_mobile
 
   def new
+    @user = User.new
     super
   end
 
   def create
     params['user']['phone_number'].delete!('+')
-    super
+    if verify_recaptcha(model: @user, :private_key => '6LfSpPcSAAAAAG8M5is9owic1s34UYZm4dGQTVvA')
+      super
+    else
+      render "new"
+    end
   end
 
   def update
