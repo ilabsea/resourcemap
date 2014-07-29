@@ -253,3 +253,6 @@ a.lbutton{
    cursor: default !important;
    pointer-events: none;
 }
+
+#recaptcha_image { width: 270px !important; } 
+#recaptcha_image img { width: 280px; } 

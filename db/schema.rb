@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140710033346) do
+ActiveRecord::Schema.define(:version => 20140729032620) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -128,6 +128,13 @@ ActiveRecord::Schema.define(:version => 20140710033346) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
     t.integer  "ord"
+  end
+
+  create_table "login_failed_trackers", :force => true do |t|
+    t.datetime "login_at"
+    t.string   "ip_address"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "memberships", :force => true do |t|

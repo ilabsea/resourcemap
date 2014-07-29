@@ -28,3 +28,17 @@ module Settings
   end
 end
 
+module RecaptchaSetting
+  extend self
+
+  CONFIG = YAML.load_file(File.expand_path('../recaptcha.yml', __FILE__))
+
+  def method_missing(method_name)
+    if method_name.to_s =~ /(\w+)\?$/
+      CONFIG[Rails.env][$1] == true
+    else
+      CONFIG[Rails.env][method_name.to_s]
+    end
+  end
+end
+

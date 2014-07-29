@@ -1,0 +1,50 @@
+<%= devise_error_messages! :class => 'centered w30' %>
+
+<div class="box centered w30">
+  
+<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+  <h2><%= 'Login' %></h2>
+  <hr class="shadow" />
+  
+  <div class="field w30">
+    <%= f.label :email, 'Email' %>
+    <%= f.email_field :email %>
+  </div>
+
+  <div class="field w30">
+    <%= f.label :password, 'Password' %>
+    <%= f.password_field :password %>
+  </div>
+
+  <% if devise_mapping.rememberable? -%>
+    <div class="field">
+      <%= f.check_box :remember_me %> <%= f.label :remember_me, 'Remember me', :class=>'checkbox' %>
+    </div>
+  <% end -%>
+
+  <% if @captcha -%>
+    <input type="hidden" id="public_key" value="<%= RecaptchaSetting.public_key %>" />
+    <div style="padding-left:10px;padding-top:10px;padding-bottom:10px; border-radius:4px; background: none repeat scroll 0 0 #D0D0D0;">
+      <div id="recaptcha_main_widget" style="display:block; width:260px;">
+        <div id="recaptcha_image" style='margin:0px;padding:0px;'></div>
+        <div class="recaptcha_only_if_incorrect_sol" style="color:red"></div>
+        <span class="recaptcha_only_if_image" style='width:200px;'></span>
+        <input id="recaptcha_response_field" placeholder="Enter your captcha here" class="button" name="recaptcha_response_field" type="text" style="width: 274px;" />
+        <div>
+          <button type="button" onclick="javascript:Recaptcha.reload()" />Refresh</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      Recaptcha.create($("#public_key").val(),"recaptcha_widget",{theme: "custom"})
+    </script>
+  <% end -%>
+
+  <div class="actions">
+    <button type="submit" class="white"><%= 'Login' %></button>
+  </div>
+  
+  <%= render :partial => "devise/shared/links" %>
+<% end %>
+
+</div>
