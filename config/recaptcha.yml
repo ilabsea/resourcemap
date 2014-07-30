@@ -1,0 +1,11 @@
+development:
+  private_key: 6LcN3vISAAAAAJzuC3pxBIOpzNEqPaoaYqoSR2Yw
+  public_key: 6LcN3vISAAAAAHKgoSGmIX50Ws53T4h30ha1tyES 
+
+test:
+  private_key: 6LcnvvISAAAAALQsMdvjODS8VlqJRUAmHwelOrG-
+  public_key: 6LcnvvISAAAAAA994GoKxT6XUfpmE_k98Cvef26D
+
+production:
+  private_key: 6LeivPISAAAAAOB9-R9MFaHOgTz-HNF23mznaIyP
+  public_key: 6LeivPISAAAAACGFWnWZ8k1RezeMcJ-T83h4Dh0J
