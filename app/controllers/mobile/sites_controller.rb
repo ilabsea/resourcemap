@@ -1,8 +1,16 @@
 class Mobile::SitesController < SitesController
+  include Concerns::CheckApiDocs
+  include Api::JsonHelper
 
   skip_before_filter  :verify_authenticity_token
   def new
     render layout: 'mobile'
+  end
+
+  def show
+    respond_to do |format|
+      format.json { render json: Site.find(params[:id]) }
+    end
   end
 
   def create
@@ -88,7 +96,6 @@ class Mobile::SitesController < SitesController
   end
 
   def update_offline_site
-    debugger
     begin     
       # site_params = JSON.parse params[:site]
       site_params = {}

@@ -62,6 +62,7 @@ Collection.prototype.showFormAddSite = function(schema){
   fieldHtml = Collection.prototype.addLayerForm(schema);
   $("#title").html(schema["name"]);
   $("#fields").html(fieldHtml);
+  Collection.prototype.applyBrowserLocation();
   Collection.prototype.handleFieldUI(schema);
 }
 
@@ -341,7 +342,7 @@ Collection.prototype.addLayerForm = function(schema){
 }
 
 Collection.prototype.handleFieldUI = function(schema){
-  Collection.prototype.applyBrowserLocation();
+  
   for(i=0; i<schema["layers"].length;i++){
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j]
