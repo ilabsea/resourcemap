@@ -153,6 +153,15 @@ onCollections ->
 
     @getThresholds: ->      
       @thresholdsCollection([])  
-      $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
-        thresholds = @fetchThreshold(data,window.model.currentCollection().icon)     
-        @thresholdsCollection(@currentCollection().findSitesByThresholds(thresholds))
+      if @currentCollection()
+        $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
+          thresholds = @fetchThreshold(data,window.model.currentCollection().icon)     
+          @thresholdsCollection(@currentCollection().findSitesByThresholds(thresholds))
+      # else
+      #   for collection in @collections()
+      #     collection.loadMoreSites() if collection.sitesPage == 1
+      #     console.log collection
+          # $.get "/plugin/alerts/collections/#{collection.id}/thresholds.json", (data) =>
+          #   if data.length > 0
+          #     thresholds = @fetchThreshold(data,collection.icon)     
+          #     result = collection.findSitesByThresholds(thresholds, collection)

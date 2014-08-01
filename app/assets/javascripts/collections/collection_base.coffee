@@ -39,19 +39,13 @@ onCollections ->
       id
 
     findSitesByThresholds: (thresholds) =>
-      arr = []
       b = false
-      
-      for site in window.model.currentCollection().sites()
+      for site in this.sites()
         for key,threshold of thresholds
-          if this.operateWithCondition(threshold.conditions(), site)?            
-            arr.push site
+          if this.operateWithCondition(threshold.conditions(), site)?   
             b = true
-
             console.log site.name()+" "+thresholds[key].propertyName()
-            thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)
-            # thresholds[key].alertedSitesNum = if thresholds[key].alertedSitesNum? then thresholds[key].alertedSitesNum + 1 else 1
-            # thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)     
+            thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)  
             break
           else
             b = false
@@ -59,7 +53,7 @@ onCollections ->
       return thresholds
 
     operateWithCondition: (conditions, site) =>
-      b = true      
+      b = true    
       for condition in conditions
         operator = condition.op().code()
         if condition.valueType().code() is 'percentage'
@@ -94,13 +88,7 @@ onCollections ->
 
         if b == false
           return null
-
-      # console.log '**********************************'
-      # if condition.valueType().code() is 'percentage'
-      #   console.log site.name()
-      #   console.log percentage
-      # console.log '---------------------------------'
-
+          
       return site
 
 
