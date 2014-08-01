@@ -38,40 +38,68 @@ onCollections ->
       id = (site for site in window.model.currentCollection().allSites() when site.name is value)[0]?.id
       id
 
-
-    
-    findSitesByFieldCondition: (conditions) =>
+    findSitesByThresholds: (thresholds) =>
       arr = []
+      b = false
+      
       for site in window.model.currentCollection().sites()
-        if this.operateWithCondition(conditions, site)?
-          arr.push site
-      arr
+        for key,threshold of thresholds
+          if this.operateWithCondition(threshold.conditions(), site)?            
+            arr.push site
+            b = true
 
+            console.log site.name()+" "+thresholds[key].propertyName()
+            thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)
+            # thresholds[key].alertedSitesNum = if thresholds[key].alertedSitesNum? then thresholds[key].alertedSitesNum + 1 else 1
+            # thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)     
+            break
+          else
+            b = false
+
+      return thresholds
 
     operateWithCondition: (conditions, site) =>
       b = true      
-      for key, condition of conditions
+      for condition in conditions
         operator = condition.op().code()
+        if condition.valueType().code() is 'percentage'
+          percentage = (site.properties()[condition.field()] * 100)/site.properties()[condition.compareField()]
+          compareField = percentage
+        else
+          compareField = site.properties()[condition.field()]
+
         switch operator
-          when "eq"
-            if site.properties()[condition.field()] is condition.value()
+          when "eq","eqi"
+            if compareField is condition.value()
               site
             else
               b = false
           when "gt"
-            if site.properties()[condition.field()] > condition.value()
+            if compareField > condition.value()
               site
             else
               b = false   
           when "lt"
-            if site.properties()[condition.field()] < condition.value()
+            if compareField < condition.value()
               site
             else
               b = false
+          when "con"
+            if compareField.indexOf(condition.value()) != -1
+              site
+            else
+              b = false                   
           else
             null
+
         if b == false
           return null
+
+      # console.log '**********************************'
+      # if condition.valueType().code() is 'percentage'
+      #   console.log site.name()
+      #   console.log percentage
+      # console.log '---------------------------------'
 
       return site
 

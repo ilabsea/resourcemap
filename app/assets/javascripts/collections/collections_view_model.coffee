@@ -144,13 +144,15 @@ onCollections ->
 
     @createCollection: -> window.location = "/collections/new"
 
+    @fetchThreshold: (thresholds, collectionIcon) ->
+      thresholds_new = []
+      for threshold in thresholds
+        threshold_new = new Threshold(threshold, collectionIcon)
+        thresholds_new.push(threshold_new)    
+      thresholds_new
+
     @getThresholds: ->      
       @thresholdsCollection([])  
-      $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>     
-        for key,value of data
-          threshold = new Threshold(value, @currentCollection().icon)    
-          alertedSitesNum = @currentCollection().findSitesByFieldCondition(threshold.conditions()).length
-          threshold.alertedSitesNum(alertedSitesNum)
-          if alertedSitesNum > 0
-            @thresholdsCollection.push threshold
-            
+      $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
+        thresholds = @fetchThreshold(data,window.model.currentCollection().icon)     
+        @thresholdsCollection(@currentCollection().findSitesByThresholds(thresholds))
