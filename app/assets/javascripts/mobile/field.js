@@ -7,9 +7,6 @@ function Field (field) {
   this.code = field != null ? field["code"] : void(0);
   this.value = (field != null && ("value" in field)) ? field["value"] : "";
   this.label = this.name;
-  if(field["is_mandatory"] == true){
-    this.label = "* " + this.name
-  }
 
   if(this.kind == 'hierarchy'){
     this.sub = setHierarchyData(field);
