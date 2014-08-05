@@ -72,3 +72,4 @@ group :assets do
   gem 'lodash-rails'
 end
 
+gem 'rails_12factor', group: :production
