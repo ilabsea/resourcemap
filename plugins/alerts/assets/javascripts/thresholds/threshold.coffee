@@ -1,6 +1,6 @@
 onThresholds -
   class @Threshold
-    constructor: (data, collectionIcon, alertedSites = 0) ->
+    constructor: (data, collectionIcon, alertedSites=0) ->
       @id = ko.observable data?.id
       @collectionId = data?.collection_id
       @isAllSite = ko.observable data?.is_all_site.toString()
