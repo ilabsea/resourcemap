@@ -10,7 +10,6 @@ function Field (field) {
   if(field["is_mandatory"] == true){
     this.label = "* " + this.name
   }
-
   if(this.kind == 'hierarchy'){
     this.sub = setHierarchyData(field);
   }else if(this.kind == 'select_one' || this.kind == 'select_many'){
