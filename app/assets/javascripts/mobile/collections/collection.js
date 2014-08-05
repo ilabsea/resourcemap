@@ -253,7 +253,11 @@ Collection.prototype.validateData = function(collectionId){
           }
           if(!state){
             Collection.prototype.showErrorMessage(field["name"] + " is mandatory.");
+            Collection.setFieldStyleFailed(field["code"])
             return false
+          }
+          else{
+            Collection.setFieldStyleSuccess(field["code"])
           }
         }
       }
@@ -261,6 +265,15 @@ Collection.prototype.validateData = function(collectionId){
   }
 
   return true;
+}
+
+Collection.setFieldStyleSuccess = function(id){
+  $("#div_wrapper_" + id).removeClass("invalid_field")
+}
+
+Collection.setFieldStyleFailed = function(id){
+  $("#div_wrapper_" + id).addClass("invalid_field")
+  $("#" + id).focus()
 }
 
 Collection.valiateMandatoryPhoto = function(field){
