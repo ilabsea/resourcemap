@@ -1,0 +1,15 @@
+en:
+  views:
+    mobile:
+      collections:
+        title: "My Collections"
+        desktop_view: "Desktop View"
+        new_site: "New waste report"
+        name: "Location name:"
+        location: "Location"
+        lat: "Location'Lat"
+        lng: "Location'Lng"
+        enter_location_lat: "Enter your location's lat"
+        enter_location_lng: "Enter your location's lng"
+        save_site: "Save Site"
+        saving: "Saving..."

@@ -1,0 +1,8 @@
+en:
+  javascripts:
+    layers:
+      successfully_saved: "Layer '%{name}' successfully saved"
+      successfully_created: "Layer '%{name}' successfully created"
+      successfully_deleted: "Layer '%{name}' successfully deleted"
+      are_you_sure_to_delete: "Are you sure you want to delete this layer?"
+      layer_is_being_used: "This layer is being used with %{n} alert(s), you are not allowed to delete"

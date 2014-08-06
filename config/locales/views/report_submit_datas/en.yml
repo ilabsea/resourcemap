@@ -1,0 +1,13 @@
+en:
+  views:
+    report_submit_datas:
+      login:
+        statistic_report: 'Statistic Report'
+        number_of_login: 'Number of login'
+        this_month: 'This month'
+        previous_month: 'Previous month'
+        custom: 'Custom'
+        from: 'From'
+        to: 'To'
+        from_mobile: 'From mobile'
+        from_web: 'From web'

@@ -1,0 +1,23 @@
+kh:
+  activerecord:
+    attributes:
+      snapshot:
+        name: "ឈ្មោះ"
+    errors:
+      models:
+        collection:
+          attributes:
+            name:
+              blank: "មិនអាចទទេ"
+        user:
+          attributes:
+            email:
+              taken: "អ៊ីម៉ែលត្រូវបានយករួចហើយ"
+            password:
+              confirmation: "ពាក្យសម្ងាត់មិនផ្គូផ្គងនឹងការបញ្ជាក់"
+              blank: "ពាក្យសម្ងាត់មិនអាចទទេ"
+        snapshot:
+          attributes:
+            name:
+              blank: "មិនអាចទទេ"
+              taken: "ត្រូវបានយក"

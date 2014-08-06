@@ -1,0 +1,39 @@
+en:
+  views:
+    gateways:
+      sms_gateway:
+
+      original_message:
+        search: "Search"
+        collections: "Collections"
+        check_all: "check all"
+        uncheck_all: "uncheck all"
+        show_undefined_messages: "Show undifine messages"
+        collection: "Collection"
+        user: "User"
+        message: "Message"
+        time: "Time"
+        enter_phone_number: "Enter phone number"
+      index:
+        resourcemap_default_gateway: ៉ResoureMap Default Gateway៉
+        add_gateway: "Add Gateway"
+        sms_gateway: "SMS Gateway"
+        endpoint_url: "Endpoint URL :"
+        user_name: "User Name :"
+        password: "Password :"
+        hide_configuration: "Hide Configuration"
+        view_configuration: "View Configuration"
+        test_your_gateway: "Test Your Gateway"
+        send_now: "Send Now!"
+        enter_your_destination_phone_number: "Enter your destination phone number"
+      form:
+        save: "Save"
+        cancel: "Cancel"
+        name: "Name"
+        android_phone_sms_gateway_basic_setup: "Android Phone SMS Gateway -Basic Setup(Recommended)"
+        android_phone_sms_gateway_advance_setup: "Android Phone SMS Gateway -Advanced Setup"
+        click_here_for_instructions: "Click here for instructions"
+        text_description: "The android phone sms gateway allow you to use any adroid device as a local gateway for sending and receiving system SMS message "
+        key: "Key"
+        password: "Password"
+        can_not_save: "Can't save"

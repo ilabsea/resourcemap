@@ -37,6 +37,12 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_timezone
   before_filter :set_request_header
+  before_filter :set_locale
+
+  def set_locale
+    I18n.locale = params[:locale] || I18n.default_locale
+  end
+
   def set_timezone
     # current_user.time_zone #=> 'London'
     Time.zone = current_user.time_zone if current_user

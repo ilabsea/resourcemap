@@ -1,0 +1,44 @@
+kh:
+  javascripts:
+    collections:
+      viewing_collection: "កំពង់បង្ហាញ %{mapSitesCount} %{sitesText} នៅក្នុង %{sitesCount}"
+      viewing: "កំពង់បង្ហាញ %{mapSitesCount} %{sitesText}"
+      site: "តំបន់"
+      sites: "តំបន់"
+      show_sites: "បង្ហាញតំបន់ %{description}"
+      where_field: "ដែល %{field} "
+      where_field_is: "ដែល %{field} គឺ \"%{value}\""
+      where_field_starts_with: "ដែល %{field} ចាប់ផ្តើមជាមួយ \"%{value}\""
+      where_field_is_between: "ដែល %{field} នៅ​ចន្លោះ %{valueFrom} និង %{valueTo}"
+      where_field_no_value: "ដែល %{field} គ្មានតម្លៃ"
+      equals: " ស្មើ "
+      is_less_than: " តិចជាង "
+      is_less_than_or_equal_to: " តិចជាងឬស្មើ "
+      is_greater_than: " ធំជាង "
+      is_greater_than_or_equal_to: " ធំជាងឬស្មើ "
+      updated_within_the_last_hour: "បន្ទាន់សម័យក្នុងរយៈពេលមួយម៉ោងចុងក្រោយ"
+      updated_within_the_last_day: "បន្ទាន់សម័យក្នុងរយៈពេលមួយថ្ងៃចុងក្រោយ"
+      updated_within_the_last_week: "បន្ទាន់សម័យក្នុងរយៈពេលមួយសប្តាហ៍ចុងក្រោយ"
+      updated_within_the_last_month: "បន្ទាន់សម័យក្នុងរយៈពេលមួយខែចុងក្រោយ"
+      with_location_missing: "ដែលបាត់ទីតាំង"
+      is_yes: " គឺ 'បាទ'"
+      is_no: " គឺ 'ទេ'"
+      with_field_operator_value: "ដែល %{field} %{operator} \"%{valueLabel}\""
+      fields:
+        no_value: "(គ្មានតម្លៃ)"
+        'yes': "បាទ"
+        'no': "គ្មាន"
+        none: "គ្មាន"
+      members:
+        custom_permissions_for_sites: "សិទ្ធិផ្ទាល់ខ្លួនសម្រាប់តំបន់"
+        custom_permissions_1_site: "សិទ្ធិផ្ទាល់ខ្លួនសម្រាប់ 1 តំបន់"
+        custom_permissions_n_sites: "សិទ្ធិផ្ទាល់ខ្លួនសម្រាប់ %{n} តំបន់"
+        permissions:
+          all: "ទាំងអស់"
+          some: "មួយចំនួន"
+        errors:
+          phone_number_is_required: "តម្រូវអោយមានលេខទូរស័ព្ធ"
+          phone_number_is_taken: "លេខទូរស័ព្ធត្រូវបានប្រើប្រាស់រួច"
+      index:
+        name: "ឈ្មោះ"
+        waste_site: "ទីតាំងគំនរសំរាម"

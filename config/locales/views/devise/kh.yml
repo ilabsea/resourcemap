@@ -1,0 +1,15 @@
+kh:
+  views:
+    devise:
+      sessions:
+        email: 'អ៊ុីមែល'
+        password: 'លេខសំងាត់'
+        remember_me: 'ចងចាំខ្ញុំ'
+        login: 'ចូលប្រើប្រាស់'
+        reset_it: 'កំណត់ឡើងវិញ'
+        didnot_receive_confirmation_instruction: "តើអ្នកពិតជាមិនទទួលបានរបៀបនៃការបញ្ជាក់មែនទេ?"
+        didnot_receive_unlock_instruction: "តើអ្នកពិតជាមិនទទួលបានរបៀបនៃការដោះសោរមែនទេ?"
+        sign_in_with: 'ចូលប្រើប្រាស់តាមរយះ'
+        create_account: "បង្កើតគណនេយ្យ"
+        forgot_your_password: "ភ្លេចលេខសំងាត់របស់អ្នកមែនទេ?"
+        send_me_reset_password_instruction: "ផ្ញើរអោយខ្ញុំនូវរបៀបដាក់កំណត់លេខសំងាត់"

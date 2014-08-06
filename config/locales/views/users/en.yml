@@ -1,0 +1,24 @@
+en:
+  views:
+    users:
+      email: "Email"
+      password: "Password"
+      password_confirmation: "Password confirmation"
+      role: "Role"
+      phone_number: "Phone Number"
+      description: "Description"
+      add_user: "Add user"
+      index:
+        title: "Users"
+        successfully_created: "User is successfully created."
+        successfully_updated: "User is successfully updated."
+        successfully_deleted: "User is successfully deleted."
+      form:
+        save: "Save"
+        cancel: "Cancel"
+        delete: "Delete this user"
+        are_you_sure: "Are you sure?"
+        roles:
+          admin: "Admin"
+          moderator: "Moderator"
+          stakeholder: "Stakeholder"

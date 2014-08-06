@@ -1,0 +1,39 @@
+kh:
+  views:
+    gateways:
+      sms_gateway:
+
+      original_message:
+        search: "ស្វែងរក"
+        collections: "ទិន្នន័យ"
+        check_all: "យកទាំងអស់"
+        uncheck_all: "មិនយកទាំងអស់"
+        show_undefined_messages: "បង្ហាញសារជាអក្សរដែលមិនស្គាល់អត្តសញ្ញាណ"
+        collection: "ទិន្នន័យ"
+        user: "អ្នកប្រើប្រាស់"
+        message: "សារជាអក្សរ"
+        time: "ពេលវេលា"
+        enter_phone_number: "បញ្ចូលលេខទូរស័ព្ធ"
+      index:
+        resourcemap_default_gateway: "ផ្លូវចេញចូលលំនាំដើម"
+        add_gateway: "បន្ថែមផ្លូវចេញចូល"
+        sms_gateway: "ផ្លូវចេញចូលសារជាអក្សរ"
+        endpoint_url: "URL ដែលត្រូវបញ្ជូន :"
+        user_name: "ឈ្មោះគណនីយ :"
+        password: "លេខសំងាត់ :"
+        hide_configuration: "បិទបាំង ការកំណត់"
+        view_configuration: "បង្ហាញ ការកំណត់"
+        test_your_gateway: "សាកល្បងផ្លូវចេញចូលរបស់អ្នក"
+        send_now: "ផ្ញើរភ្លាម!"
+        enter_your_destination_phone_number: "បញ្ចូលលេខដែលអ្នកចង់ផ្ញើរសារទៅ"
+      form:
+        save: "រក្សាទុក"
+        cancel: "បោះបង់"
+        name: "ឈ​​្មោះ"
+        android_phone_sms_gateway_basic_setup: "របៀបតំឡើងផ្លូវចេញចូលសារអក្សរនៅលើទូរស័ព្ធ ប្រព័ន្ធប្រតិបត្តិការ Android ដែលមានលក្ខណះសាមញ្ញ(ណែនាំអោយប្រើ)"
+        android_phone_sms_gateway_advance_setup: "របៀបតំឡើងផ្លូវចេញចូលសារអក្សរនៅលើទូរស័ព្ទ ប្រព័ន្ធប្រតិបត្តិការ Android ដែលមានលក្ខណះទំនើប"
+        click_here_for_instructions: "ចុចទីនេះសំរាប់ការណែនាំ"
+        text_description: "ផ្លូវចេញចូលសារអក្សរនៅលើទូរស័ព្ទ ប្រព័ន្ធប្រតិបត្តិការ Android អនុញ្ញាតិអោយអ្នកប្រើប្រាស់ទូរស័ព្ទដៃ Android ធ្វើជាផ្លូវចេញចូលសំរាប់ផ្ញើរនឹងទទួលសារជាអក្សរ"
+        key: "ពាក្យ"
+        password: 'លេខសំងាត់'
+        can_not_save: 'មិនអាចរក្សាទុកបាន'

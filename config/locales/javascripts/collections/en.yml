@@ -1,0 +1,44 @@
+en:
+  javascripts:
+    collections:
+      viewing_collection: "Viewing %{mapSitesCount} %{sitesText} out of %{sitesCount}"
+      viewing: "Viewing %{mapSitesCount} %{sitesText}"
+      site: "site"
+      sites: "sites"
+      show_sites: "Show sites %{description}"
+      where_field: "where %{field} "
+      where_field_is: "where %{field} is \"%{value}\""
+      where_field_starts_with: "where %{field} starts with \"%{value}\""
+      where_field_is_between: "where %{field} is between %{valueFrom} and %{valueTo}"
+      where_field_no_value: "where %{field} has no value"
+      equals: " equals "
+      is_less_than: " is less than "
+      is_less_than_or_equal_to: " is less than or equal to "
+      is_greater_than: " is greater than "
+      is_greater_than_or_equal_to: " is greater than or equal to "
+      updated_within_the_last_hour: "updated within the last hour"
+      updated_within_the_last_day: "updated within the last day"
+      updated_within_the_last_week: "updated within the last week"
+      updated_within_the_last_month: "updated within the last month"
+      with_location_missing: "with location missing"
+      is_yes: " is 'yes'"
+      is_no: " is 'no'"
+      with_field_operator_value: "with %{field} %{operator} \"%{valueLabel}\""
+      fields:
+        no_value: "(no value)"
+        'yes': "yes"
+        'no': "no"
+        none: "None"
+      members:
+        custom_permissions_for_sites: "Custom permissions for sites"
+        custom_permissions_1_site: "Custom permissions for 1 site"
+        custom_permissions_n_sites: "Custom permissions for %{n} sites"
+        permissions:
+          all: "All"
+          some: "Some"
+        errors:
+          phone_number_is_required: "Phone number is required"
+          phone_number_is_taken: "Phone number is taken" 
+      index:
+        name: "Name"
+        waste_site: "Waste site"
