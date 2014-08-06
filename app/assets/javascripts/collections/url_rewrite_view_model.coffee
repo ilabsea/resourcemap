@@ -33,6 +33,9 @@ onCollections ->
       # Append alert view
       query._alert = true if @showingAlert()
 
+      # Append locale
+      query.locale = @locale if @locale
+
       location = document.createElement 'a'
       location.href = window.location
       location.search = $.param query

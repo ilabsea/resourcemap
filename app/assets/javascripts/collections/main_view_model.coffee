@@ -52,6 +52,8 @@ onCollections ->
       # with the view.
       @[k] = v.bind(@) for k, v of @ when v.bind? && !ko.isObservable(v)
 
+      @locale = $.url().param('locale')
+
     updateSitesInfo: =>
       if @currentCollection()
         $.get "/collections/#{@currentCollection().id}/sites_info.json", {}, (data) =>
