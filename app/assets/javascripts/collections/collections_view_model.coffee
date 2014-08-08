@@ -5,7 +5,9 @@ onCollections ->
     @constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
-      @thresholdsCollection = ko.observableArray()
+      # @thresholdsCollection = ko.observableArray()
+      @alert_legend = ko.observable(true)
+      @alert_text = ko.observable('Hide')
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
@@ -144,24 +146,30 @@ onCollections ->
 
     @createCollection: -> window.location = "/collections/new"
 
-    @fetchThreshold: (thresholds, collectionIcon) ->
-      thresholds_new = []
-      for threshold in thresholds
-        threshold_new = new Threshold(threshold, collectionIcon)
-        thresholds_new.push(threshold_new)    
-      thresholds_new
-
     @getThresholds: ->      
-      @thresholdsCollection([])  
       if @currentCollection()
+        @currentCollection().thresholdsCollection([])  
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
-          thresholds = @fetchThreshold(data,window.model.currentCollection().icon)     
-          @thresholdsCollection(@currentCollection().findSitesByThresholds(thresholds))
-      # else
-      #   for collection in @collections()
-      #     collection.loadMoreSites() if collection.sitesPage == 1
-      #     console.log collection
-          # $.get "/plugin/alerts/collections/#{collection.id}/thresholds.json", (data) =>
-          #   if data.length > 0
-          #     thresholds = @fetchThreshold(data,collection.icon)     
-          #     result = collection.findSitesByThresholds(thresholds, collection)
+          thresholds = @currentCollection().fetchThresholds(data)     
+          @currentCollection().thresholdsCollection(@currentCollection().findSitesByThresholds(thresholds))
+      else
+        @loadAllSites() 
+        $.get "/plugin/alerts/thresholds.json", (data) =>
+         
+          for collection in @collections()
+            thresholds = collection.fetchThresholds(data)
+            collection.thresholdsCollection(collection.findSitesByThresholds(thresholds))
+          thresholds = []
+
+    @toggleAlertLegend: ->
+      if @alert_legend() == true
+        @alert_legend(false)
+        @alert_text('Legend alert')
+      else
+        @alert_legend(true)
+        @alert_text('Hide')
+
+    @loadAllSites: ->
+      for collection in @collections()
+        collection.hasMoreSites(true)
+        collection.loadMoreSites()
