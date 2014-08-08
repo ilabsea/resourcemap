@@ -6,9 +6,7 @@ onCollections ->
       @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
 
       @onSitesChanged =>
-        
-        if @currentCollection()
-          @getThresholds()
+        @getThresholds()
         alertsCount = 0
         bounds = @map.getBounds()
         for siteId, marker of @markers
