@@ -16,7 +16,7 @@ ResourceMap::Application.routes.draw do
   get 'download/activity' => "activities#download"
   match 'get_user_auth_token' => "application#get_user_auth_token", :via => 'get'
   match 'load_app_cache' => 'home#load_app_cache', :via => 'get'
-
+  get 'plugin/alerts/thresholds' => 'thresholds#index'
   
   resources :repeats
   resources :collections do
@@ -134,6 +134,7 @@ ResourceMap::Application.routes.draw do
     namespace :v1 do
       resources :collections do
         resources :sites, only: [:create,:index,:update,:show]
+        resources :fields, only: [:create,:index,:update,:show]
       end
     end
   end

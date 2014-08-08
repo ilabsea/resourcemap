@@ -5,6 +5,9 @@ onCollections ->
     @constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
+      # @thresholdsCollection = ko.observableArray()
+      @alert_legend = ko.observable(true)
+      @alert_text = ko.observable('Hide')
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
@@ -15,6 +18,8 @@ onCollections ->
     
     @goToRoot: ->
       @queryParams = $.url().param()
+      @showingAlert(false)
+      @cancelFilterAlertedSites()
       @exitSite() if @editingSite()
       @currentCollection(null)
       @unselectSite() if @selectedSite()
@@ -42,6 +47,9 @@ onCollections ->
       # value in an href (and this is done in the breadcrumb links).
       undefined
 
+    @deleteMembership: () =>
+      alert 'delete'
+
     @enterCollection: (collection) ->
       if @showingAlert()
         return if !collection.checked()
@@ -52,19 +60,20 @@ onCollections ->
       if typeof collection == 'string'
         collection = @findCollectionById parseInt(collection)
 
-
       @currentCollection collection
       @unselectSite() if @selectedSite()
-      @exitSite() if @editingSite()
+      @exitSite() if @editingSite()   
+      
       if @showingAlert()
         $.get "/collections/#{@currentCollection().id}/sites_by_term.json", _alert: true, (sites) =>
           @currentCollection().allSites(sites)
           window.adjustContainerSize()
+          
       else
         $.get "/collections/#{@currentCollection().id}/sites_by_term.json", (sites) =>
           @currentCollection().allSites(sites)
           window.adjustContainerSize()
-
+          
       initialized = @initMap()
       collection.panToPosition(true) unless initialized
 
@@ -78,12 +87,13 @@ onCollections ->
           @refreshTimeago()
           @makeFixedHeaderTable()
           @rewriteUrl()
+
         window.adjustContainerSize()
 
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
       window.model.updateSitesInfo()
-
+      
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
     @openDialog:  ->
@@ -130,8 +140,36 @@ onCollections ->
           $('#collections-main .left').show()
           window.adjustContainerSize()
           $(".oleftexpand").addClass("oleftcollapse")
-          $(".oleftexpand").removeClass("oleftexpand")
+          $(".oleleftexpand").removeClass("oleftexpand")
           @reloadMapSites()
 
 
     @createCollection: -> window.location = "/collections/new"
+
+    @getThresholds: ->      
+      if @currentCollection()
+        @currentCollection().thresholdsCollection([])  
+        $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
+          thresholds = @currentCollection().fetchThresholds(data)     
+          @currentCollection().thresholdsCollection(@currentCollection().findSitesByThresholds(thresholds))
+      else
+        @loadAllSites() 
+        $.get "/plugin/alerts/thresholds.json", (data) =>
+         
+          for collection in @collections()
+            thresholds = collection.fetchThresholds(data)
+            collection.thresholdsCollection(collection.findSitesByThresholds(thresholds))
+          thresholds = []
+
+    @toggleAlertLegend: ->
+      if @alert_legend() == true
+        @alert_legend(false)
+        @alert_text('Legend alert')
+      else
+        @alert_legend(true)
+        @alert_text('Hide')
+
+    @loadAllSites: ->
+      for collection in @collections()
+        collection.hasMoreSites(true)
+        collection.loadMoreSites()

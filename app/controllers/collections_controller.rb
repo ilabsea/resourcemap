@@ -1,7 +1,7 @@
 class CollectionsController < ApplicationController
-
-  before_filter :setup_guest_user, :if => Proc.new { collection && collection.public }
-  before_filter :authenticate_user!, :except => [:render_breadcrumbs], :unless => Proc.new { collection && collection.public }
+  before_filter :setup_guest_user, :if => Proc.new { (collection && collection.public?) || Collection.public_collections }
+  # before_filter :setup_guest_user, :if => Proc.new { collection && collection.public? }
+  before_filter :authenticate_user!, :except => [:render_breadcrumbs, :index, :alerted_collections], :unless => Proc.new { collection && collection.public? }
 
   authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
 
@@ -24,13 +24,19 @@ class CollectionsController < ApplicationController
   #before_filter :prepare_for_mobile
 
   def index
+
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
       add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
+      if current_user.is_guest
+        @collections = Collection.public_collections
+      else
+        @collections = collections_with_snapshot
+      end
       respond_to do |format|
         format.html
-        format.json { render json: collections_with_snapshot }
+        format.json { render json:  @collections}
       end
     end
   end

@@ -151,6 +151,7 @@ class Collection < ActiveRecord::Base
           kind: field.kind,
           config: field.config,
           ord: field.ord,
+          is_mandatory: field.is_mandatory,
           writeable: user.is_guest ? false : !lms || lms[field.layer_id].write
         }
       end
@@ -263,4 +264,17 @@ class Collection < ActiveRecord::Base
       hash[field.es_code] = value if value
     end
   end
+
+  def get_number_of_admin_membership
+    self.memberships.where(:admin => true).count
+  end
+
+  def self.public_collections
+    Collection.where(:public => true)
+  end
+
+  def self.recreate_site_index collection_id
+    Collection.find(collection_id).recreate_index
+  end
+
 end

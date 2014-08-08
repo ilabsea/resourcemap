@@ -11,9 +11,10 @@
     });
 
 - content_for :navigation do
-  = section "Home", root_path(explicit: true), :home
+  = section "Home", root_path(explicit: true), :home  
+  = section "Collections", collections_path, :collections
+  
   - if user_signed_in?
-    = section "Collections", collections_path, :collections
     - if !current_user.is_guest
       = section "Activity", activities_path, :activities
       - if Settings.is_on? :channels

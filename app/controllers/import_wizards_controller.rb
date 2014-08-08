@@ -1,5 +1,6 @@
 class ImportWizardsController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :show_collection_breadcrumb
   before_filter :show_properties_breadcrumb
   before_filter :authenticate_collection_admin!, only: :logs
 

@@ -34,7 +34,7 @@ onImportWizard ->
       @valid = ko.computed => !@error()
       @importing = ko.observable false
       @importError = ko.observable false
-
+      
     recalculateErrorsForColumns: =>
       for column in @columns()
         new_errors = @validationErrors().errorsForColumn(column.index)

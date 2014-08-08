@@ -1,6 +1,6 @@
 onThresholds -
   class @Threshold
-    constructor: (data, collectionIcon) ->
+    constructor: (data, collectionIcon, alertedSites=0) ->
       @id = ko.observable data?.id
       @collectionId = data?.collection_id
       @isAllSite = ko.observable data?.is_all_site.toString()
@@ -11,11 +11,11 @@ onThresholds -
       @fieldsEmail  = ko.observableArray data?.email_notification["fields"] ? []
       @usersEmail   = ko.observableArray data?.email_notification["users"] ? []
       @membersEmail = ko.observableArray data?.email_notification["members"] ? []
-
       @fieldsPhone  = ko.observableArray data?.phone_notification["fields"] ? []
       @usersPhone   = ko.observableArray data?.phone_notification["users"] ? []
       @membersPhone = ko.observableArray data?.phone_notification["members"] ? []
 
+      @alertedSitesNum = ko.observable alertedSites
       @alertSites = ko.observable $.map(data?.sites ? [], (site) -> new Site(site))
       @propertyName = ko.observable data?.name
       @ord = ko.observable data?.ord

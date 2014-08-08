@@ -35,7 +35,7 @@ onCollections ->
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
-      @valid = ko.computed => @hasName() 
+      @valid = ko.computed => @hasName() and @hasInputMendatoryProperties()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
 
@@ -43,8 +43,11 @@ onCollections ->
 
     hasName: => $.trim(@name()).length > 0
 
-
-
+    hasInputMendatoryProperties: =>
+      for field in @fields()
+        if field.is_mandatory and !field.value()
+          return false
+      return true
 
     propertyValue: (field) =>
       value = @properties()[field.esCode]

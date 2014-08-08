@@ -1,16 +1,22 @@
 class ThresholdsController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => [:index]
 
   before_filter :fix_conditions, only: [:create, :update]
 
   def index
-    respond_to do |format|
-      format.html do
-        show_collection_breadcrumb
-        add_breadcrumb "Properties", collection_path(collection)
-        add_breadcrumb "Thresholds", collection_thresholds_path(collection)
+    if params[:collection_id]
+      respond_to do |format|
+        format.html do
+          show_collection_breadcrumb
+          add_breadcrumb "Properties", collection_path(collection)
+          add_breadcrumb "Thresholds", collection_thresholds_path(collection)
+        end
+        format.json { render json: thresholds }
       end
-      format.json { render json: thresholds }
+    else
+      respond_to do |format|
+        format.json { render json: Threshold.all }
+      end
     end
   end
 
@@ -21,7 +27,8 @@ class ThresholdsController < ApplicationController
     threshold = thresholds.new params[:threshold].except(:sites) 
     threshold.sites = Site.get_id_and_name params[:threshold][:sites] if params[:threshold][:sites]#select only id and name
     threshold.save!
-    collection.recreate_index
+    # collection.recreate_index
+    Resque.enqueue IndexRecreateTask, collection.id
     render json: threshold
   end
 
@@ -40,13 +47,15 @@ class ThresholdsController < ApplicationController
       threshold.sites = Site.get_id_and_name params[:threshold][:sites]
       threshold.save
     end
-    collection.recreate_index
+    # collection.recreate_index
+    Resque.enqueue IndexRecreateTask, collection.id
     render json: threshold
   end
 
   def destroy
     threshold.destroy
-    collection.recreate_index
+    # collection.recreate_index
+    Resque.enqueue IndexRecreateTask, collection.id
 
     render json: threshold
   end

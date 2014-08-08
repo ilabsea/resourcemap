@@ -108,7 +108,7 @@ class Site < ActiveRecord::Base
 
   def valid_properties
     fields = collection.fields.index_by(&:es_code)
-
+    fields_mandatory = collection.fields.find_all_by_is_mandatory(true)
     properties.each do |es_code, value|
       field = fields[es_code]
       if field
@@ -117,7 +117,17 @@ class Site < ActiveRecord::Base
         rescue => ex
           errors.add(:properties, {field.es_code => ex.message})
         end
+
+        fields_mandatory.each do |f|
+          if f.id.to_s == es_code.to_s
+            fields_mandatory.delete f
+          end
+        end
       end
     end
+    fields_mandatory.each do |f|
+      errors.add(:properties, {f.id => "#{f.code} is required."})
+    end
+
   end
 end

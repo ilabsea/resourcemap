@@ -4,6 +4,7 @@
 #= require collections/sites_membership
 #= require collections/layer
 #= require collections/field
+#= require collections/thresholds/condition
 onCollections ->
 
   class @CollectionBase extends Module
@@ -18,6 +19,7 @@ onCollections ->
 
       @id = data?.id
       @name = data?.name
+      @icon = data?.icon
       @currentSnapshot = if data?.snapshot_name then data?.snapshot_name else ''
       @updatedAt = ko.observable(data.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
@@ -35,6 +37,79 @@ onCollections ->
     findSiteIdByName: (value) =>
       id = (site for site in window.model.currentCollection().allSites() when site.name is value)[0]?.id
       id
+    
+    fetchThresholds: (data) ->
+      thresholds = []
+      for threshold in data
+        if threshold.collection_id == this.id
+          threshold_new = new Threshold(threshold, this.icon)
+          thresholds.push(threshold_new)    
+      thresholds
+
+    findSitesByThresholds: (thresholds) =>
+      b = false
+      console.log '******************************************'  
+      for site in this.sites()
+        for key,threshold of thresholds
+          if this.operateWithCondition(threshold.conditions(), site)?   
+            b = true
+            console.log site.name()+" "+thresholds[key].propertyName()
+            thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)  
+            break
+          else
+            b = false
+      console.log '******************************************'
+
+      for key,threshold of thresholds
+        if threshold.alertedSitesNum() == 0
+          thresholds.splice(key,1)
+
+      return thresholds
+
+    operateWithCondition: (conditions, site) =>
+      b = true    
+      
+      for condition in conditions
+        operator = condition.op().code()
+        if condition.valueType().code() is 'percentage'
+
+          percentage = (site.properties()[condition.compareField()] * condition.value())/100
+          # percentage = (site.properties()[condition.field()] * 100)/site.properties()[condition.compareField()]
+          compareField = percentage
+
+        else
+          compareField = condition.value()
+          
+        field = site.properties()[condition.field()]
+        switch operator
+          when "eq","eqi"
+            if field is compareField
+              site
+            else
+              b = false
+          when "gt"
+            if field > compareField
+              site
+            else
+              b = false   
+          when "lt"
+            if field < compareField
+              site
+            else
+              b = false
+          when "con"
+            if field.indexOf(compareField) != -1
+              site
+            else
+              b = false                   
+          else
+            null
+
+        if b == false
+          return null
+          
+      return site
+
 
     loadCurrentSnapshotMessage: =>
       @viewingCurrentSnapshotMessage = ko.observable()

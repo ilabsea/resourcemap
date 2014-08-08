@@ -21,6 +21,12 @@
   %p.smalltext The abbreviation used to report via SMS.
   = ko_text_field_tag :code, css: {error: :codeError}
 
+  %hr/
+  %label
+    Mendatory
+  %p.smalltext This field must be report on every report.
+  = ko_check_box_tag :is_mandatory, css: {error: :codeError}
+
   /ko if: kind() == 'select_one' || kind() == 'select_many'
   %hr/
   %label{ko(css: {error: 'impl().optionsError'})} Options

@@ -1,7 +1,9 @@
 class MembershipsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :authenticate_collection_admin!, :only => [:create, :destroy, :set_layer_access, :set_admin, :unset_admin, :index]
-
+  before_filter :authenticate_collection_admin!, :only => [:create, :set_layer_access, :set_admin, :unset_admin, :index]
+  
+  include ApplicationHelper 
+  
   def index
     layer_memberships = collection.layer_memberships.all.inject({}) do |hash, membership|
       (hash[membership.user_id] ||= []) << membership
@@ -60,10 +62,10 @@ class MembershipsController < ApplicationController
 
   def destroy
     membership = collection.memberships.find_by_user_id params[:id]
-    if membership.user_id != current_user.id
+    if leave_collection_permission? || membership.user_id != current_user.id
       membership.destroy
     end
-    redirect_to collection_members_path(collection)
+    redirect_to collections_path
   end
 
   def set_layer_access
