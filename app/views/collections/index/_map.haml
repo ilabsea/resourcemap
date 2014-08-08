@@ -15,7 +15,7 @@
             %td
               %div{style: "width:230px;overflow:hidden;"}
                 %input{ko(checked: :checked, disable: '$root.showingAlert()? $root.showingAlert()== !checked() : false'), type: :checkbox, style: 'position:relative;'}
-                %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor: pointer;width:205px;overflow:hidden;display:block;float:right;text-overflow:ellipsis;white-space:nowrap'}"
+                %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor:pointer;width:205px;overflow:hidden;display:block;float:right;text-overflow:ellipsis;white-space:nowrap'}"
               <!-- ko if: currentSnapshot -->
               .snapshot_on.right{style: 'padding-right:0'}
                 .i18g-snapshot
@@ -65,13 +65,16 @@
     <!-- ko if: !editingSite() -->
     <!-- ko with: currentCollection -->
     .tableheader
-      - if can? :index, Collection
-        %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
-      %span
-      %span{ko(text: :name)}
-      - #if can? :show, collection
-      - if current_user && !current_user.is_guest
-        %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+      %div.navBack
+        - if can? :index, Collection
+          %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
+        %span
+      %div
+        %span.colTitle{ko(text: :name,  attr: { title: :name })}
+        - #if can? :show, collection
+        - if current_user && !current_user.is_guest
+          %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+
 
     .tablescroll.sites
       %table.GralTable.CleanTable
