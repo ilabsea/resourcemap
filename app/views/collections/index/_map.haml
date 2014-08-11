@@ -322,31 +322,33 @@
     <!-- /ko -->
 
     <!-- ko if: !currentCollection() -->         
-    %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:350px;overflow-y:scroll;'}
+    %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:350px;border:1px solid grey;border-radius:10px'}
       / %button{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend'), style: 'float:right; color:red' }
-      %div{style: 'border:1px solid grey; line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio'}
-        %b Legend
-      <!-- ko if: $root.alert_legend() -->
-      %div{ko(foreach: :collections), style: 'border:1px solid grey;'}
+      %div{style: 'line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
+        %b Legend     
+      %div{style: 'overflow: auto;height: 290px;border-top:1px solid grey;border-bottom:1px solid grey;'}
         
-        <!-- ko if: thresholdsCollection().length > 0 -->
-        %div{style: 'padding:10px 0px 0px 10px;border-bottom:1px solid #E6E6E6'}
-          %b{ko(text: :name)}
-          / %p{ko(text: 'thresholdsCollection().length')}
-          %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
+        <!-- ko if: $root.alert_legend() -->
+        %div{ko(foreach: :collections), style: ''}
+          
+          <!-- ko if: thresholdsCollection().length > 0 -->
+          %div{style: 'padding:10px 0px 0px 10px;border-bottom:1px solid #E6E6E6'}
+            %b{ko(text: :name)}
+            / %p{ko(text: 'thresholdsCollection().length')}
+            %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
 
-            <!-- ko if: alertedSitesNum() > 0 -->
-            %li{style: 'height:30px;'}
-              %div{style: 'padding-right:5px;float:left'}
-                %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:20px;' }
-              %div{style:'line-height:20px; float:left;padding-top:2px; padding-bottom:2px; '}
-                %span{ko(text: :propertyName)}
-                %span :
-                %span{ko(text: :alertedSitesNum)}
-            <!-- /ko --> 
+              <!-- ko if: alertedSitesNum() > 0 -->
+              %li{style: 'height:30px;'}
+                %div{style: 'padding-right:5px;float:left'}
+                  %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:20px;' }
+                %div{style:'line-height:20px; float:left;padding-top:2px; padding-bottom:2px; '}
+                  %span{ko(text: :propertyName)}
+                  %span :
+                  %span{ko(text: :alertedSitesNum)}
+              <!-- /ko --> 
 
-        <!-- /ko -->   
+          <!-- /ko -->   
 
-      <!-- /ko --> 
-      %div{style: 'border:1px solid grey; height: 20px; background-color:#E6E6E6;'}
+        <!-- /ko --> 
+      %div{style: 'height: 20px; background-color:#E6E6E6;border-radius: 0px 0px 10px 10px;'}
     <!-- /ko -->    
