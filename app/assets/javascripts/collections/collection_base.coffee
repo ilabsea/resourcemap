@@ -38,27 +38,25 @@ onCollections ->
       id = (site for site in window.model.currentCollection().allSites() when site.name is value)[0]?.id
       id
     
-    fetchThresholds: (data) ->
+    fetchThresholds: (data) =>
       thresholds = []
       for threshold in data
         if threshold.collection_id == this.id
           threshold_new = new Threshold(threshold, this.icon)
-          thresholds.push(threshold_new)    
+          thresholds.push(threshold_new)
       thresholds
 
+
     findSitesByThresholds: (thresholds) =>
-      b = false
-      console.log '******************************************'  
+      b = false  
       for site in this.sites()
         for key,threshold of thresholds
           if this.operateWithCondition(threshold.conditions(), site)?   
             b = true
-            console.log site.name()+" "+thresholds[key].propertyName()
             thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)  
             break
           else
             b = false
-      console.log '******************************************'
 
       for key,threshold of thresholds
         if threshold.alertedSitesNum() == 0
@@ -74,7 +72,6 @@ onCollections ->
         if condition.valueType().code() is 'percentage'
 
           percentage = (site.properties()[condition.compareField()] * condition.value())/100
-          # percentage = (site.properties()[condition.field()] * 100)/site.properties()[condition.compareField()]
           compareField = percentage
 
         else

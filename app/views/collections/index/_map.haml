@@ -298,37 +298,51 @@
     
     <!-- ko if: currentCollection() -->
     <!-- ko with: currentCollection -->
-    <!-- ko if: thresholdsCollection().length > 0 -->
-    %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:200px;overflow-y:scroll;'}
-      %button{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend'), style: 'float:right; color:red' }
+
+    <!-- ko if: !$root.alert_legend() -->
+    %div#alert-legend{style: 'position: absolute; top: 48px; right: -25px; z-index: 99;'}
+      %button.collapse.white.right{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend') }
+    <!-- /ko --> 
+
+    <!-- ko if: $root.alert_legend() -->
+    %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:200px;overflow-y:auto;border-radius:10px'}
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
+        %b Legend     
+        / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
+        %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
       
-      <!-- ko if: $root.alert_legend() -->
-      %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
-        
+      %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none; max-width:350px;'}
+
         <!-- ko if: alertedSitesNum() > 0 -->
-        %li{style: 'border-bottom:1px solid #eeeeee;height:40px;'}
-          %div{style: 'padding-right:10px;float:left'}
-            %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:30px;' }
-          %div{style:'line-height:30px; float:left;padding-top:2px; padding-bottom:2px; '}
+        %li{style: 'height:auto;'}
+          %div{style: 'padding-right:5px;float:left'}
+            %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:20px;' }
+          %div{style:'line-height:20px;; vertical-align:middle;padding-top:2px; padding-bottom:10px; '}
             %span{ko(text: :propertyName)}
             %span :
             %span{ko(text: :alertedSitesNum)}
-        <!-- /ko -->
-
-      <!-- /ko -->
-
+        <!-- /ko -->     
+      %div{style: 'height: 20px; background-color:#E6E6E6;border-radius: 0px 0px 10px 10px;'}
     <!-- /ko -->
     <!-- /ko -->
     <!-- /ko -->
 
-    <!-- ko if: !currentCollection() -->         
-    %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:350px;border:1px solid grey;border-radius:10px'}
-      / %button{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend'), style: 'float:right; color:red' }
-      %div{style: 'line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
+    <!-- ko if: !currentCollection() -->  
+    <!-- ko if: !$root.alert_legend() -->
+    %div#alert-legend{style: 'position: absolute; top: 48px; right: -25px; z-index: 99;'}
+      %button.collapse.white.right{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend') }
+    <!-- /ko -->       
+    
+    <!-- ko if: $root.alert_legend() -->
+    %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:350px;border:1px solid #BDBDBD;border-radius:10px'}
+      
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
         %b Legend     
-      %div{style: 'overflow: auto;height: 290px;border-top:1px solid grey;border-bottom:1px solid grey;'}
+        / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
+        %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
+      %div{style: 'overflow: auto;height: 290px;border-top:1px solid #BDBDBD;border-bottom:1px solid #BDBDBD;max-width:350px;'}
         
-        <!-- ko if: $root.alert_legend() -->
+        
         %div{ko(foreach: :collections), style: ''}
           
           <!-- ko if: thresholdsCollection().length > 0 -->
@@ -338,10 +352,10 @@
             %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
 
               <!-- ko if: alertedSitesNum() > 0 -->
-              %li{style: 'height:30px;'}
+              %li{style: 'height:auto;'}
                 %div{style: 'padding-right:5px;float:left'}
                   %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:20px;' }
-                %div{style:'line-height:20px; float:left;padding-top:2px; padding-bottom:2px; '}
+                %div{style:'line-height:20px;; vertical-align:middle;padding-top:2px; padding-bottom:10px; '}
                   %span{ko(text: :propertyName)}
                   %span :
                   %span{ko(text: :alertedSitesNum)}
@@ -349,6 +363,7 @@
 
           <!-- /ko -->   
 
-        <!-- /ko --> 
+         
       %div{style: 'height: 20px; background-color:#E6E6E6;border-radius: 0px 0px 10px 10px;'}
+    <!-- /ko -->
     <!-- /ko -->    

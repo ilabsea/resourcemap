@@ -261,3 +261,19 @@ a.lbutton{
 .strong-bar{
   background-color: green;
 }
+
+.collapse{
+  font-weight:bold;
+  vertical-align:top;
+  padding-left: 0px;
+  width:80px;height:30px;
+  transform:rotate(7deg);
+  -ms-transform:rotate(-90deg); /* IE 9 */
+  -moz-transform:rotate(-90deg); /* Firefox */
+  -webkit-transform:rotate(-90deg); /* Safari and Chrome */
+  -o-transform:rotate(-90deg); /* Opera */
+}
+
+#alert-legend li{
+  vertical-align: middle;
+}

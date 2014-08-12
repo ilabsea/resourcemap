@@ -5,15 +5,13 @@ onCollections ->
     @constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
-      # @thresholdsCollection = ko.observableArray()
       @alert_legend = ko.observable(true)
-      @alert_text = ko.observable('Hide')
+      @alert_text = ko.observable()
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
         @currentCollection()?.currentSnapshot
 
-    # @findCollectionById: (id) -> (x for x in @collections() when x.id == id)[0]
     @findCollectionById: (id) -> (x for x in @collections() when x.id == parseInt id)[0]
     
     @goToRoot: ->
@@ -154,17 +152,16 @@ onCollections ->
           @currentCollection().thresholdsCollection(@currentCollection().findSitesByThresholds(thresholds))
       else
         @loadAllSites() 
-        $.get "/plugin/alerts/thresholds.json", (data) =>
-         
-          for collection in @collections()
+        $.get "/plugin/alerts/thresholds.json", (data) =>         
+          for collection in @collections()      
             thresholds = collection.fetchThresholds(data)
             collection.thresholdsCollection(collection.findSitesByThresholds(thresholds))
-          thresholds = []
+            thresholds = []
 
     @toggleAlertLegend: ->
       if @alert_legend() == true
         @alert_legend(false)
-        @alert_text('Legend alert')
+        @alert_text('Legend')
       else
         @alert_legend(true)
         @alert_text('Hide')
@@ -172,4 +169,4 @@ onCollections ->
     @loadAllSites: ->
       for collection in @collections()
         collection.hasMoreSites(true)
-        collection.loadMoreSites()
+        collection.loadMoreSites() 
