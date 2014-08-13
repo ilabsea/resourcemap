@@ -5,15 +5,13 @@ onCollections ->
     @constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
-      # @thresholdsCollection = ko.observableArray()
-      @alert_legend = ko.observable(true)
-      @alert_text = ko.observable('Hide')
+      @alert_legend = ko.observable(false)
+      @alert_text = ko.observable()
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
-        @currentCollection()?.currentSnapshot
+        @currentCollection()?.currentSnapshot      
 
-    # @findCollectionById: (id) -> (x for x in @collections() when x.id == id)[0]
     @findCollectionById: (id) -> (x for x in @collections() when x.id == parseInt id)[0]
     
     @goToRoot: ->
@@ -148,28 +146,25 @@ onCollections ->
 
     @getThresholds: ->      
       if @currentCollection()
-        @currentCollection().thresholdsCollection([])  
+        @currentCollection().thresholds([])  
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
           thresholds = @currentCollection().fetchThresholds(data)     
-          @currentCollection().thresholdsCollection(@currentCollection().findSitesByThresholds(thresholds))
+          @currentCollection().thresholds(@currentCollection().findSitesByThresholds(thresholds))
       else
-        @loadAllSites() 
         $.get "/plugin/alerts/thresholds.json", (data) =>
-         
           for collection in @collections()
-            thresholds = collection.fetchThresholds(data)
-            collection.thresholdsCollection(collection.findSitesByThresholds(thresholds))
-          thresholds = []
+            if collection.sites().length > 0  
+              thresholds = collection.fetchThresholds(data)
+              collection.thresholds(collection.findSitesByThresholds(thresholds))
+              thresholds = []
+          @alert_legend(true)
+
 
     @toggleAlertLegend: ->
       if @alert_legend() == true
         @alert_legend(false)
-        @alert_text('Legend alert')
+        @alert_text('Legend')
       else
         @alert_legend(true)
         @alert_text('Hide')
 
-    @loadAllSites: ->
-      for collection in @collections()
-        collection.hasMoreSites(true)
-        collection.loadMoreSites()

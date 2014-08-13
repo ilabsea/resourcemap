@@ -8,7 +8,6 @@ onCollections ->
       @compareField = ko.observable data?.compare_field ? data?.field # assign data.field only when data.compare_field doesn't exist to prevent error on view
       @op = ko.observable Operator.findByCode data?.op
       @value = ko.observable data?.value
-      # console.log @field()
       @valueType = ko.observable ValueType.findByCode data?.type ? 'value'
       # @valueUI = ko.computed
       #   read: => @field()?.format? @value()

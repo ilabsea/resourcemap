@@ -72,8 +72,6 @@ onCollections ->
         @editSite site
       else
         @loadingSite(true)
-        # console.log @collections()
-        # console.log window.model.findCollectionById(collectionId)
         $.get "/collections/#{collectionId}/sites/#{siteId}.json", {}, (data) =>
           @loadingSite(false)
           collection = window.model.findCollectionById(collectionId)

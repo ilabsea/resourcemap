@@ -12,11 +12,11 @@ onCollections ->
       @layers = ko.observableArray()
       @fields = ko.observableArray()
       @title = ko.observable()
-      @thresholdsCollection = ko.observableArray()
+      @thresholds = ko.observableArray()
       @refineFields = ko.observableArray()
       @checked = ko.observable true
       @fieldsInitialized = false
-
+      # @loadSites()
       @groupByOptions = ko.computed =>
         defaultOptions = []
         if window.model
@@ -44,6 +44,9 @@ onCollections ->
       else if @position()
         window.model.map.panTo @position()
 
-
+    # loadSites: =>
+    #   $.get @sitesUrl(), (data) =>
+    #     for site in data
+    #       @addSite @createSite(site)
 
 

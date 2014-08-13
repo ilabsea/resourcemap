@@ -286,7 +286,7 @@
   %div.mapcontainer
     %button.icon_button.expand-collapse_button.oleftexpand{ko(click: '$root.toogleExpandFullScreen')}
     <!-- ko if: $root.shouldShowLocationMissingAlert() -->
-    %a#sites_whitout_location_alert.alert.box.flash_error.drop_shadow(href='javascript:window.model.filterByLocationMissing()')
+    %a#sites_whitout_location_alert.alert.box.flash_error.drop_shadow(href='javascript:void(window.model.filterByLocationMissing())')
       %span There are sites with no location set
       %span.right
         %button.fconfiguration{ko(click: '$root.filterByLocationMissing'), type: 'button', style: 'margin-left:9px'}
@@ -298,12 +298,12 @@
     
     <!-- ko if: currentCollection() -->
     <!-- ko with: currentCollection -->
-    <!-- ko if: thresholdsCollection().length > 0 -->
+    <!-- ko if: thresholds().length > 0 -->
     %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:200px;overflow-y:scroll;'}
       %button{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend'), style: 'float:right; color:red' }
       
       <!-- ko if: $root.alert_legend() -->
-      %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
+      %ul#legend_alert_list{ko(foreach: :thresholds), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
         
         <!-- ko if: alertedSitesNum() > 0 -->
         %li{style: 'border-bottom:1px solid #eeeeee;height:40px;'}
@@ -321,19 +321,20 @@
     <!-- /ko -->
     <!-- /ko -->
 
-    <!-- ko if: !currentCollection() -->         
+    <!-- ko if: !currentCollection() --> 
+    <!-- ko if: $root.alert_legend() -->      
     %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:350px;overflow-y:scroll;'}
       / %button{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend'), style: 'float:right; color:red' }
       %div{style: 'border:1px solid grey; line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio'}
         %b Legend
-      <!-- ko if: $root.alert_legend() -->
+      
       %div{ko(foreach: :collections), style: 'border:1px solid grey;'}
         
-        <!-- ko if: thresholdsCollection().length > 0 -->
+        <!-- ko if: thresholds().length > 0 -->
         %div{style: 'padding:10px 0px 0px 10px;border-bottom:1px solid #E6E6E6'}
           %b{ko(text: :name)}
           / %p{ko(text: 'thresholdsCollection().length')}
-          %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
+          %ul#legend_alert_list{ko(foreach: :thresholds), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
 
             <!-- ko if: alertedSitesNum() > 0 -->
             %li{style: 'height:30px;'}
@@ -347,6 +348,7 @@
 
         <!-- /ko -->   
 
-      <!-- /ko --> 
+      
       %div{style: 'border:1px solid grey; height: 20px; background-color:#E6E6E6;'}
+    <!-- /ko -->    
     <!-- /ko -->    

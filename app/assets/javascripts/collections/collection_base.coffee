@@ -25,9 +25,18 @@ onCollections ->
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @loadCurrentSnapshotMessage()
       @loadAllSites()
+      @loadSites()
+
+    loadSites: =>
+      $.get @sitesUrl(), (data) =>
+        for site in data
+          @addSite @createSite(site)    
 
     loadAllSites: =>
       @allSites = ko.observable()
+      # $.get @sitesUrl(), (data) =>
+      #   for site in data
+      #     @addSite @createSite(site)  
 
     findSiteNameById: (value) =>
       allSites = window.model.currentCollection().allSites()
@@ -38,27 +47,24 @@ onCollections ->
       id = (site for site in window.model.currentCollection().allSites() when site.name is value)[0]?.id
       id
     
-    fetchThresholds: (data) ->
+    fetchThresholds: (data) =>
       thresholds = []
       for threshold in data
         if threshold.collection_id == this.id
           threshold_new = new Threshold(threshold, this.icon)
-          thresholds.push(threshold_new)    
+          thresholds.push(threshold_new)
       thresholds
 
     findSitesByThresholds: (thresholds) =>
       b = false
-      console.log '******************************************'  
       for site in this.sites()
         for key,threshold of thresholds
           if this.operateWithCondition(threshold.conditions(), site)?   
             b = true
-            console.log site.name()+" "+thresholds[key].propertyName()
             thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)  
             break
           else
             b = false
-      console.log '******************************************'
 
       for key,threshold of thresholds
         if threshold.alertedSitesNum() == 0
