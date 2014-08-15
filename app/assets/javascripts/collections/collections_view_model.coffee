@@ -27,11 +27,11 @@ onCollections ->
       @sort(null)
       @sortDirection(null)
       @groupBy(@defaultGroupBy)
-
       initialized = @initMap()
       @reloadMapSites() unless initialized
       @refreshTimeago()
       @makeFixedHeaderTable()
+      @hideRefindAlertOnMap()
 
       @rewriteUrl()
 
@@ -91,7 +91,8 @@ onCollections ->
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
       window.model.updateSitesInfo()
-      
+      @showRefindAlertOnMap()
+
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
     @openDialog:  ->
@@ -141,10 +142,15 @@ onCollections ->
           $(".oleleftexpand").removeClass("oleftexpand")
           @reloadMapSites()
 
+    @hideRefindAlertOnMap: ->
+      $('#sites_whitout_location_alert').hide()
+
+    @showRefindAlertOnMap: ->
+      $('#sites_whitout_location_alert').show()
 
     @createCollection: -> window.location = "/collections/new"
 
-    @getThresholds: ->      
+    @setThresholds: ->     
       if @currentCollection()
         @currentCollection().thresholds([])  
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
@@ -153,7 +159,7 @@ onCollections ->
       else
         $.get "/plugin/alerts/thresholds.json", (data) =>
           for collection in @collections()
-            if collection.sites().length > 0  
+            if collection.checked() == true && collection.sites().length > 0
               thresholds = collection.fetchThresholds(data)
               collection.thresholds(collection.findSitesByThresholds(thresholds))
               thresholds = []

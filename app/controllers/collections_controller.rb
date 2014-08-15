@@ -169,7 +169,7 @@ class CollectionsController < ApplicationController
 
     search.full_text_search params[:term] if params[:term]
     search.alerted_search params[:_alert] if params[:_alert] 
-    search.select_fields(['id', 'name'])
+    search.select_fields(['id', 'name', 'properties'])
     search.apply_queries
 
     results = search.results.map{ |item| item["fields"]}

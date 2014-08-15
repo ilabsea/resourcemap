@@ -6,7 +6,7 @@ onCollections ->
       @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
 
       @onSitesChanged =>
-        @getThresholds()
+        @setThresholds()
         alertsCount = 0
         bounds = @map.getBounds()
         for siteId, marker of @markers
@@ -43,7 +43,6 @@ onCollections ->
         @getAlertedCollections()
 
     @getAlertedCollections: () ->
-      # alert 'getAlertedCollections'
       return unless @showingAlert()
       collection_ids = $.map @collections(), (c) -> 
         c.id if c.checked()
@@ -66,7 +65,7 @@ onCollections ->
           @resetCollectionStatus(collection)
           if collection.checked() == true
             collection.checked(false)
-            collection.checked(true)
+          collection.checked(true)
       @rewriteUrl()
 
 
