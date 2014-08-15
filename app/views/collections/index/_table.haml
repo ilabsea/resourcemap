@@ -35,7 +35,7 @@
 .tableheader.expanded{style: 'height:34px;'}
   %div{style: "float:left"}
     %span{style: "width:auto; float:left"}
-      %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
+      %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
       %span
     %span{style: "float:left;"}
       %span{ko(text: :name), style: "float:left;  width:225px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; display:block; vertical-align:middle;  padding-top:10px"}

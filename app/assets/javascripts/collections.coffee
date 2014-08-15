@@ -21,7 +21,7 @@ onCollections -> if $('#collections-main').length > 0
   # If current_user is guest, she will only have access to the requested collection
   collectionId = $.url().param('collection_id')
 
-  if window.currentUserIsGuest
+  if collectionId
     $.get "/collections/#{collectionId}.json", {}, (collection) ->
       initViewModel [collection]
   else

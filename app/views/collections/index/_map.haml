@@ -67,7 +67,7 @@
     .tableheader
       %div.navBack
         - if can? :index, Collection
-          %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
+          %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
         %span
       %div
         %span.colTitle{ko(text: :name,  attr: { title: :name })}
@@ -343,13 +343,13 @@
         %b Legend     
         / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
         %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
-      %div{style: 'overflow: auto;height: 290px;border-top:1px solid #BDBDBD;border-bottom:1px solid #BDBDBD;max-width:350px;'}
+      %div{style: 'overflow: auto;max-height: 290px;border-top:1px solid #BDBDBD;border-bottom:1px solid #BDBDBD;max-width:350px;'}
         
         
         %div{ko(foreach: :collections), style: ''}
           <!-- ko if: checked() -->
           <!-- ko if: thresholds().length > 0 -->
-          %div{style: 'padding:10px 0px 0px 10px;border-bottom:1px solid #E6E6E6'}
+          %div{style: 'padding:10px 10px 0px 10px;border-bottom:1px solid #E6E6E6'}
             %b{ko(text: :name)}
             / %p{ko(text: 'thresholdsCollection().length')}
             %ul#legend_alert_list{ko(foreach: :thresholds), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
