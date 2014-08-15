@@ -299,7 +299,7 @@
     <!-- ko if: currentCollection() -->
     <!-- ko with: currentCollection -->
     <!-- ko if: thresholds().length > 0 -->
-
+    <!-- ko if: $root.showingLegend() --> 
     <!-- ko if: !$root.alert_legend() -->
     %div#alert-legend{style: 'position: absolute; top: 48px; right: -25px; z-index: 99;'}
       %button.collapse.white.right{ko(click: '$root.toggleAlertLegend') } Legend
@@ -328,9 +328,11 @@
     <!-- /ko -->
     <!-- /ko -->
     <!-- /ko -->
+    <!-- /ko -->
 
 
     <!-- ko if: !currentCollection() -->  
+    <!-- ko if: $root.showingLegend() -->  
     <!-- ko if: !$root.alert_legend() -->
     %div#alert-legend{style: 'position: absolute; top: 48px; right: -25px; z-index: 99;'}
       %button.collapse.white.right{ko(click: '$root.toggleAlertLegend') } Legend
@@ -370,5 +372,6 @@
          
       %div{style: 'height: 20px; background-color:#E6E6E6;border-radius: 0px 0px 10px 10px;'}
     <!-- /ko -->
+    <!-- /ko --> 
     <!-- /ko --> 
 
