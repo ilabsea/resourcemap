@@ -6,13 +6,13 @@ onCollections ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
       @alert_legend = ko.observable(false)
-      @showingLegend = ko.observable(false)
+      @showingLegend = ko.observable(true)
       @alert_text = ko.observable()
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
         @currentCollection()?.currentSnapshot      
-
+      
     @findCollectionById: (id) -> (x for x in @collections() when x.id == parseInt id)[0]
     
     @goToRoot: ->
@@ -152,13 +152,12 @@ onCollections ->
     @createCollection: -> window.location = "/collections/new"
 
     @setThresholds: ->     
+      console.log 'threshold'
       if @currentCollection()
         @currentCollection().thresholds([])  
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
           thresholds = @currentCollection().fetchThresholds(data)     
           @currentCollection().thresholds(@currentCollection().findSitesByThresholds(thresholds))
-          @alert_legend(true)
-          @showingLegend(true)
       else
         $.get "/plugin/alerts/thresholds.json", (data) =>
           for collection in @collections()
@@ -166,9 +165,19 @@ onCollections ->
               thresholds = collection.fetchThresholds(data)
               collection.thresholds(collection.findSitesByThresholds(thresholds))
               thresholds = []
-          @alert_legend(true)
-          @showingLegend(true)
 
+          @showLegendState()
+
+    @showLegendState: ->
+      if @alert_legend() == true
+        for collection in @collections()
+          if collection.checked() == true && collection.thresholds().length > 0
+            @alert_legend(true)
+            @showingLegend(true)
+            break
+          else
+            @alert_legend(false)
+            @showingLegend(false)        
 
     @toggleAlertLegend: ->
       if @alert_legend() == true

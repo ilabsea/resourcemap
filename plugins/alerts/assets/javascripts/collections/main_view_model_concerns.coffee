@@ -4,9 +4,10 @@ onCollections ->
       @alertsCount = ko.observable(0)
       @showingAlert= ko.observable(false)
       @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
+      
+      @setThresholds()
 
       @onSitesChanged =>
-        @setThresholds()
         alertsCount = 0
         bounds = @map.getBounds()
         for siteId, marker of @markers

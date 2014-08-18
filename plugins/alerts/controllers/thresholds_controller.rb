@@ -14,8 +14,9 @@ class ThresholdsController < ApplicationController
         format.json { render json: thresholds }
       end
     else
+      thresholds = Threshold.all
       respond_to do |format|
-        format.json { render json: Threshold.all }
+        format.json { render json: thresholds }
       end
     end
   end

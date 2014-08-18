@@ -106,7 +106,6 @@ onCollections ->
       return unless @map
 
       bounds = @map.getBounds()
-
       # Wait until map is loaded
       unless bounds
         setTimeout(( => @reloadMapSites(callback)), 100)

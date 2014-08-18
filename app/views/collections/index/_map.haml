@@ -301,8 +301,11 @@
     <!-- ko if: thresholds().length > 0 -->
     <!-- ko if: $root.showingLegend() --> 
     <!-- ko if: !$root.alert_legend() -->
-    %div#alert-legend{style: 'position: absolute; top: 48px; right: -25px; z-index: 99;'}
-      %button.collapse.white.right{ko(click: '$root.toggleAlertLegend') } Legend
+    %div#alert-legend{style: 'position: absolute; top: 45px; right: 15px; z-index: 99;'}
+      / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend') } Legend
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#ffffff; vertical-align:middle; padding-left:10px; font-size:15px;border-radius: 5px 5px 5px 5px;'}
+        %b Legend
+        %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px;'}      
     <!-- /ko --> 
 
     <!-- ko if: $root.alert_legend() -->
@@ -334,8 +337,11 @@
     <!-- ko if: !currentCollection() -->  
     <!-- ko if: $root.showingLegend() -->  
     <!-- ko if: !$root.alert_legend() -->
-    %div#alert-legend{style: 'position: absolute; top: 48px; right: -25px; z-index: 99;'}
-      %button.collapse.white.right{ko(click: '$root.toggleAlertLegend') } Legend
+    %div#alert-legend{style: 'position: absolute; top: 45px; right: 15px; z-index: 99; '}
+      / %button.white.right{ko(click: '$root.toggleAlertLegend') } Legend
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#ffffff; vertical-align:middle; padding-left:10px; font-size:15px;  border-radius: 5px 5px 5px 5px; float: left;'}
+        %b Legend
+        %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px'}      
     <!-- /ko -->       
     
     <!-- ko if: $root.alert_legend() -->
@@ -345,6 +351,7 @@
         %b Legend     
         / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
         %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
+
       %div{style: 'overflow: auto;max-height: 290px;border-top:1px solid #BDBDBD;border-bottom:1px solid #BDBDBD;max-width:350px;'}
         
         
