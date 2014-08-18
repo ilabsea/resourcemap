@@ -152,7 +152,6 @@ onCollections ->
     @createCollection: -> window.location = "/collections/new"
 
     @setThresholds: ->     
-      console.log 'threshold'
       if @currentCollection()
         @currentCollection().thresholds([])  
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
