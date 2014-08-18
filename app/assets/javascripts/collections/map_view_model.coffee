@@ -22,6 +22,7 @@ onCollections ->
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
+          @setThresholds()
           @reloadMapSites()
 
       @showingMap.subscribe =>

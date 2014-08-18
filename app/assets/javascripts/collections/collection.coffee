@@ -22,7 +22,7 @@ onCollections ->
         if window.model
           defaultOptions =[window.model.defaultGroupBy]
         defaultOptions.concat(@fields().filter((f) -> f.showInGroupBy))
-
+      
     isSearch: => false
 
     sitesUrl: -> "/collections/#{@id}/sites.json"

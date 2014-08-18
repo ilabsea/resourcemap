@@ -7,12 +7,11 @@ onCollections ->
       @currentCollection = ko.observable()
       @alert_legend = ko.observable(false)
       @showingLegend = ko.observable(true)
-      @alert_text = ko.observable()
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
-        @currentCollection()?.currentSnapshot      
-      
+        @currentCollection()?.currentSnapshot
+
     @findCollectionById: (id) -> (x for x in @collections() when x.id == parseInt id)[0]
     
     @goToRoot: ->
@@ -168,21 +167,17 @@ onCollections ->
           @showLegendState()
 
     @showLegendState: ->
-      if @alert_legend() == true
-        for collection in @collections()
-          if collection.checked() == true && collection.thresholds().length > 0
-            @alert_legend(true)
-            @showingLegend(true)
-            break
-          else
-            @alert_legend(false)
-            @showingLegend(false)        
-
+      for collection in @collections()
+        if collection.checked() == true && collection.thresholds().length > 0
+          @showingLegend(true)
+          break
+        else
+          @alert_legend(false)
+          @showingLegend(false)
+          
     @toggleAlertLegend: ->
       if @alert_legend() == true
         @alert_legend(false)
-        @alert_text('Legend')
       else
         @alert_legend(true)
-        @alert_text('Hide')
 

@@ -5,9 +5,7 @@ onCollections ->
       @showingAlert= ko.observable(false)
       @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
       
-      @setThresholds()
-
-      @onSitesChanged =>
+      @onSitesChanged =>      
         alertsCount = 0
         bounds = @map.getBounds()
         for siteId, marker of @markers
@@ -18,6 +16,7 @@ onCollections ->
             alertsCount += cluster.data.alert_count
         alertsCount += 1 if @selectedSite()?.alert?()
         @alertsCount alertsCount
+      @setThresholds()
       @aliasMethodChain "setMarkerIcon", "Alerts"
 
     @setMarkerIconWithAlerts: (marker, icon) ->
