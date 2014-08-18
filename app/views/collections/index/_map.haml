@@ -303,14 +303,14 @@
     <!-- ko if: !$root.alert_legend() -->
     %div#alert-legend{style: 'position: absolute; top: 45px; right: 15px; z-index: 99;'}
       / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend') } Legend
-      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#ffffff; vertical-align:middle; padding-left:10px; font-size:15px;border-radius: 5px 5px 5px 5px;'}
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#ffffff; vertical-align:middle; padding-left:10px; font-size:15px;border-radius: 5px 5px 5px 5px;'}
         %b Legend
         %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px;'}      
     <!-- /ko --> 
 
     <!-- ko if: $root.alert_legend() -->
     %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:200px;overflow-y:auto;border-radius:10px'}
-      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
         %b Legend     
         / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
         %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
@@ -339,15 +339,15 @@
     <!-- ko if: !$root.alert_legend() -->
     %div#alert-legend{style: 'position: absolute; top: 45px; right: 15px; z-index: 99; '}
       / %button.white.right{ko(click: '$root.toggleAlertLegend') } Legend
-      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#ffffff; vertical-align:middle; padding-left:10px; font-size:15px;  border-radius: 5px 5px 5px 5px; float: left;'}
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#ffffff; vertical-align:middle; padding-left:10px; font-size:15px;  border-radius: 5px 5px 5px 5px; float: left;'}
         %b Legend
-        %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px'}      
+        %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px 7px'}      
     <!-- /ko -->       
     
     <!-- ko if: $root.alert_legend() -->
     %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:350px;border:1px solid #BDBDBD;border-radius:10px'}
       
-      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
         %b Legend     
         / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
         %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}

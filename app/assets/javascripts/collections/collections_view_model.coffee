@@ -32,6 +32,7 @@ onCollections ->
       @refreshTimeago()
       @makeFixedHeaderTable()
       @hideRefindAlertOnMap()
+      @setThresholds()
 
       @rewriteUrl()
 
@@ -92,6 +93,7 @@ onCollections ->
       window.adjustContainerSize()
       window.model.updateSitesInfo()
       @showRefindAlertOnMap()
+      @setThresholds()
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
@@ -156,6 +158,8 @@ onCollections ->
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
           thresholds = @currentCollection().fetchThresholds(data)     
           @currentCollection().thresholds(@currentCollection().findSitesByThresholds(thresholds))
+          if @currentCollection().thresholds().length > 0
+            @showingLegend(true)
       else
         $.get "/plugin/alerts/thresholds.json", (data) =>
           for collection in @collections()
@@ -172,12 +176,12 @@ onCollections ->
           @showingLegend(true)
           break
         else
-          @alert_legend(false)
           @showingLegend(false)
-          
+
     @toggleAlertLegend: ->
-      if @alert_legend() == true
-        @alert_legend(false)
-      else
-        @alert_legend(true)
+      if @showingLegend() == true
+        if @alert_legend() == true
+          @alert_legend(false)
+        else
+          @alert_legend(true)
 
