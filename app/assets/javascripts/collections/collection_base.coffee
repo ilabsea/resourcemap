@@ -119,6 +119,7 @@ onCollections ->
 
       @fieldsInitialized = true
       $.get "/collections/#{@id}/fields", {}, (data) =>
+        console.log data
         @layers($.map(data, (x) => new Layer(x)))
 
         fields = []
@@ -128,11 +129,11 @@ onCollections ->
 
         @fields(fields)
         @refineFields(fields)
-        @refineFields.sort (f1, f2) ->
-          lowerF1 = f1.name.toLowerCase()
-          lowerF2 = f2.name.toLowerCase()
-          if lowerF1 == lowerF2 then 0 else (if lowerF1 > lowerF2 then 1 else -1)
-        callback() if callback && typeof(callback) == 'function'
+        # @refineFields.sort (f1, f2) ->
+        #   lowerF1 = f1.name.toLowerCase()
+        #   lowerF2 = f2.name.toLowerCase()
+        #   if lowerF1 == lowerF2 then 0 else (if lowerF1 > lowerF2 then 1 else -1)
+        # callback() if callback && typeof(callback) == 'function'
 
     findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 

@@ -11,7 +11,6 @@ module Collection::CsvConcern
 
   def to_csv(elastic_search_api_results = new_search.unlimited.api_results, current_user)
     fields = self.fields.all
-
     CSV.generate do |csv|
       header = ['resmap-id', 'name', 'lat', 'long']
       fields.each { |field| header << field.code }
