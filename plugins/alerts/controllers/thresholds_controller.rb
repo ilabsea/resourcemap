@@ -14,7 +14,12 @@ class ThresholdsController < ApplicationController
         format.json { render json: thresholds }
       end
     else
-      thresholds = Threshold.get_thresholds_by_user current_user
+      if current_user
+        thresholds = Threshold.get_thresholds_by_user current_user        
+      else
+        thresholds = Threshold.get_thresholds_with_public_collection
+      end
+
       respond_to do |format|
         format.json { render json: thresholds }
       end

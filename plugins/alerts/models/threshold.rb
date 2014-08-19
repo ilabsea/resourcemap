@@ -37,4 +37,8 @@ class Threshold < ActiveRecord::Base
     Threshold.where(:collection_id => Collection.joins(:memberships).where("memberships.user_id = :user_id", :user_id => user.id))   
   end
 
+  def self.get_thresholds_with_public_collection
+    Threshold.where(:collection_id => Collection.public_collections)
+  end
+
 end
