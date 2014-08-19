@@ -32,4 +32,9 @@ class Threshold < ActiveRecord::Base
   def condition(hash, properties)
     Threshold::Condition.new hash, properties
   end
+
+  def self.get_thresholds_by_user(user)
+    Threshold.where(:collection_id => Collection.joins(:memberships).where("memberships.user_id = :user_id", :user_id => user.id))   
+  end
+
 end
