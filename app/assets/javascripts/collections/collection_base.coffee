@@ -119,7 +119,6 @@ onCollections ->
 
       @fieldsInitialized = true
       $.get "/collections/#{@id}/fields", {}, (data) =>
-        console.log data
         @layers($.map(data, (x) => new Layer(x)))
 
         fields = []

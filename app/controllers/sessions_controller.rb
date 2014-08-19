@@ -1,6 +1,7 @@
 class SessionsController < Devise::SessionsController
   include Concerns::MobileDeviceDetection
-
+  include RecaptchaSetting
+  
   before_filter :prepare_for_mobile, :only => [:new]
   def new
     ip = meet_alert_ip
