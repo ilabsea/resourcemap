@@ -19,7 +19,7 @@ class CollectionsController < ApplicationController
 
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
-  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
+  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders, :quotas]
 
   #before_filter :prepare_for_mobile
 
