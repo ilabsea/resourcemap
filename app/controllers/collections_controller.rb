@@ -61,7 +61,7 @@ class CollectionsController < ApplicationController
     if current_user.create_collection collection
       current_user.collection_count += 1
       current_user.update_successful_outcome_status
-      current_user.save!
+      current_user.save!(:validate => false)
       redirect_to collection_path(collection), notice: "Collection #{collection.name} created"
     else
       render :new
