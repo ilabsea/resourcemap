@@ -27,6 +27,24 @@
   %p.smalltext This field must be report on every report.
   = ko_check_box_tag :is_mandatory, css: {error: :codeError}
 
+  /ko if: kind() == 'yes_no'
+  %hr/
+  = ko_check_box_tag :enable_skip_logic, css: {error: :codeError}
+  %label
+    Enable skip logic for this field
+  
+
+  %div{ko(if: :enable_skip_logic)}
+    %p.left{style: 'padding-right:10px'} if input is
+    = select_tag :sel_opt, options_for_select([['Yes', 'yes'], ['No', 'no']])
+    %br
+    %p.left{style: 'padding-right:10px'} skip form question to
+    %select
+      <!-- ko foreach: $root.layers -->
+      %option{ko(value: :name, text: :name)}
+      <!-- /ko -->
+  //ko
+  
   /ko if: kind() == 'select_one' || kind() == 'select_many'
   %hr/
   %label{ko(css: {error: 'impl().optionsError'})} Options

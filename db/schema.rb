@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140729032620) do
+ActiveRecord::Schema.define(:version => 20140820094827) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -78,12 +78,13 @@ ActiveRecord::Schema.define(:version => 20140729032620) do
     t.string   "name"
     t.string   "code"
     t.string   "kind"
-    t.datetime "created_at",                                             :null => false
-    t.datetime "updated_at",                                             :null => false
-    t.binary   "config",        :limit => 2147483647
+    t.datetime "created_at",                                                 :null => false
+    t.datetime "updated_at",                                                 :null => false
+    t.binary   "config",            :limit => 2147483647
     t.integer  "ord"
     t.text     "metadata"
-    t.boolean  "is_mandatory",                        :default => false
+    t.boolean  "is_mandatory",                            :default => false
+    t.boolean  "enable_skip_logic",                       :default => false
   end
 
   create_table "import_jobs", :force => true do |t|
@@ -192,6 +193,14 @@ ActiveRecord::Schema.define(:version => 20140729032620) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.text     "rule"
+  end
+
+  create_table "reports", :force => true do |t|
+    t.string   "value"
+    t.integer  "field_id"
+    t.integer  "layer_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "share_channels", :force => true do |t|
