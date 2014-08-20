@@ -29,7 +29,7 @@ class Mobile::SitesController < SitesController
       Site::UploadUtils.uploadFile(params[:fileUpload])
       current_user.site_count += 1
       current_user.update_successful_outcome_status
-      current_user.save!
+      current_user.save!(:validate => false)
       render json: {site: site}, :status => 201
     else
       errors = []
@@ -57,7 +57,7 @@ class Mobile::SitesController < SitesController
       Site::UploadUtils.uploadFile(params[:fileUpload])
       current_user.site_count += 1
       current_user.update_successful_outcome_status
-      current_user.save!
+      current_user.save!(:validate => false)
       render json: {site: site}, :status => 201
     else
       errors = []
@@ -87,7 +87,7 @@ class Mobile::SitesController < SitesController
         Site::UploadUtils.uploadFile(params[:fileUpload])
         current_user.site_count += 1
         current_user.update_successful_outcome_status
-        current_user.save!
+        current_user.save!(:validate => false)
         render json: {site: site, status: 201}
       end
     rescue => ex
@@ -111,7 +111,7 @@ class Mobile::SitesController < SitesController
         Site::UploadUtils.uploadFile(params[:fileUpload])
         current_user.site_count += 1
         current_user.update_successful_outcome_status
-        current_user.save!
+        current_user.save!(:validate => false)
         render json: {site: site, status: 201}
       end
     rescue => ex
