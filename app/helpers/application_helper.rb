@@ -38,4 +38,12 @@ module ApplicationHelper
   def field_edit_view(kind)
     Field::plugin_kinds.has_key?(kind) ? Field::plugin_kinds[kind][:edit_view] : "collections/fields/#{kind}_edit_view"
   end
+
+  def show_language_options
+    opt = []
+    Language.all.each do |l|
+      opt.push("<a href='#'>#{l["name"]}</a>")
+    end
+    return opt.join(" | ").html_safe
+  end
 end

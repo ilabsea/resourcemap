@@ -48,6 +48,9 @@
         = link_to "Create account", new_user_registration_path, class: 'fedit'
       %li
         = link_to "Log in", new_user_session_path, class: 'fuser'
+    %li.language-switcher
+      %div{style: "padding-top:10px;"}
+        = show_language_options
 - content_for :footer_links do
   %a{:href => root_path} Home
   %span.VersionRevision{style: "display: none;"} 

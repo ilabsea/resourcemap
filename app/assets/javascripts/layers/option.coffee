@@ -6,6 +6,11 @@ onLayers ->
       @label = ko.observable(data?.label)
       @editing = ko.observable(false)
       @hasFocus = ko.observable(false)
+      for l in window.languages
+        if l.code() != "en"
+          this["#{l.code()}"] = ko.observable(data?["#{l.code()}"])
+
+
 
     edit: => @editing(true)
 
@@ -18,4 +23,16 @@ onLayers ->
       id: @id()
       code: @code()
       label: @label()
+
+    toJSONByLanguage: =>
+      json =
+        id: @id()
+        code: @code()
+        label: @label()
+      for l in window.languages
+        if l.code() != "en"
+          json[l.code()] = this["#{l.code()}"]()
+      json
+
+
 
