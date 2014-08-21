@@ -9,7 +9,7 @@ onCollections ->
       @kind = data.kind
       @is_mandatory = data.is_mandatory
       @enable_skip_logic = data.enable_skip_logic
-      @field_logic = data.field_logic
+      @field_logic = data.field_logic ? 'adsfasdf' 
       @photo = '' 
       @photoPath = '/photo_field/'
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']

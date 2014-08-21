@@ -10,7 +10,7 @@ onLayers ->
       @config = data?.config
       @metadata = data?.metadata
       @is_mandatory = data?.is_mandatory
-      @field_logic = data?.field_logic
+      @field_logic = data?.field_logic ? 'asdfasdf'
 
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
@@ -72,6 +72,7 @@ onLayers ->
         layer_id: @layer().id()
         is_mandatory: @is_mandatory
         enable_skip_logic: @enable_skip_logic
+        field_logic: @field_logic
       @impl().toJSON(json)
       json
 

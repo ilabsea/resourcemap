@@ -153,6 +153,7 @@ class Collection < ActiveRecord::Base
           ord: field.ord,
           is_mandatory: field.is_mandatory,
           enable_skip_logic: field.enable_skip_logic,
+          field_logic: 'aaaaaaaaaa',
           writeable: user.is_guest ? false : !lms || lms[field.layer_id].write
         }
       end
