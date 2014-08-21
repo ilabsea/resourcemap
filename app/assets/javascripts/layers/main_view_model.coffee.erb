@@ -64,6 +64,7 @@ onLayers ->
 
     saveLayerCallback: (data) =>
       #if layer is new, we need to set id
+      console.log data
       $.status.showNotice("Layer '#{@currentLayer().name()}' successfully #{if @currentLayer().id() then 'saved' else 'created'}", 2000)
       @currentLayer().id(data.id)
       layersToReloadOrder = [@currentLayer()]
@@ -71,16 +72,13 @@ onLayers ->
       i = 0
       while i < @currentLayer().fields().length
         field = @currentLayer().fields()[i]
-        # console.log field
         dataField = (dataField for dataField in data.fields when dataField.code is field.code())
+        console.log dataField
         if dataField.length
-          console.log dataField.length
           i += 1
           #if field is new, we need to set id
           field.id(dataField[0].id)
         else
-          console.log 'field'
-          console.log field
           field.layer().fields().push(field)
           layersToReloadOrder.push(field.layer())
           @currentLayer().fields.remove(field)

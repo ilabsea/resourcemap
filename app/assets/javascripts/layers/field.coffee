@@ -6,10 +6,12 @@ onLayers ->
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
+      @enable_skip_logic = ko.observable data?.enable_skip_logic ? false
       @config = data?.config
       @metadata = data?.metadata
       @is_mandatory = data?.is_mandatory
-      @enable_skip_logic = ko.observable data?.enable_skip_logic ? false
+      @field_logic = data?.field_logic
+
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
       @ord = ko.observable data?.ord
@@ -28,10 +30,7 @@ onLayers ->
         if !@hasCode() then return "the field #{@fieldErrorDescription()} is missing a Code"
         if (@code() in ['lat', 'long', 'name', 'resmap-id', 'last updated']) then return "the field #{@fieldErrorDescription()} code is reserved"
         null
-      # console.log @enable_skip_logic()
-
-      # @shouldShowSkipLogic = ko.computed =>
-      #   @enable_skip_logic() 
+        
       @error = ko.computed => @nameError() || @codeError() || @impl().error()
       @valid = ko.computed => !@error()
 
