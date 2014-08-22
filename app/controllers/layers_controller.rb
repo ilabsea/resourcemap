@@ -12,7 +12,7 @@ class LayersController < ApplicationController
       end
       if current_user_snapshot.at_present?
 
-        json = layers.includes(:fields).all.as_json(include: :fields, :field_logics).each { |layer|
+        json = layers.includes(:fields).all.as_json(include: :fields).each { |layer|
           layer['threshold_ids'] = Layer.find(layer['id']).get_associated_threshold_ids
         }
 

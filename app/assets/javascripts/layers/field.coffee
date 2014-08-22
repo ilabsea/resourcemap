@@ -1,16 +1,26 @@
 onLayers ->
   class @Field
     constructor: (layer, data) ->
+      # console.log window.model.layers()
+      # console.log @layers()
       @layer = ko.observable layer
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
-      @enable_skip_logic = ko.observable data?.enable_skip_logic ? false
+      
+      @is_enable_field_logic = ko.observable data?.is_enable_field_logic ? false
+      # @field_logic_value = ko.observableArray data?.field_logic_value ? ['yes']
+      # @field_logic_layer_id = ko.observable data?.field_logic_layer_id ? 
+
       @config = data?.config
       @metadata = data?.metadata
       @is_mandatory = data?.is_mandatory
-      @field_logic = data?.field_logic ? 'asdfasdf'
+      
+
+
+      
+      # @field_logic_value = ko.observable
 
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
@@ -40,6 +50,9 @@ onLayers ->
 
     selectingLayerClick: =>
       @switchMoveToLayerElements true
+
+    # selectingLayerSelect: =>
+
 
     selectingLayerSelect: =>
       return unless @selecting
@@ -71,8 +84,9 @@ onLayers ->
         ord: @ord()
         layer_id: @layer().id()
         is_mandatory: @is_mandatory
-        enable_skip_logic: @enable_skip_logic
-        field_logic: @field_logic
+        is_enable_field_logic: @is_enable_field_logic
+        # field_logic_value: @field_logic_value
+        # field_logic_layer_id: @field_logic_layer_id
       @impl().toJSON(json)
       json
 

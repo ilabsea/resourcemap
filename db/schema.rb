@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140820095438) do
+ActiveRecord::Schema.define(:version => 20140822042341) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -72,27 +72,19 @@ ActiveRecord::Schema.define(:version => 20140820095438) do
 
   add_index "field_histories", ["field_id"], :name => "index_field_histories_on_field_id"
 
-  create_table "field_logics", :force => true do |t|
-    t.string   "value"
-    t.integer  "field_id"
-    t.integer  "layer_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
   create_table "fields", :force => true do |t|
     t.integer  "collection_id"
     t.integer  "layer_id"
     t.string   "name"
     t.string   "code"
     t.string   "kind"
-    t.datetime "created_at",                                                 :null => false
-    t.datetime "updated_at",                                                 :null => false
-    t.binary   "config",            :limit => 2147483647
+    t.datetime "created_at",                                                     :null => false
+    t.datetime "updated_at",                                                     :null => false
+    t.binary   "config",                :limit => 2147483647
     t.integer  "ord"
     t.text     "metadata"
-    t.boolean  "is_mandatory",                            :default => false
-    t.boolean  "enable_skip_logic",                       :default => false
+    t.boolean  "is_mandatory",                                :default => false
+    t.boolean  "is_enable_field_logic",                       :default => false
   end
 
   create_table "import_jobs", :force => true do |t|
