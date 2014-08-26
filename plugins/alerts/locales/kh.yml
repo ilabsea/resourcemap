@@ -1,0 +1,70 @@
+kh:
+  javascripts:
+    plugins:
+      alerts:
+        one_alert: "ជូនដំណឹង 1"
+        n_alerts: "ជូនដំណឹង %{n}"
+        cant_save: "មិនអាចរក្សាទុក: %{error}"
+        operators:
+          is_less_than: "តិចជាង"
+          is_greater_than: "ធំជាង"
+          is_equal_to: "ស្មើនឹង"
+          contains: "មាន"
+        value_types:
+          a_value_of: "តម្លៃស្មើ"
+          a_percentage_of: "តម្លៃជាភាគរយស្មើ"
+        errors:
+          name_is_missing: "បាត់ឈ្មោះជូនដំណឹង"
+          must_have_at_least_one_condition: "កម្រិតចាប់ផ្ដើមត្រូវតែមានលក្ខខណ្ឌយ៉ាងហោចណាស់មួយ"
+          condition: "លក្ខខណ្ឌ #%{n} %{message}"
+          value_is_missing: "បាត់តម្លៃបញ្ចូល"
+          value_is_invalid: "តម្លៃបញ្ចូលមិនត្រឹមត្រូវ"
+          notification_message_is_missing: "បាត់សាររបាយការ"
+  views:
+    collections:
+      tab:
+        alerts: "ការជូនដំណឹង"
+    plugins:
+      alerts:
+        title: "ការជូនដំណឹង"
+        close_alert: "បិទការជូនដំណឹង"
+        move_up: "ផ្លាស់ទីឡើងលើ"
+        move_down: "ផ្លាស់ទីចុះក្រោម"
+        in: "នៅក្នុង"
+        all_sites: "តំបន់ទាំងអស់"
+        when: "នៅពេលដែល"
+        and: "និង"
+        or: "ឬ"
+        of: "នៃ"
+        change_icon_to: "ផ្លាស់ប្តូររូបតំណាងទៅជា:"
+        edit: "កែប្រែ"
+        thresholds: "កម្រិតចាប់ផ្ដើម"
+        form:
+          properties: "លក្ខណៈសម្បត្តិ"
+          name: "ឈ្មោះ"
+          apply_this_alert_to: "អនុវត្តការជូនដំណឹងនេះទៅ"
+          all_sites: "តំបន់ទាំងអស់"
+          some_sites: "តំបន់មួយចំនួន"
+          conditions: "លក្ខខណ្ឌ"
+          all_of_following_conditions: "ទាំងអស់នៃលក្ខខណ្ឌដូចខាងក្រោម"
+          any_of_the_following_conditions: "ណាមួយនៃលក្ខខណ្ឌដូចខាងក្រោម"
+          compared_to: "ធៀបទៅនឹង"
+          add_another_condition: "បន្ថែមលក្ខខណ្ឌផ្សេងទៀត"
+          change_site_display_on_map: "ផ្លាស់ប្តូរការបង្ហាញតំបន់នៅលើផែនទី"
+          notifications: "របាយការ"
+          do_not_send_notifications: "កុំផ្ញើរបាយការ"
+          notify_these_people: "រាយការណ៍ទៅមនុស្សទាំងនេះ"
+          send_emails_to: "ផ្ញើអ៊ីមែលទៅ:"
+          send_text_messages_to: "ផ្ញើសារជាអក្សរទៅ:"
+          message: "សារ"
+          use_the_following_expression: "ប្រើកន្សោមដូចខាងក្រោមនេះដើម្បីបំពេញសាររបស់អ្នកជាមួយនឹងទិន្នន័យតំបន់"
+          site_name: "ឈ្មោះតំបន់"
+          message_template: "ការជូនដំណឹងអំពី[site name]។ ការងារបច្ចុប្បន្នគឺ[occupation]"
+          save: "រក្សាទុក"
+          cancel: "បោះបង់"
+          please: "សូម"
+          add_layers: "បន្ថែមស្រទាប់"
+          first_before_managing_your_thresholds: "មុនពេលគ្រប់គ្រងកម្រិតចាប់ផ្ដើមលក្ខខណ្ឌ"
+          add_alert: "បន្ថែមការជូនដំណឹង"
+          sample_phone_number: "85512345678"
+          compare_to: "ប្រៀបធៀបទៅ"
