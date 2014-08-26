@@ -66,3 +66,5 @@ kh:
           key: "គន្លឹះ"
           value: "តំលៃ"
           add_attribute: "បន្ថែមនូវ គុណលក្ខណះ"
+          mandatory: "សំខាន់"
+          this_field_must_be_report_on_every_report: "ហ្វៀល​​​នេះត្រូវតែបំពេញក្នុងរបាយការណ៏។"

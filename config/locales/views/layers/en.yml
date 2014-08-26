@@ -66,3 +66,5 @@ en:
           key: "Key"
           value: "Value"
           add_attribute: "Add attribute"
+          mandatory: "Mandatory"
+          this_field_must_be_report_on_every_report: "This field must be report on every report."
