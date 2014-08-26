@@ -26,6 +26,8 @@ ActionDispatch::Reloader.to_prepare do
         end
       )
     end
+    # load plugins/{plug_in_name}/locales/
+    Rails.configuration.i18n.load_path += Dir[File.join(plugin_dir, 'locales', '**', '*.{rb,yml}').to_s]
   end
 
   Plugin.hooks(:extend_model).each do |extension|
