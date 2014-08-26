@@ -89,7 +89,7 @@ class Site < ActiveRecord::Base
     properties.each do |es_code, value|
       field = fields[es_code]
       if field
-        standardized_properties[es_code] = field.standadrize(value)  
+        standardized_properties[es_code] = field.standadrize(value)
       end
     end
     self.properties = standardized_properties
@@ -126,7 +126,7 @@ class Site < ActiveRecord::Base
       end
     end
     fields_mandatory.each do |f|
-      errors.add(:properties, {f.id => "#{f.code} is required."})
+      errors.add(:properties, {f.id.to_s => "#{f.code} is required."})
     end
 
   end

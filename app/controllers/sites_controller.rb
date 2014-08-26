@@ -60,7 +60,6 @@ class SitesController < ApplicationController
 
   def update_property
     field = site.collection.fields.where_es_code_is params[:es_code]
-
     if not site.collection.site_ids_permission(current_user).include? site.id
       return head :forbidden unless current_user.can_write_field? field, site.collection, params[:es_code]
     end

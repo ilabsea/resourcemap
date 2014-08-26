@@ -308,7 +308,7 @@ Collection.valiateMandatoryText = function(field){
   return true
 }
 
-Collection.prototype.validateEmail = function(email) { 
+Collection.prototype.validateEmail = function(email) {
   if(email == ""){
     return true;
   }

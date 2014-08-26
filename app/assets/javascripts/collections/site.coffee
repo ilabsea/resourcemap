@@ -70,7 +70,6 @@ onCollections ->
         window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[esCode], newValue: value}])
 
       @properties()[esCode] = value
-
       $.ajax({
         type: "POST",
         url: "/sites/#{@id()}/update_property.json",
@@ -155,16 +154,16 @@ onCollections ->
           try
             propertyErrors = JSON.parse(data.responseText)["properties"]
             for field in @fields()
-                field.errorMessage("")
+              field.errorMessage("")
             if data.status == 422 && propertyErrors
               for prop in propertyErrors
                 for es_code, value of prop
-                  f = @collection.findFieldByEsCode(es_code)
+                  f = this.findFieldByEsCode(es_code)
                   f.errorMessage(value)
             else
               $.handleAjaxError(data)
           catch error
-              $.handleAjaxError(data))
+            $.handleAjaxError(data))
 
 
     create_site: (json, callback, callbackError) =>
@@ -191,7 +190,7 @@ onCollections ->
           try
             propertyErrors = JSON.parse(data.responseText)["properties"]
             for field in @fields()
-                field.errorMessage("")
+              field.errorMessage("")
             if data.status == 422 && propertyErrors
               for prop in propertyErrors
                 for es_code, value of prop

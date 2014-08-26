@@ -27,20 +27,7 @@
   %p.smalltext This field must be report on every report.
   = ko_check_box_tag :is_mandatory, css: {error: :codeError}
 
-  /ko if: kind() == 'yes_no'
-  %hr/
-  = ko_check_box_tag :is_enable_field_logic, css: {error: :codeError}
-  %label
-    Enable skip logic for this field
 
-
-  / %div{ko(if: :is_enable_field_logic)}
-  /   %p.left{style: 'padding-right:10px'} if input is
-  /   %select{"data-bind" => "options: ['yes', 'no'], selectedOptions: field_logic_value"}
-  /   %br
-  /   %p.left{style: 'padding-right:10px'} skip form question to
-  /   = select_tag :field_logic_layer_id, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', optionsValue: 'function(item) { return item.id() }', value: 'field_logic_layer_id, selectedOptions: field_logic_layer_id')
-  / //ko
   
   /ko if: kind() == 'select_one' || kind() == 'select_many'
   %hr/

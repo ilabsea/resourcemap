@@ -1,8 +1,6 @@
 onLayers ->
   class @Field
     constructor: (layer, data) ->
-      # console.log window.model.layers()
-      # console.log @layers()
       @layer = ko.observable layer
       @id = ko.observable data?.id
       @name = ko.observable data?.name
@@ -17,10 +15,6 @@ onLayers ->
       @metadata = data?.metadata
       @is_mandatory = data?.is_mandatory
       
-
-
-      
-      # @field_logic_value = ko.observable
 
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '

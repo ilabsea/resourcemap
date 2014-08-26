@@ -66,7 +66,7 @@ onCollections ->
 
       @editing = ko.observable false
       @expanded = ko.observable false # For select_many
-      @errorMessage = ko.observable ""
+      @errorMessage = ko.observable()
       @error = ko.computed => !!@errorMessage()
 
     setValueFromSite: (value) =>
@@ -139,7 +139,10 @@ onCollections ->
       switch event.keyCode
         when 13 then @save()
         when 27 then @exit()
-        else true
+        else
+          if event.keyCode > 31 && (event.keyCode < 48 || event.keyCode > 57)
+            return false
+          return true
 
     exit: =>
       @value(@originalValue)
