@@ -3,12 +3,12 @@
     .steps-container.s3
       %span.circle.first{:class => if step >= 1 then 'green' end}
         %span.inner
-          %span.step-name Upload
+          %span.step-name= t('views.import_wizards.upload')
       %span.line-fill{:class => if step >= 2 then 'green' end}
       %span.circle{:class => if step >= 2 then 'green' end}
         %span.inner
-          %span.step-name Curate
+          %span.step-name= t('views.import_wizards.curate')
       %span.line-fill{:class => if step >= 3 then 'green' end}
       %span.circle.last{:class => if step >= 3 then 'green' end}
         %span.inner
-          %span.step-name Import
+          %span.step-name= t('views.import_wizards.import')

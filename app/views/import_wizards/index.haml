@@ -4,21 +4,21 @@
 = render '/tabs'
 
 .tabsline
-  %h2 Import wizard
-  %p This wizard will guide you through importing a CSV file
+  %h2= t('views.import_wizards.title')
+  %p= t('views.import_wizards.description')
   %br/
 
   - if (import_job && import_job.status_finished?)
     .grey
-      Note: your last import to this collection was based on a file named #{import_job.original_filename}, #{time_ago_in_words(import_job.finished_at)} ago.
+      = t('views.import_wizards.finish_note', filename: import_job.original_filename, when: time_ago_in_words(import_job.finished_at))
       %br
       %br
 
   - if (import_job && import_job.status_failed?)
     .grey
-      Note: your last import to this collection failed, and was based on a file named #{import_job.original_filename}, #{time_ago_in_words(import_job.finished_at)} ago.
+      = t('views.import_wizards.fail_note', filename: import_job.original_filename, when: time_ago_in_words(import_job.finished_at))
       %br
-      Please contact InSTEDD for support.
+      = t('views.import_wizards.please_contact_instedd_for_support')
       %br
       %br
 
@@ -27,23 +27,23 @@
 
     %br
 
-    %h2.orange Upload your CSV file
+    %h2.orange= t('views.import_wizards.upload_your_csv_file')
     .box.plain.grey{:style => 'width: 66%'}
-      .black We recommend you to download the CSV, make changes to it and upload it here for doing a bulk update:
+      .black= t('views.import_wizards.we_recommend_you_to_download_the_csv')
       %ul
-        %li Remove rows for sites you are not interested in updating
-        %li Add rows for new sites
-        %li Remove columns for fields you are not interested in updating
-        %li Add columns for new fields
+        %li= t('views.import_wizards.remove_rows')
+        %li= t('views.import_wizards.add_rows')
+        %li= t('views.import_wizards.remove_columns')
+        %li= t('views.import_wizards.add_columns')
 
     - if collection.sites.exists?
-      = link_to 'Download a CSV with all the sites in this collection', api_collection_path(collection, format: "csv"), class: "icon fimport black"
+      = link_to t('views.import_wizards.download_csv_with_sites'), api_collection_path(collection, format: "csv"), class: "icon fimport black"
     -else
-      = link_to 'Download a template CSV file', api_sample_csv_path(collection, format: 'csv'), class: "icon fimport black"
+      = link_to t('views.import_wizards.download_csv_template'), api_sample_csv_path(collection, format: 'csv'), class: "icon fimport black"
 
     %form#upload_form{action: upload_csv_collection_import_wizard_path(collection), method: :post, enctype: 'multipart/form-data'}
       %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
-      .icon.fexport.black Upload a CSV file to update multiple sites
+      .icon.fexport.black= t('views.import_wizards.upload_a_csv')
       %input#upload{type: :file, name: :file}
   - else
     = render '/current_snapshot_message'
