@@ -135,14 +135,21 @@ onCollections ->
         window.model.initDatePicker(optionsDatePicker)
         window.model.initAutocomplete()
 
+    validate_number_only: (keyCode) =>
+      if keyCode > 31 && (keyCode < 48 || keyCode > 57)
+        return false
+      return true
+
     keyPress: (field, event) =>
       switch event.keyCode
         when 13 then @save()
         when 27 then @exit()
         else
-          if event.keyCode > 31 && (event.keyCode < 48 || event.keyCode > 57)
-            return false
+          if field.kind == "numeric"
+            return @validate_number_only(event.keyCode)
           return true
+
+     
 
     exit: =>
       @value(@originalValue)
