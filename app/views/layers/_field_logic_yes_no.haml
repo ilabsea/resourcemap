@@ -1,0 +1,17 @@
+%ul
+ %li{ko(with: '$root.newFieldLogic()')}
+  %p.left{style: 'padding-right:10px'} if input is
+  %b Yes
+  %br
+  %p.left{style: 'padding-right:10px'} skip form question to
+  = select_tag :layer_id, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', optionsValue: 'function(item) { return item.id() }', value: 'layer_id, selectedOptions: layer_id') 
+  %button.clist-add{ko(click: '$root.addFieldLogic('yes')'), title: 'Add Logic'}
+
+  %hr/
+ %li{ko(with: '$root.newFieldLogic()')}
+  %p.left{style: 'padding-right:10px'} if input is
+  %b No
+  %br
+  %p.left{style: 'padding-right:10px'} skip form question to
+  = select_tag :layer_id, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', optionsValue: 'function(item) { return item.id() }', value: 'layer_id, selectedOptions: layer_id') 
+  %button.clist-add{ko(click: '$root.addFieldLogic('no')'), title: 'Add Logic'}

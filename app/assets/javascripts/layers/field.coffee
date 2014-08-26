@@ -9,7 +9,9 @@ onLayers ->
       
       @is_enable_field_logic = ko.observable data?.is_enable_field_logic ? false
       # @field_logic_value = ko.observableArray data?.field_logic_value ? ['yes']
-      # @field_logic_layer_id = ko.observable data?.field_logic_layer_id ? 
+      # @field_logic_layer_id = ko.observableArray data?.field_logic_layer_id ? 
+      # @selectedValue = ko.observable()
+
 
       @config = data?.config
       @metadata = data?.metadata
@@ -119,6 +121,18 @@ onLayers ->
       json.config = {allows_decimals: @allowsDecimals()}
 
   class @Field_yes_no extends @FieldImpl
+    constructor: (field) ->
+      super(field)
+      @field_logics = if field.config?.field_logics?
+                        ko.observableArray($.map(field.config.field_logics, (x) -> new FieldLogic(x)))
+                     else
+                        ko.observableArray()
+    addFieldLogic: (field_logic) =>
+      console.log 'addFieldLogic' 
+      @field_logics.push field_logic
+      console.log this.field_logics()
+
+
 
   class @FieldSelect extends @FieldImpl
     constructor: (field) ->
@@ -145,6 +159,8 @@ onLayers ->
       option.id @nextId
       @options.push option
       @nextId += 1
+      console.log 'addOption'
+      console.log this.options()
 
     toJSON: (json) =>
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId}

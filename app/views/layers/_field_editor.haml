@@ -27,6 +27,15 @@
   %p.smalltext This field must be report on every report.
   = ko_check_box_tag :is_mandatory, css: {error: :codeError}
 
+  /ko if: kind() == 'yes_no'
+  %hr/
+  = ko_check_box_tag :is_enable_field_logic, css: {error: :codeError}
+  %label
+    Enable skip logic for this field
+  //ko 
+
+  %div{ko(if: :is_enable_field_logic)}
+    = render :partial => "field_logic_yes_no"
 
   
   /ko if: kind() == 'select_one' || kind() == 'select_many'

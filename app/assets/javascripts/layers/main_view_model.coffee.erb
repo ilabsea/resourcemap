@@ -9,6 +9,7 @@ onLayers ->
       # @field_logic_value = ko.observable
 
       @newOption = ko.observable(new Option)
+      @newFieldLogic = ko.observable(new FieldLogic)
       @newAttribute = ko.observable(new Attribute)
 
       @optionValid = ko.computed =>
@@ -187,12 +188,18 @@ onLayers ->
         @removeAttribute(attribute)
 
     addOption: =>
+      # console.log 'aaaaaaaaaaa'
       return unless @optionValid()
       @newOption().hasFocus = false
       @currentField().impl().addOption(@newOption())
       option = new Option
       option.hasFocus(true)
       @newOption(option)
+
+    addFieldLogic: () =>
+      @currentField().impl().addFieldLogic(@newFieldLogic())
+      field_logic = new FieldLogic
+      @newFieldLogic(field_logic)
 
     addAttribute: =>
       return unless @attributeValid()

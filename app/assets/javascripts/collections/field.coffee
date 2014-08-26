@@ -147,9 +147,7 @@ onCollections ->
         else
           if field.kind == "numeric"
             return @validate_number_only(event.keyCode)
-          return true
-
-     
+          return true     
 
     exit: =>
       @value(@originalValue)
