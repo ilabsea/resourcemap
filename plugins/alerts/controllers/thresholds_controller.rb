@@ -4,13 +4,19 @@ class ThresholdsController < ApplicationController
   before_filter :fix_conditions, only: [:create, :update]
 
   def index
-    respond_to do |format|
-      format.html do
-        show_collection_breadcrumb
-        add_breadcrumb "Properties", collection_path(collection)
-        add_breadcrumb "Thresholds", collection_thresholds_path(collection)
+    if params[:collection_id]
+      respond_to do |format|
+        format.html do
+          show_collection_breadcrumb
+          add_breadcrumb "Properties", collection_path(collection)
+          add_breadcrumb "Thresholds", collection_thresholds_path(collection)
+        end
+        format.json { render json: thresholds }
       end
-      format.json { render json: thresholds }
+    else
+      respond_to do |format|
+        format.json { render json: Threshold.all }
+      end
     end
   end
 

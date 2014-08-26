@@ -72,11 +72,11 @@ class ApplicationController < ActionController::Base
       u = User.find_by_is_guest true
       sign_in :user, u
       current_user.is_login = true
-      current_user.save!
+      current_user.save!(:validate => false)
     else
       if current_user.try(:is_login)
         current_user.is_login = false
-        current_user.save!
+        current_user.save!(:validate => false)
       else
         sign_out :user
       end

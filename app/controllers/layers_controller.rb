@@ -32,7 +32,7 @@ class LayersController < ApplicationController
     layer.save!
     current_user.layer_count += 1
     current_user.update_successful_outcome_status
-    current_user.save!
+    current_user.save!(:validate => false)
     render json: layer.as_json(include: :fields)
   end
 

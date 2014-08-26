@@ -10,7 +10,7 @@ class Api::SessionsController < Devise::SessionsController
   }
 
   def create
-    render json: { success: true, auth_token: resource.authentication_token }, status: :created
+    render json: { success: true, auth_token: self.resource.authentication_token }, status: :created
   end
 
   def destroy
@@ -23,7 +23,6 @@ class Api::SessionsController < Devise::SessionsController
   protected
     def login_attempt
       self.resource = User.find_for_database_authentication email: params[:user][:email]
-
       return invalid_attempt :invalid, :unauthorized unless resource
       return invalid_attempt :unconfirmed, :unauthorized unless resource.active_for_authentication?
       return invalid_attempt :invalid, :unauthorized unless resource.valid_password? params[:user][:password]

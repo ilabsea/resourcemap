@@ -15,7 +15,7 @@
             %td
               %div{style: "width:230px;overflow:hidden;"}
                 %input{ko(checked: :checked, disable: '$root.showingAlert()? $root.showingAlert()== !checked() : false'), type: :checkbox, style: 'position:relative;'}
-                %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor: pointer;width:205px;overflow:hidden;display:block;float:right;text-overflow:ellipsis;white-space:nowrap'}"
+                %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor:pointer;width:205px;overflow:hidden;display:block;float:right;text-overflow:ellipsis;white-space:nowrap'}"
               <!-- ko if: currentSnapshot -->
               .snapshot_on.right{style: 'padding-right:0'}
                 .i18g-snapshot
@@ -65,13 +65,16 @@
     <!-- ko if: !editingSite() -->
     <!-- ko with: currentCollection -->
     .tableheader
-      - if can? :index, Collection
-        %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
-      %span
-      %span{ko(text: :name)}
-      - #if can? :show, collection
-      - if current_user && !current_user.is_guest
-        %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+      %div.navBack
+        - if can? :index, Collection
+          %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
+        %span
+      %div
+        %span.colTitle{ko(text: :name,  attr: { title: :name })}
+        - #if can? :show, collection
+        - if current_user && !current_user.is_guest
+          %button.fconfiguration.right{ko(click: '$root.editCollection'), type: 'button', style: 'margin-right:8px;margin-top:6px;'}
+
 
     .tablescroll.sites
       %table.GralTable.CleanTable
@@ -292,19 +295,75 @@
     <!-- /ko -->
 
     #map
+    
     <!-- ko if: currentCollection() -->
-    <!-- ko if: thresholdsCollection().length > 0 -->    
-    %div#alert-legend{style: 'position: absolute; top: 30px; right: 20px; z-index: 99; background-color:white'}
-      / %span.hide-alert-legend hide
-      %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'padding-left:5px; padding-right:5px; list-style:none'}
-        
-        %li{style: 'border-bottom:1px solid #eeeeee;height:40px;'}
-          %div{style: 'padding-right:10px;float:left'}
-            %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:30px;' }
-          %div{style:'line-height:30px; float:left;padding-top:2px; padding-bottom:2px; '}
+    <!-- ko with: currentCollection -->
+
+    <!-- ko if: !$root.alert_legend() -->
+    %div#alert-legend{style: 'position: absolute; top: 48px; right: -25px; z-index: 99;'}
+      %button.collapse.white.right{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend') }
+    <!-- /ko --> 
+
+    <!-- ko if: $root.alert_legend() -->
+    %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:200px;overflow-y:auto;border-radius:10px'}
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
+        %b Legend     
+        / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
+        %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
+      
+      %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none; max-width:350px;'}
+
+        <!-- ko if: alertedSitesNum() > 0 -->
+        %li{style: 'height:auto;'}
+          %div{style: 'padding-right:5px;float:left'}
+            %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:20px;' }
+          %div{style:'line-height:20px;; vertical-align:middle;padding-top:2px; padding-bottom:10px; '}
             %span{ko(text: :propertyName)}
             %span :
             %span{ko(text: :alertedSitesNum)}
+        <!-- /ko -->     
+      %div{style: 'height: 20px; background-color:#E6E6E6;border-radius: 0px 0px 10px 10px;'}
+    <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
+
+    <!-- ko if: !currentCollection() -->  
+    <!-- ko if: !$root.alert_legend() -->
+    %div#alert-legend{style: 'position: absolute; top: 48px; right: -25px; z-index: 99;'}
+      %button.collapse.white.right{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend') }
+    <!-- /ko -->       
+    
+    <!-- ko if: $root.alert_legend() -->
+    %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:350px;border:1px solid #BDBDBD;border-radius:10px'}
+      
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
+        %b Legend     
+        / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
+        %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
+      %div{style: 'overflow: auto;height: 290px;border-top:1px solid #BDBDBD;border-bottom:1px solid #BDBDBD;max-width:350px;'}
         
+        
+        %div{ko(foreach: :collections), style: ''}
+          
+          <!-- ko if: thresholdsCollection().length > 0 -->
+          %div{style: 'padding:10px 0px 0px 10px;border-bottom:1px solid #E6E6E6'}
+            %b{ko(text: :name)}
+            / %p{ko(text: 'thresholdsCollection().length')}
+            %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
+
+              <!-- ko if: alertedSitesNum() > 0 -->
+              %li{style: 'height:auto;'}
+                %div{style: 'padding-right:5px;float:left'}
+                  %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:20px;' }
+                %div{style:'line-height:20px;; vertical-align:middle;padding-top:2px; padding-bottom:10px; '}
+                  %span{ko(text: :propertyName)}
+                  %span :
+                  %span{ko(text: :alertedSitesNum)}
+              <!-- /ko --> 
+
+          <!-- /ko -->   
+
+         
+      %div{style: 'height: 20px; background-color:#E6E6E6;border-radius: 0px 0px 10px 10px;'}
     <!-- /ko -->
-    <!-- /ko -->
+    <!-- /ko -->    
