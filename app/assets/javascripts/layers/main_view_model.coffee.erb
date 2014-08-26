@@ -1,8 +1,6 @@
 onLayers ->
   class @MainViewModel
     constructor: (collectionId, layers) ->
-      window.languages = [new Language({"id" : 1, "code" : "en", "name" : "English"}), new Language({"id": 2, "code" : "kh", "name" : "Khmer"})]
-      @languages = ko.observableArray(window.languages)
       @collectionId = collectionId
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @currentLayer = ko.observable()
@@ -12,7 +10,7 @@ onLayers ->
       @newAttribute = ko.observable(new Attribute)
 
       @optionValid = ko.computed =>
-        status = $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
+        $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
       @attributeValid = ko.computed =>
         $.trim(@newAttribute().key()).length > 0 && $.trim(@newAttribute().value()).length > 0 && not Attribute.find(@currentField().impl().attributes(), @newAttribute())
@@ -64,16 +62,7 @@ onLayers ->
       else
         $.post "/collections/#{@collectionId}/layers.json", json, @saveLayerCallback
 
-    saveFieldByLanguageCallback: =>
-
     saveLayerCallback: (data) =>
-      if window.languages.length > 1
-        jsonLayer = {layer: @currentLayer().toJSONByLanguage()}
-        if @currentLayer().id()
-          jsonLayer._method = 'post'
-          $.post "/collections/#{@collectionId}/layers/#{@currentLayer().id()}/layers_by_language.json", jsonLayer, @saveFieldByLanguageCallback
-        else
-          $.post "/collections/#{@collectionId}/layers/#{data.id}/layers_by_language.json", jsonLayer, @saveFieldByLanguageCallback
       #if layer is new, we need to set id
       $.status.showNotice("Layer '#{@currentLayer().name()}' successfully #{if @currentLayer().id() then 'saved' else 'created'}", 2000)
       @currentLayer().id(data.id)

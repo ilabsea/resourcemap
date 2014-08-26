@@ -32,13 +32,6 @@ onLayers ->
       @error = ko.computed => @nameError() || @codeError() || @impl().error()
       @valid = ko.computed => !@error()
 
-      languages = ko.observableArray([new Language({"id" : 1, "code" : "en", "name" : "English"}), new Language({"id": 2, "code" : "kh", "name" : "Khmer"})])
-      for l in languages()
-        if l.code() != "en"
-          this["#{l.code()}"] = ko.observable(data?["#{l.code()}"])
-
-
-
     hasName: => $.trim(@name()).length > 0
 
     hasCode: => $.trim(@code()).length > 0
@@ -79,30 +72,12 @@ onLayers ->
       @impl().toJSON(json)
       json
 
-    toJSONByLanguage: =>
-      @code(@code().trim())
-      json =
-        id: @id()
-        name: @name()
-        code: @code()
-        kind: @kind()
-        ord: @ord()
-        layer_id: @layer().id()
-      @impl().toJSONByLanguage(json)
-      for l in window.languages
-        if l.code() != "en"
-          json[l.code()] = this[l.code()]
-      json
-
-
-
   class @FieldImpl
     constructor: (field) ->
       @field = field
       @error = -> null
 
     toJSON: (json) =>
-    toJSONByLanguage: (json) =>  
 
   class @Field_text extends @FieldImpl
     constructor: (field) ->
@@ -161,11 +136,6 @@ onLayers ->
 
     toJSON: (json) =>
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId}
-
-    toJSONByLanguage: (json) =>
-      json.config = {options: $.map(@options(), (x) -> x.toJSONByLanguage()), next_id: @nextId}
-
-
 
   class @Field_select_one extends @FieldSelect
     constructor: (field) ->

@@ -346,7 +346,7 @@ DEPENDENCIES
   aws-sdk
   breadcrumbs_on_rails
   cancan
-  capistrano
+  capistrano (~> 2.15)
   capybara
   ci_reporter
   coffee-rails (~> 3.2.1)

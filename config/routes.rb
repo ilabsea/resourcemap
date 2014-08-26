@@ -30,7 +30,6 @@ ResourceMap::Application.routes.draw do
     resources :layers do
       member do
         put :set_order
-        match "layers_by_language" => "layers#layers_by_language", :via => :post
       end
     end
     resources :fields

@@ -46,6 +46,3 @@ onLayers ->
       ord: @ord()
       public: @public()
       fields_attributes: $.map(@fields(), (x) -> x.toJSON())
-
-    toJSONByLanguage: =>
-      fields_attributes: $.map(@fields(), (x) -> x.toJSONByLanguage())
