@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   expose(:threshold)
   expose(:reminders) { collection.reminders }
   expose(:reminder)
+  expose(:language) { Language.find_by_code I18n.locale.to_s }
 
   expose(:new_search_options) do
     if current_user_snapshot.at_present?

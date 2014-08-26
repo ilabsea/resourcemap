@@ -40,10 +40,9 @@ module ApplicationHelper
   end
 
   def show_language_options
-    opt = []
-    Language.all.each do |l|
-      opt.push("<a href='#'>#{l["name"]}</a>")
+    languages = Language.all.map do |language|
+      link_to language.name, 'javascript:void(0);', data: {locale: language.code}, style: 'font-size:12px;'
     end
-    return opt.join(" | ").html_safe
+    languages.join(' | ').html_safe
   end
 end

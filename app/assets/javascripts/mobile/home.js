@@ -5,7 +5,7 @@
 //= require mobile/option
 //= require mobile/sub_hierarchy
 
-function initialize(){
+function initialize(locale){
   var cachedSites, collectionSchema, i, id;
   prepareFlushMessage("#flash_message");
   onMobileCollections(function() {
@@ -34,7 +34,7 @@ function initialize(){
     Collection.prototype.pushingPendingSites();
 
     $.ajax({
-      url: "/mobile/collections.json",
+      url: "/mobile/collections.json?locale=" + locale ,
       dataType: "text",
       success: function(collections) {
         var collectionSchema;

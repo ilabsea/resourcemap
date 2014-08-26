@@ -19,7 +19,7 @@ class LayersController < ApplicationController
               field[Language.find(fl.language_id).code] = fl["name"]
               if(field["kind"] == "select_one" or field["kind"] == "select_many")
                 field["config"]["options"].each do |option|
-                  JSON.parse(fl["config"])["options"].each do |language_option|
+                  fl["config"]["options"].each do |language_option|
                     if(language_option["id"] == option["id"] and language_option["code"] == option["code"])
                       option[Language.find(fl.language_id).code] = language_option["label"]
                     end
@@ -94,9 +94,9 @@ class LayersController < ApplicationController
           value["config"]["options"] = options
         end        
         unless FieldLanguage.find_by_field_id_and_language_id(field.id, l.id)
-          FieldLanguage.create!(:language_id => l.id, :field_id => field.id, :code => value["code"], :name => value[l.code], :config => value["config"].to_json)
+          FieldLanguage.create!(:language_id => l.id, :field_id => field.id, :code => value["code"], :name => value[l.code], :config => value["config"])
         else
-          FieldLanguage.where("language_id = ? and field_id = ?",l.id,field.id)[0].update_attributes!(:code => value["code"], :name => value[l.code], :config => value["config"].to_json)
+          FieldLanguage.where("language_id = ? and field_id = ?",l.id,field.id)[0].update_attributes!(:code => value["code"], :name => value[l.code], :config => value["config"])
         end
       end
     end

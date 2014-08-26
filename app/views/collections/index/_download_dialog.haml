@@ -1,9 +1,9 @@
 %div{ class: "box centered w40 rm-dialog hidden", style: "margin-left: -200px; margin-top: -100px;" }
   =form_tag(download_activity_path, :method => "get" ) do
-    %h2 Download History
-    - types = { :month => "This month",
-              :previous_month => "Previous Month",
-              :all => "All" }
+    %h2= t('views.collections.index.download_history')
+    - types = { :month => t('views.collections.index.this_month'),
+                :previous_month => t('views.collections.index.previous_month'),
+                :all => t('views.collections.index.all') }
     - types.each do |key, value|
       .item
         %input{ type: "radio",  name: "collection[type]",  value: key, id: "collection_type_#{key}"}
@@ -13,19 +13,19 @@
     %input{"type" => "hidden", "id" => "rm-colllection_id" , "name" => "collection[id]", "value" => "xx" }   
     .item
       %input{type: "radio", checked: 'checked',name: "collection[type]",  value: "range", id: "collection_type_range" }
-      %label{for: "collection_type_range"} Custom Range
+      %label{for: "collection_type_range"}= t('views.collections.index.custom_range')
 
     .date_rage{ style: "margin-left: 15px; padding: 10px;" }
       .w15{ style: "float:left;"}
-        %label{for: "collection_from"} From
+        %label{for: "collection_from"}= t('views.collections.index.from')
         %input{ :type => "text", :name => "collection[from]", :class => "w10 datepicker", :id => "collection_from", :"autocomplete" => "off" }
       .w15{ style: "float:left;"}
-        %label{for: "collection_to" } To
+        %label{for: "collection_to" }= t('views.collections.index.to')
         %input{ :type => "text", :name => "collection[to]",  :class => "w10 datepicker", :id => "collection_to", :"autocomplete" => "off" }
     %br
     %div{ style: "margin-left: 15px; padding-top: 10px;"}
-      %button{ type: "button", value: "Cancel", class: "white rm-dialog-cancel" } Cancel
-      %button{ type: "submit", value: "Download", class: "white rm-dialog-ok" } Download
+      %button{ type: "button", value: "Cancel", class: "white rm-dialog-cancel" }= t('views.collections.index.cancel')
+      %button{ type: "submit", value: "Download", class: "white rm-dialog-ok" }= t('views.collections.index.download')
     .clear &nbsp;
 
 :javascript

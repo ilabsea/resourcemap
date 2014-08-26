@@ -96,7 +96,7 @@ class Collection < ActiveRecord::Base
     site_ids.uniq
   end
 
-  def visible_fields_for(user, options)
+  def visible_fields_for(user, options, language = nil)
     if user.try(:is_guest)
       return fields.includes(:layer).all
     end
@@ -120,11 +120,12 @@ class Collection < ActiveRecord::Base
       target_fields = target_fields.select { |f| lms[f.layer_id] && lms[f.layer_id].read }
 
     end
+    language.load_fields_translation!(target_fields) if language
     target_fields
   end
 
-  def visible_layers_for(user, options = {})
-    target_fields = visible_fields_for(user, options)
+  def visible_layers_for(user, options = {}, language = nil)
+    target_fields = visible_fields_for(user, options, language)
     layers = target_fields.map(&:layer).uniq.map do |layer|
       {
         id: layer.id,
