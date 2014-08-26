@@ -60,7 +60,7 @@ onCollections ->
       for key of @queryParams
         value = @queryParams[key]
         switch key
-          when 'lat', 'lng', 'z', 'collection_id'
+          when 'lat', 'lng', 'z', 'collection_id', 'locale'
             continue
           when 'search'
             @search(value)
