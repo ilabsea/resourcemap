@@ -59,7 +59,7 @@
       <!-- ko if: kind == 'text' || kind == 'user' || isPluginKind() -->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
         %option{value: '='}= t('views.collections.index.starts_with')
-        %option{value: 'empty'}= t('has_no_value')
+        %option{value: 'empty'}= t('views.collections.index.has_no_value')
 
       <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
@@ -123,7 +123,7 @@
       <!-- /ko -->
 
       <!-- ko if: kind == 'select_one' || kind == 'select_many' -->
-      is:
+      = t('views.collections.index.is_colon')
       %select{ko(value: '$root.expandedRefinePropertyValue', options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
       %a.button.white{ko(click: '$root.filterByProperty')}= t('views.collections.index.ok')
       <!-- /ko -->

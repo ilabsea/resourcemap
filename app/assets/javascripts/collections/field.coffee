@@ -36,7 +36,7 @@ onCollections ->
 
         # Add the 'no value' option
         @optionsIds.unshift('')
-        @optionsUI = [new Option {id: '', label: '(no value)' }].concat(@options)
+        @optionsUI = [new Option {id: '', label: window.t('javascripts.collections.fields.no_value') }].concat(@options)
         @optionsUIIds = $.map @optionsUI, (x) => x.id
 
         @hierarchy = @options
@@ -83,7 +83,7 @@ onCollections ->
     # If it's a select one or many, we need to get the label from the option code.
     valueUIFor: (value) =>
       if @kind == 'yes_no'
-        if value then 'yes' else 'no'
+        if value then window.t('javascripts.collections.fields.yes') else window.t('javascripts.collections.fields.no')
       else if @kind == 'select_one'
         if value then @labelFor(value) else ''
       else if @kind == 'select_many'
@@ -110,7 +110,7 @@ onCollections ->
     buildHierarchyItems: =>
       @fieldHierarchyItemsMap = {}
       @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@, x))
-      @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: '(no value)'})
+      @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: window.t('javascripts.collections.fields.no_value')})
 
     edit: =>
       if !window.model.currentCollection()?.currentSnapshot
