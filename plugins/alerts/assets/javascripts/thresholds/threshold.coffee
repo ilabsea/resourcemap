@@ -88,7 +88,7 @@ onThresholds -
 
 
     addSiteNameToMessageNotification: =>
-      @messageNotification(@messageNotification() + ' [Site Name]')
+      @messageNotification(@messageNotification() + ' [' + window.t('javascripts.plugins.alerts.site_name') + ']')
 
     addFieldNameToMessageNotification:(field) =>
       @messageNotification(@messageNotification() + ' [' + field.name() + ']')

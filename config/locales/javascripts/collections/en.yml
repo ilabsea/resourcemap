@@ -38,7 +38,8 @@ en:
           some: "Some"
         errors:
           phone_number_is_required: "Phone number is required"
-          phone_number_is_taken: "Phone number is taken" 
+          phone_number_is_taken: "Phone number is taken"
+          email_is_invalid: "Email is invalid"
       index:
         name: "Name"
         waste_site: "Waste site"
