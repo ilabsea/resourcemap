@@ -65,7 +65,7 @@ onCollections ->
         @sitesWithoutLocation(false)
         @newSiteProperties = {}
 
-    defaultGroupBy: {esCode: '', name: 'None'}
+    defaultGroupBy: {esCode: '', name: window.t('javascripts.collections.fields.none')}
 
     showPopupWithMaxValueOfProperty: (field, event) =>
       # Create a popup that first says "Loading...", then loads the content via ajax.
