@@ -48,8 +48,8 @@
         = link_to t('views.account.create_account'), new_user_registration_path, class: 'fedit'
       %li
         = link_to t('views.account.login'), new_user_session_path, class: 'fuser'
-    %li.language-switcher
-      %div{style: "padding-top:10px;"}
+    %li{style: "padding: 7px 5px;", id: "locale-switcher"}
+      %div{style: "padding-top:0px;"}
         = show_language_options
 - content_for :footer_links do
   %a{:href => root_path}= t('views.home')
