@@ -234,11 +234,11 @@
                   <!-- ko if: !hasValue() &&  !error() -->
                   <!-- ko if: writeable -->
                   <!-- ko if: kind != 'photo' -->
-                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no value)
+                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} = t('views.collections.index.no_value')
                   <!-- /ko -->
                   <!-- /ko -->
                   <!-- ko if: !writeable -->
-                  %span.value{style: 'color:grey'} (no value)
+                  %span.value{style: 'color:grey'}= t('views.collections.index.no_value')
                   <!-- /ko -->
                   <!-- /ko -->
                   <!-- ko if: editing() || error() -->
@@ -255,8 +255,8 @@
       .tablebottom
         -# if (can? :edit, site)
         - if current_user && !current_user.is_guest
-          = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
-          = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
+          = link_to t('views.collections.index.edit_site'), 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
+          = link_to t('views.collections.index.delete_site'), 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
       <!-- /ko -->
 
     <!-- /ko -->

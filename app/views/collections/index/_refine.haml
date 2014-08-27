@@ -71,7 +71,7 @@
       <!-- ko if: kind == 'site' -->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
         %option{value: '='}= t('views.collections.index.is')
-        %option{value: 'empty'}= t('has_no_value')
+        %option{value: 'empty'}= t('views.collections.index.has_no_value')
 
       <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
       %input.autocomplete-site-input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
