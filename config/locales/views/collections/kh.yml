@@ -16,6 +16,7 @@ kh:
         original_messages: "សារដើម"
         report_user_login: "របាយការណ៏អំពីអក្នចូលប្រើប្រាស់"
         report_user_submited_data: "របាយការណ៏អំពីអ្នកបញ្ជូនទិន្នន័យ"
+        channels: "ឆាន់ណែល"
       index:
         'yes': "បាទ"
         'no': "ទេ"

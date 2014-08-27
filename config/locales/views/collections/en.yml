@@ -16,6 +16,7 @@ en:
         original_messages: "Original Messages"
         report_user_login: "Report of User Login"
         report_user_submited_data: "Report of User Submited Data"
+        channels: "Channels"
       index:
         'yes': "Yes"
         'no': "No"
