@@ -40,7 +40,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_locale
 
   def set_locale
-    I18n.locale = params[:locale] || I18n.default_locale
+    cookies.signed[:locale] = params[:locale]  || cookies.signed[:locale] || I18n.default_locale
+    I18n.locale = cookies.signed[:locale]
   end
 
   def set_timezone
