@@ -67,7 +67,7 @@
     .tableheader
       %div.navBack
         - if can? :index, Collection
-          %button.pback{ko(click: '$root.goToRoot'), type: 'button', style: "#{if current_user.is_guest then 'visibility: hidden;margin-left: -20px;' end}"}
+          %button.pback{ko(click: '$root.goToRoot'), type: 'button'}
         %span
       %div
         %span.colTitle{ko(text: :name,  attr: { title: :name })}
@@ -286,7 +286,7 @@
   %div.mapcontainer
     %button.icon_button.expand-collapse_button.oleftexpand{ko(click: '$root.toogleExpandFullScreen')}
     <!-- ko if: $root.shouldShowLocationMissingAlert() -->
-    %a#sites_whitout_location_alert.alert.box.flash_error.drop_shadow(href='javascript:window.model.filterByLocationMissing()')
+    %a#sites_whitout_location_alert.alert.box.flash_error.drop_shadow(href='javascript:void(window.model.filterByLocationMissing())')
       %span There are sites with no location set
       %span.right
         %button.fconfiguration{ko(click: '$root.filterByLocationMissing'), type: 'button', style: 'margin-left:9px'}
@@ -298,20 +298,24 @@
     
     <!-- ko if: currentCollection() -->
     <!-- ko with: currentCollection -->
-
+    <!-- ko if: thresholds().length > 0 -->
+    <!-- ko if: $root.showingLegend() --> 
     <!-- ko if: !$root.alert_legend() -->
-    %div#alert-legend{style: 'position: absolute; top: 48px; right: -25px; z-index: 99;'}
-      %button.collapse.white.right{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend') }
+    %div#alert-legend{style: 'position: absolute; top: 45px; right: 15px; z-index: 99;'}
+      / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend') } Legend
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#ffffff; vertical-align:middle; padding-left:10px; font-size:15px;border-radius: 5px 5px 5px 5px;'}
+        %b Legend
+        %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px;'}      
     <!-- /ko --> 
 
     <!-- ko if: $root.alert_legend() -->
     %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:200px;overflow-y:auto;border-radius:10px'}
-      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
         %b Legend     
         / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
         %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
       
-      %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none; max-width:350px;'}
+      %ul#legend_alert_list{ko(foreach: :thresholds), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none; max-width:350px;'}
 
         <!-- ko if: alertedSitesNum() > 0 -->
         %li{style: 'height:auto;'}
@@ -326,30 +330,38 @@
     <!-- /ko -->
     <!-- /ko -->
     <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
+
 
     <!-- ko if: !currentCollection() -->  
+    <!-- ko if: $root.showingLegend() -->  
     <!-- ko if: !$root.alert_legend() -->
-    %div#alert-legend{style: 'position: absolute; top: 48px; right: -25px; z-index: 99;'}
-      %button.collapse.white.right{ko(text: '$root.alert_text', click: '$root.toggleAlertLegend') }
+    %div#alert-legend{style: 'position: absolute; top: 45px; right: 15px; z-index: 99; '}
+      / %button.white.right{ko(click: '$root.toggleAlertLegend') } Legend
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#ffffff; vertical-align:middle; padding-left:10px; font-size:15px;  border-radius: 5px 5px 5px 5px; float: left;'}
+        %b Legend
+        %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px 7px'}      
     <!-- /ko -->       
     
     <!-- ko if: $root.alert_legend() -->
     %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:350px;border:1px solid #BDBDBD;border-radius:10px'}
       
-      %div{ko(click: '$root.toggleAlertLegend'), style: 'line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
+      %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
         %b Legend     
         / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
         %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
-      %div{style: 'overflow: auto;height: 290px;border-top:1px solid #BDBDBD;border-bottom:1px solid #BDBDBD;max-width:350px;'}
+
+      %div{style: 'overflow: auto;max-height: 290px;border-top:1px solid #BDBDBD;border-bottom:1px solid #BDBDBD;max-width:350px;'}
         
         
         %div{ko(foreach: :collections), style: ''}
-          
-          <!-- ko if: thresholdsCollection().length > 0 -->
-          %div{style: 'padding:10px 0px 0px 10px;border-bottom:1px solid #E6E6E6'}
+          <!-- ko if: checked() -->
+          <!-- ko if: thresholds().length > 0 -->
+          %div{style: 'padding:10px 10px 0px 10px;border-bottom:1px solid #E6E6E6'}
             %b{ko(text: :name)}
             / %p{ko(text: 'thresholdsCollection().length')}
-            %ul#legend_alert_list{ko(foreach: :thresholdsCollection), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
+            %ul#legend_alert_list{ko(foreach: :thresholds), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
 
               <!-- ko if: alertedSitesNum() > 0 -->
               %li{style: 'height:auto;'}
@@ -362,8 +374,11 @@
               <!-- /ko --> 
 
           <!-- /ko -->   
+          <!-- /ko -->   
 
          
       %div{style: 'height: 20px; background-color:#E6E6E6;border-radius: 0px 0px 10px 10px;'}
     <!-- /ko -->
-    <!-- /ko -->    
+    <!-- /ko --> 
+    <!-- /ko --> 
+

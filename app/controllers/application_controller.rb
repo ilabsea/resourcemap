@@ -36,7 +36,6 @@ class ApplicationController < ActionController::Base
   end
 
   before_filter :set_timezone
-  before_filter :set_request_header
   def set_timezone
     # current_user.time_zone #=> 'London'
     Time.zone = current_user.time_zone if current_user
@@ -130,10 +129,6 @@ class ApplicationController < ActionController::Base
     authenticate_or_request_with_http_basic do |user, password|
       user == USER && password == PASSWORD
     end
-  end
-
-  def set_request_header
-    headers['Access-Control-Allow-Origin'] = '*' 
   end
 
 end

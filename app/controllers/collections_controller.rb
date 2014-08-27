@@ -19,7 +19,7 @@ class CollectionsController < ApplicationController
 
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
-  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
+  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders, :quotas]
 
   #before_filter :prepare_for_mobile
 
@@ -169,7 +169,7 @@ class CollectionsController < ApplicationController
 
     search.full_text_search params[:term] if params[:term]
     search.alerted_search params[:_alert] if params[:_alert] 
-    search.select_fields(['id', 'name'])
+    search.select_fields(['id', 'name', 'properties'])
     search.apply_queries
 
     results = search.results.map{ |item| item["fields"]}

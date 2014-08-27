@@ -52,7 +52,7 @@ onCollections ->
 
       if collectionId and not @currentCollection()
         @enterCollection collectionId
-
+        
       @queryParams = $.url().param()
       for key of @queryParams
         value = @queryParams[key]
