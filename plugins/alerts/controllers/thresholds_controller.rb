@@ -8,8 +8,8 @@ class ThresholdsController < ApplicationController
       respond_to do |format|
         format.html do
           show_collection_breadcrumb
-          add_breadcrumb "Properties", collection_path(collection)
-          add_breadcrumb "Thresholds", collection_thresholds_path(collection)
+          add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
+          add_breadcrumb I18n.t('views.plugins.alerts.thresholds'), collection_thresholds_path(collection)
         end
         format.json { render json: thresholds }
       end

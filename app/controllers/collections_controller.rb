@@ -28,7 +28,7 @@ class CollectionsController < ApplicationController
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
-      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
+      add_breadcrumb I18n.t('views.collections.index.collections'), 'javascript:window.model.goToRoot()'
       if current_user.is_guest
         @collections = Collection.public_collections
       else
@@ -42,7 +42,7 @@ class CollectionsController < ApplicationController
   end
 
   def render_breadcrumbs
-    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
+    add_breadcrumb I18n.t('views.collections.index.collections'), 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
     if params.has_key? :collection_id
       add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
@@ -53,8 +53,8 @@ class CollectionsController < ApplicationController
   end
 
   def new
-    add_breadcrumb "Collections", collections_path
-    add_breadcrumb "Create new collection", nil
+    add_breadcrumb I18n.t('views.collections.index.collections'), collections_path
+    add_breadcrumb I18n.t('views.collections.index.create_new_collection'), nil
   end
 
   def create
@@ -79,7 +79,7 @@ class CollectionsController < ApplicationController
 
   def show
     @snapshot = Snapshot.new
-    add_breadcrumb "Properties", '#'
+    add_breadcrumb I18n.t('views.collections.index.properties'), '#'
     respond_to do |format|
       format.html
       format.json { render json: collection }
@@ -87,19 +87,19 @@ class CollectionsController < ApplicationController
   end
 
   def members
-    add_breadcrumb "Members", collection_members_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.members'), collection_members_path(collection)
   end
 
   def reminders
-    add_breadcrumb "Reminders", collection_reminders_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.reminders'), collection_reminders_path(collection)
   end
 
   def settings
-    add_breadcrumb "Settings", collection_settings_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.settings'), collection_settings_path(collection)
   end
 
   def quotas
-    add_breadcrumb "Quotas", collection_settings_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.quotas'), collection_settings_path(collection)
   end
 
   def destroy

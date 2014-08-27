@@ -116,12 +116,12 @@ class ApplicationController < ActionController::Base
 
   def show_collection_breadcrumb
     show_collections_breadcrumb
-    add_breadcrumb "Collections", collections_path
+    add_breadcrumb I18n.t('views.collections.index.collections'), collections_path
     add_breadcrumb collection.name, collections_path + "?collection_id=#{collection.id}"
   end
 
   def show_properties_breadcrumb
-    add_breadcrumb "Properties", collection_path(collection)
+    add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
   end
 
   def get_user_auth_token
