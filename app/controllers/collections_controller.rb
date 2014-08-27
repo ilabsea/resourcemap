@@ -54,7 +54,7 @@ class CollectionsController < ApplicationController
 
   def new
     add_breadcrumb I18n.t('views.collections.index.collections'), collections_path
-    add_breadcrumb I18n.t('views.collections.index.create_new_collection'), nil
+    add_breadcrumb I18n.t('views.collections.form.create_new_collection'), nil
   end
 
   def create
@@ -62,7 +62,7 @@ class CollectionsController < ApplicationController
       current_user.collection_count += 1
       current_user.update_successful_outcome_status
       current_user.save!(:validate => false)
-      redirect_to collection_path(collection), notice: "Collection #{collection.name} created"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.collection_created', name: collection.name)
     else
       render :new
     end
@@ -71,7 +71,7 @@ class CollectionsController < ApplicationController
   def update
     if collection.update_attributes params[:collection]
       collection.recreate_index
-      redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
+      redirect_to collection_settings_path(collection), notice: I18n.t('views.collections.form.collection_updated', name: collection.name)
     else
       render :settings
     end
@@ -105,10 +105,10 @@ class CollectionsController < ApplicationController
   def destroy
     if params[:only_sites]
       collection.delete_sites_and_activities
-      redirect_to collection_path(collection), notice: "Collection #{collection.name}'s sites deleted"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.sites_deleted', name: collection.name)
     else
       collection.destroy
-      redirect_to collections_path, notice: "Collection #{collection.name} deleted"
+      redirect_to collections_path, notice: I18n.t('views.collections.form.collection_deleted', name: collection.name)
     end
   end
 
@@ -124,9 +124,9 @@ class CollectionsController < ApplicationController
   def create_snapshot
     @snapshot = Snapshot.create(date: Time.now, name: params[:snapshot][:name], collection: collection)
     if @snapshot.valid?
-      redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} created"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.snapshot_created', name: params[:name])
     else
-      flash[:error] = "Snapshot could not be created: #{@snapshot.errors.to_a.join ", "}"
+      flash[:error] = I18n.t('views.collections.form.snapshot_could_not_be_created', errors: @snapshot.errors.to_a.join(", "))
       redirect_to collection_path(collection)
     end
   end
@@ -137,7 +137,7 @@ class CollectionsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        flash[:notice] = "Snapshot #{loaded_snapshot.name} unloaded" if loaded_snapshot
+        flash[:notice] = I18n.t('views.collections.form.snapshot_unloaded', name: loaded_snapshot.name) if loaded_snapshot if loaded_snapshot
         redirect_to  collection_path(collection) }
       format.json { render json: :ok }
     end
@@ -145,7 +145,7 @@ class CollectionsController < ApplicationController
 
   def load_snapshot
     if current_user_snapshot.go_to!(params[:name])
-      redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} loaded"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.snapshot_loaded', name: params[:name])
     end
   end
 
