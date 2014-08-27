@@ -22,6 +22,7 @@ onCollections ->
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
+          @setThresholds()
           @reloadMapSites()
 
       @showingMap.subscribe =>
@@ -106,7 +107,6 @@ onCollections ->
       return unless @map
 
       bounds = @map.getBounds()
-
       # Wait until map is loaded
       unless bounds
         setTimeout(( => @reloadMapSites(callback)), 100)

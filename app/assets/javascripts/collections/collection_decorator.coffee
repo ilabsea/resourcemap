@@ -23,6 +23,7 @@ onCollections ->
       @refineFields = collection.fields
       @groupByOptions = collection.groupByOptions
       @sitesPermission = collection.sitesPermission
+      @thresholds = collection.thresholds
       @allSites(collection.allSites())
 
 

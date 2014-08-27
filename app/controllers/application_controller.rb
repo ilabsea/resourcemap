@@ -37,7 +37,6 @@ class ApplicationController < ActionController::Base
   end
 
   before_filter :set_timezone
-  before_filter :set_request_header
   before_filter :set_locale
 
   def set_locale
@@ -137,10 +136,6 @@ class ApplicationController < ActionController::Base
     authenticate_or_request_with_http_basic do |user, password|
       user == USER && password == PASSWORD
     end
-  end
-
-  def set_request_header
-    headers['Access-Control-Allow-Origin'] = '*' 
   end
 
 end
