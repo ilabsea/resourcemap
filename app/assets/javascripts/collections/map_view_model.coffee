@@ -4,11 +4,11 @@ onCollections ->
       @showingMap = ko.observable(true)
       @mapSitesCount = ko.observable(0)
       @mapSitesCountText = ko.computed =>
-        sitesText = if @mapSitesCount() == 1 then "site" else "sites"
+        sitesText = if @mapSitesCount() == 1 then window.t('javascripts.collections.site') else window.t('javascripts.collections.sites')
         if @currentCollection()
-          "Viewing #{@mapSitesCount()} #{sitesText} out of #{@sitesCount()}"
+          window.t('javascripts.collections.viewing_collection', {mapSitesCount: @mapSitesCount(), sitesText: sitesText, sitesCount: @sitesCount()})
         else
-          "Viewing #{@mapSitesCount()} #{sitesText}"
+          window.t('javascripts.collections.viewing', {mapSitesCount: @mapSitesCount(), sitesText: sitesText})
 
       @sitesChangedListeners = []
 
