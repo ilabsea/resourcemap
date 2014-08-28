@@ -170,11 +170,11 @@
           = t('views.plugins.alerts.form.use_the_following_expression')
           .template_text
             [
-            %span{ko(click: 'addSiteNameToMessageNotification')}= t('views.plugins.alerts.form.site_name')
+            %span{ko(click: 'addSiteNameToMessageNotification')} Site Name
             ]
             <!-- ko foreach: $root.fields -->
             [
-            %span{ ko(text: :name, click: '$parent.addFieldNameToMessageNotification') }
+            %span{ ko(text: :code, click: '$parent.addFieldNameToMessageNotification') }
             ]
             <!-- /ko -->
         %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: t('views.plugins.alerts.form.message_template'), maxlength: 140, rows: 4 }
