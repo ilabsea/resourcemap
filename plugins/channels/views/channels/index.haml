@@ -2,17 +2,17 @@
 = render '/tabs'
 .tabsline
   #channels-main.hidden-until-loaded
-    %h2 SMS Settings
-    %p Please select the SMS gateways to be used for this collection. When using more than one gateway the system will use one of the other gateways if the primary fails. 
+    %h2= t('views.plugins.channels.title')
+    %p= t('views.plugins.channels.description') 
     <!-- ko foreach: gateways -->
     %input{ko(checked: '$root.selectedGateways', value: :id), type: "checkbox" }
     %span{ko(text: :name )}
     %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
     <!-- /ko --> 
     %p 
-      = link_to "Click here to configure your SMS gateways", gateways_path
+      = link_to t('views.plugins.channels.configure_sms_gateway'), gateways_path
     .bottom-actions
-      %button.white{ ko(click: '$root.saveChannel') } Save
-      = link_to 'Cancel', collection_channels_path, :class=> 'grey'
+      %button.white{ ko(click: '$root.saveChannel') }= t('views.plugins.channels.save')
+      = link_to t('views.plugins.channels.cancel'), collection_channels_path, :class=> 'grey'
   %br{clear: :all}
 
