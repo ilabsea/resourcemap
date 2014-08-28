@@ -21,9 +21,11 @@ kh:
       invalid_token: 'Invalid authentication token.'
       timeout: 'Your session expired, please sign in again to continue.'
       inactive: 'Your account was not activated yet.'
+      user:
+        not_found_in_database: "អ្នកប្រើប្រាស់មិនមានក្នុងដេតាបេស"
     sessions:
-      signed_in: 'ឡុកចូលដោយជោគជ័យ។'
-      signed_out: 'ឡុកចេញដោយជោគជ័យ។'
+      signed_in: 'ចូលប្រើប្រាស់ដោយជោគជ័យ។'
+      signed_out: 'ចាកចេញដោយជោគជ័យ។'
     passwords:
       send_instructions: 'You will receive an email with instructions about how to reset your password in a few minutes.'
       updated: 'Your password was changed successfully. You are now signed in.'
