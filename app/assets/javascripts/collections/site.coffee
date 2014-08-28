@@ -182,7 +182,7 @@ onCollections ->
             @propagateUpdatedAt(data.updated_at)
             @id(data.id)
             @idWithPrefix(data.id_with_prefix)
-            $.status.showNotice "Site '#{@name()}' successfully created", 2000
+            $.status.showNotice window.t('javascripts.collections.index.site_created', {name: @name()}), 2000
             callback(data) if callback && typeof(callback) == 'function' )
           error: ((request, status, error) =>
             callbackError())
