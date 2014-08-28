@@ -83,7 +83,7 @@
         %a.tgrey{ko(click: '$root.cancelReminder'), href: 'javascript:void(0)' }= t('views.plugins.reminders.form.cancel')
         <!-- /ko -->
         <!-- ko if: !valid() -->
-        %span{ko(text: 'error()'), style: 'color:red; margin-left:20px'}
+        %span{ko(text: 'errorMessage()'), style: 'color:red; margin-left:20px'}
         <!-- /ko -->
     <!-- /ko -->
     %br/

@@ -46,9 +46,9 @@ onReminders ->
 
       @reminderMessageError = ko.computed => window.t('javascripts.plugins.reminders.message_is_missing') if $.trim(@reminderMessage()).length == 0
 
-      @error = ko.computed => 
-        window.t('javascripts.plugins.reminders.cant_save') + (@nameError() ? @sitesError() ? @reminderDateError() ? @reminderMessageError())
+      @error = ko.computed => @nameError() ? @sitesError() ? @reminderDateError() ? @reminderMessageError()
       @valid = ko.computed => !@error()
+      @errorMessage = ko.computed => window.t('javascripts.plugins.reminders.cant_save') + @error()
       @listTimeZone = ko.observableArray(TimeZone.getListTimeZone())
       @userTimeZone = ko.observable()
       
