@@ -13,13 +13,15 @@
         %span{ko(text: :name)}
         &rarr;
         %em{ko(text: :repeatName)}
-        %em for
+        %em= t('views.plugins.reminders.form.for')
         <!-- ko if: isAllSites -->
-        %em all sites
+        %em= t('views.plugins.reminders.form.all_sites')
         <!-- /ko -->
         <!-- ko if: !isAllSites() -->
         %em{ko(text: :sitesName)}
         <!-- /ko -->
+        .message
+          %span{ko(text: :reminderMessage)}
       .rightbuttons
         %p.field.switch
           %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
@@ -27,9 +29,6 @@
           %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
             %span
         %button.fdelete{ ko(click: '$root.deleteReminder') }
-      .message
-        %br
-        %span{ko(text: :reminderMessage)}
       %button.farrow{ko(click: '$root.editReminder')} Edit
     <!-- /ko -->
 

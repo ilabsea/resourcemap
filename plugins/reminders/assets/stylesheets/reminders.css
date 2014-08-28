@@ -43,3 +43,7 @@
     float: left;
     margin-right: 5px;
   }
+
+  .toptitle .message span {
+    color: #555555;
+  }
