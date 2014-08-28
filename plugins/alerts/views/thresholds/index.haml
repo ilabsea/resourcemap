@@ -185,7 +185,7 @@
         %button.white{ ko(click: '$root.saveThreshold', enable: :valid) }= t('views.plugins.alerts.form.save')
         %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' }= t('views.plugins.alerts.form.cancel')
         <!-- ko if: !valid() -->
-        %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' }= t('views.plugins.alerts.form.cannot_save')
+        %span{ ko(text: 'error()'), style: 'color:red;margin-left:20px' }= t('views.plugins.alerts.form.cannot_save')
         <!-- /ko -->
     <!-- /ko -->
 
