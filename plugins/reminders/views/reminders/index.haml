@@ -29,7 +29,7 @@
           %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
             %span
         %button.fdelete{ ko(click: '$root.deleteReminder') }
-      %button.farrow{ko(click: '$root.editReminder')} Edit
+      %button.farrow{ko(click: '$root.editReminder')}= t('views.plugins.reminders.form.edit')
     <!-- /ko -->
 
     -# Form editor
