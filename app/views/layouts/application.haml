@@ -48,6 +48,8 @@
         = link_to t('views.account.create_account'), new_user_registration_path, class: 'fedit'
       %li
         = link_to t('views.account.login'), new_user_session_path, class: 'fuser'
+      %li{style: "padding: 10px 15px; 7px 5px", id: "locale-switcher"}
+        = show_language_options
     %li{style: "padding: 7px 5px;", id: "locale-switcher"}
       %div{style: "padding-top:0px;"}
         = show_language_options
