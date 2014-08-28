@@ -7,7 +7,7 @@
         %span{ko(text: :userPhoneNumber), style: 'font-size: 12px;'}
 
     - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
+      .permissionColumn{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == window.t('javascripts.collections.members.permissions.all'), summarySome: summary#{permission}() == window.t('javascripts.collections.members.permissions.some') }")}
 
     .permissionColumn.admin
       %input{ko(checked: :admin), type: :checkbox}
