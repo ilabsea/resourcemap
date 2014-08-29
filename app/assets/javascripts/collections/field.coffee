@@ -3,6 +3,7 @@ onCollections ->
   # A Layer field
   class @Field
     constructor: (data) ->
+      console.log 'a layer field'
       @esCode = "#{data.id}"
       @code = data.code
       @name = data.name
@@ -10,8 +11,6 @@ onCollections ->
       @is_mandatory = data.is_mandatory
 
       @is_enable_field_logic = data.is_enable_field_logic
-      # @field_logic_value = data.field_logic_value
-      # @field_logic_layer_id = data.field_logic_layer_id
 
       @photo = '' 
       @photoPath = '/photo_field/'
@@ -31,6 +30,14 @@ onCollections ->
        read: =>  @valueUIFor(@value())
        write: (value) =>
          @value(@valueUIFrom(value))
+
+
+      if @kind in ['yes_no', 'select_one', 'select_many']
+        @field_logics = if data.config?.field_logics?
+                          $.map data.config.field_logics, (x) => new FieldLogic x
+                        else
+                          []
+
 
       if @kind in ['select_one', 'select_many']
         @options = if data.config?.options?

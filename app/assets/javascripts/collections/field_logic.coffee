@@ -1,4 +1,4 @@
-onLayers ->
+onCollections ->
   class @FieldLogic
     constructor: (data) ->
       @id = ko.observable(data?.id)

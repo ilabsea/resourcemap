@@ -24,7 +24,7 @@
       
       %span.smalltext{style: 'padding-left:10px'}skip form question to
     / = select_tag :layer_id, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.selectLogicLayers()', optionsText: 'function(item) { return item.name() }', optionsValue: 'function(item) { return item.id() }', value: 'layer_id', event: '{ change: $root.selectingLayer}', optionsCaption: 'window.model.default_select')
-    %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: layer_id, selectedOptions: layer_id', style: 'max-width:250px'}
+    %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id, selectedOptions: field_id', style: 'max-width:250px'}
       %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: 'padding-left:5px;'}        
         %option{"data-bind" => "text: name, option: name, value: id"}
       

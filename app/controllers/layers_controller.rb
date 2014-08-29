@@ -89,10 +89,12 @@ class LayersController < ApplicationController
             field[:config][:field_logics] = field[:config][:field_logics].values
             field[:config][:field_logics].each { |field_logic| 
               field_logic['id'] = field_logic['id'].to_i
-              
+              field_logic['field_id'].each { |field_id|
+                field_logic['field_id'] = field_id
+              }
             }
             # validate logic if layer_id is nil
-            field[:config][:field_logics].delete_if { |field_logic| !field_logic['layer_id'] }
+            field[:config][:field_logics].delete_if { |field_logic| !field_logic['field_id'] }
             if field[:config][:field_logics].length == 0 || field[:is_enable_field_logic] == "false"
               params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:field_logics)
             end      
@@ -140,6 +142,5 @@ class LayersController < ApplicationController
     end
 
     params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
-    # params[:layer][:fields_attributes][:field_logics_attributes] = params[:layer][:fields_attributes][:field_logics_attributes].values
   end
 end
