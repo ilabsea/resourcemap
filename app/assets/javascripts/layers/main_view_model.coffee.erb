@@ -5,15 +5,15 @@ onLayers ->
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @currentLayer = ko.observable()
       @currentField = ko.observable()
-      
-      # @field_logic_value = ko.observable
+      @default_select = 'no value'
 
       @newOption = ko.observable(new Option)
-      @newFieldLogic = ko.observable(new FieldLogic)
+      @newFieldLogic = ko.observable(new FieldLogic)     
       @newAttribute = ko.observable(new Attribute)
 
       @optionValid = ko.computed =>
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
+
 
       @attributeValid = ko.computed =>
         $.trim(@newAttribute().key()).length > 0 && $.trim(@newAttribute().value()).length > 0 && not Attribute.find(@currentField().impl().attributes(), @newAttribute())
@@ -31,7 +31,13 @@ onLayers ->
 
       @savingLayer = ko.observable(false)
 
-    selectingLayer: () ->
+      @selectLogicLayers = ko.computed =>
+        if @currentLayer()
+          if @currentLayer().id()
+            @layers().filter (layer) => layer.id() isnt @currentLayer().id()
+          else
+            @layers().filter (layer) => typeof layer.id() isnt 'undefined'
+
 
     newLayer: =>
       layer = new Layer ord: (@layers().length + 1)
@@ -56,6 +62,8 @@ onLayers ->
 
     saveLayer: =>
       @savingLayer(true)
+      # @currentField().impl().field_logics @currentField().impl().field_logics().filter (field_logic) -> typeof field_logic.layer_id() isnt 'undefined'
+      
 
       json = {layer: @currentLayer().toJSON()}
 
@@ -112,6 +120,9 @@ onLayers ->
           $.status.showNotice("Layer '#{layer.name()}' successfully deleted", 2000)
       else
           $.status.showError("This layer is being used with #{layer.threshold_ids.length} alert(s), you are not allowed to delete", 2000)
+
+    selectingLayer: =>
+      console.log 'selectingLayer'
 
     isFirstLayer: (layer) => layer.ord() == 1
     isLastLayer: (layer) => layer.ord() == @layers().length
@@ -187,8 +198,9 @@ onLayers ->
       if $.trim(attribute.code()).length == 0 && $.trim(attribute.length()).length == 0
         @removeAttribute(attribute)
 
+
+
     addOption: =>
-      # console.log 'aaaaaaaaaaa'
       return unless @optionValid()
       @newOption().hasFocus = false
       @currentField().impl().addOption(@newOption())
@@ -196,7 +208,7 @@ onLayers ->
       option.hasFocus(true)
       @newOption(option)
 
-    addFieldLogic: () =>
+    addFieldLogic: =>
       @currentField().impl().addFieldLogic(@newFieldLogic())
       field_logic = new FieldLogic
       @newFieldLogic(field_logic)
@@ -212,6 +224,9 @@ onLayers ->
     removeOption: (option) =>
       @currentField().impl().options.remove(option)
       @newOption().hasFocus(true)
+
+    removeFieldLogic: (field_logic) =>
+      @currentField().impl().field_logics.remove(field_logic)
 
     removeAttribute: (attribute) =>
       @currentField().impl().attributes.remove(attribute)

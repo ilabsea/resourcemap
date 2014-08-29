@@ -8,12 +8,10 @@ onLayers ->
       @kind = ko.observable data?.kind
       
       @is_enable_field_logic = ko.observable data?.is_enable_field_logic ? false
-      # @field_logic_value = ko.observableArray data?.field_logic_value ? ['yes']
-      # @field_logic_layer_id = ko.observableArray data?.field_logic_layer_id ? 
-      # @selectedValue = ko.observable()
 
 
       @config = data?.config
+      @field_logics_attributes = data?.field_logics_attributes
       @metadata = data?.metadata
       @is_mandatory = data?.is_mandatory
       
@@ -47,9 +45,6 @@ onLayers ->
     selectingLayerClick: =>
       @switchMoveToLayerElements true
 
-    # selectingLayerSelect: =>
-
-
     selectingLayerSelect: =>
       return unless @selecting
 
@@ -81,8 +76,6 @@ onLayers ->
         layer_id: @layer().id()
         is_mandatory: @is_mandatory
         is_enable_field_logic: @is_enable_field_logic
-        # field_logic_value: @field_logic_value
-        # field_logic_layer_id: @field_logic_layer_id
       @impl().toJSON(json)
       json
 
@@ -123,16 +116,52 @@ onLayers ->
   class @Field_yes_no extends @FieldImpl
     constructor: (field) ->
       super(field)
+
       @field_logics = if field.config?.field_logics?
-                        ko.observableArray($.map(field.config.field_logics, (x) -> new FieldLogic(x)))
+                        ko.observableArray(
+                          $.map(field.config.field_logics, (x) ->
+                            if field.config.field_logics.length == 1
+                              if x.value == 'yes'
+                                field_logic_no = new FieldLogic
+                                field_logic_no.id(2)
+                                field_logic_no.value('no')
+
+                                return [new FieldLogic(x),field_logic_no]
+                              if x.value == 'no'
+                                field_logic_yes = new FieldLogic
+                                field_logic_yes.id(1)
+                                field_logic_yes.value('yes')
+
+                                return [field_logic_yes, new FieldLogic(x)]
+
+                            if field.config.field_logics.length == 2
+                              new FieldLogic(x)
+                          ))
                      else
-                        ko.observableArray()
+                        field_logic_yes = new FieldLogic
+                        field_logic_yes.id(1)
+                        field_logic_yes.value('yes')
+
+                        field_logic_no = new FieldLogic
+                        field_logic_no.id(2)
+                        field_logic_no.value('no')     
+
+                        ko.observableArray([field_logic_yes, field_logic_no])
+
+      @nextId = field.config?.next_id || @field_logics().length + 1
+
+
     addFieldLogic: (field_logic) =>
-      console.log 'addFieldLogic' 
       @field_logics.push field_logic
-      console.log this.field_logics()
+      @nextId += 1
 
+    validFieldLogic: (field_logic) =>
+      @field_logics().filter (field_logic) -> typeof field_logic.layer_id() isnt 'undefined'
 
+    toJSON: (json) =>
+      # valid_logic = @validFieldLogic(@field_logics())
+      json.config = {field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}
+      # json.field_logics_attributes = $.map(@field_logics(), (x) -> x.toJSON())
 
   class @FieldSelect extends @FieldImpl
     constructor: (field) ->
@@ -159,8 +188,6 @@ onLayers ->
       option.id @nextId
       @options.push option
       @nextId += 1
-      console.log 'addOption'
-      console.log this.options()
 
     toJSON: (json) =>
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId}

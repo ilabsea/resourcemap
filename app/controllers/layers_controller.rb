@@ -41,12 +41,12 @@ class LayersController < ApplicationController
   def update
     # FIX: For some reason using the exposed layer here results in duplicated fields being created
     layer = collection.layers.find params[:id]
-
     fix_layer_fields_for_update
     layer.user = current_user
-    layer.update_attributes! params[:layer]
+    layer.update_attributes! params[:layer]   
     layer.reload
     render json: layer.as_json(include: :fields)
+
   end
 
   def set_order
@@ -84,9 +84,30 @@ class LayersController < ApplicationController
             field[:config][:hierarchy] = field[:config][:hierarchy].values
             sanitize_items field[:config][:hierarchy]
           end
+
+          if field[:config][:field_logics]
+            field[:config][:field_logics] = field[:config][:field_logics].values
+            field[:config][:field_logics].each { |field_logic| 
+              field_logic['id'] = field_logic['id'].to_i
+              
+            }
+            # validate logic if layer_id is nil
+            field[:config][:field_logics].delete_if { |field_logic| !field_logic['layer_id'] }
+            if field[:config][:field_logics].length == 0 || field[:is_enable_field_logic] == "false"
+              params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:field_logics)
+            end      
+            # ---------------------------------       
+          end
         end
       end
     end
+  end
+
+  def validate_field_logic
+    field[:config][:field_logics].delete_if { |field_logic| !field_logic['layer_id'] }            
+    if field[:config][:field_logics].length == 0
+      params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:field_logics)
+    end    
   end
 
   def sanitize_items(items)
@@ -119,5 +140,6 @@ class LayersController < ApplicationController
     end
 
     params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
+    # params[:layer][:fields_attributes][:field_logics_attributes] = params[:layer][:fields_attributes][:field_logics_attributes].values
   end
 end

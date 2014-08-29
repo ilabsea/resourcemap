@@ -1,17 +1,32 @@
-%ul
- %li{ko(with: '$root.newFieldLogic()')}
-  %p.left{style: 'padding-right:10px'} if input is
-  %b Yes
-  %br
-  %p.left{style: 'padding-right:10px'} skip form question to
-  = select_tag :layer_id, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', optionsValue: 'function(item) { return item.id() }', value: 'layer_id, selectedOptions: layer_id') 
-  %button.clist-add{ko(click: '$root.addFieldLogic('yes')'), title: 'Add Logic'}
+%ul{style: 'padding:0px; list-style:none'}
+  / %li{ko(with: '$root.newFieldLogic()')}
+  /   %p.left{style: 'padding-right:10px'} if input is
+  /   / %select{"data-bind" => "options: ['yes', 'no'], value: value"}
+  /   %br
+  /   %p.left{style: 'padding-right:10px'} skip form question to
+  /   = select_tag :layer_id, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', optionsValue: 'function(item) { return item.id() }', value: 'layer_id, selectedOptions: layer_id') 
+  /   %button.clist-add{ko(click: '$root.addFieldLogic'), title: 'Add Logic'}
 
-  %hr/
- %li{ko(with: '$root.newFieldLogic()')}
-  %p.left{style: 'padding-right:10px'} if input is
-  %b No
-  %br
-  %p.left{style: 'padding-right:10px'} skip form question to
-  = select_tag :layer_id, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', optionsValue: 'function(item) { return item.id() }', value: 'layer_id, selectedOptions: layer_id') 
-  %button.clist-add{ko(click: '$root.addFieldLogic('no')'), title: 'Add Logic'}
+  / %li{ko(with: '$root.newFieldLogic()')}
+  /   %p.left{style: 'padding-right:10px'} if input is
+  /   / %select{"data-bind" => "options: ['yes', 'no'], value: value"}
+  /   %br
+  /   %p.left{style: 'padding-right:10px'} skip form question to
+  /   = select_tag :layer_id, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', optionsValue: 'function(item) { return item.id() }', value: 'layer_id, selectedOptions: layer_id') 
+  /   %button.clist-add{ko(click: '$root.addFieldLogic'), title: 'Add Logic'}
+  
+  /ko if impl().field_logics().length > 0
+  /ko foreach: impl().field_logics
+  %li{style: 'padding-bottom:20px'}
+    %div{style: 'padding-bottom:10px'}
+      %span.smalltext.left{style: 'padding-right:10px'} if input is
+      %b{"data-bind" => "text: value"}
+      
+      %span.smalltext{style: 'padding-left:10px'}skip form question to
+    / = select_tag :layer_id, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.selectLogicLayers()', optionsText: 'function(item) { return item.name() }', optionsValue: 'function(item) { return item.id() }', value: 'layer_id', event: '{ change: $root.selectingLayer}', optionsCaption: 'window.model.default_select')
+    %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: layer_id, selectedOptions: layer_id', style: 'max-width:250px'}
+      %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: 'padding-left:5px;'}        
+        %option{"data-bind" => "text: name, option: name, value: id"}
+      
+  //ko
+  //ko

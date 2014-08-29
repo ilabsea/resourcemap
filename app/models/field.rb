@@ -10,7 +10,6 @@ class Field < ActiveRecord::Base
 
   belongs_to :collection
   belongs_to :layer
-  has_one :field_logic
 
   validates_presence_of :ord
   validates_inclusion_of :kind, :in => proc { kinds() }
