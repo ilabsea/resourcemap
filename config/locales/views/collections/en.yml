@@ -96,6 +96,8 @@ en:
         refresh_captcha: "Refresh CAPTCHA"
         incorrect_please_try_again: "Incorrect please try again"
         enter_captcha: "Enter captcha"
+        leave_this_collection: "Leave this collection"
+        confirm_leave_collection: "Are you sure you want to leave this collection?"
       form:
         name: "Name"
         description: "Description"

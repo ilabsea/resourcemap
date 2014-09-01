@@ -1,4 +1,14 @@
 en:
+  javascripts:
+    gateways:
+      form:
+        channel_missing: "Channel's name is missing"
+        channel_require_four_characters: "Channel's name require at least 4 characters"
+        channel_password_missing: "Channel's password is missing"
+        channel_password_required_four_characters: "Channel's password require at least 4 characters"
+        sms_gateway_missing: "SMS gateway key is missing" 
+        sms_gateway_key_must_be_four: "SMS gateway key is must be 4 characters"
+        destination_phone_missing: "Destination phone number is missing" 
   views:
     gateways:
       sms_gateway:
@@ -14,6 +24,9 @@ en:
         message: "Message"
         time: "Time"
         enter_phone_number: "Enter phone number"
+        show_more: "show more"
+        load_more: "load more"
+        loading: "Loading..."
       index:
         resourcemap_default_gateway: ៉ResoureMap Default Gateway៉
         add_gateway: "Add Gateway"
@@ -37,3 +50,5 @@ en:
         key: "Key"
         password: "Password"
         can_not_save: "Can't save"
+        national_text_description: 'In a limited number of countries we have a gateway provided by a local phone company that can be used to send and recieve system messages. Please select the list below to'
+        national_gateway: "National Gateway(Only Some Country Supported)"

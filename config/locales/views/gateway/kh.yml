@@ -1,4 +1,14 @@
 kh:
+  javascripts:
+    gateways:
+      form:
+        channel_missing: "ឈ្មោះឆាន់ណែលបានបាត់"
+        channel_require_four_characters: "ឈ្មោះឆាន់ណែលទាមទាអោយមានបួនតួអក្សរ"
+        channel_password_missing: "លេខសំងាត់ឆាន់ណែលបានបាត់"
+        channel_password_required_four_characters: "លេខសំងាត់ឆាន់ណែលទាមទាអោយមានបួនតួអក្សរ"
+        sms_gateway_missing: "ផ្លូវចេញចូលសារអក្សរបានបាត់" 
+        sms_gateway_key_must_be_four: "ផ្លូវចេញចូលសារអក្សរទាមទាអោយមានបួនតួអក្សរ"
+        destination_phone_missing: "លេខទូរស័ព្ទបានបាត់" 
   views:
     gateways:
       sms_gateway:
@@ -14,6 +24,9 @@ kh:
         message: "សារជាអក្សរ"
         time: "ពេលវេលា"
         enter_phone_number: "បញ្ចូលលេខទូរស័ព្ធ"
+        show_more: "បង្ហាញបន្ថែម"
+        load_more: "បង្ហាញបន្ថែម"
+        loading: "កំពុងផ្ទុក"
       index:
         resourcemap_default_gateway: "ផ្លូវចេញចូលលំនាំដើម"
         add_gateway: "បន្ថែមផ្លូវចេញចូល"
@@ -29,7 +42,7 @@ kh:
       form:
         save: "រក្សាទុក"
         cancel: "បោះបង់"
-        name: "ឈ​​្មោះ"
+        name: "ឈ្មោះ"
         android_phone_sms_gateway_basic_setup: "របៀបតំឡើងផ្លូវចេញចូលសារអក្សរនៅលើទូរស័ព្ធ ប្រព័ន្ធប្រតិបត្តិការ Android ដែលមានលក្ខណះសាមញ្ញ(ណែនាំអោយប្រើ)"
         android_phone_sms_gateway_advance_setup: "របៀបតំឡើងផ្លូវចេញចូលសារអក្សរនៅលើទូរស័ព្ទ ប្រព័ន្ធប្រតិបត្តិការ Android ដែលមានលក្ខណះទំនើប"
         click_here_for_instructions: "ចុចទីនេះសំរាប់ការណែនាំ"
@@ -37,3 +50,5 @@ kh:
         key: "ពាក្យ"
         password: 'លេខសំងាត់'
         can_not_save: 'មិនអាចរក្សាទុកបាន'
+        national_text_description: 'នៅក្នុងបណ្តាប្រទេសមួយចំនួន យើងមានផ្លូវចេញចូលសារជាអក្សរដែលផ្តល់ដោយក្រុមហ៊ុនទូរស័ព្ទក្នុងស្រុកសំរាប់ផ្ញើរនិងទទួលសារពីប្រព័ន្ធ។ សូមជ្រើសរើសពីក្នុងបញ្ជីខាងក្រោម'
+        national_gateway: "របៀបតំឡើងផ្លូវចេញចូលសារជាលក្ខណះប្រទេស(មានតែប្រទេសមួយចំនួនដែលអាចដំណើរការបាន)"

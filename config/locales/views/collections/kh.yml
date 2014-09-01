@@ -96,6 +96,8 @@ kh:
         refresh_captcha: "ផ្លាស់ប្តូរអក្សរ ផ្ទៀងផ្ទាត់"
         incorrect_please_try_again: "មិនត្រឹមត្រូវ សូមព្យាយាមម្តងទៀត"
         enter_captcha: "បញ្ចូលលេខផ្ទៀងផ្ទាត់"
+        leave_this_collection: "ចាកចេញពីទិន្នន័យ"
+        confirm_leave_collection: "តើអ្នពិតជាចង់ចាកចេញពីទិន្នន័យមែនទេ?"
       form:
         name: "ឈ្មោះ"
         description: "ការពិពណ៌នាសង្ខេប"
