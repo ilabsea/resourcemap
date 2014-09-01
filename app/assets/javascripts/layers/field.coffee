@@ -123,16 +123,16 @@ onLayers ->
                             if field.config.field_logics.length == 1
                               if x.value == 'yes'
                                 field_logic_no = new FieldLogic
-                                field_logic_no.id(2)
-                                field_logic_no.value('no')
+                                field_logic_no.id(1)
+                                field_logic_no.value(false)
 
-                                return [new FieldLogic(x),field_logic_no]
+                                return [field_logic_no, new FieldLogic(x)]
                               if x.value == 'no'
                                 field_logic_yes = new FieldLogic
-                                field_logic_yes.id(1)
-                                field_logic_yes.value('yes')
+                                field_logic_yes.id(0)
+                                field_logic_yes.value(true)
 
-                                return [field_logic_yes, new FieldLogic(x)]
+                                return [new FieldLogic(x), field_logic_yes]
 
                             if field.config.field_logics.length == 2
                               new FieldLogic(x)
@@ -140,34 +140,18 @@ onLayers ->
                      else
                         field_logic_yes = new FieldLogic
                         field_logic_yes.id(1)
-                        field_logic_yes.value('yes')
+                        field_logic_yes.value(true)
 
                         field_logic_no = new FieldLogic
-                        field_logic_no.id(2)
-                        field_logic_no.value('no')     
+                        field_logic_no.id(0)
+                        field_logic_no.value(false)     
 
-                        ko.observableArray([field_logic_yes, field_logic_no])
-
-      @nextId = field.config?.next_id || @field_logics().length + 1
-
-
-    addFieldLogic: (field_logic) =>
-      @field_logics.push field_logic
-      @nextId += 1
+                        ko.observableArray([field_logic_no, field_logic_yes])
 
     validFieldLogic: =>
-      for field_logic in @field_logics()
-        console.log field_logic.field_id()
-        if field_logic.field_id() is [ "" ]
-          console.log 'equal'
-
-      @field_logics().filter (field_logic) -> typeof field_logic.field_id() isnt 'undefined' && field_logic.field_id() isnt [""]
+      @field_logics().filter (field_logic) -> typeof field_logic.field_id() isnt 'undefined'
 
     toJSON: (json) =>
-      # valid_logic = @validFieldLogic()
-      # for field_logic in valid_logic
-      #   console.log field_logic.field_id()
-
       json.config = {field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}
       # json.field_logics_attributes = $.map(@field_logics(), (x) -> x.toJSON())
 

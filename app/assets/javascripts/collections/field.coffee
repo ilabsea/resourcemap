@@ -19,6 +19,17 @@ onCollections ->
       @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
 
       @value = ko.observable()
+      @value.subscribe =>
+        if @kind == 'yes_no'
+          
+          for field_logic in @field_logics
+            console.log 'value '+@value()
+            console.log 'field_logic '+field_logic.value()
+            if @value() == field_logic.value()
+              console.log field_logic.field_id()
+
+
+
       @hasValue = ko.computed =>
         if @kind == 'yes_no'
           true

@@ -123,7 +123,7 @@ onLayers ->
           $.status.showError("This layer is being used with #{layer.threshold_ids.length} alert(s), you are not allowed to delete", 2000)
 
     selectingLayer: =>
-      console.log 'selectingLayer'
+      alert 'selectingLayer'
 
     isFirstLayer: (layer) => layer.ord() == 1
     isLastLayer: (layer) => layer.ord() == @layers().length
@@ -255,3 +255,6 @@ onLayers ->
         themePath:  '<%= InsteddRails.url %>/theme/images/'
 
       });
+
+    change: =>
+      alert 'test'
