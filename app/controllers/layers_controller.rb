@@ -85,22 +85,25 @@ class LayersController < ApplicationController
             sanitize_items field[:config][:hierarchy]
           end
 
+          if field[:is_enable_field_logic] == "false"
+            params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:field_logics)
+          end
+
           if field[:config][:field_logics]
             field[:config][:field_logics] = field[:config][:field_logics].values
             field[:config][:field_logics].each { |field_logic| 
               field_logic['id'] = field_logic['id'].to_i
               if field_logic['field_id']
                 field_logic['field_id'].each { |field_id|
-                  field_logic['field_id'] = field_id
+                  if field_id == ""
+                    field_logic['field_id'] = nil
+                  else
+                    field_logic['field_id'] = field_id
+                  end
+
                 }
               end
-            }
-            # validate logic if layer_id is nil
-            field[:config][:field_logics].delete_if { |field_logic| !field_logic['field_id'] || field_logic['field_id'] == "" }
-            if field[:config][:field_logics].length == 0 || field[:is_enable_field_logic] == "false"
-              params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:field_logics)
-            end      
-            # ---------------------------------       
+            }    
           end
         end
       end
