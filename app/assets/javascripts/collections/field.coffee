@@ -3,7 +3,6 @@ onCollections ->
   # A Layer field
   class @Field
     constructor: (data) ->
-      console.log 'a layer field'
       @esCode = "#{data.id}"
       @code = data.code
       @name = data.name

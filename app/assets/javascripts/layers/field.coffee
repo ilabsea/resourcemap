@@ -1,7 +1,6 @@
 onLayers ->
   class @Field
     constructor: (layer, data) ->
-      console.log 'field implement'
       @layer = ko.observable layer
       @id = ko.observable data?.id
       @name = ko.observable data?.name
@@ -156,11 +155,19 @@ onLayers ->
       @field_logics.push field_logic
       @nextId += 1
 
-    validFieldLogic: (field_logic) =>
-      @field_logics().filter (field_logic) -> typeof field_logic.layer_id() isnt 'undefined'
+    validFieldLogic: =>
+      for field_logic in @field_logics()
+        console.log field_logic.field_id()
+        if field_logic.field_id() is [ "" ]
+          console.log 'equal'
+
+      @field_logics().filter (field_logic) -> typeof field_logic.field_id() isnt 'undefined' && field_logic.field_id() isnt [""]
 
     toJSON: (json) =>
-      # valid_logic = @validFieldLogic(@field_logics())
+      # valid_logic = @validFieldLogic()
+      # for field_logic in valid_logic
+      #   console.log field_logic.field_id()
+
       json.config = {field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}
       # json.field_logics_attributes = $.map(@field_logics(), (x) -> x.toJSON())
 

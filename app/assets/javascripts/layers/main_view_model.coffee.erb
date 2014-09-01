@@ -37,7 +37,8 @@ onLayers ->
             @layers().filter (layer) => layer.id() isnt @currentLayer().id()
           else
             @layers().filter (layer) => typeof layer.id() isnt 'undefined'
-
+        else
+          []
 
     newLayer: =>
       layer = new Layer ord: (@layers().length + 1)
