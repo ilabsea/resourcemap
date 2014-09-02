@@ -1,0 +1,8 @@
+kh:
+  javascripts:
+    layers:
+      successfully_saved: "ស្រទាប់ '%{name}' បានរក្សាទុកដោយជោគជ័យ"
+      successfully_created: "ស្រទាប់ '%{name}' បានបង្កើតដោយជោគជ័យ"
+      successfully_deleted: "ស្រទាប់ '%{name}' បានលុបដោយជោគជ័យ"
+      are_you_sure_to_delete: "តើអ្នកប្រាកដថាអ្នកចង់លុបស្រទាប់នេះឬ?"
+      layer_is_being_used: "ស្រទាប់នេះត្រូវបានប្រើជាមួយការជូនដំណឹងចំនួន %{n} អ្នកមិនត្រូវបានអនុញ្ញាតឱ្យលុបទេ"

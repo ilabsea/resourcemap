@@ -7,15 +7,13 @@ class LayersController < ApplicationController
     respond_to do |format|
       format.html do
         show_collection_breadcrumb
-        add_breadcrumb "Properties", collection_path(collection)
-        add_breadcrumb "Layers", collection_layers_path(collection)
+        add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
+        add_breadcrumb I18n.t('views.collections.tab.layers'), collection_layers_path(collection)
       end
       if current_user_snapshot.at_present?
-
         json = layers.includes(:fields).all.as_json(include: :fields).each { |layer|
           layer['threshold_ids'] = Layer.find(layer['id']).get_associated_threshold_ids
         }
-
         format.json { render json:  json}
       else
         format.json {

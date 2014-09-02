@@ -1,7 +1,7 @@
 <!-- ko if: !currentCollection() && !editingSite() -->
 -# Collections
 .tableheader.expanded
-  %div{style: 'padding-top:9px;padding-left:6px;height:29px;width:289px'} My Collections
+  %div{style: 'padding-top:9px;padding-left:6px;height:29px;width:289px'}= t('views.collections.index.my_collections')
   .mapheader.w60.right
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: "{active: !$root.showingMap()}")}
@@ -11,8 +11,8 @@
   %table.GralTable.tableview
     %thead
       %tr
-        %th{style: 'width:283px;padding-left:10px;'} Collection
-        %th{style: 'width:100%'} Last update
+        %th{style: 'width:283px;padding-left:10px;'}= t('views.collections.index.collection')
+        %th{style: 'width:100%'}= t('views.collections.index.last_update')
         %th
     %tbody
       <!-- ko foreach: collections -->
@@ -59,16 +59,16 @@
     %thead
       %tr
         %th{ko(click: '$root.sortByName'), style: 'cursor:pointer;overflow:hidden'}
-          %span{style: 'display:inline'} Site
+          %span{style: 'display:inline'}= t('views.collections.index.site')
           <!-- ko if: $root.sort() == 'name' -->
           -# Note: the cssFloat property is used to make it work on Firefox. See the note on:
           -# https://developer.mozilla.org/en-US/docs/CSS/float
           %button{ko(style: {background: "'transparent url(#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png) no-repeat scroll center'", height: "'11px'", cssFloat: "'right'", float: "'right'", borderStyle: "'none'", paddingLeft: "'17px'"})}
           <!-- /ko -->
         %th
-          %span{style: 'display:inline'} Lat
+          %span{style: 'display:inline'}= t('views.collections.index.lat')
         %th
-          %span{style: 'display:inline'} Long
+          %span{style: 'display:inline'}= t('views.collections.index.long')
         <!-- ko foreach: $root.currentCollection().fields() -->
         %th{ko(click: '$root.sortBy', style: {maxWidth: 'suggestedWidth()', minWidth: 'suggestedWidth()'}), style: 'overflow:hidden;cursor:pointer'}
           %span{ko(text: :name), style: 'display:inline'}
@@ -77,7 +77,7 @@
           <!-- /ko -->
         <!-- /ko -->
         %th{ko(click: '$root.sortByDate'), style: 'width:100%;min-width:100px;cursor:pointer'}
-          %span{style: 'display:inline'} Last update
+          %span{style: 'display:inline'}= t('views.collections.index.last_update')
           <!-- ko if: $root.sort() == 'updated_at' -->
           %button{ko(style: {background: "'transparent url(#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.sortDirection() ? 'Up' : 'Down') + '.png) no-repeat scroll center'", height: "'11px'", cssFloat: "'right'", float: "'right'", borderStyle: "'none'"})}
           <!-- /ko -->
@@ -91,10 +91,10 @@
       <!-- /ko -->
   <!-- ko if: hasMoreSites() && !loadingSites()-->
   %span.loadmore{ko(click: :loadMoreSites), style: 'cursor:pointer;'}
-    = ko_link_to "Load more sites...", :loadMoreSites
+    = ko_link_to t('views.collections.index.load_more_sites'), :loadMoreSites
   <!-- /ko -->
   <!-- ko if: hasMoreSites() && loadingSites()-->
-  %span.loadmore Loading...
+  %span.loadmore= t('views.collections.index.loading')
   <!-- /ko -->
 .tablebottom
   <!-- ko if: !currentSnapshot-->

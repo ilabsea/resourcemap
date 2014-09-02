@@ -1,12 +1,12 @@
 .greyback{style: 'display:inline-block; float:left; padding-top:6px;'}
   %span#export
-    Export this result in
+    = t('views.collections.index.export_this_result_in')
     %span.link{ko(click: '$root.exportInRSS')} RSS
-    ,
+    = t('views.collections.index.comma')
     %span.link{ko(click: '$root.exportInJSON')} JSON
-    ,
+    = t('views.collections.index.comma')
     %span.link{ko(click: '$root.exportInKML')} KML
-    ,
+    = t('views.collections.index.comma')
     %span.link{ko(click: '$root.exportInCSV')} CSV
-    or
+    = t('views.collections.index.or')
     %span.link{ko(click: '$root.exportInSHP')} SHP

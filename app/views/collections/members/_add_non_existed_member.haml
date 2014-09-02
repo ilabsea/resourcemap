@@ -1,29 +1,29 @@
 %div{ko(visible: :showRegisterNewMember), class: "box centered w40 rm-dialog", id: "frm_new_member", style: "margin-left: -180px; display: none; margin-top: -175px; box-shadow: 0 3px 11px -1px rgba(0, 0, 0, 0.3)" }
-  %h2 Create New Member
+  %h2= t('views.collections.members.create_new_member')
   %div{:style => "margin-left: 132px;"}
     %span{ko(text: :emailError), :style => "color: red"}
-  Email:
+  = t('views.collections.members.email')
   %input{ko(value: :email, valueUpdate: :afterkeydown), :name => "email", :style => "margin-left: 88px; width: 250px;", :type => "text"}
   %br
   %br
   %div{:style => "margin-left: 130px;"}
-    Include country code eg. 85512987656
+    = t('views.collections.members.phone_number_note')
   %div{:style => "margin-left: 132px;"}
     %span{ko(text: :phoneError), :style => "color: red"}
-  Phone Number:
+  = t('views.collections.members.phone_number')
   %input{ko(value: :phoneNumber, valueUpdate: :afterkeydown), :name => "phone_number", :style => "margin-left: 30px; width: 250px;", :type => "text"}
   %br
   %br
   %div{:style => "margin-left: 130px;"}
-    We need to verify this phone number
+    = t('views.collections.members.need_to_verify_phone_number')
   %div{:style => "margin-left: 130px;"}
-    %button{ko(click: '$root.sentCodeMsg', css: {disabled: '$root.phoneNumberExist()'}), type: "button", value: "text", class: "white" } Text Me!
+    %button{ko(click: '$root.sentCodeMsg', css: {disabled: '$root.phoneNumberExist()'}), type: "button", value: "text", class: "white" }= t('views.collections.members.text_me')
     %input{ko(value: :smsCode, valueUpdate: :afterkeydown), :name => "text_verify", :type => "text"}
   %div{:style => "margin-left: 130px; width: 250px;"}
     %span{ko(html: :codeVerificationMsg)}
   %div{style: "margin-bottom: 5px;"}
     %a{ko(text: :noChannelMsg), :href => collection_channels_path(collection), :style => "margin-left: 130px; color: red; text-decoration: underline;"}
   %div{ style: "margin-left: 130px;"}
-    %button{ko(click: '$root.createMembership', css: {disabled: '$root.hasError()'}), type: "button", value: "Save", class: "white", id: "btn_create_member" } Submit
+    %button{ko(click: '$root.createMembership', css: {disabled: '$root.hasError()'}), type: "button", value: "Save", class: "white", id: "btn_create_member" }= t('views.collections.members.submit')
     
-    %button{ko(click: '$root.hideRegisterMembership'), type: "button", value: "Cancel", class: "white", id: "btn_close_member" } Cancel
+    %button{ko(click: '$root.hideRegisterMembership'), type: "button", value: "Cancel", class: "white", id: "btn_close_member" }= t('views.collections.members.cancel')

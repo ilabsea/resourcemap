@@ -7,9 +7,9 @@
 = render '/tabs'
 
 .tabsline
-  %h2 Import wizard
-  %p Import failed :-(
+  %h2= t('views.import_wizards.title')
+  %p= t('views.import_wizards.import_failed')
 
-%p We couldn't import your data from file #{import_job.original_filename}.
+%p= t('views.import_wizards.could_not_import', filename: import_job.original_filename)
 
-%p Please contact InSTEDD for support.
+%p= t('views.import_wizards.please_contact_instedd_for_support')

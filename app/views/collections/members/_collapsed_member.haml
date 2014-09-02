@@ -9,7 +9,7 @@
 
 
     - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn.collapsed{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
+      .permissionColumn.collapsed{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == window.t('javascripts.collections.members.permissions.all'), summarySome: summary#{permission}() == window.t('javascripts.collections.members.permissions.some') }")}
 
     .permissionColumn.admin.collapsed
       %input{ko(checked: :admin), type: :checkbox}

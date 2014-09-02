@@ -33,6 +33,9 @@ onCollections ->
       # Append alert view
       query._alert = true if @showingAlert()
 
+      # Append locale
+      query.locale = @locale if @locale
+
       location = document.createElement 'a'
       location.href = window.location
       location.search = $.param query
@@ -57,7 +60,7 @@ onCollections ->
       for key of @queryParams
         value = @queryParams[key]
         switch key
-          when 'lat', 'lng', 'z', 'collection_id'
+          when 'lat', 'lng', 'z', 'collection_id', 'locale'
             continue
           when 'search'
             @search(value)

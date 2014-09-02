@@ -1,6 +1,6 @@
 %tr{:style => 'height:32px'}
   %td{:colspan => 6}
     #autocomplete_container{style: 'width: 410px; float:left; margin-top:3px; margin-left:5px; margin-right: 5px;'}
-      = text_field_tag :member_email, '', :placeholder => 'Search by email...'
-    %button.cadd#add_member{ko(click: '$root.showRegisterMembership'), style:"float:left;"} Add member
+      = text_field_tag :member_email, '', :placeholder => t('views.collections.members.search_by_email')
+    %button.cadd#add_member{ko(click: '$root.showRegisterMembership'), style:"float:left;"}= t('views.collections.members.add_member')
 

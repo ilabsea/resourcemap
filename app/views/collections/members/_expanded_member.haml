@@ -7,7 +7,7 @@
         %span{ko(text: :userPhoneNumber), style: 'font-size: 12px;'}
 
     - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == 'All', summarySome: summary#{permission}() == 'Some' }")}
+      .permissionColumn{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == window.t('javascripts.collections.members.permissions.all'), summarySome: summary#{permission}() == window.t('javascripts.collections.members.permissions.some') }")}
 
     .permissionColumn.admin
       %input{ko(checked: :admin), type: :checkbox}
@@ -19,7 +19,7 @@
       .defaultLayerPermissionsTitle{ko(click: :toggleDefaultLayerPermissions)}
         %img.members-collapse-icon{ko(attr: {src: "defaultLayerPermissionsArrow('#{InsteddRails.url}')" })}
         %span.memberDetailsTitle
-          Default permissions for all layers
+          = t('views.collections.members.default_permissions_for_all_layers')
 
     - ['None', 'Read', 'Update'].each do |permission|
       .permissionColumn
@@ -74,7 +74,7 @@
   .addCustomPermissionRow{ko(attr: { "id" => "customPermissionsAutocompleteId()" })}
     .memberHeaderColumn
       .frame
-        %input.autocomplete-site-input.ux-search{ ko(autocomplete: :customSite, value: :customSite, valueUpdate: :afterkeydown, source: "searchSitesUrl()", event: {keydown: :keyPress, blur: :save}), type: :text, placeholder: 'Add custom permissions for site' }
+        %input.autocomplete-site-input.ux-search{ ko(autocomplete: :customSite, value: :customSite, valueUpdate: :afterkeydown, source: "searchSitesUrl()", event: {keydown: :keyPress, blur: :save}), type: :text, placeholder: t('views.collections.members.add_custom_permissions_for_site') }
         %button.clist-add{ko(click: :createCustomPermissionForSite)}
     - ['None', 'Read', 'Update'].each do |permission|
       .permissionColumn
@@ -83,4 +83,4 @@
 
   .removeMemberRow
     .memberHeaderColumn
-      = render './ko_confirm_box', :action_description => 'Remove this member', :icon_class => 'fdelete', :confirm_action_prompt => 'Are you sure you want to remove this member from the collection?'
+      = render './ko_confirm_box', :action_description => t('views.collections.members.remove_this_member'), :icon_class => 'fdelete', :confirm_action_prompt => t('views.collections.members.remove_member_prompt')

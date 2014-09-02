@@ -1,0 +1,13 @@
+en:
+  views:
+    report_logins:
+      login:
+        statistic_report: 'Statistic Report'
+        account: 'Account'
+        number_of_login: 'Number of login'
+        today: 'Today'
+        this_month: 'This month'
+        previous_month: 'Previous month'
+        custom: 'Custom'
+        from: 'From'
+        to: 'To'

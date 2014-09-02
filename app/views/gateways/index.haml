@@ -1,4 +1,4 @@
-%h1 SMS Gateway
+%h1= t('views.gateways.index.sms_gateway')
 = render '/tab_sms_gateway'
 .tabsline
   #gateways-main.hidden-until-loaded 
@@ -9,7 +9,7 @@
         %span{ko(text: :name)}
         &rarr;
         %span{ko(visible: :nationalSetup)}
-          ResoureMap Default Gateway
+          = t("view.gateway.resourcemap_default_gateway")
       .rightbuttons
         %p.field.switch
           %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
@@ -20,33 +20,33 @@
           
       .middlebuttons{ko(visible: '!nationalSetup()')}
         .middlebuttons{ko(visible: '!clientConnected() && viewConfiguration()')}
-          %label Endpoint URL : 
+          %label= t('views.gateways.index.endpoint_url')
           %span{ko(text: :gateWayURL)} 
           %br 
-          %label User Name :
+          %label= t('views.gateways.index.user_name')
           %span{ko(text: :nuntiumChannelName)} 
           %br 
-          %label Password :
+          %label= t('views.gateways.index.password')
           %span{ko(text: :password)} 
 
           %br 
-          %button.farrow{ko(click: '$root.hideConfiguration')} Hide Configuration
+          %button.farrow{ko(click: '$root.hideConfiguration')}= t('views.gateways.index.hide_configuration')
 
       
       .middlebuttons{ko(visible: '!nationalSetup()'), style: 'margin-top:0px'}
         .middlebuttons{ko(visible: '!clientConnected()'), style: 'margin-top:0px'}
-          %button.farrow{ko(visible: '!viewConfiguration()', click: '$root.showConfiguration')} View Configuration
+          %button.farrow{ko(visible: '!viewConfiguration()', click: '$root.showConfiguration')}= t('views.gateways.index.view_configuration')
           %br{ko(visible: '!viewConfiguration()')}
           %hr{style: "margin:0px;height:6px;background-color: #D0D0D0;"}
           %label.error{ko(text: :queuedMessageText)}
 
-      %button.fmessage{ko(visible: 'clientConnected() || nationalSetup()', click: '$root.setIsTry')} Test Your Gateway
+      %button.fmessage{ko(visible: 'clientConnected() || nationalSetup()', click: '$root.setIsTry')}= t('views.gateways.index.test_your_gateway')
       .middlebuttons{ko(visible: 'isTry')}
         %label
         %input{ko(value: :tryPhoneNumber, valueUpdate: :afterkeydown), type: :text, hasfocus: true,  style: 'width:240px', placeholder: 'Enter your destination phone number' }
-        %button.fmessage{ko(click: '$root.tryGateway', enable: 'validPhoneNumber')} Send Now!
+        %button.fmessage{ko(click: '$root.tryGateway', enable: 'validPhoneNumber')} = t('views.gateways.index.send_now')
 
-        %button.fclose{ko(click: '$root.cancel')} Cancel
+        %button.fclose{ko(click: '$root.cancel')}= t('views.gateways.form.cancel')
     %br
     <!-- /ko -->
     
@@ -54,53 +54,62 @@
     <!-- ko if: $data == $root.currentGateway() -->
     .box.w60
       .middlebuttons
-        %label{ko(visible: '!nationalSetup()', css: {error: 'nameError'})} Name
+        %label{ko(visible: '!nationalSetup()', css: {error: 'nameError'})}
+          = t('views.gateways.form.name')
         %input{ko(visible: '!nationalSetup()', value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
         %br
         %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
         
         %input{ko(checked: :selectedGateway), type: :radio, name: 'gatewayConfiguration', value: 'basic'} 
-        %label Android Phone SMS Gateway -Basic Setup(Recommended)
+        %label
+          = t('views.gateways.form.android_phone_sms_gateway_basic_setup')
         .basic{ko(visible: :basicSetup), style: "margin-left:25px"} 
           %p
-            The android phone sms gateway allow you to use any adroid device as a local gateway for sending and receiving system SMS message 
-            %a{:href => "http://instedd.uservoice.com/knowledgebase/articles/160888-creating-an-sms-gateway-using-an-android-phone", target: '_blank' } Click here for instructions 
-          %label{ko(css: {error: 'ticketCodeError'})} Key
+            = t('views.gateways.form.text_description')
+            %a{:href => "http://instedd.uservoice.com/knowledgebase/articles/160888-creating-an-sms-gateway-using-an-android-phone", target: '_blank' }= t('views.gateways.form.click_here_for_instructions')
+          %label{ko(css: {error: 'ticketCodeError'})}
+            = t('views.gateways.form.key')
           %input{ko(hasfocus: true, value: :ticketCode, valueUpdate: :afterkeydown), type: :text, style: 'width:240px'}
           %br
         %br
         %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
         
         %input{ko(checked: :selectedGateway), type: :radio, name: 'gatewayConfiguration', value: 'advance'} 
-        %label Android Phone SMS Gateway -Advanced Setup
+        %label
+          = t('views.gateways.form.android_phone_sms_gateway_advance_setup')
         
         .advanced{ko(visible: :advancedSetup), style: "margin-left:25px"} 
           %p
-            The android phone sms gateway allow you to use any adroid device as a local gateway for sending and receiving system SMS message 
-            %a{:href => "http://instedd.uservoice.com/knowledgebase/articles/160888-creating-an-sms-gateway-using-an-android-phone", target: '_blank'} Click here for instructions 
+            = t('views.gateways.form.text_description') 
+            %a{:href => "http://instedd.uservoice.com/knowledgebase/articles/160888-creating-an-sms-gateway-using-an-android-phone", target: '_blank'}= t('views.gateways.form.click_here_for_instructions')
 
-          %label{ko(css: {error: 'passwordError'})} Password
+          %label{ko(css: {error: 'passwordError'})}
+            = t('views.gateways.form.password')
           %input{ko(value: :password, valueUpdate: :afterkeydown), type: :password, style: 'width:240px'}
           %br
         %br
         %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
         
         %input{ko(checked: :selectedGateway), type: :radio, name: 'gatewayConfiguration', value: 'national'} 
-        %label National Gateway(Only Some Country Supported)
+        %label
+          = t('views.gateways.form.national_gateway')
         .national{ko(visible: :nationalSetup), style: "margin-left:25px"} 
           %p
-            In a limited number of countries we have a gateway provided by a local phone company that can be used to send and recieve system messages. Please select the list below to
-          %label{ko(css: {error: 'passwordError'})} Gateway
+            = t('views.gateways.form.national_text_description')
+          %label{ko(css: {error: 'passwordError'})}= t('views.gateways.index.sms_gateway')
           %select{ ko(options: '$root.nationalGateways', optionsText: "'name'", value: :nationalGateway, hasfocus: true) }
           %hr{style: "margin:0px;height:10px;background-color: #FFFFFF;"}
 
         %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
         
         .bottom-actions
-          %button.white{ ko(click: '$root.saveGateway', enable: :valid) } Save
-          %a.tgrey{ ko(click: '$root.cancelGateway'), href: 'javascript:void(0)' } Cancel
+          %button.white{ ko(click: '$root.saveGateway', enable: :valid) }
+            = t('views.gateways.form.save')
+          %a.tgrey{ ko(click: '$root.cancelGateway'), href: 'javascript:void(0)' }
+            = t('views.gateways.form.cancel')
           <!-- ko if: !valid() -->
-          %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
+          %span{ ko(text: "error()"), style: 'color:red;margin-left:20px' }
+            = t('views.gateways.form.can_not_save')
           <!-- /ko -->
 
     %br
@@ -109,7 +118,7 @@
     
     .box.grey.add{ ko(visible: '!currentGateway()', click: 'addGateway'), style: 'display:none'}
       %span
-        Add Gateway
+        = t('views.gateways.index.add_gateway')
       %button.cadd.right
       %br{clear: :all}
 

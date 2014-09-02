@@ -1,0 +1,13 @@
+en:
+  views:
+    collections:
+      tab:
+        channels: "SMS Settings"
+    plugins:
+      channels:
+        channels: "Channels"
+        title: "SMS Settings"
+        description: "Please select the SMS gateways to be used for this collection. When using more than one gateway the system will use one of the other gateways if the primary fails."
+        configure_sms_gateway: "Click here to configure your SMS gateways"
+        save: "Save"
+        cancel: "Cancel"

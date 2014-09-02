@@ -47,7 +47,7 @@ onCollections ->
 
     @filterDescription: (filter) ->
       if @filters()[0] == filter
-        "Show sites #{filter.description()}"
+        window.t('javascripts.collections.show_sites', {description: filter.description()})
       else
         filter.description()
 
