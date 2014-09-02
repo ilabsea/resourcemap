@@ -34,7 +34,8 @@ onLayers ->
       @selectLogicLayers = ko.computed =>
         if @currentLayer()
           if @currentLayer().id()
-            @layers().filter (layer) => layer.id() isnt @currentLayer().id()
+            # @layers().filter (layer) => layer.id() isnt @currentLayer().id()
+            @layers()
           else
             @layers().filter (layer) => typeof layer.id() isnt 'undefined'
         else

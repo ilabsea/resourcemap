@@ -19,7 +19,7 @@ onCollections ->
       @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
 
       @value = ko.observable()
-      @focus = ko.observable()
+      
       @value.subscribe => @setFieldFocus()
 
 
@@ -85,12 +85,17 @@ onCollections ->
           value = if @value() then 1 else 0
         else
           return
-          
+
         for field_logic in @field_logics
           if field_logic.field_id()?
             if value == field_logic.value()                           
               field = window.model.newOrEditSite().findFieldByEsCode(field_logic.field_id())
-              $('#'+field.kind+'-input-'+field.code).focus()      
+              if field.kind == "select_one"
+                $('#select-one-input-'+field.code).focus()  
+              else if field.kind == "select-many"
+                 $('#select-many-input-'+field.code).focus()
+              else
+                $('#'+field.kind+'-input-'+field.code).focus()
 
     setValueFromSite: (value) =>
       if @kind == 'date' && $.trim(value).length > 0
