@@ -23,9 +23,9 @@ onCollections ->
         if @kind == 'yes_no'
           
           for field_logic in @field_logics
-            console.log 'value '+@value()
-            console.log 'field_logic '+field_logic.value()
-            if @value() == field_logic.value()
+            console.log @value()
+            console.log field_logic.value()
+            if @value() == true
               console.log field_logic.field_id()
 
 

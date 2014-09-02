@@ -121,16 +121,18 @@ onLayers ->
                         ko.observableArray(
                           $.map(field.config.field_logics, (x) ->
                             if field.config.field_logics.length == 1
-                              if x.value == 'yes'
+                              if x.label() == 'Yes'
                                 field_logic_no = new FieldLogic
-                                field_logic_no.id(1)
-                                field_logic_no.value(false)
+                                field_logic_no.id(0)
+                                field_logic_no.value(0)
+                                field_logic_no.label('No')
 
                                 return [field_logic_no, new FieldLogic(x)]
-                              if x.value == 'no'
+                              if x.label() == 'No'
                                 field_logic_yes = new FieldLogic
-                                field_logic_yes.id(0)
-                                field_logic_yes.value(true)
+                                field_logic_yes.id(1)
+                                field_logic_yes.value(1)
+                                field_logic_yes.label('Yes')
 
                                 return [new FieldLogic(x), field_logic_yes]
 
@@ -140,11 +142,13 @@ onLayers ->
                      else
                         field_logic_yes = new FieldLogic
                         field_logic_yes.id(1)
-                        field_logic_yes.value(true)
+                        field_logic_yes.value(1)
+                        field_logic_yes.label("Yes")
 
                         field_logic_no = new FieldLogic
                         field_logic_no.id(0)
-                        field_logic_no.value(false)     
+                        field_logic_no.value(0)     
+                        field_logic_no.label("No")
 
                         ko.observableArray([field_logic_no, field_logic_yes])
 
