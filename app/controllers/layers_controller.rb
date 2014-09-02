@@ -99,7 +99,7 @@ class LayersController < ApplicationController
                   if field_id == ""
                     field_logic['field_id'] = nil
                   else
-                    field_logic['field_id'] = field_id.to_i
+                    field_logic['field_id'] = field_id
                   end
                 }
               end

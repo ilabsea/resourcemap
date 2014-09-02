@@ -20,15 +20,7 @@ onCollections ->
 
       @value = ko.observable()
       @focus = ko.observable()
-      @value.subscribe =>
-        if @kind == 'yes_no'
-          value = if @value() then 1 else 0
-          console.log value
-          for field_logic in @field_logics
-            if value == field_logic.value()
-              @focus('focus')
-
-
+      @value.subscribe => @setFieldFocus()
 
 
       @hasValue = ko.computed =>
@@ -86,6 +78,19 @@ onCollections ->
       @expanded = ko.observable false # For select_many
       @errorMessage = ko.observable()
       @error = ko.computed => !!@errorMessage()
+
+    setFieldFocus: =>
+      if window.model.newOrEditSite() 
+        if @kind == 'yes_no'
+          value = if @value() then 1 else 0
+        else
+          return
+          
+        for field_logic in @field_logics
+          if field_logic.field_id()?
+            if value == field_logic.value()                           
+              field = window.model.newOrEditSite().findFieldByEsCode(field_logic.field_id())
+              $('#'+field.kind+'-input-'+field.code).focus()      
 
     setValueFromSite: (value) =>
       if @kind == 'date' && $.trim(value).length > 0
