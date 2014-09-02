@@ -40,6 +40,6 @@ class SessionsController < Devise::SessionsController
 
   def meet_alert_ip
     number_of_failed = LoginFailedTracker.find_all_by_ip_address(request.remote_ip)
-    return number_of_failed || []
+    return (number_of_failed || [])
   end
 end
