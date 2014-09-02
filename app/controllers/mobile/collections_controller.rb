@@ -23,7 +23,7 @@ class Mobile::CollectionsController < ApplicationController
   def collections_with_layer
     collections.map do |collection|
       attrs = collection.attributes.dup
-      attrs["layers"] = collection.visible_layers_for(current_user)
+      attrs["layers"] = collection.visible_layers_for(current_user, {},  language)
       attrs
     end
   end

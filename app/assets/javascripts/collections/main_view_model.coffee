@@ -52,6 +52,8 @@ onCollections ->
       # with the view.
       @[k] = v.bind(@) for k, v of @ when v.bind? && !ko.isObservable(v)
 
+      @locale = $.url().param('locale')
+
     updateSitesInfo: =>
       if @currentCollection()
         $.get "/collections/#{@currentCollection().id}/sites_info.json", {}, (data) =>
@@ -63,7 +65,7 @@ onCollections ->
         @sitesWithoutLocation(false)
         @newSiteProperties = {}
 
-    defaultGroupBy: {esCode: '', name: 'None'}
+    defaultGroupBy: {esCode: '', name: window.t('javascripts.collections.fields.none')}
 
     showPopupWithMaxValueOfProperty: (field, event) =>
       # Create a popup that first says "Loading...", then loads the content via ajax.

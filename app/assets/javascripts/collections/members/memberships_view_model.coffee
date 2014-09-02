@@ -22,17 +22,17 @@ class @MembershipsViewModel
         atPos = @email().indexOf('@')
         dotPos = @email().indexOf('.')
         if atPos<1 || dotPos < atPos + 2 || dotPos + 2 >= @email().length
-          'Email is invalid'
+          window.t('javascripts.collections.members.errors.email_is_invalid')
         else
           null
     @phoneError = ko.computed => 
       if @hasPhone()
         if @phoneExiste()
-          "Phone number is taken" 
+          window.t('javascripts.collections.members.errors.phone_number_is_taken')
         else 
           null
       else
-        "Phone number is required"
+        window.t('javascripts.collections.members.errors.phone_number_is_required')#"Phone number is required"
 
     @hasError = ko.computed =>
       return true if @phoneError() || @emailError() || @smsCodeExiste()

@@ -1,0 +1,39 @@
+en:
+  javascripts:
+    plugins:
+      reminders:
+        cant_save: "Can't save: "
+        name_is_missing: "Reminder's name is missing"
+        sites_is_missing: "Sites is missing"
+        date_is_missing: "Reminder's date is missing"
+        message_is_missing: "Reminder's message is missing"
+        repeats:
+          'Everyday': "Everyday"
+          'Monday to Friday': "Monday to Friday"
+          'Every Week': "Every Week"
+          'Every 2 Weeks': "Every 2 Weeks"
+          'Every Month': "Every Month"
+  views:
+    collections:
+      tab:
+        reminders: "Reminders"
+    plugins:
+      reminders:
+        title: "Reminders"
+        add_reminder: "Add Reminder"
+        form:
+          name: "Name"
+          sites: "Sites"
+          site_owner_will_receive_this_reminder: "site's owner will receive this reminder"
+          for: "for"
+          all_sites: "All sites"
+          some_sites: "Some sites"
+          date: "Date"
+          repeat: "repeat"
+          message: "Message"
+          write_your_comment_here: "Write your comment here"
+          saving_reminder: "Saving reminder, please wait..."
+          save: "Save"
+          cancel: "Cancel"
+          edit: "Edit"
+          timezone: "Timezone"

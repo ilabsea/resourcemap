@@ -1,0 +1,24 @@
+kh:
+  views:
+    users:
+      email: "អ៊ីម៉ែល"
+      password: "ពាក្យសម្ងាត់"
+      password_confirmation: "ការបញ្ជាក់ពាក្យសម្ងាត់"
+      role: "តួនាទី"
+      phone_number: "លេខទូរស័ព្ទ"
+      description: "ការពិពណ៌នាសង្ខេប"
+      add_user: "បន្ថែមអ្នកប្រើ"
+      index:
+        title: "អ្នកប្រើប្រាស់"
+        successfully_created: "អ្នកប្រើត្រូវបានបង្កើតដោយជោគជ័យ។"
+        successfully_updated: "អ្នកប្រើត្រូវបានធ្វើឱ្យទាន់សម័យដោយជោគជ័យ។"
+        successfully_deleted: "អ្នកប្រើត្រូវបានលុបដោយជោគជ័យ។"
+      form:
+        save: "រក្សាទុក"
+        cancel: "បោះបង់"
+        delete: "លុបអ្នកប្រើប្រាស់នេះ"
+        are_you_sure: "តើអ្នកប្រាកដឬ?"
+        roles:
+          admin: "អ្នកគ្រប់គ្រង"
+          moderator: "អ្នកសំរបសំរួល"
+          stakeholder: "អ្នកពាក់ព័ន្ធ"

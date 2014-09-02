@@ -5,14 +5,14 @@
 
 <!-- ko if: !fullscreen() -->
 %h1
-  Collections
+  = t('views.collections.index.collections')
   %p#snapshot_loaded_message{style: 'display:none'}
     <!-- ko if: currentSnapshot() -->
     <!-- ko with: currentCollection -->
     %span.i18g-snapshot
     %span{ko(text: :viewingCurrentSnapshotMessage )}
     %a{ko(click: :unloadCurrentSnapshot)}
-      Go back to present
+      = t('views.collections.index.go_back_to_present')
     <!-- /ko -->
     <!-- /ko -->
 <!-- /ko -->
@@ -44,4 +44,4 @@
   .clear
 <br/>
 %div{'align' => 'right'}
-  = link_to 'Mobile Version', mobile_collections_path, {:style => 'color: #555555;'}
+  = link_to t('views.collections.index.mobile_version'), mobile_collections_path, {:style => 'color: #555555;'}

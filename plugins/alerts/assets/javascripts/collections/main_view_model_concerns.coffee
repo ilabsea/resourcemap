@@ -3,7 +3,7 @@ onCollections ->
     @constructor: ->
       @alertsCount = ko.observable(0)
       @showingAlert= ko.observable(false)
-      @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
+      @alertsCountText = ko.computed => if @alertsCount() == 1 then window.t('javascripts.plugins.alerts.one_alert') else window.t('javascripts.plugins.alerts.n_alerts', {n: @alertsCount()})
       
       @onSitesChanged =>      
         alertsCount = 0

@@ -12,7 +12,7 @@
     %link{href: "/assets/mobile.css", media: "screen", rel: "stylesheet", type: "text/css"}
 
     %link{:href => "/images/favicon.ico", :rel => "shortcut icon", :type => "image/x-icon"}
-  %body{ :onload => "initialize()"}
+  %body{ :onload => "initialize('#{language.code}')"}
     %div#flash_message{"style" => "display:none;", "data-role" => "popup"}
       = flash_message
     = yield

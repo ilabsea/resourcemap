@@ -1,0 +1,15 @@
+en:
+  views:
+    devise:
+      sessions:
+        email: 'email'
+        password: 'password'
+        remember_me: 'Remember me'
+        login: 'Log in'
+        reset_it: 'Reset it'
+        didnot_receive_confirmation_instruction: "Didn't receive confirmation instructions?"
+        didnot_receive_unlock_instruction: "Didn't receive unlock instructions?"
+        sign_in_with: 'Sign in with'
+        create_account: "Create account for Resource Map"
+        orgot_your_password: "Forgot your password?"
+        send_me_reset_password_instruction: "Send me reset password instructions"

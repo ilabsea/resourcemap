@@ -6,7 +6,7 @@
     -# Collections
     <!-- ko if: !currentCollection() && !editingSite() -->
     .tableheader
-      %div{style: 'padding-top:9px;padding-left:6px;'} My Collections
+      %div{style: 'padding-top:9px;padding-left:6px;'}= t('views.collections.index.my_collections')
     .tablescroll.sites
       %table.GralTable.CleanTable
         %tbody
@@ -38,24 +38,24 @@
                 .M{style: 'padding: 0px; width: 75px; height: 15px; border: solid 1px; background-color: #FFFFFF; float: left;margin-left: 13px;'}
                   %span.Fill{style: 'width: 0%; background-color: #38761D; height: 15px'}/
                 .R
-                  %span{style: 'font-weight:bold; color: #000000;letter-spacing: 0em; margin-top: 3px; font-size:10px;'} 0% Account Setup Completeness
+                  %span{style: 'font-weight:bold; color: #000000;letter-spacing: 0em; margin-top: 3px; font-size:10px;'}= t('views.collections.index.0_percent_account_setup_completeness')
                 <!-- /ko -->
 
                 <!-- ko if: (collections().length < 1 && $root.isExist()) || (collections().length > 0 && (!$root.isExist()))-->
                 .M{style: 'padding: 0px; width: 75px; height: 15px; border: solid 1px; background-color: #FFFFFF; float: left;margin-left: 13px;'}
                   %span.Fill{style: 'width: 50%; background-color: #38761D; height: 15px'}/
                 .R
-                  %span{style: 'font-weight:bold; color: #000000;letter-spacing: 0em; margin-top: 3px; font-size:10px;'} 50% Account Setup Completeness
+                  %span{style: 'font-weight:bold; color: #000000;letter-spacing: 0em; margin-top: 3px; font-size:10px;'}= t('views.collections.index.50_percent_account_setup_completeness')
                 <!-- /ko -->
                 .L
                   <!-- ko if: collections().length < 1 -->
                   %button.fadd{ko(click: '$root.createCollection'),type: "button", style: 'width:250px'}
-                    %span{style: 'float:left; font-size: 12px'} Create Your First Collection (+50%)
+                    %span{style: 'float:left; font-size: 12px'}= t('views.collections.index.create_your_first_collection')
                   %br{:clear => "all"}/
                   <!-- /ko -->
                   <!-- ko if: !$root.isExist() -->
                   %button.fadd{onClick: "window.location='/gateways';return false;", type: "button", style: 'width:250px'}
-                    %span{style: 'float:left; font-size: 12px'} Configure SMS Gateway (+50%)
+                    %span{style: 'float:left; font-size: 12px'}= t('views.collections.index.configure_sms_gateway')
                   <!-- /ko -->
     - if can? :create, Collection
       = render 'collections/index/create_collection'
@@ -88,11 +88,11 @@
           <!-- ko if: hasMoreSites() && !loadingSites()-->
           %tr
             %td.loadmore
-              = ko_link_to "Load more sites...", :loadMoreSites, style: 'margin-left: 23px'
+              = ko_link_to t('views.collections.index.load_more_sites'), :loadMoreSites, style: 'margin-left: 23px'
           <!-- /ko -->
           <!-- ko if: hasMoreSites() && loadingSites()-->
           %tr
-            %td.loadmore Loading...
+            %td.loadmore= t('views.collections.index.loading')
           <!-- /ko -->
     .tablebottom
       <!-- ko if: !currentSnapshot-->
@@ -113,7 +113,7 @@
         %span{ko(text: :name)}
         <!-- /ko -->
         <!-- ko if: !inEditMode() -->
-        %span New Site
+        %span= t('views.collections.index.new_site')
         <!-- /ko -->
       .tablescroll
         %table
@@ -121,12 +121,12 @@
             %tr
               %td
                 %div
-                  = label_tag :name, "Name:"
+                  = label_tag :name, t('views.collections.index.name')
                   = text_field_tag :name, '', placeholder: 'Enter new site name', class: 'w20 right', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true), :autofocus => true
                   .clear
                 %div
                   %label Location:
-                  = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: 'Search or drag the pin'}
+                  = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: t('views.collections.index.search_or_drug_the_pin')}
                   .clear
                 / ko if: collection.readable($data)
                 <!-- ko foreach: layers -->
@@ -156,8 +156,8 @@
                 / /ko
       .tablebottom
         .right{style: 'margin-right:3px;margin-top:-5px;'}
-          %button.grey{ko(enable: :valid), type: 'submit'} Done
-          %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'} Cancel
+          %button.grey{ko(enable: :valid), type: 'submit'}= t('views.collections.index.done')
+          %span{ko(click: '$root.exitSite'), style: 'cursor:pointer'}= t('views.collections.index.cancel')
 
     <!-- /ko -->
 
@@ -174,7 +174,7 @@
             %tr
               %td
                 %div{style: 'margin-bottom:14px'}
-                  %label Name:
+                  %label= t('views.collections.index.name')
                   - if current_user.is_guest
                     %span.value{ko(text: :name, visible: '!editingName()')}
                   -else
@@ -183,12 +183,12 @@
                   = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                   <!-- /ko -->
                 %div{style: 'margin-bottom:14px'}
-                  %label Location:
+                  %label= t('views.collections.index.location')
                   <!-- ko if: !hasLocation() -->
                   - if current_user.is_guest
-                    %span.value{ko(visible: '!editingLocation()', style: 'color:grey;')} (no value)
+                    %span.value{ko(visible: '!editingLocation()', style: 'color:grey;')}= t('views.collections.index.no_value')
                   - else
-                    %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'} (no value)
+                    %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
                   <!-- /ko -->
                   <!-- ko if: hasLocation() && !editingLocation() -->
                   - if current_user.is_guest
@@ -201,7 +201,7 @@
                   <!-- /ko -->
                 - if Settings.mobile_id?
                   %div{style: 'margin-bottom:14px'}
-                    %label ID With Prefix:
+                    %label= t('views.collections.index.id_with_prefix')
                     %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
 
                 / ko if: collection.readable($data)
@@ -234,11 +234,11 @@
                   <!-- ko if: !hasValue() &&  !error() -->
                   <!-- ko if: writeable -->
                   <!-- ko if: kind != 'photo' -->
-                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} (no value)
+                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} = t('views.collections.index.no_value')
                   <!-- /ko -->
                   <!-- /ko -->
                   <!-- ko if: !writeable -->
-                  %span.value{style: 'color:grey'} (no value)
+                  %span.value{style: 'color:grey'}= t('views.collections.index.no_value')
                   <!-- /ko -->
                   <!-- /ko -->
                   <!-- ko if: editing() || error() -->
@@ -255,8 +255,8 @@
       .tablebottom
         -# if (can? :edit, site)
         - if current_user && !current_user.is_guest
-          = link_to 'Edit Site', 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
-          = link_to 'Delete Site', 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
+          = link_to t('views.collections.index.edit_site'), 'javascript:void()', class: 'icon fedit black', 'data-bind' => kov(click: 'startEditMode')
+          = link_to t('views.collections.index.delete_site'), 'javascript:void()', class: 'icon fdelete black', 'data-bind' => kov(click: '$root.deleteSite')
       <!-- /ko -->
 
     <!-- /ko -->
@@ -267,7 +267,7 @@
       .tableheader.w30
         %button.pback
         %span
-        %span Loading...
+        %span= t('views.collections.index.loading')
 #right-panel.right.sites
   .mapheader
     <!-- ko if: $root.currentCollection() -->
@@ -287,10 +287,10 @@
     %button.icon_button.expand-collapse_button.oleftexpand{ko(click: '$root.toogleExpandFullScreen')}
     <!-- ko if: $root.shouldShowLocationMissingAlert() -->
     %a#sites_whitout_location_alert.alert.box.flash_error.drop_shadow(href='javascript:void(window.model.filterByLocationMissing())')
-      %span There are sites with no location set
+      %span= t('views.collections.index.there_are_sites_with_no_location_set')
       %span.right
         %button.fconfiguration{ko(click: '$root.filterByLocationMissing'), type: 'button', style: 'margin-left:9px'}
-        %span.black Show them
+        %span.black= t('views.collections.index.show_them')
       .clear
     <!-- /ko -->
 

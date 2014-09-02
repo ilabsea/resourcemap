@@ -21,18 +21,18 @@
   };
   });
 .tabsline.quotas-form
-  %h2 Quotas
+  %h2= t('views.collections.quotas.title')
 
   .field
-    = label_tag "This collection sent", nil, style: "float:left"
+    = label_tag t('views.collections.quotas.messages_sent'), nil, style: "float:left"
     = label_tag "", nil, class: "sended_message", style: "float:left; margin-left:2px;"
     
-    = label_tag "  message in last", nil, class: "text-message", style: "float:left;width:110px;margin-left:3px;"
-    = label_tag "  messages in last", nil, class: "text-messages", style: "float:left;width:110px;margin-left:3px;"
+    = label_tag t('views.collections.quotas.message_in_last'), nil, class: "text-message", style: "float:left;width:110px;margin-left:3px;"
+    = label_tag t('views.collections.quotas.messages_in_last'), nil, class: "text-messages", style: "float:left;width:110px;margin-left:3px;"
     
-    = select_tag "filter_type", options_for_select([["Week","week"],["Month","month"],["Year","year"]]), style: "margin-top:-5px;"
+    = select_tag "filter_type", options_for_select([[t('views.collections.quotas.week'),"week"],[t('views.collections.quotas.month'),"month"],[t('views.collections.quotas.year'),"year"]]), style: "margin-top:-5px;"
     %br
-    = label_tag "this collection remain", nil, style: "float:left"
+    = label_tag t('views.collections.quotas.remaining_messages'), nil, style: "float:left"
     = label_tag "", nil, class: "remain_quota", style: "float:left;margin-left:2px;"
-    = label_tag " message quota", nil, style: "margin-left:3px;display:inline;"
+    = label_tag t('views.collections.quotas.message_quota'), nil, style: "margin-left:3px;display:inline;"
   %br{clear: :all}

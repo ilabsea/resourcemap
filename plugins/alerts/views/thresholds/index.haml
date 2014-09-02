@@ -14,21 +14,22 @@
 .tabsline
   #thresholds-main.hidden-until-loaded{ ko(css: { ready: :isReady }) }
     - if collection_admin? 
-      %h2 Alert
+      %h2= t('views.plugins.alerts.title')
     <!-- ko foreach :thresholds -->
     <!-- ko if: $data != $root.currentThreshold() -->
     .box.grey.w60
       .toptitle
         .ord-buttons
           %input{ ko(value: :ord) }
-          %button.up{ ko(click: '$root.moveThresholdUp'), title: 'Move up' }
-          %button.down{ ko(click: '$root.moveThresholdDown'), title: 'Move down' }
+          %button.up{ ko(click: '$root.moveThresholdUp'), title: t('views.plugins.alerts.move_up') }
+          %button.down{ ko(click: '$root.moveThresholdDown'), title: t('views.plugins.alerts.move_down') }
         %span
 
           %span{ ko(text: :propertyName) }
-          &rarr; in
+          &rarr;
+          = t('views.plugins.alerts.in')
           <!-- ko if: isAllSite() == "true" -->
-          all sites
+          = t('views.plugins.alerts.all_sites')
           <!-- /ko -->
           <!-- ko if: !(isAllSite() == "true") -->
           <!-- ko foreach: alertSites -->
@@ -39,14 +40,14 @@
           -# list all conditions
           <!-- ko foreach :conditions -->
           <!-- ko if: $parent.isFirstCondition($data) -->
-          When
+          = t('views.plugins.alerts.when')
           <!-- /ko -->
           <!-- ko if: !$parent.isFirstCondition($data) -->
           <!-- ko if: $parent.isAllCondition() == "true" -->
-          and
+          = t('views.plugins.alerts.and')
           <!-- /ko -->
           <!-- ko if: !($parent.isAllCondition() == "true") -->
-          or
+          = t('views.plugins.alerts.or')
           <!-- /ko -->
           <!-- /ko -->
           %span{ ko(text: 'field().name()') }
@@ -54,12 +55,12 @@
           %span{ ko(text: 'formattedValue') }
 
           <!-- ko if: valueType().label() == 'a percentage of' -->
-          of
+          = t('views.plugins.alerts.of')
           %span{ ko(text: 'compareField().name()') }
           <!-- /ko -->
 
           <!-- /ko -->
-          ,change icon to:
+          = t('views.plugins.alerts.change_icon_to')
           %br
           .alert-icon
             %img{"data-bind" => "attr: { src:iconUrl }" }
@@ -70,7 +71,7 @@
       .rightbuttons
         %button.fdelete{ ko(click: '$root.deleteThreshold') }
 
-      %button.farrow{ ko(click: '$root.editThreshold') } Edit
+      %button.farrow{ ko(click: '$root.editThreshold') }= t('views.plugins.alerts.edit')
     <!-- /ko -->
 
     -# Form editor
@@ -78,28 +79,28 @@
     .box.w90
       .rightbuttons
         -#%button.fdelete{ ko(visible: '!isNewRecord') }
-      %h1.header_text Properties
+      %h1.header_text= t('views.plugins.alerts.form.properties')
       .middlebuttons
-        %label{ko(css: {error: 'propertyNameError'})} Name
+        %label{ko(css: {error: 'propertyNameError'})}= t('views.plugins.alerts.form.name')
         %br
         %input{ko(value: :propertyName),type: :text, style: 'width:240px'}
         %br
-        Apply this alert to
+        = t('views.plugins.alerts.form.apply_this_alert_to')
         %br
         %input{"data-bind" => "checked: isAllSite", :value => "true", :name => "site", :type => "radio"}
-        %label All sites
+        %label= t('views.plugins.alerts.form.all_sites')
         %input{"data-bind" => "checked: isAllSite", :value => "false", :name => "site", :type => "radio"}
-        %label Some sites
+        %label= t('views.plugins.alerts.form.some_sites')
         %br
         .middlebuttons{ko(visible: 'isAllSite() == "false"' )}
           %input.sites{ko(autocompleteTagField: 'alertSites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
       %br
-      %h1.header_text Conditions
+      %h1.header_text= t('views.plugins.alerts.conditions')
       .middlebuttons
         %input{"data-bind" => "checked: isAllCondition", :value => "true", :name => "condition", :type => "radio"}
-        %label All of following conditions
+        %label= t('views.plugins.alerts.form.all_of_following_conditions')
         %input{"data-bind" => "checked: isAllCondition", :value => "false", :name => "condition", :type => "radio"}
-        %label Any of the following conditions
+        %label= t('views.plugins.alerts.form.any_of_the_following_conditions')
         %br
         <!-- ko foreach :conditions -->
         %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
@@ -111,13 +112,13 @@
         %br
         <!--/ko -->
       %button.fadd{ko(click: :addNewCondition) }
-        Add another condition
+        = t('views.plugins.alerts.form.add_another_condition')
       %hr
       %br
       .alert-icon
         %img{"data-bind" => "attr: { src:iconUrl }" }
       .color-palette
-        %label Change site display on map
+        %label= t('views.plugins.alerts.form.change_site_display_on_map')
         %br
         %button.forange.fsize{ ko( click: "setIcon.bind($data, '#ff6f21')") }
         %button.fyellow.fsize{ ko( click: "setIcon.bind($data, '#ffc01f')") }
@@ -128,16 +129,16 @@
       %br
       %hr
       %br
-      %h1.header_text Notifications
+      %h1.header_text= t('views.plugins.alerts.form.notifications')
 
       %input{"data-bind" => "checked: isNotify", :value => "false", :name => "notification", :type => "radio"}
-      %label Do not send notifications
+      %label= t('views.plugins.alerts.form.do_not_send_notifications')
       %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"}
-      %label Notify these people
+      %label= t('views.plugins.alerts.form.notify_these_people')
       %br
       .middlebuttons{ko(visible: 'isNotify() == "true"' ), :style => "height: 360px;"}
         .middlebuttons.w30{:style => "float: left;"}
-          Send emails to:
+          = t('views.plugins.alerts.form.send_emails_to')
           %p.list-box
             - collection.fields.find_all_by_kind('user').each  do |field|
               %input{ko(checked: 'usersEmail'), value: field.es_code, type: "checkbox"}= field.name
@@ -150,7 +151,7 @@
               %input{ko(checked: 'membersEmail'), value: user.id, type: "checkbox"}= user.email
               %br
         .middlebuttons.w30{:style => "float: left;"}
-          Send text messages to:
+          = t('views.plugins.alerts.form.send_text_messages_to')
           %p.list-box
             - collection.fields.find_all_by_kind('user').each  do |field|
               %input{ko(checked: 'usersPhone'), value: field.es_code, type: "checkbox"}= field.name
@@ -163,28 +164,28 @@
               %input{ko(checked: 'membersPhone'), value: user.id, type: "checkbox"}= user.email
               %br
         .clear
-        %label{ko(css: {error: 'notificationMessageError'})} Message
+        %label{ko(css: {error: 'notificationMessageError'})}= t('views.plugins.alerts.form.message')
         %br/
         %label.smalltext
-          Use the following expressions to fill your message with sites data
+          = t('views.plugins.alerts.form.use_the_following_expression')
           .template_text
             [
-            %span{ko(click: 'addSiteNameToMessageNotification')}Site Name
+            %span{ko(click: 'addSiteNameToMessageNotification')} Site Name
             ]
             <!-- ko foreach: $root.fields -->
             [
-            %span{ ko(text: :name, click: '$parent.addFieldNameToMessageNotification') }
+            %span{ ko(text: :code, click: '$parent.addFieldNameToMessageNotification') }
             ]
             <!-- /ko -->
-        %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: 'This alert is about [site name]. Occupation is now at [occupation]', maxlength: 140, rows: 4 }
+        %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: t('views.plugins.alerts.form.message_template'), maxlength: 140, rows: 4 }
         .clear
       %hr/
 
       .bottom-actions
-        %button.white{ ko(click: '$root.saveThreshold', enable: :valid) } Save
-        %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' } Cancel
+        %button.white{ ko(click: '$root.saveThreshold', enable: :valid) }= t('views.plugins.alerts.form.save')
+        %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' }= t('views.plugins.alerts.form.cancel')
         <!-- ko if: !valid() -->
-        %span{ ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px' } Can't save
+        %span{ ko(text: 'error()'), style: 'color:red;margin-left:20px' }= t('views.plugins.alerts.form.cannot_save')
         <!-- /ko -->
     <!-- /ko -->
 
@@ -193,16 +194,16 @@
 
     - if collection_admin? 
       <!-- ko if: fields().length == 0 -->
-      Please
-      %strong add Layers
-      first before managing your thresholds.
+      = t('views.plugins.alerts.form.please')
+      %strong= t('views.plugins.alerts.form.add_layers')
+      = t('views.plugins.alerts.form.first_before_managing_your_thresholds')
       <!-- /ko -->
 
     -# New threshold link
     <!-- ko if: fields().length -->
     .box.grey.add{ ko(visible: '!currentThreshold()', click: 'addThreshold'), style: 'display:none'}
       %span
-        Add Alert
+        = t('views.plugins.alerts.form.add_alert')
       %button.cadd.right
       %br{clear: :all}
     <!-- /ko -->
@@ -212,7 +213,7 @@
     <!-- ko if: fields().length -->
     .box.grey.add{ ko(visible: 'state() == "listing"', click: 'showAddThreshold'), style: 'display:none'}
       %span
-        Add Alert
+        = t('views.plugins.alerts.form.add_alert')
       %button.cadd.right
       %br{clear: :all}
     <!-- /ko -->

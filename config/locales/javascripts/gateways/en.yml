@@ -1,0 +1,13 @@
+en:
+  javascripts:
+    gateways:
+      channel_name_is_missing: "Channel's name is missing"
+      channel_require_four_characters: "Channel's name require at least 4 characters"
+      channel_password_is_missing: "Channel's password is missing"
+      channel_password_is_require_at_four_characters: "Channel's password require at least 4 characters"
+      sms_gateway_key_is_missing: "SMS gateway key is missing"
+      sms_gateway_key_is_must_be_four_characters: "SMS gateway key is must be 4 characters"
+      destination_phone_number_is_missing: "Destination phone number is missing"
+      client_disconnected: "Client disconected"
+      message_pending: "message pending"
+      are_you_sure_to_delete_this_gateway: "Are you sure to delete this gateway?"

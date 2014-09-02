@@ -1,0 +1,15 @@
+kh:
+  views:
+    mobile:
+      collections:
+        title: "រាយការណ៍"
+        desktop_view: "Desktop View"
+        new_site: "រាយការណ៍ពីសំរាមថ្មី"
+        name: "ឈ្មោះទីតាំងសំរាម"
+        location: "ទីតាំង"
+        lat: "រយៈទទឹង"
+        lng: "រយៈណ្តោយ"
+        enter_location_lat: "Enter your location's lat"
+        enter_location_lng: "Enter your location's lng"
+        save_site: "រក្សាទុក"
+        saving: "កំពុងរក្សាទុក..."

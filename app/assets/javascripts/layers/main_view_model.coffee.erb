@@ -64,7 +64,10 @@ onLayers ->
 
     saveLayerCallback: (data) =>
       #if layer is new, we need to set id
-      $.status.showNotice("Layer '#{@currentLayer().name()}' successfully #{if @currentLayer().id() then 'saved' else 'created'}", 2000)
+      if @currentLayer().id()
+        $.status.showNotice(window.t('javascripts.layers.successfully_saved', {name: @currentLayer().name()}), 2000)
+      else
+        $.status.showNotice(window.t('javascripts.layers.successfully_created', {name: @currentLayer().name()}), 2000)
       @currentLayer().id(data.id)
       layersToReloadOrder = [@currentLayer()]
 
