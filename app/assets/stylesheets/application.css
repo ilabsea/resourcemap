@@ -277,3 +277,8 @@ a.lbutton{
 #alert-legend li{
   vertical-align: middle;
 }
+
+.focus{
+  background-color: red;
+  border: 1px solid red;
+}
