@@ -18,6 +18,13 @@ function Field (field) {
       this.options.push(new Option(field["config"]["options"][i]));
     }
   }
+
+  if(field["is_enable_field_logic"] == true){
+    this.field_logics = [];
+    for(var i=0; i<field["config"]["field_logics"].length; i++){
+      this.field_logics.push(new FieldLogic(field["config"]["field_logics"][i]));
+    }
+  }
 };
  
 Field.prototype.getField = function() {
@@ -144,7 +151,7 @@ Field.prototype.getYesNoField = function() {
           '<label for="' + this.code + '" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c">' +
             '<span class="ui-btn-inner">'+
               '<span style="font-weight:normal;">' + this.label + '</span>' +
-              '<input ' + checked + ' type="checkbox" name="properties[' + this.id + ']" id="' + this.code + '" class="custom"  datatype="yes_no">' +
+              '<input ' + checked + ' type="checkbox" name="properties[' + this.id + ']" id="' + this.code + '" class="custom"  datatype="yes_no" onclick="Collection.prototype.setFieldFocus()">' +
             '</span>'+
           '</label>'+
       '</div>'+

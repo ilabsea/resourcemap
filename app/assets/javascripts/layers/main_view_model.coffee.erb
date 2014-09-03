@@ -5,7 +5,7 @@ onLayers ->
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @currentLayer = ko.observable()
       @currentField = ko.observable()
-      @default_select = 'no value'
+      @default_select = '(no value)'
 
       @newOption = ko.observable(new Option)
       @newFieldLogic = ko.observable(new FieldLogic)     
@@ -14,6 +14,8 @@ onLayers ->
       @optionValid = ko.computed =>
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
+      @fieldLogicValid = ko.computed =>
+        $.trim(@newFieldLogic().value()).length > 0 && $.trim(@newFieldLogic().field_id()).length > 0
 
       @attributeValid = ko.computed =>
         $.trim(@newAttribute().key()).length > 0 && $.trim(@newAttribute().value()).length > 0 && not Attribute.find(@currentField().impl().attributes(), @newAttribute())
@@ -211,6 +213,8 @@ onLayers ->
       @newOption(option)
 
     addFieldLogic: =>
+      return unless @fieldLogicValid()
+      console.log @newFieldLogic()
       @currentField().impl().addFieldLogic(@newFieldLogic())
       field_logic = new FieldLogic
       @newFieldLogic(field_logic)

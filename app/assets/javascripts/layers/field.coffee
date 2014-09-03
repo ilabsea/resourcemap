@@ -180,10 +180,11 @@ onLayers ->
         else
           "the field '#{@field.name()}' must have at least one option"
 
+
     addOption: (option) =>
       option.id @nextId
       @options.push option
-      @nextId += 1
+      @nextId += 1 
 
     toJSON: (json) =>
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId}
@@ -191,6 +192,23 @@ onLayers ->
   class @Field_select_one extends @FieldSelect
     constructor: (field) ->
       super(field)
+      @field_logics = if field.config?.field_logics?
+                        ko.observableArray(
+                          $.map(field.config.field_logics, (x) -> new FieldLogic(x))
+                        )
+                      else
+                        ko.observableArray()
+
+    addFieldLogic: (field_logic) =>
+      if @field_logics().length > 0
+        id = @field_logics()[@field_logics().length - 1].id() + 1
+      else
+        id = 0
+      field_logic.id id
+      @field_logics.push field_logic    
+                        
+    toJSON: (json) =>
+      json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId,field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}
 
   class @Field_select_many extends @FieldSelect
     constructor: (field) ->

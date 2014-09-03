@@ -1,6 +1,7 @@
 //= require mobile/events
 //= require mobile/field
 //= require mobile/option
+//= require mobile/field_logic
 //= require mobile/sub_hierarchy
 
 function Collection (collection) {
@@ -29,6 +30,7 @@ Collection.prototype.pushingPendingSites = function(){
 }
 
 Collection.prototype.fetchFields = function() {
+  console.log('fetchFields');
   var fields = [];
   var layers = this.layers();
   for (var i = 0; i < layers.length; i++) {
@@ -465,8 +467,17 @@ Collection.prototype.getLocation = function(){
     navigator.geolocation.getCurrentPosition(Collection.prototype.showPosition, Collection.prototype.showError);
   }
   else{
-    x.innerHTML="Geolocation is not supported by this browser.";
+    x.innerHTML="Geolocati. is not supported by this browser.";
   }
+}
+
+Collection.prototype.setFieldFocus = function(){
+  // Collection.fetchFields();
+  // console.log(this.fields);
+}
+
+Collection.findFieldById = function(){
+   console.log(Collection.prototype.fetchFields());
 }
 
 Collection.prototype.showPosition = function(position){
