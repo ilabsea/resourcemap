@@ -29,6 +29,7 @@ gem 'dbf', :require => 'dbf'
 gem 'rubyzip', :require => 'zip/zip'
 gem "password_strength"
 gem "ruby-recaptcha"
+gem 'i18n-coffee'
 
 group :test do
   gem 'shoulda-matchers'

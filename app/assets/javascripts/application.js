@@ -26,6 +26,7 @@
 //= require lodash
 //= require password_strength
 //= require jquery_strength
+//= require i18n
 //= require_tree .
 //available on sprocket 2.2 and above
 //= stub 'mobile/map' 
@@ -44,8 +45,4 @@ $(document).ready(function() {
      		}
    		});
  	}
-});
-
-$.get("/translations", function(data) {
-  window.i18n = new I18n(data);
 });
