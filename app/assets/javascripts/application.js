@@ -45,3 +45,7 @@ $(document).ready(function() {
    		});
  	}
 });
+
+$.get("/translations", function(data) {
+  window.i18n = new I18n(data);
+});
