@@ -1,0 +1,39 @@
+kh:
+  javascripts:
+    plugins:
+      reminders:
+        cant_save: "មិនអាចរក្សាទុក: "
+        name_is_missing: "បាត់ឈ្មោះរបស់កម្មវិធីរំលឹក"
+        sites_is_missing: "បាត់តំបន់"
+        date_is_missing: "បាត់កាលបរិច្ឆេទការរំលឹក"
+        message_is_missing: "បាត់សារកម្មវិធីរំលឹក"
+        repeats:
+          'Everyday': "ជារៀងរាល់ថ្ងៃ"
+          'Monday to Friday': "ពីថ្ងៃច័ន្ទដល់ថ្ងៃសុក្រ"
+          'Every Week': "ជារៀងរាល់សប្តាហ៍"
+          'Every 2 Weeks': "ជារៀងរាល់ 2 សប្តាហ៍"
+          'Every Month': "ជារៀងរាល់ខែ"
+  views:
+    collections:
+      tab:
+        reminders: "កម្មវិធីរំលឹក"
+    plugins:
+      reminders:
+        title: "កម្មវិធីរំលឹក"
+        add_reminder: "បន្ថែមកម្មវិធីរំលឹក"
+        form:
+          name: "ឈ្មោះ"
+          sites: "តំបន់"
+          site_owner_will_receive_this_reminder: "ម្ចាស់តំបន់នឹងទទួលបានកម្មវិធីរំលឹកនេះ"
+          for: "សម្រាប់"
+          all_sites: "តំបន់ទាំងអស់"
+          some_sites: "តំបន់មួយចំនួន"
+          date: "កាលបរិច្ឆេទ"
+          repeat: "ការរំលឹកឡើងវិញ"
+          message: "សារ"
+          write_your_comment_here: "សរសេរសេចក្តីអធិប្បាយរបស់អ្នកនៅទីនេះ"
+          saving_reminder: "កំពុងរក្សាទុកកម្មវិធីរំលឹកសូមរង់ចាំ ..."
+          save: "រក្សាទុក"
+          cancel: "បោះបង់"
+          edit: "កែសម្រួល"
+          timezone: "ល្វែងម៉ោង"

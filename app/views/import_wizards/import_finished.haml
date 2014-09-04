@@ -7,11 +7,11 @@
 = render '/tabs'
 
 .tabsline
-  %h2 Import wizard
-  %p Import finished!
+  %h2= t('views.import_wizards.title')
+  %p= t('views.import_wizards.import_finished')
 
-We finished importing all your data from file #{import_job.original_filename}.
+= t('views.import_wizards.finished_importing', filename: import_job.original_filename)
 
 %br
 %br
-= link_button_to 'Browse collection', collections_path + "?collection_id=#{collection.id}", :class => "grey" , :style => "margin: auto;"
+= link_button_to t('views.import_wizards.browse_collection'), collections_path + "?collection_id=#{collection.id}", :class => "grey" , :style => "margin: auto;"

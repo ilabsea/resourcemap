@@ -1,0 +1,13 @@
+kh:
+  views:
+    report_logins:
+      login:
+        statistic_report: របាយការណ៏ស្ថិតិ
+        account: 'គណនីយ'
+        number_of_visit: 'ចំនួននៃការចូលប្រើប្រាស់'
+        today: 'ថ្ងៃនេះ'
+        this_month: 'ខែនេះ'
+        previous_month: 'ខែមុន'
+        custom: 'ការកណត់'
+        from: 'ចាប់ផ្តើម'
+        to: 'រហូតដល់'

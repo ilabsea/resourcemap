@@ -1,12 +1,12 @@
 #columnUsageTemplate{ko(with: :selectedColumn , visible: :columnTemplateVisibility), style:'height: 300px;'}
   %h2
     %span{ko(text: 'header')}
-    Column Settings
+    = t('views.import_wizards.adjustments.column_settings')
   %hr
   %div
     %div
       /ko if: usage() == 'id'
-      - content = "Internal ResourceMap ID"
+      - content = t('views.import_wizards.adjustments.internal_resourcemap_id')
       //ko
       /ko if: usage() != 'id'
       - if collection_admin?
@@ -14,27 +14,27 @@
       - else
         - content = 'import_wizards/adjusments/usage_options_for_non_admin'
       //ko
-      = render 'import_wizards/adjusments/popup_row', :label => 'Use as:', :content => content
+      = render 'import_wizards/adjusments/popup_row', :label => t('views.import_wizards.adjustments.use_as'), :content => content
 
       %div
       /ko if: usage() == 'new_field'
       - content = 'import_wizards/adjusments/field_type_options'
-      = render 'import_wizards/adjusments/popup_row', :label => 'Field Type:', :content => content
+      = render 'import_wizards/adjusments/popup_row', :label => t('views.import_wizards.adjustments.field_type'), :content => content
       //ko
 
       /ko if: usage() == 'existing_field'
-      = render 'import_wizards/adjusments/popup_row', :label => 'Layer:', :content => 'import_wizards/adjusments/existing_layer_options'
-      = render 'import_wizards/adjusments/popup_row', :label => 'Field:', :content => 'import_wizards/adjusments/existing_field_options'
+      = render 'import_wizards/adjusments/popup_row', :label => t('views.import_wizards.adjustments.layer'), :content => 'import_wizards/adjusments/existing_layer_options'
+      = render 'import_wizards/adjusments/popup_row', :label => t('views.import_wizards.adjustments.field'), :content => 'import_wizards/adjusments/existing_field_options'
       //ko
       /ko if: usage() == 'new_field'
-      = render 'import_wizards/adjusments/popup_row', :label => 'Field Code:', :content => 'import_wizards/adjusments/new_field_code'
-      = render 'import_wizards/adjusments/popup_row', :label => 'Field Name:', :content => 'import_wizards/adjusments/new_field_name'
+      = render 'import_wizards/adjusments/popup_row', :label => t('views.import_wizards.adjustments.field_code'), :content => 'import_wizards/adjusments/new_field_code'
+      = render 'import_wizards/adjusments/popup_row', :label => t('views.import_wizards.adjustments.field_name'), :content => 'import_wizards/adjusments/new_field_name'
 
       /ko if: kind() == 'select_one' || kind() == 'select_many'
       .box.alert
-        Please select what you want to update with this input:
+        = t('views.import_wizards.adjustments.select_what_you_want_to_update')
         %br
-        - [['Option code', 'code'], ['Option label', 'label'], ['Both code and label', 'both']].each do |option|
+        - [[t('views.import_wizards.adjustments.option_code'), 'code'], [t('views.import_wizards.adjustments.option_label'), 'label'], [t('views.import_wizards.adjustments.both_code_and_label'), 'both']].each do |option|
           = radio_button_tag 'select_kind_group', option[1], false, 'data-bind' => kov(checked: 'selectKind')
           = label_tag "select_kind_group_#{option[1]}", option[0]
       //ko
@@ -42,8 +42,8 @@
   %div{style: 'bottom:0px;position:absolute;width:100%;'}
     %hr
     %button.grey.right{ko(click: 'saveAndClose'), style: 'margin-left:10px;'}
-      Apply
+      = t('views.import_wizards.adjustments.apply')
     %a.right{ko(click: 'discardAndClose'), style: 'margin-top:12px;'}
-      Cancel
+      = t('views.import_wizards.adjustments.cancel')
 
 

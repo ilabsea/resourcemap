@@ -4,19 +4,19 @@
     %p{style: 'font-size:12px'}= collection.description
   %div.right
     -if leave_collection_permission?
-      = render './confirm_box', :action_code => 'delete-membership', :action_description => 'Leave this collection', :class_name => 'button grey right', :confirm_action_prompt => 'Are you sure you want to leave this collection?', :action_url => collection_membership_path(collection, current_user.id)  
+      = render './confirm_box', :action_code => 'delete-membership', :action_description => t('views.collections.index.leave_this_collection'), :class_name => 'button grey right', :confirm_action_prompt => t('views.collections.index.confirm_leave_collection'), :action_url => collection_membership_path(collection, current_user.id)  
 %div{style: 'clear:both'}
 .div
   %ul.tabs.top
-    = tab "Overview", collection_path(collection)
+    = tab t('views.collections.tab.overview'), collection_path(collection)
     - if can? :members, collection
-      = tab "Members", collection_members_path(collection)
-    = tab "Layers", collection_layers_path(collection)
-    = tab "Import wizard", collection_import_wizard_path(collection)
-    = tab "Settings", collection_settings_path(collection)
+      = tab t('views.collections.tab.members'), collection_members_path(collection)
+    = tab t('views.collections.tab.layers'), collection_layers_path(collection)
+    = tab t('views.collections.tab.import_wizard'), collection_import_wizard_path(collection)
+    = tab t('views.collections.tab.settings'), collection_settings_path(collection)
     = render_hook collection, :collection_tab, :collection => collection
     - if Settings.is_on? :channels  
-      = tab "Quotas", collection_quotas_path(collection)
+      = tab t('views.collections.tab.quotas'), collection_quotas_path(collection)
 
 
 

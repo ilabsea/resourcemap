@@ -3,10 +3,9 @@ onCollections ->
     @constructor: ->
       @alertsCount = ko.observable(0)
       @showingAlert= ko.observable(false)
-      @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
-
-      @onSitesChanged =>
-        @getThresholds()
+      @alertsCountText = ko.computed => if @alertsCount() == 1 then window.t('javascripts.plugins.alerts.one_alert') else window.t('javascripts.plugins.alerts.n_alerts', {n: @alertsCount()})
+      
+      @onSitesChanged =>      
         alertsCount = 0
         bounds = @map.getBounds()
         for siteId, marker of @markers
@@ -17,6 +16,7 @@ onCollections ->
             alertsCount += cluster.data.alert_count
         alertsCount += 1 if @selectedSite()?.alert?()
         @alertsCount alertsCount
+      @setThresholds()
       @aliasMethodChain "setMarkerIcon", "Alerts"
 
     @setMarkerIconWithAlerts: (marker, icon) ->
@@ -43,7 +43,6 @@ onCollections ->
         @getAlertedCollections()
 
     @getAlertedCollections: () ->
-      # alert 'getAlertedCollections'
       return unless @showingAlert()
       collection_ids = $.map @collections(), (c) -> 
         c.id if c.checked()
@@ -66,7 +65,7 @@ onCollections ->
           @resetCollectionStatus(collection)
           if collection.checked() == true
             collection.checked(false)
-            collection.checked(true)
+          collection.checked(true)
       @rewriteUrl()
 
 

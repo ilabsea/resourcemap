@@ -3,7 +3,7 @@
 = render '/tabs'
 .tabsline
   #reminders-main.hidden-until-loaded
-    %h2 Reminders
+    %h2= t('views.plugins.reminders.title')
 
     -# Reminders
     <!-- ko foreach: reminders -->
@@ -13,13 +13,15 @@
         %span{ko(text: :name)}
         &rarr;
         %em{ko(text: :repeatName)}
-        %em for
+        %em= t('views.plugins.reminders.form.for')
         <!-- ko if: isAllSites -->
-        %em all sites
+        %em= t('views.plugins.reminders.form.all_sites')
         <!-- /ko -->
         <!-- ko if: !isAllSites() -->
         %em{ko(text: :sitesName)}
         <!-- /ko -->
+        .message
+          %span{ko(text: :reminderMessage)}
       .rightbuttons
         %p.field.switch
           %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
@@ -27,69 +29,66 @@
           %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
             %span
         %button.fdelete{ ko(click: '$root.deleteReminder') }
-      .message
-        %br
-        %span{ko(text: :reminderMessage)}
-      %button.farrow{ko(click: '$root.editReminder')} Edit
+      %button.farrow{ko(click: '$root.editReminder')}= t('views.plugins.reminders.form.edit')
     <!-- /ko -->
 
     -# Form editor
     <!-- ko if: $data == $root.currentReminder() -->
     -# <!-- ko with: currentReminder -->
     .box.w60
-      %label{ko(css: {error: :nameError})} Name
+      %label{ko(css: {error: :nameError})}= t('views.plugins.reminders.form.name')
       %br/
       %input.w30{ko(value: :name, valueUpdate: :afterkeydown), type: :text}
       %br/
-      %label{ko(css: {error: :sitesError})} Sites
+      %label{ko(css: {error: :sitesError})}= t('views.plugins.reminders.form.sites')
       %br/
-      %label.smalltext site's owner will receive this reminder
+      %label.smalltext= t('views.plugins.reminders.form.site_owner_will_receive_this_reminder')
       %br
       %input{ko(checked: :targetFor), value: 'all_sites', name: :targetForGroup, type: :radio}
-      %label All sites
+      %label= t('views.plugins.reminders.form.all_sites')
       %input{ko(checked: :targetFor), value: 'some_sites', name: :targetForGroup, type: :radio}
-      %label Some sites
+      %label= t('views.plugins.reminders.form.some_sites')
       %br
       .middlebuttons{ko(visible: '!isAllSites()' )}
         %input.sites{ko(autocompleteTagField: :sites, objectType: "Site"), proxy: collection_sites_path(collection), valueField: :id, displayField: :name, type: :text}
       %br/
-      %label{ko(css: {error: :reminderDateError})} Date
+      %label{ko(css: {error: :reminderDateError})}= t('views.plugins.reminders.form.date')
       %br/
 
       %input.ux-datepicker.w20{ko(datePicker: :reminderDate), type: :text }
       %select{ko(options: :TIMES, value: :reminderTime)}
-      %label repeat
+      %label= t('views.plugins.reminders.form.repeat')
       %select{ko(options: '$root.repeats', optionsText: "'name'", value: :repeat)}
       %br/
       %br/
-      %label{ko(css: {error: :reminderDateError})} Timezone
+      %label{ko(css: {error: :reminderDateError})}= t('views.plugins.reminders.form.timezone')
       %br/
       %select{ko(options: :listTimeZone, optionsValue: "'key'", optionsText: "'name'", value: :timeZone)}
       %br/      
       %br/
-      %label{ko(css: {error: :reminderMessageError})} Message
+      %label{ko(css: {error: :reminderMessageError})}= t('views.plugins.reminders.form.message')
       %br/
-      %textarea.ux-wajbar.w30{ko(value: :reminderMessage, valueUpdate: :afterkeydown), placeholder: 'Write your comment here', maxlength: 140, rows: 4 }
+      %textarea.ux-wajbar.w30{ko(value: :reminderMessage, valueUpdate: :afterkeydown), placeholder: t('views.plugins.reminders.form.write_your_comment_here'), maxlength: 140, rows: 4 }
 
       .clear
 
       %hr/
       .bottom-actions
         <!-- ko if: $root.isSaving() -->
-        Saving reminder, please wait...
+        = t('views.plugins.reminders.form.saving_reminder')
         <!-- /ko -->
         <!-- ko if: !$root.isSaving() -->
-        %button.white{ko(click: '$root.saveReminder', enable: :valid)} Save
-        %a.tgrey{ko(click: '$root.cancelReminder'), href: 'javascript:void(0)' } Cancel
+        %button.white{ko(click: '$root.saveReminder', enable: :valid)}= t('views.plugins.reminders.form.save')
+        %a.tgrey{ko(click: '$root.cancelReminder'), href: 'javascript:void(0)' }= t('views.plugins.reminders.form.cancel')
         <!-- /ko -->
         <!-- ko if: !valid() -->
-        %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red; margin-left:20px'}
+        %span{ko(text: 'errorMessage()'), style: 'color:red; margin-left:20px'}
         <!-- /ko -->
     <!-- /ko -->
     %br/
     <!-- /ko-->
     -# Add new reminder link
     .box.grey.add{ ko(visible: '!currentReminder()', click: 'showAddReminder'), style: 'display:none'}
-      %span Add Reminder
+      %span= t('views.plugins.reminders.add_reminder')
       %button.cadd.right{type: :button}
         %br{clear: :all}

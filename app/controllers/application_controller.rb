@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   expose(:threshold)
   expose(:reminders) { collection.reminders }
   expose(:reminder)
+  expose(:language) { Language.find_by_code I18n.locale.to_s }
 
   expose(:new_search_options) do
     if current_user_snapshot.at_present?
@@ -36,7 +37,13 @@ class ApplicationController < ActionController::Base
   end
 
   before_filter :set_timezone
-  before_filter :set_request_header
+  before_filter :set_locale
+
+  def set_locale
+    cookies.signed[:locale] = params[:locale]  || cookies.signed[:locale] || I18n.default_locale
+    I18n.locale = cookies.signed[:locale]
+  end
+
   def set_timezone
     # current_user.time_zone #=> 'London'
     Time.zone = current_user.time_zone if current_user
@@ -109,12 +116,12 @@ class ApplicationController < ActionController::Base
 
   def show_collection_breadcrumb
     show_collections_breadcrumb
-    add_breadcrumb "Collections", collections_path
+    add_breadcrumb I18n.t('views.collections.index.collections'), collections_path
     add_breadcrumb collection.name, collections_path + "?collection_id=#{collection.id}"
   end
 
   def show_properties_breadcrumb
-    add_breadcrumb "Properties", collection_path(collection)
+    add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
   end
 
   def get_user_auth_token
@@ -130,10 +137,6 @@ class ApplicationController < ActionController::Base
     authenticate_or_request_with_http_basic do |user, password|
       user == USER && password == PASSWORD
     end
-  end
-
-  def set_request_header
-    headers['Access-Control-Allow-Origin'] = '*' 
   end
 
 end

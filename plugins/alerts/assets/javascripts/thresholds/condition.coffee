@@ -16,7 +16,7 @@ onThresholds ->
         switch @field()?.kind()
           when 'numeric' then "#{@valueType()?.format @value()}"
           else @valueUI()
-      @error = ko.computed => return "value is invalid" unless @field()?.valid @value()
+      @error = ko.computed => return window.t('javascripts.plugins.alerts.errors.value_is_invalid') unless @field()?.valid @value()
       @valid = ko.computed => not @error()?
 
       @field.subscribe =>

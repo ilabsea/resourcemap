@@ -5,8 +5,8 @@ onCollections ->
     @constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
-      @alert_legend = ko.observable(true)
-      @alert_text = ko.observable()
+      @alert_legend = ko.observable(false)
+      @showingLegend = ko.observable(true)
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
@@ -27,11 +27,12 @@ onCollections ->
       @sort(null)
       @sortDirection(null)
       @groupBy(@defaultGroupBy)
-
       initialized = @initMap()
       @reloadMapSites() unless initialized
       @refreshTimeago()
       @makeFixedHeaderTable()
+      @hideRefindAlertOnMap()
+      @setThresholds()
 
       @rewriteUrl()
 
@@ -91,7 +92,9 @@ onCollections ->
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
       window.model.updateSitesInfo()
-      
+      @showRefindAlertOnMap()
+      @setThresholds()
+
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
     @openDialog:  ->
@@ -141,32 +144,43 @@ onCollections ->
           $(".oleleftexpand").removeClass("oleftexpand")
           @reloadMapSites()
 
+    @hideRefindAlertOnMap: ->
+      $('#sites_whitout_location_alert').hide()
+
+    @showRefindAlertOnMap: ->
+      $('#sites_whitout_location_alert').show()
 
     @createCollection: -> window.location = "/collections/new"
 
-    @getThresholds: ->      
+    @setThresholds: ->     
       if @currentCollection()
-        @currentCollection().thresholdsCollection([])  
+        @currentCollection().thresholds([])  
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
           thresholds = @currentCollection().fetchThresholds(data)     
-          @currentCollection().thresholdsCollection(@currentCollection().findSitesByThresholds(thresholds))
+          @currentCollection().thresholds(@currentCollection().findSitesByThresholds(thresholds))
+          if @currentCollection().thresholds().length > 0
+            @showingLegend(true)
       else
-        @loadAllSites() 
-        $.get "/plugin/alerts/thresholds.json", (data) =>         
-          for collection in @collections()      
-            thresholds = collection.fetchThresholds(data)
-            collection.thresholdsCollection(collection.findSitesByThresholds(thresholds))
-            thresholds = []
+        $.get "/plugin/alerts/thresholds.json", (data) =>
+          for collection in @collections()
+            if collection.checked() == true && collection.sites().length > 0
+              thresholds = collection.fetchThresholds(data)
+              collection.thresholds(collection.findSitesByThresholds(thresholds))
+              thresholds = []
+
+          @showLegendState()
+
+    @showLegendState: ->
+      for collection in @collections()
+        if collection.checked() == true && collection.thresholds().length > 0
+          @showingLegend(true)
+          break
+        else
+          @showingLegend(false)
 
     @toggleAlertLegend: ->
-      if @alert_legend() == true
-        @alert_legend(false)
-        @alert_text('Legend')
-      else
-        @alert_legend(true)
-        @alert_text('Hide')
-
-    @loadAllSites: ->
-      for collection in @collections()
-        collection.hasMoreSites(true)
-        collection.loadMoreSites() 
+      if @showingLegend() == true
+        if @alert_legend() == true
+          @alert_legend(false)
+        else
+          @alert_legend(true)

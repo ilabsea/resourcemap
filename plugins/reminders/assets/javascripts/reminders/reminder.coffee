@@ -37,17 +37,18 @@ onReminders ->
         else
           @enableCss 'cb-enable'
           @disableCss 'cb-disable selected'
-      @nameError            = ko.computed => "Reminder's name is missing" if $.trim(@name()).length == 0
-      @sitesError           = ko.computed => "Sites is missing" if !@isAllSites() and @sites().length == 0
+      @nameError            = ko.computed => window.t('javascripts.plugins.reminders.name_is_missing') if $.trim(@name()).length == 0
+      @sitesError           = ko.computed => window.t('javascripts.plugins.reminders.sites_is_missing') if !@isAllSites() and @sites().length == 0
       @reminderDateError    = ko.computed =>
-        if @reminderDate().length == 0 then "Reminder's date is missing" 
+        if @reminderDate().length == 0 then window.t('javascripts.plugins.reminders.date_is_missing')
         ## FIXME: To check for invalid reminderDate uncomment below line, but Phantomjs used in Jenkins consider 'YYYY-MM-DD' to be invalid date
         # else unless @reminderDate().toDate() then "Reminder's date is invalid"
 
-      @reminderMessageError = ko.computed => "Reminder's message is missing" if $.trim(@reminderMessage()).length == 0
+      @reminderMessageError = ko.computed => window.t('javascripts.plugins.reminders.message_is_missing') if $.trim(@reminderMessage()).length == 0
 
       @error = ko.computed => @nameError() ? @sitesError() ? @reminderDateError() ? @reminderMessageError()
       @valid = ko.computed => !@error()
+      @errorMessage = ko.computed => window.t('javascripts.plugins.reminders.cant_save') + @error()
       @listTimeZone = ko.observableArray(TimeZone.getListTimeZone())
       @userTimeZone = ko.observable()
       

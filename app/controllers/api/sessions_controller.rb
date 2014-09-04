@@ -15,6 +15,7 @@ class Api::SessionsController < Devise::SessionsController
 
   def destroy
     user = User.find_by_authentication_token params[:auth_token]
+    sign_out current_user
     return invalid_attempt :invalid_token, :not_found unless user
 
     render json: { success: user.reset_authentication_token! }, status: :no_content

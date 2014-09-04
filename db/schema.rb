@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140822042341) do
+ActiveRecord::Schema.define(:version => 20140826022631) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -96,6 +96,13 @@ ActiveRecord::Schema.define(:version => 20140822042341) do
     t.integer  "user_id"
     t.integer  "collection_id"
     t.text     "exception"
+  end
+
+  create_table "languages", :force => true do |t|
+    t.string   "name"
+    t.string   "code"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "layer_histories", :force => true do |t|

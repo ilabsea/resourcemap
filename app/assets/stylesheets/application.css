@@ -15,6 +15,11 @@
  *= require_fullscreen
 */
 
+.language-switcher{
+  font-family:  Arial,Helvetica,sans-serif;
+  font-size: 12px;
+}
+
 .ui-autocomplete {
   max-height: 200px;
   overflow-y: auto;

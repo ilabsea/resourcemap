@@ -27,20 +27,20 @@ onThresholds -
         if $.trim(@propertyName()).length > 0
           return null
         else
-          return "Alert property's name is missing"
+          return window.t('javascripts.plugins.alerts.errors.name_is_missing')
       @notificationMessageError = ko.computed =>
         return null if @isNotify() == "false"
         return null if(!@isNotify())
         if $.trim(@messageNotification()).length > 0
           return null
         else
-          return "Notification's message is missing"
+          return window.t('javascripts.plugins.alerts.errors.notification_message_is_missing')
       @error = ko.computed =>
-        return "Can't save: " + @propertyNameError() if @propertyNameError()
-        return "the threshold must have at least one condition" if @conditions().length is 0
+        return window.t('javascripts.plugins.alerts.cant_save', { error: @propertyNameError() }) if @propertyNameError()
+        return window.t('javascripts.plugins.alerts.cant_save', { error: window.t('javascripts.plugins.alerts.errors.must_have_at_least_one_condition') }) if @conditions().length is 0
         for condition, i in @conditions()
-          return "condition ##{i+1} #{condition.error()}" unless condition.valid()
-        return "Can't save: " + @notificationMessageError() if @notificationMessageError()
+          return window.t('javascripts.plugins.alerts.cant_save', { error: window.t('javascripts.plugins.alerts.errors.condition', { n: i+1, message: condition.error() }) }) unless condition.valid()
+        return window.t('javascripts.plugins.alerts.cant_save', { error: @notificationMessageError() }) if @notificationMessageError()
 
       @valid = ko.computed => not @error()?
 
