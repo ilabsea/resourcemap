@@ -38,4 +38,11 @@ module ApplicationHelper
   def field_edit_view(kind)
     Field::plugin_kinds.has_key?(kind) ? Field::plugin_kinds[kind][:edit_view] : "collections/fields/#{kind}_edit_view"
   end
+
+  def show_language_options
+    languages = Language.all.map do |language|
+      link_to language.name, 'javascript:void(0);', data: {locale: language.code}, style: 'font-size:12px;'
+    end
+    languages.join(' | ').html_safe
+  end
 end

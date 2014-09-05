@@ -1,6 +1,6 @@
 <!-- ko if: !inSearch() && currentCollection() && currentCollection().groupByOptions().length > 1 -->
 .left{ko(with: :currentCollection), style: 'margin-right:8px'}
-  Group by
+  = t('views.collections.index.group_by')
   %select{ko(value: '$root.groupBy', options: :groupByOptions, optionsText: "'name'")}
 <!-- /ko -->
 .left.superblyTagItems
@@ -11,10 +11,10 @@
   <!-- /ko -->
   .refine{ko(click: 'toggleRefinePopup'), style: 'float:left;padding:3px;cursor:pointer;position:relative;top:1px'}
     <!-- ko if: filters().length == 0 -->
-    Refine results
+    = t('views.collections.index.refine_results')
     <!-- /ko -->
     <!-- ko if: filters().length > 0 -->
-    Refine further
+    = t('views.collections.index.refine_further')
     <!-- /ko -->
     %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrow' + (showingRefinePopup() ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
   <!-- ko if: showingRefinePopup() -->
@@ -22,30 +22,30 @@
     <!-- ko if: !inSearch() || !currentCollection().hasDateFilter() -->
     #div{ko(click: 'function(data, event) { toggleRefineProperty("update") }'), style: 'cursor:pointer'}
       %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expandedRefineProperty() == \"update\" ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
-      %span Updated within
+      %span= t('views.collections.index.update_within')
     <!-- ko if: expandedRefineProperty() == 'update' -->
     #div{style: 'padding:10px;margin-left:10px'}
       %input#refine-last-hour{ko(click: '$root.filterByLastHour'), type: :radio, name: 'refine-update'}
-      %label{:for => 'refine-last-hour'} the last hour
+      %label{:for => 'refine-last-hour'}= t('views.collections.index.the_last_hour')
       %br/
       %input#refine-last-day{ko(click: '$root.filterByLastDay'), type: :radio, name: 'refine-update'}
-      %label{:for => 'refine-last-day'} the last day
+      %label{:for => 'refine-last-day'}= t('views.collections.index.the_last_day')
       %br/
       %input#refine-last-week{ko(click: '$root.filterByLastWeek'), type: :radio, name: 'refine-update'}
-      %label{:for => 'refine-last-week'} the last week
+      %label{:for => 'refine-last-week'}= t('views.collections.index.the_last_week')
       %br/
       %input#refine-last-month{ko(click: '$root.filterByLastMonth'), type: :radio, name: 'refine-update'}
-      %label{:for => 'refine-last-month'} the last month
+      %label{:for => 'refine-last-month'}= t('views.collections.index.the_last_month')
       %br/
     <!-- /ko -->
     <!-- /ko -->
     <!-- ko ifnot: $root.filteringByProperty(FilterByLocationMissing) -->
     #div{ko(click: 'function(data, event) { toggleRefineProperty("location_missing") }'), style: 'cursor:pointer;padding-top:6px'}
       %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expandedRefineProperty() == \"location_missing\" ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
-      %span Location missing
+      %span= t('views.collections.index.location_missing')
       <!-- ko if: expandedRefineProperty() == 'location_missing' -->
       #div{ko(click: '$root.filterByLocationMissing'), style: 'cursor:pointer;padding:10px;margin-left:10px'}
-        %a.white.button{ko(click: '$root.filterByLocationMissing')} OK
+        %a.white.button{ko(click: '$root.filterByLocationMissing')}= t('views.collections.index.ok')
       <!-- /ko -->
     <!-- /ko -->
     <!-- ko foreach: currentCollection().refineFields() -->
@@ -58,74 +58,74 @@
     #div{style: 'padding:10px;margin-left:10px'}
       <!-- ko if: kind == 'text' || kind == 'user' || isPluginKind() -->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
-        %option{value: '='} starts with
-        %option{value: 'empty'} has no value
+        %option{value: '='}= t('views.collections.index.starts_with')
+        %option{value: 'empty'}= t('views.collections.index.has_no_value')
 
       <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true)}
       <!-- /ko -->
 
-      %a.button.white{ko(click: '$root.filterByProperty')} OK
+      %a.button.white{ko(click: '$root.filterByProperty')}= t('views.collections.index.ok')
       <!-- /ko -->
 
       <!-- ko if: kind == 'site' -->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
-        %option{value: '='} is
-        %option{value: 'empty'} has no value
+        %option{value: '='}= t('views.collections.index.is')
+        %option{value: 'empty'}= t('views.collections.index.has_no_value')
 
       <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
       %input.autocomplete-site-input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
       <!-- /ko -->
 
-      %a.button.white{ko(click: '$root.filterByProperty')} OK
+      %a.button.white{ko(click: '$root.filterByProperty')}= t('views.collections.index.ok')
       <!-- /ko -->
 
       <!-- ko if: kind == 'yes_no' -->
       %select{ko(value: '$root.expandedRefinePropertyValue')}
-        %option{value: 'yes'} is 'yes'
-        %option{value: 'no'} is 'no'
-      %a.button.white{ko(click: '$root.filterByProperty')} OK
+        %option{value: 'yes'}= t('views.collections.index.is_yes')
+        %option{value: 'no'}= t('views.collections.index.is_no')
+      %a.button.white{ko(click: '$root.filterByProperty')}= t('views.collections.index.ok')
       <!-- /ko -->
 
       <!-- ko if: kind == 'numeric' -->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
-        %option{value: '='} equals
-        %option{value: '<'} is less than
-        %option{value: '<='} is less than or equal to
-        %option{value: '>'} is greater than
-        %option{value: '>='} is greater than or equal to
-        %option{value: 'empty'} has no value
+        %option{value: '='}= t('views.collections.index.equals')
+        %option{value: '<'}= t('views.collections.index.is_less_than')
+        %option{value: '<='}= t('views.collections.index.is_less_than_or_equal_to')
+        %option{value: '>'}= t('views.collections.index.is_greater_than')
+        %option{value: '>='}= t('views.collections.index.is_greater_than_or_equal_to')
+        %option{value: 'empty'}= t('views.collections.index.has_no_value')
 
       <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
       %input{ko(value: '$root.expandedRefinePropertyValue', valueUpdate: :afterkeydown, event: {keydown: '$root.expandedRefinePropertyValueKeyPress'}, hasfocus: true), type: :number}
       <!-- /ko -->
 
-      %a.button.white{ko(click: '$root.filterByProperty')} OK
+      %a.button.white{ko(click: '$root.filterByProperty')}= t('views.collections.index.ok')
       <!-- /ko -->
 
       <!-- ko if: kind == 'date'-->
       %select{ko(value: '$root.expandedRefinePropertyOperator')}
-        %option{value: '='} is between
-        %option{value: 'empty'} has no value
+        %option{value: '='}= t('views.collections.index.is_between')
+        %option{value: 'empty'}= t('views.collections.index.has_no_value')
 
       <!-- ko if: $root.expandedRefinePropertyOperator() != 'empty' -->
       %input.ux-datepicker#range_from{ko(value: '$root.expandedRefinePropertyDateFrom', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
-      and
+      = t('views.collections.index.and')
       %input.ux-datepicker#range_to{ko(value: '$root.expandedRefinePropertyDateTo', valueUpdate: :afterkeydown, hasfocus: true), type: :text}
       <!-- /ko -->
 
-      %a.button.white{ko(click: '$root.filterByProperty')} OK
+      %a.button.white{ko(click: '$root.filterByProperty')}= t('views.collections.index.ok')
       <!-- /ko -->
 
       <!-- ko if: kind == 'hierarchy' -->
       %div{ko(template: {name: "'refine-hierarchy-items-template'", with: 'fieldHierarchyItems'})}
-      %a.button.white{ko(click: '$root.filterByProperty')} OK
+      %a.button.white{ko(click: '$root.filterByProperty')}= t('views.collections.index.ok')
       <!-- /ko -->
 
       <!-- ko if: kind == 'select_one' || kind == 'select_many' -->
-      is:
+      = t('views.collections.index.is_colon')
       %select{ko(value: '$root.expandedRefinePropertyValue', options: :optionsIds, optionsText: 'function(o){return $data.labelFor(o)}')}
-      %a.button.white{ko(click: '$root.filterByProperty')} OK
+      %a.button.white{ko(click: '$root.filterByProperty')}= t('views.collections.index.ok')
       <!-- /ko -->
     <!-- /ko -->
     <!-- /ko -->
@@ -136,6 +136,6 @@
     %p{style: 'display:inline'}
       = ko_link_to 'clear search', :clearSearch
     <!-- /ko -->
-    = ko_text_field_tag :search, html: {class: 'ux-search', placeholder: 'Search'}
+    = ko_text_field_tag :search, html: {class: 'ux-search', placeholder: t('views.collections.index.search')}
 .clear
 %br/

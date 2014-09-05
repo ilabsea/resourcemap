@@ -13,7 +13,7 @@ onCollections ->
 
       rootCollection = @currentCollection().collection ? @currentCollection()
       @unselectSite()
-
+      
       if $.trim(@search()).length == 0 && @filters().length == 0 && !@sort()
         if @groupBy().esCode == ''
           @currentCollection(rootCollection)

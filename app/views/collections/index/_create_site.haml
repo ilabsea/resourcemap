@@ -1,7 +1,7 @@
 %div
   %div{style: "float:left;"}
-    %button.flocation{ko(click: '$root.createSite')} Create Site
+    %button.flocation{ko(click: '$root.createSite')}= t('views.collections.index.create_site')
   %div{style: "float: right; margin-top: 6px; margin-right: 6px; "}
     %a{ :href => "javascript:(void)", :"data-bind" => kov(:click => '$root.openDialog'), :id => 'download-dialog', 
-                :class => 'white'} Download History 
+                :class => 'white'}= t('views.collections.index.download_history')
   .clear &nbsp;

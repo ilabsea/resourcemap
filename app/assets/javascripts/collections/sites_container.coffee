@@ -11,6 +11,7 @@ onCollections ->
       @hasMoreSites = ko.observable true
       @loadingSites = ko.observable true
       @siteIds = {}
+
     # Loads SITES_PER_PAGE sites more from the server, it there are more sites.
     @loadMoreSites: ->
       return unless @hasMoreSites()

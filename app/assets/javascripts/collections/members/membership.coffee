@@ -30,8 +30,8 @@ class @Membership extends Expandable
       not _.any _self.layers(), (l) => permitted l
 
     summarize = (permitted) ->
-      return 'All' if all permitted
-      return 'Some' if some permitted
+      return window.t('javascripts.collections.members.permissions.all') if all permitted
+      return window.t('javascripts.collections.members.permissions.some') if some permitted
       return '' if none permitted
 
     nonePermission = (l) => not @admin() and not l.read() and not l.write()
@@ -92,11 +92,11 @@ class @Membership extends Expandable
 
     @site_permissions_title = ko.computed =>
       if @sitesWithCustomPermissions().length == 0
-        "Custom permissions for sites"
+        window.t('javascripts.collections.members.custom_permissions_for_sites')
       else if @sitesWithCustomPermissions().length == 1
-        "Custom permissions for 1 site"
+        window.t('javascripts.collections.members.custom_permissions_for_1_site')
       else
-        "Custom permissions for #{@sitesWithCustomPermissions().length} sites"
+        window.t('javascripts.collections.members.custom_permissions_for_n_sites', { n: @sitesWithCustomPermissions().length })
 
     @customPermissionsAutocompleteId = ko.computed => "autocomplete_#{@userId()}"
 

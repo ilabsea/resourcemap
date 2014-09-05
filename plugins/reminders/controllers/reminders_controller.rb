@@ -4,8 +4,8 @@ class RemindersController < ApplicationController
   def index
     respond_to do |format| format.html do
         show_collection_breadcrumb
-        add_breadcrumb "Properties", collection_path(collection)
-        add_breadcrumb "Reminders", collection_reminders_path(collection)
+        add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
+        add_breadcrumb I18n.t('views.collections.tab.reminders'), collection_reminders_path(collection)
       end
       all_reminders = reminders.all.as_json(include: [:repeat], methods: [:reminder_date], except: [:schedule])
       format.json { render json: apply_time_zone(all_reminders)}

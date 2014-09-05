@@ -1,0 +1,13 @@
+kh:
+  javascripts:
+    gateways:
+      channel_name_is_missing: "ឈ្មោះរបស់ឆានែលមិនអាចទទេ"
+      channel_require_four_characters: "ឈ្មោះរបស់ឆានែលត្រូវតែមានបួនតួអក្សរ"
+      channel_password_is_missing: "លេខសំងាត់របស់ឆានែលមិនអាចទទេ"
+      channel_password_is_require_at_four_characters: "លេខសំងាត់របស់ឆានែលត្រូវតែមានបួនតួអក្សរ"
+      sms_gateway_key_is_missing: "លេខរបស់ផ្លូវចេញចូលសារមិនអាចទទេ"
+      sms_gateway_key_is_must_be_four_characters: "លេខរបស់ផ្លូវចេញចូលសារត្រូវតែមានបួនតួអក្សរ"
+      destination_phone_number_is_missing: "លេខទូរស័ព្ធគោលដៅមិនអាចទទេ"
+      client_disconnected: "អ្នកប្រើប្រាស់ បានកាត់ផ្តាច់"
+      message_pending: "សារជាអក្សរ រងចាំការផ្ញើរ"
+      are_you_sure_to_delete_this_gateway: "តើអ្នកពិតជាចង់លុបចោលផ្លូវចេញចូលនេះមែនទេ?"

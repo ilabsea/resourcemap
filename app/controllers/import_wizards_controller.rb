@@ -10,7 +10,7 @@ class ImportWizardsController < ApplicationController
   def index
     return redirect_to import_in_progress_collection_import_wizard_path(collection) if (import_job && (import_job.status_pending? || import_job.status_in_progress?))
 
-    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.import_wizard'), collection_import_wizard_path(collection)
   end
 
   def upload_csv
@@ -27,7 +27,7 @@ class ImportWizardsController < ApplicationController
   end
 
   def adjustments
-    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.import_wizard'), collection_import_wizard_path(collection)
   end
 
   def validate_sites_with_columns
@@ -37,7 +37,7 @@ class ImportWizardsController < ApplicationController
   def execute
     columns = params[:columns].values
     if columns.find { |x| x[:usage] == 'new_field' } and not current_user.admins? collection
-      render text: "Non-admin users can't create new fields", status: :unauthorized
+      render text: I18n.t('views.import_wizards.cant_create_new_fields'), status: :unauthorized
     else
       ImportWizard.enqueue_job current_user, collection, params[:columns].values
       render json: :ok
@@ -47,20 +47,20 @@ class ImportWizardsController < ApplicationController
   def import_in_progress
     redirect_to import_finished_collection_import_wizard_path(collection) if import_job.status_finished?
 
-    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.import_wizard'), collection_import_wizard_path(collection)
   end
 
   def import_finished
-    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.import_wizard'), collection_import_wizard_path(collection)
   end
 
   def import_failed
-    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.import_wizard'), collection_import_wizard_path(collection)
   end
 
   def cancel_pending_jobs
     ImportWizard.cancel_pending_jobs(current_user, collection)
-    flash[:notice] = "Import canceled"
+    flash[:notice] = I18n.t('views.import_wizards.import_canceled')
     redirect_to collection_import_wizard_path
   end
 
@@ -69,6 +69,6 @@ class ImportWizardsController < ApplicationController
   end
 
   def logs
-    add_breadcrumb "Import wizard", collection_import_wizard_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.import_wizard'), collection_import_wizard_path(collection)
   end
 end

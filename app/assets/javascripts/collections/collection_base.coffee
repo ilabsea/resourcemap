@@ -25,9 +25,18 @@ onCollections ->
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @loadCurrentSnapshotMessage()
       @loadAllSites()
+      @loadSites()
+
+    loadSites: =>
+      $.get @sitesUrl(), (data) =>
+        for site in data
+          @addSite @createSite(site)    
 
     loadAllSites: =>
       @allSites = ko.observable()
+      # $.get @sitesUrl(), (data) =>
+      #   for site in data
+      #     @addSite @createSite(site)  
 
     findSiteNameById: (value) =>
       allSites = window.model.currentCollection().allSites()
@@ -48,7 +57,7 @@ onCollections ->
 
 
     findSitesByThresholds: (thresholds) =>
-      b = false  
+      b = false
       for site in this.sites()
         for key,threshold of thresholds
           if this.operateWithCondition(threshold.conditions(), site)?   

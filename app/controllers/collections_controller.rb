@@ -19,7 +19,7 @@ class CollectionsController < ApplicationController
 
   before_filter :show_collections_breadcrumb, :only => [:index, :new]
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
-  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders]
+  before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders, :quotas]
 
   #before_filter :prepare_for_mobile
 
@@ -28,7 +28,7 @@ class CollectionsController < ApplicationController
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
-      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
+      add_breadcrumb I18n.t('views.collections.index.collections'), 'javascript:window.model.goToRoot()'
       if current_user.is_guest
         @collections = Collection.public_collections
       else
@@ -42,7 +42,7 @@ class CollectionsController < ApplicationController
   end
 
   def render_breadcrumbs
-    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
+    add_breadcrumb I18n.t('views.collections.index.collections'), 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
     if params.has_key? :collection_id
       add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
@@ -53,8 +53,8 @@ class CollectionsController < ApplicationController
   end
 
   def new
-    add_breadcrumb "Collections", collections_path
-    add_breadcrumb "Create new collection", nil
+    add_breadcrumb I18n.t('views.collections.index.collections'), collections_path
+    add_breadcrumb I18n.t('views.collections.form.create_new_collection'), nil
   end
 
   def create
@@ -62,7 +62,7 @@ class CollectionsController < ApplicationController
       current_user.collection_count += 1
       current_user.update_successful_outcome_status
       current_user.save!(:validate => false)
-      redirect_to collection_path(collection), notice: "Collection #{collection.name} created"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.collection_created', name: collection.name)
     else
       render :new
     end
@@ -71,7 +71,7 @@ class CollectionsController < ApplicationController
   def update
     if collection.update_attributes params[:collection]
       collection.recreate_index
-      redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
+      redirect_to collection_settings_path(collection), notice: I18n.t('views.collections.form.collection_updated', name: collection.name)
     else
       render :settings
     end
@@ -79,7 +79,7 @@ class CollectionsController < ApplicationController
 
   def show
     @snapshot = Snapshot.new
-    add_breadcrumb "Properties", '#'
+    add_breadcrumb I18n.t('views.collections.index.properties'), '#'
     respond_to do |format|
       format.html
       format.json { render json: collection }
@@ -87,28 +87,28 @@ class CollectionsController < ApplicationController
   end
 
   def members
-    add_breadcrumb "Members", collection_members_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.members'), collection_members_path(collection)
   end
 
   def reminders
-    add_breadcrumb "Reminders", collection_reminders_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.reminders'), collection_reminders_path(collection)
   end
 
   def settings
-    add_breadcrumb "Settings", collection_settings_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.settings'), collection_settings_path(collection)
   end
 
   def quotas
-    add_breadcrumb "Quotas", collection_settings_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.quotas'), collection_settings_path(collection)
   end
 
   def destroy
     if params[:only_sites]
       collection.delete_sites_and_activities
-      redirect_to collection_path(collection), notice: "Collection #{collection.name}'s sites deleted"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.sites_deleted', name: collection.name)
     else
       collection.destroy
-      redirect_to collections_path, notice: "Collection #{collection.name} deleted"
+      redirect_to collections_path, notice: I18n.t('views.collections.form.collection_deleted', name: collection.name)
     end
   end
 
@@ -124,9 +124,9 @@ class CollectionsController < ApplicationController
   def create_snapshot
     @snapshot = Snapshot.create(date: Time.now, name: params[:snapshot][:name], collection: collection)
     if @snapshot.valid?
-      redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} created"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.snapshot_created', name: params[:name])
     else
-      flash[:error] = "Snapshot could not be created: #{@snapshot.errors.to_a.join ", "}"
+      flash[:error] = I18n.t('views.collections.form.snapshot_could_not_be_created', errors: @snapshot.errors.to_a.join(", "))
       redirect_to collection_path(collection)
     end
   end
@@ -137,7 +137,7 @@ class CollectionsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        flash[:notice] = "Snapshot #{loaded_snapshot.name} unloaded" if loaded_snapshot
+        flash[:notice] = I18n.t('views.collections.form.snapshot_unloaded', name: loaded_snapshot.name) if loaded_snapshot if loaded_snapshot
         redirect_to  collection_path(collection) }
       format.json { render json: :ok }
     end
@@ -145,7 +145,7 @@ class CollectionsController < ApplicationController
 
   def load_snapshot
     if current_user_snapshot.go_to!(params[:name])
-      redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} loaded"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.snapshot_loaded', name: params[:name])
     end
   end
 
@@ -169,7 +169,7 @@ class CollectionsController < ApplicationController
 
     search.full_text_search params[:term] if params[:term]
     search.alerted_search params[:_alert] if params[:_alert] 
-    search.select_fields(['id', 'name'])
+    search.select_fields(['id', 'name', 'properties'])
     search.apply_queries
 
     results = search.results.map{ |item| item["fields"]}

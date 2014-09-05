@@ -37,10 +37,14 @@ class SessionsController < Devise::SessionsController
     end
   end
 
-
+  def validate_captcha(key, challeng, response)
+    uri = URI('http://www.google.com/recaptcha/api/verify')
+    params = { :privatekey => key, :remoteip => Settings.host, :challenge => challeng, :response => response }
+    res = Net::HTTP.post_form(uri, params)
+  end
 
   def meet_alert_ip
     number_of_failed = LoginFailedTracker.find_all_by_ip_address(request.remote_ip)
-    return number_of_failed
+    return (number_of_failed || [])
   end
 end

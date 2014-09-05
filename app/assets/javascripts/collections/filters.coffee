@@ -13,7 +13,7 @@ onCollections ->
 
     description: =>
       if @operator == 'empty'
-        "where #{@field.name} has no value"
+        window.t('javascripts.collections.where_field_no_value', {field: @field.name})
       else
         @descriptionNonEmpty()
 
@@ -24,31 +24,31 @@ onCollections ->
     setQueryParams: (options, api = false) =>
       options.updated_since = 'last_hour'
 
-    description: => "updated within the last hour"
+    description: => window.t('javascripts.collections.updated_within_the_last_hour')
 
   class @FilterByLastDay extends FilterByDate
     setQueryParams: (options, api = false) =>
       options.updated_since = 'last_day'
 
-    description: => "updated within the last day"
+    description: => window.t('javascripts.collections.updated_within_the_last_day')
 
   class @FilterByLastWeek extends FilterByDate
     setQueryParams: (options, api = false) =>
       options.updated_since = 'last_week'
 
-    description: => "updated within the last week"
+    description: => window.t('javascripts.collections.updated_within_the_last_week')
 
   class @FilterByLastMonth extends FilterByDate
     setQueryParams: (options, api = false) =>
       options.updated_since = 'last_month'
 
-    description: => "updated within the last month"
+    description: => window.t('javascripts.collections.updated_within_the_last_month')
 
   class @FilterByLocationMissing extends Filter
     setQueryParams: (options, api = false) =>
       options.location_missing = true
 
-    description: => "with location missing"
+    description: => window.t('javascripts.collections.with_location_missing')
 
   class @FilterBySiteProperty extends FilterMaybeEmpty
     constructor: (field, operator, name, id) ->
@@ -61,7 +61,7 @@ onCollections ->
       options[@field.codeForLink(api)] = "#{@id}"
 
     descriptionNonEmpty: =>
-      "where #{@field.name} is \"#{@name}\""
+      window.t('javascripts.collections.where_field_is', {field: @field.name, value: @name})
 
   class @FilterByTextProperty extends FilterMaybeEmpty
     constructor: (field, operator, value) ->
@@ -73,7 +73,7 @@ onCollections ->
       options[@field.codeForLink(api)] = "~=#{@value}"
 
     descriptionNonEmpty: =>
-      "where #{@field.name} starts with \"#{@value}\""
+      window.t('javascripts.collections.where_field_starts_with', {field: @field.name, value: @value})
 
   class @FilterByNumericProperty extends FilterMaybeEmpty
     constructor: (field, operator, value) ->
@@ -87,13 +87,13 @@ onCollections ->
       options[code][@operator] = @value
 
     descriptionNonEmpty: =>
-      str = "where #{@field.name} "
+      str = window.t('javascripts.collections.where_field', {field: @field.name})
       switch @operator
-        when '=' then str += " equals "
-        when '<' then str += " is less than "
-        when '<=' then str += " is less than or equal to "
-        when '>' then str += " is greater than "
-        when '>=' then str += " is greater than or equal to "
+        when '=' then str += window.t('javascripts.collections.equals')
+        when '<' then str += window.t('javascripts.collections.is_less_than')
+        when '<=' then str += window.t('javascripts.collections.is_less_than_or_equal_to')
+        when '>' then str += window.t('javascripts.collections.is_greater_than')
+        when '>=' then str += window.t('is_greater_than_or_equal_to')
       str += "#{@value}"
 
   class @FilterByYesNoProperty extends Filter
@@ -107,9 +107,9 @@ onCollections ->
 
     description: =>
       if @value == 'yes'
-        " is 'yes'"
+        window.t('javascripts.collections.is_yes')
       else
-        " is 'no'"
+        window.t('javascripts.collections.is_no')
 
   class @FilterByDateProperty extends FilterMaybeEmpty
     constructor: (field, operator, valueFrom, valueTo) ->
@@ -122,7 +122,7 @@ onCollections ->
       options[@field.codeForLink(api)]  = "=#{@valueFrom},#{@valueTo}"
 
     descriptionNonEmpty: =>
-      "where #{@field.name} is between #{@valueFrom} and #{@valueTo}"
+      window.t('javascripts.collections.where_field_is_between', {field: @field.name, valueFrom: @valueFrom, valueTo: @valueTo})
 
   class @FilterByHierarchyProperty extends Filter
     constructor: (field, operator, value, valueLabel) ->
@@ -137,7 +137,7 @@ onCollections ->
       options[code][@operator] = @value
 
     description: =>
-      "with #{@field.name} #{@operator} \"#{@valueLabel}\""
+      window.t('javascripts.collections.with_field_operator_value', {field: @field.name, operator: @operator, value: @valueLabel})
 
   class @FilterBySelectProperty extends Filter
     constructor: (field, value, valueLabel) ->
@@ -150,6 +150,6 @@ onCollections ->
 
     description: =>
       if @valueLabel
-        "where #{@field.name} is \"#{@valueLabel}\""
+        window.t('javascripts.collections.where_field_is', {field: @field.name, value: @valueLabel})
       else
-        "where #{@field.name} has no value"
+        window.t('javascripts.collections.where_field_no_value', {field: @field.name})

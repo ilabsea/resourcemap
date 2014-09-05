@@ -2,20 +2,20 @@
   :javascript
     $(function() { initActivities(); });
 
-%h1 Activity
+%h1= t('views.activities.index.title')
 
 .hidden-until-loaded
   .tabsline
 
     %p{style: 'margin-top:0px'}
-      View as
+      = t('views.activities.index.view_as')
       %a{ko(click: 'viewAsRSS'), href: 'javascript:void(0)'} RSS
 
     %table{width: '100%'}
       %tr
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
-            %legend Collections
+            %legend= t('views.activities.index.collections')
             %div{style: 'height:80px;overflow:auto'}
               %table
                 - collections.sort_by(&:name).each do |collection|
@@ -24,48 +24,47 @@
                       %input.collection_id{ko(checked: 'selectedCollectionIds'), type: 'checkbox', checked: 'checked', value: collection.id}= collection.name
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
-            %legend Events
+            %legend= t('views.activities.index.events')
             %div{style: 'height:80px;overflow:auto'}
               %table
                 %tr
                   %td
-                    %input{ko(checked: 'selectedKinds'), value: 'collection,created', type: 'checkbox', checked: 'checked'} Collection created
+                    %input{ko(checked: 'selectedKinds'), value: 'collection,created', type: 'checkbox', checked: 'checked'}= t('views.activities.index.collection_created')
                   %td
-                    %input{ko(checked: 'selectedKinds'), value: 'site,created', type: 'checkbox', checked: 'checked'} Site created
+                    %input{ko(checked: 'selectedKinds'), value: 'site,created', type: 'checkbox', checked: 'checked'}= t('views.activities.index.site_created')
                   %td
-                    %input{ko(checked: 'selectedKinds'), value: 'layer,created', type: 'checkbox', checked: 'checked'} Layer created
+                    %input{ko(checked: 'selectedKinds'), value: 'layer,created', type: 'checkbox', checked: 'checked'}= t('views.activities.index.layer_created')
                 %tr
                   %td
-                    %input{ko(checked: 'selectedKinds'), value: 'collection,imported', type: 'checkbox', checked: 'checked'} Collection imported
+                    %input{ko(checked: 'selectedKinds'), value: 'collection,imported', type: 'checkbox', checked: 'checked'}= t('views.activities.index.collection_imported')
                   %td
-                    %input{ko(checked: 'selectedKinds'), value: 'site,changed', type: 'checkbox', checked: 'checked'} Site changed
+                    %input{ko(checked: 'selectedKinds'), value: 'site,changed', type: 'checkbox', checked: 'checked'}= t('views.activities.index.site_changed')
                   %td
-                    %input{ko(checked: 'selectedKinds'), value: 'layer,changed', type: 'checkbox', checked: 'checked'} Layer changed
+                    %input{ko(checked: 'selectedKinds'), value: 'layer,changed', type: 'checkbox', checked: 'checked'}= t('views.activities.index.layer_changed')
                 %tr
                   %td
-                    %input{ko(checked: 'selectedKinds'), value: 'collection,csv_imported', type: 'checkbox', checked: 'checked'} Collection CSV imported
+                    %input{ko(checked: 'selectedKinds'), value: 'collection,csv_imported', type: 'checkbox', checked: 'checked'}= t('views.activities.index.collection_csv_imported')
                   %td
-                    %input{ko(checked: 'selectedKinds'), value: 'site,deleted', type: 'checkbox', checked: 'checked'} Site deleted
+                    %input{ko(checked: 'selectedKinds'), value: 'site,deleted', type: 'checkbox', checked: 'checked'}= t('views.activities.index.site_deleted')
                   %td
-                    %input{ko(checked: 'selectedKinds'), value: 'layer,deleted', type: 'checkbox', checked: 'checked'} Layer deleted
+                    %input{ko(checked: 'selectedKinds'), value: 'layer,deleted', type: 'checkbox', checked: 'checked'}= t('views.activities.index.layer_deleted')
       %tr
         %td
-          %span{ko(click: 'checkAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'} check all
+          %span{ko(click: 'checkAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'}= t('views.activities.index.check_all')
           |
-          %span{ko(click: 'uncheckAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer'} uncheck all
+          %span{ko(click: 'uncheckAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer'}= t('views.activities.index.uncheck_all')
         %td
-          %span{ko(click: 'checkAllKinds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'} check all
+          %span{ko(click: 'checkAllKinds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'}= t('views.activities.index.check_all')
           |
-          %span{ko(click: 'uncheckAllKinds'), style: 'text-decoration:underline;cursor:pointer'} uncheck all
-    %br/
+          %span{ko(click: 'uncheckAllKinds'), style: 'text-decoration:underline;cursor:pointer'}= t('views.activities.index.uncheck_all')
 
     .tablewrapp
       %table.GralTable
         %tr
-          %th Collection
-          %th User
-          %th Activity
-          %th Time
+          %th= t('views.activities.index.collection')
+          %th= t('views.activities.index.user')
+          %th= t('views.activities.index.activity')
+          %th= t('views.activities.index.time')
         <!-- ko foreach: activities -->
         %tr{style: 'height:32px'}
           %td{ko(text: :collection), style: 'min-width:120px'}
@@ -73,17 +72,17 @@
           %td
             %span{ko(text: :displayedDescription), style: 'display:inline'}
             <!-- ko if: !expanded() && canBeExpanded() -->
-            %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'} show more
+            %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'}= t('views.activities.index.show_more')
             <!-- /ko -->
           %td.timeago{ko(attr: {title: :createdAt}, text: :createdAt), style: 'min-width:150px'}
         <!-- /ko -->
         <!-- ko if: hasMore() && !loading() -->
         %tr{style: 'height:32px'}
           %td{ko(click: :loadMore), colspan: 4, align: :center, style: 'text-decoration:underline;cursor:pointer'}
-            Load more
+            = t('views.activities.index.load_more')
         <!-- /ko -->
         <!-- ko if: loading() -->
         %tr{style: 'height:32px'}
           %td{colspan: 4, align: :center}
-            Loading...
+            = t('views.activities.index.loading')
         <!-- /ko -->

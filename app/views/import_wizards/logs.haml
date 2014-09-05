@@ -2,9 +2,9 @@
 
 %table{style: 'table-layout: fixed'}
   %tr
-    %th Date
-    %th Original filename
-    %th Exception
+    %th= t('views.import_wizard.date')
+    %th= t('views.import_wizard.original_filename')
+    %th= t('views.import_wizard.exception')
   - failed_import_jobs.each do |job|
     %tr{style: 'vertical-align:top'}
       %td

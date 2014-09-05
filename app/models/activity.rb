@@ -197,24 +197,24 @@ class Activity < ActiveRecord::Base
   def description
     case [item_type, action]
     when ['collection', 'created']
-      "Collection '#{data['name']}' was created"
+      I18n.t('views.activities.table.collection_was_created', name: data['name'])
     when 'collection_imported'
-      "Import wizard: #{sites_were_imported_text}"
+      I18n.t('views.activities.table.import_wizard', sites_text: sites_were_imported_text)
     when ['collection', 'csv_imported']
-      "Import CSV: #{sites_were_imported_text}"
+      I18n.t('views.activities.table.import_csv', sites_text: sites_were_imported_text)
     when ['layer', 'created']
       fields_str = data['fields'].map { |f| "#{f['name']} (#{f['code']})" }.join ', '
-      str = "Layer '#{data['name']}' was created with fields: #{fields_str}"
+      str = I18n.t('views.activities.table.layer_was_created', name: data['name'], field: fields_str)
     when ['layer', 'changed']
       layer_changed_text
     when ['layer', 'deleted']
-      str = "Layer '#{data['name']}' was deleted"
+      str = I18n.t('views.activities.table.layer_was_deleted', name: data['name'])
     when ['site', 'created']
-      "Site '#{data['name']}' was created"
+      I18n.t('views.activities.table.site_was_created', name: data['name'])
     when ['site', 'changed']
       site_changed_text
     when ['site', 'deleted']
-      "Site '#{data['name']}' was deleted"
+      I18n.t('views.activities.table.site_was_deleted', name: data['name'])
     end
   end
 
@@ -239,9 +239,9 @@ class Activity < ActiveRecord::Base
   def site_changed_text
     only_name_changed, changes = site_changes_text
     if only_name_changed
-      "Site '#{data['name']}' was renamed to '#{data['changes']['name'][1]}'"
+      I18n.t('views.activities.table.site_was_renamed', name: data['name'], new_name: data['changes']['name'][1])
     else
-      "Site '#{data['name']}' changed: #{changes}"
+      I18n.t('views.activities.table.site_was_changed', name: data['name'], changes: changes)
     end
   end
 
@@ -251,12 +251,12 @@ class Activity < ActiveRecord::Base
     only_name_changed = false
     
     if (change = data['changes']['name'])
-      text_changes << "name changed from '#{change[0]}' to '#{change[1]}'"
+      text_changes << I18n.t('views.activities.table.name_changed', from: change[0], to: change[1])
       only_name_changed = true
     end
 
     if data['changes']['lat'] && data['changes']['lng']
-      text_changes << "location changed from #{format_location data['changes'], :from} to #{format_location data['changes'], :to}"
+      text_changes << I18n.t('views.activities.table.location_changed', from: format_location(data['changes'], :from), to: format_location(data['changes'], :to))
       only_name_changed = false
     end
     
@@ -268,7 +268,7 @@ class Activity < ActiveRecord::Base
         if new_value != old_value
           field = fields[key]
           code = field.try(:code)
-          text_changes << "'#{code}' changed from #{format_value field, old_value} to #{format_value field, new_value}"
+          text_changes << I18n.t('views.activities.table.code_changed',code: code, from: format_value(field, old_value), to: format_value(field, new_value))
         end
       end
 
@@ -276,7 +276,8 @@ class Activity < ActiveRecord::Base
         if !properties[0].has_key? key
           field = fields[key]
           code = field.try(:code)
-          text_changes << "'#{code}' changed from (nothing) to #{new_value.nil? ? '(nothing)' : format_value(field, new_value)}"
+          to_new_value = new_value.nil? ? I18n.t('views.activities.table.nothing') : format_value(field, new_value)
+          text_changes << I18n.t('views.activities.table.code_changed',code: code, from: I18n.t('views.activities.table.nothing'), to: to_new_value)
         end
       end
 
@@ -289,9 +290,9 @@ class Activity < ActiveRecord::Base
   def layer_changed_text
     only_name_changed, changes = layer_changes_text
     if only_name_changed
-      "Layer '#{data['name']}' was renamed to '#{data['changes']['name'][1]}'"
+      I18n.t('views.activities.table.layer_changed', name: data['name'], new_name: data['changes']['name'][1])
     else
-      "Layer '#{data['name']}' changed: #{changes}"
+      I18n.t('views.activities.table.layer_changed', name: data['name'], changes: changes)
     end
   end
 
@@ -300,13 +301,13 @@ class Activity < ActiveRecord::Base
     only_name_changed = false
 
     if (change = data['changes']['name'])
-      text_changes << "name changed from '#{change[0]}' to '#{change[1]}'"
+      text_changes << I18n.t('views.activities.table.name_changed', from: change[0], to: change[1])
       only_name_changed = true
     end
 
     if data['changes']['added']
       data['changes']['added'].each do |field|
-        text_changes << "#{field['kind']} field '#{field['name']}' (#{field['code']}) was added"
+        text_changes << I18n.t('views.activities.table.field_was_added', kind: field['kind'], name: field['name'], code: field['code'])
       end
       only_name_changed = false
     end
@@ -315,7 +316,7 @@ class Activity < ActiveRecord::Base
       data['changes']['changed'].each do |field|
         ['name', 'code', 'kind'].each do |key|
           if field[key].is_a? Array
-            text_changes << "#{old_value field['kind']} field '#{old_value field['name']}' (#{old_value field['code']}) #{key} changed to '#{field[key][1]}'"
+            text_changes << I18n.t('views.activities.table.field_key_changed', kind: old_value(field['kind']), name: old_value(field['name']), code: old_value(field['code']), key: key, new_key: field[key][1])
           end
         end
 
@@ -323,7 +324,7 @@ class Activity < ActiveRecord::Base
           old_options = (field['config'][0] || {})['options']
           new_options = (field['config'][1] || {})['options']
           if old_options != new_options
-            text_changes << "#{old_value field['kind']} field '#{old_value field['name']}' (#{old_value field['code']}) options changed from #{format_options old_options} to #{format_options new_options}"
+            text_changes << I18n.t('views.activities.table.field_option_changed', kind: old_value(field['kind']), name: old_value(field['name']), code: old_value(field['code']), old_options: format_options(old_options), new_options: format_options(new_options))
           end
         end
       end
@@ -332,7 +333,7 @@ class Activity < ActiveRecord::Base
 
     if data['changes']['deleted']
       data['changes']['deleted'].each do |field|
-        text_changes << "#{field['kind']} field '#{field['name']}' (#{field['code']}) was deleted"
+        text_changes << I18n.t('views.activities.table.field_was_deleted', kind: field['kind'], name: field['name'], code: field['code'])
       end
       only_name_changed = false
     end
@@ -372,7 +373,7 @@ class Activity < ActiveRecord::Base
     if lat
       "(#{((lat) * 1e6).round / 1e6.to_f}, #{((lng) * 1e6).round / 1e6.to_f})"
     else
-      '(nothing)'
+      I18n.t('views.activities.table.nothing')
     end
   end
 end
