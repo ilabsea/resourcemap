@@ -83,17 +83,20 @@ onCollections ->
       if window.model.newOrEditSite() 
         if @kind == 'yes_no'
           value = if @value() then 1 else 0
+        else if @kind == 'select_one'
+          value = @value()
         else
           return
 
         for field_logic in @field_logics
-          if field_logic.field_id()?
-            if value == field_logic.value()                           
-              field = window.model.newOrEditSite().findFieldByEsCode(field_logic.field_id())
+          if field_logic.field_id?
+            if value == field_logic.value                          
+              field = window.model.newOrEditSite().findFieldByEsCode(field_logic.field_id)
               if field.kind == "select_one"
                 $('#select-one-input-'+field.code).focus()  
-              else if field.kind == "select-many"
-                 $('#select-many-input-'+field.code).focus()
+              else if field.kind == "select_many"
+                console.log field.code
+                $('#select-many-input-'+field.code).focus()
               else
                 $('#'+field.kind+'-input-'+field.code).focus()
 

@@ -214,7 +214,6 @@ onLayers ->
 
     addFieldLogic: =>
       return unless @fieldLogicValid()
-      console.log @newFieldLogic()
       @currentField().impl().addFieldLogic(@newFieldLogic())
       field_logic = new FieldLogic
       @newFieldLogic(field_logic)

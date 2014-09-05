@@ -1,6 +1,5 @@
 
 function Field (field) {
-  
   this.id = field != null ? field["id"] : void(0);
   this.name = field != null ? field["name"] : void(0);
   this.kind = field != null ? field["kind"] : void(0);
@@ -151,7 +150,7 @@ Field.prototype.getYesNoField = function() {
           '<label for="' + this.code + '" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c">' +
             '<span class="ui-btn-inner">'+
               '<span style="font-weight:normal;">' + this.label + '</span>' +
-              '<input ' + checked + ' type="checkbox" name="properties[' + this.id + ']" id="' + this.code + '" class="custom"  datatype="yes_no" onclick="Collection.prototype.setFieldFocus()">' +
+              '<input ' + checked + ' type="checkbox" name="properties[' + this.id + ']" id="' + this.code + '" class="custom"  datatype="yes_no" onchange="Collection.prototype.setFieldFocus('+this.id+','+this.code+',\''+this.kind+'\')">' +
             '</span>'+
           '</label>'+
       '</div>'+
@@ -171,7 +170,7 @@ Field.prototype.getSelectOneField = function() {
 
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.label + '</label>'+
-              '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="select_one">' +
+              '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="select_one" onchange="Collection.prototype.setFieldFocus('+this.id+',this.value,\''+this.kind+'\')">' +
                 list +
               '</select>' +
           '</div>';
