@@ -103,6 +103,8 @@ onCollections ->
                 $('#yes-no-input-'+field.code).focus()
               else if field.kind == "photo"
                 $('#'+field.code).focus()
+              else if field.kind == "date"
+                $('#'+field.kind+'-input-'+field.esCode).focus()
               else
                 $('#'+field.kind+'-input-'+field.code).focus()
 
