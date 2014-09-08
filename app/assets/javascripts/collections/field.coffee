@@ -15,12 +15,12 @@ onCollections ->
       @photoPath = '/photo_field/'
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
       @writeable = @originalWriteable = data?.writeable
-
+      
       @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
 
       @value = ko.observable()
       
-      @value.subscribe => @setFieldFocus()
+      @value.subscribe => @setFieldFocus() 
 
 
       @hasValue = ko.computed =>
@@ -78,7 +78,7 @@ onCollections ->
       @expanded = ko.observable false # For select_many
       @errorMessage = ko.observable()
       @error = ko.computed => !!@errorMessage()
-
+     
     setFieldFocus: =>
       if window.model.newOrEditSite() 
         if @kind == 'yes_no'
@@ -95,8 +95,14 @@ onCollections ->
               if field.kind == "select_one"
                 $('#select-one-input-'+field.code).focus()  
               else if field.kind == "select_many"
-                console.log field.code
+                field.expanded(true)
                 $('#select-many-input-'+field.code).focus()
+              else if field.kind == "hierarchy"           
+                $('#'+field.esCode)[0].scrollIntoView(true)
+              else if field.kind == "yes_no"
+                $('#yes-no-input-'+field.code).focus()
+              else if field.kind == "photo"
+                $('#'+field.code).focus()
               else
                 $('#'+field.kind+'-input-'+field.code).focus()
 
