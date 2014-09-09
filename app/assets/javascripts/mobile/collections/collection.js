@@ -472,9 +472,7 @@ Collection.prototype.getLocation = function(){
 }
 
 Collection.prototype.setFieldFocus = function(fieldId,fieldCode, fieldKind){
-  
-  $("div span").removeClass('ui-focus');
- 
+  $("div,span").removeClass('ui-focus');
   fieldValue = Collection.prototype.setFieldValueByKind(fieldKind, fieldCode);
   fieldLogics = Collection.prototype.getFieldLogicByFieldId(fieldId);
 
@@ -483,6 +481,7 @@ Collection.prototype.setFieldFocus = function(fieldId,fieldCode, fieldKind){
       if(fieldLogics[i]["value"] == fieldValue){       
         fieldFocus = Collection.prototype.findFieldById(fieldLogics[i]["field_id"]); 
         Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
+        return;
       }
     }
   }
