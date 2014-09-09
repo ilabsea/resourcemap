@@ -120,7 +120,6 @@ class Collection < ActiveRecord::Base
       target_fields = target_fields.select { |f| lms[f.layer_id] && lms[f.layer_id].read }
 
     end
-    language.load_fields_translation!(target_fields) if language
     target_fields
   end
 
