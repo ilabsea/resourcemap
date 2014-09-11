@@ -62,7 +62,7 @@ onCollections ->
       @currentCollection collection
       @unselectSite() if @selectedSite()
       @exitSite() if @editingSite()   
-      
+
       if @showingAlert()
         $.get "/collections/#{@currentCollection().id}/sites_by_term.json", _alert: true, (sites) =>
           @currentCollection().allSites(sites)
@@ -72,7 +72,7 @@ onCollections ->
         $.get "/collections/#{@currentCollection().id}/sites_by_term.json", (sites) =>
           @currentCollection().allSites(sites)
           window.adjustContainerSize()
-          
+
       initialized = @initMap()
       collection.panToPosition(true) unless initialized
 

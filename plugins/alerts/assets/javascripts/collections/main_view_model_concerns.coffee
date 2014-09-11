@@ -58,7 +58,7 @@ onCollections ->
 
       @showingAlert(false)
       if @currentCollection()
-        @resetCollectionStatus(@currentCollection()) 
+        @resetCollectionStatus(@currentCollection())
         @enterCollection(@currentCollection())
       else
         for collection in @collections()

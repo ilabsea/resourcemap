@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   expose(:collection)
   expose(:current_user_snapshot) { UserSnapshot.for current_user, collection }
-  expose(:collection_memberships) { collection.memberships.includes(:user) }
+  expose(:collection_memberships){ collection.memberships.includes(:user) }
   expose(:layers) {if !current_user_snapshot.at_present? && collection then collection.layer_histories.at_date(current_user_snapshot.snapshot.date) else collection.layers end}
   expose(:layer)
   expose(:fields) {if !current_user_snapshot.at_present? && collection then collection.field_histories.at_date(current_user_snapshot.snapshot.date) else collection.fields end}
@@ -33,11 +33,31 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from CanCan::AccessDenied do |exception|
-    render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
+    if params[:controller] == 'collections' && params[:action] == 'show'
+      redirect_to new_user_session_url
+    else
+      render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
+    end
   end
 
   before_filter :set_timezone
   before_filter :set_locale
+  before_filter :store_location
+
+  def store_location
+    return unless request.get? 
+    if (request.path != "/users/sign_in" &&
+        request.path != "/users/sign_up" &&
+        request.path != "/users/password/new" &&
+        request.path != "/users/password/edit" &&
+        request.path != "/users/confirmation" &&
+        request.path != "/users/sign_out" &&
+        !request.xhr?)
+      session[:previous_url] = request.fullpath 
+    end
+  end
+
+
 
   def set_locale
     cookies.signed[:locale] = params[:locale]  || cookies.signed[:locale] || I18n.default_locale
@@ -50,7 +70,7 @@ class ApplicationController < ActionController::Base
   end
 
   def setup_guest_user
-    u = User.new is_guest: true
+    u = User.new is_guest: true 
     # Empty membership for the current collection
     # This is used in SitesPermissionController.index
     # TODO: Manage permissions passing current_ability to client
@@ -66,7 +86,7 @@ class ApplicationController < ActionController::Base
     if user_signed_in?
       return if !current_user.try(:is_guest)
     end
-
+    
     if params.has_key? "collection"
       return if !Collection.find(params["collection"]).public
       u = User.find_by_is_guest true
