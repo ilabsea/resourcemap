@@ -87,6 +87,10 @@ class LayersController < ApplicationController
             params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:field_logics)
           end
 
+          if field[:is_enable_range] == "false"
+            params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:range)
+          end
+
           if field[:config][:field_logics]
             field[:config][:field_logics] = field[:config][:field_logics].values
             field[:config][:field_logics].each { |field_logic| 
