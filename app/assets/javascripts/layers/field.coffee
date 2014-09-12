@@ -111,6 +111,14 @@ onLayers ->
       @is_enable_range = ko.observable field?.is_enable_range ? false
       @minimum = ko.observable field?.config?.range?.minimum
       @maximum = ko.observable field?.config?.range?.maximum
+      @error = ko.computed =>
+        if parseInt(@minimum()) > parseInt(@maximum())
+          "Invalid range, maximum must greater than minimum"
+    
+    validate_number_only: (field,event) =>
+      if event.keyCode > 31 && (event.keyCode < 48 || event.keyCode > 57)
+        return false
+      return true
 
     toJSON: (json) =>
       json.is_enable_range = @is_enable_range()
