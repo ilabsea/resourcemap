@@ -34,6 +34,9 @@ onCollections ->
        write: (value) =>
          @value(@valueUIFrom(value))
 
+      if @kind == 'numeric'
+        @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
+                  data.config?.range
 
       if @kind in ['yes_no', 'select_one', 'select_many']
         @field_logics = if data.config?.field_logics?
@@ -173,6 +176,28 @@ onCollections ->
           @save()
         window.model.initDatePicker(optionsDatePicker)
         window.model.initAutocomplete()
+
+    validateRange: =>
+      if @range
+        if @range.minimum && @range.maximum
+          if parseInt(@value()) >= parseInt(@range.minimum) && parseInt(@value()) <= parseInt(@range.maximum)
+            @errorMessage('')
+          else
+            @errorMessage('Invalid value, value must in the range of ('+@range.minimum+'-'+@range.maximum+")")
+        else
+          if @range.maximum
+            if parseInt(@value()) <= parseInt(@range.maximum)
+              @errorMessage('')
+            else
+              @errorMessage('Invalid value, value must less than '+@range.maximum)
+            return
+          
+          if @range.minimum
+            if parseInt(@value()) >= parseInt(@range.minimum)
+              @errorMessage('')
+            else
+              @errorMessage('Invalid value, value must greater than '+@range.minimum)
+            return
 
     validate_number_only: (keyCode) =>
       if keyCode > 31 && (keyCode < 48 || keyCode > 57)
