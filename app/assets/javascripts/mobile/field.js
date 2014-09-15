@@ -16,6 +16,8 @@ function Field (field) {
     for(var i=0; i<field["config"]["options"].length; i++){
       this.options.push(new Option(field["config"]["options"][i]));
     }
+  }else if(this.kind == 'numeric'){
+    this.range = field["config"]["range"];
   }
 
   if(field["is_enable_field_logic"] == true){

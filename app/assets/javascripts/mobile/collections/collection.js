@@ -30,7 +30,6 @@ Collection.prototype.pushingPendingSites = function(){
 }
 
 Collection.prototype.fetchFields = function() {
-  console.log('fetchFields');
   var fields = [];
   var layers = this.layers();
   for (var i = 0; i < layers.length; i++) {
@@ -221,10 +220,19 @@ Collection.prototype.validateData = function(collectionId){
               break;
             case "numeric":
               value = $("#" + field["code"]).val();
+              range = field["config"]["range"];
               if(Collection.prototype.validateNumeric(value) == false){
                 Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
                 return false;
-              }  
+              }else{
+                if(range){                  
+                  if(Collection.prototype.validateRange(value, range) == false){
+                    Collection.prototype.showErrorMessage("Invalid number range");
+                    Collection.setFieldStyleFailed(field["code"]);
+                    return false;
+                  }
+                }
+              }
               state =  Collection.valiateMandatoryText(field);
               break;
             case "date":
@@ -320,7 +328,7 @@ Collection.prototype.validateEmail = function(email) {
   }
 }
 
-Collection.prototype.validateNumeric = function(number) { 
+Collection.prototype.validateNumeric = function(number) {
   if(number == ""){
     return true;
   }
@@ -330,6 +338,29 @@ Collection.prototype.validateNumeric = function(number) {
   }
 }
 
+Collection.prototype.validateRange = function(number, range=null) {
+  if(range["minimum"] && range["maximum"]){
+    if(parseInt(number) >= parseInt(range["minimum"]) && parseInt(number) <= parseInt(range["maximum"]))
+      return true;
+    else
+      return false;
+  }else{
+    if(range["maximum"]){
+      if(parseInt(number) <= parseInt(range["maximum"]))
+        return true;
+      else
+        return false;      
+    }
+    if(range["minimum"]){
+      if(parseInt(value) >= parseInt(range["minimum"]))
+        return true;
+      else
+        return false;      
+    }
+  }
+  return true;
+  
+}
 Collection.prototype.showErrorMessage = function(text){
   $.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, text, true );
   // hide after delay
