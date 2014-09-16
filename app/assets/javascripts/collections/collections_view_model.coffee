@@ -184,3 +184,6 @@ onCollections ->
           @alert_legend(false)
         else
           @alert_legend(true)
+
+    @scroll: ->
+      $("input").datepicker "hide"

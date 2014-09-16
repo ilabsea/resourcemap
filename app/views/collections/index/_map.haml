@@ -115,7 +115,7 @@
         <!-- ko if: !inEditMode() -->
         %span= t('views.collections.index.new_site')
         <!-- /ko -->
-      .tablescroll
+      .tablescroll{ko(event: { mouseover: '$root.scroll'})}
         %table
           %tbody
             %tr
