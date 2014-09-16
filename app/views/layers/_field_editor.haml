@@ -59,6 +59,16 @@
     = render :partial => "field_logic_yes_no"
   //ko
 
+  /ko if: kind() == 'select_many'
+  %hr/
+  = ko_check_box_tag :is_enable_field_logic, css: {error: :codeError}
+  %label
+    Enable skip logic for this field   
+
+  %div{ko(if: :is_enable_field_logic)}
+    = render :partial => "field_logic_select_many"
+  //ko
+
   /ko if: kind() == 'select_one'
   /ko if: impl().options().length > 0
   %hr/

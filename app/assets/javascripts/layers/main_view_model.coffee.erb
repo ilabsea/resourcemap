@@ -17,6 +17,10 @@ onLayers ->
       @fieldLogicValid = ko.computed =>
         $.trim(@newFieldLogic().value()).length > 0 && $.trim(@newFieldLogic().field_id()).length > 0
 
+      @fieldSelectManyLogicValid = ko.computed =>
+        # $.trim(@newFieldLogic().value()).length > 0      
+        true
+
       @attributeValid = ko.computed =>
         $.trim(@newAttribute().key()).length > 0 && $.trim(@newAttribute().value()).length > 0 && not Attribute.find(@currentField().impl().attributes(), @newAttribute())
 
@@ -42,6 +46,8 @@ onLayers ->
             @layers().filter (layer) => typeof layer.id() isnt 'undefined'
         else
           []
+
+      @is_editing = ko.observable(false)
 
     newLayer: =>
       layer = new Layer ord: (@layers().length + 1)
@@ -217,10 +223,64 @@ onLayers ->
 
     addFieldLogic: =>
       return unless @fieldLogicValid()
-      console.log @newFieldLogic()
       @currentField().impl().addFieldLogic(@newFieldLogic())
       field_logic = new FieldLogic
       @newFieldLogic(field_logic)
+
+    createNewFieldLogic: =>
+      @is_editing(true)
+      field_logic = new FieldLogic
+      @newFieldLogic(field_logic)
+      @currentField().impl().add_field_logic(@newFieldLogic())
+      @newFieldLogic().condition_type("any")
+
+    assignConditionAll: =>
+      @newFieldLogic().condition_type("all")
+
+    assignConditionAny: =>
+      @newFieldLogic().condition_type("any")
+
+    saveNewFieldLogic: =>
+      @is_editing(false)
+
+    addOptionFieldLogic: (field) =>
+      option = $.map(@currentField()["config"].options, (x) -> x if x.id == field.value())
+      if option.length > 0
+        field_logic_value = new FieldLogicValue( 
+          label:option[0]["label"]
+          value: option[0]["id"]
+        )
+        tmp = @newFieldLogic().selected_options()
+        tmp.push(field_logic_value)
+        @newFieldLogic().selected_options([])
+        @newFieldLogic().selected_options(tmp)
+
+    removeOptionFieldLogic: (field) =>
+      @newFieldLogic().selected_options.remove(field)
+
+    saveFieldLogic: (field_logic) =>
+      @currentField().impl().save_field_logic(field_logic)
+      @is_editing(false)
+      @currentField().impl().field_logics.remove(field_logic)
+
+    to_field_name: (field) =>
+      if @currentLayer()
+        f = $.map(@currentLayer().fields(), (x) -> x if x.id() == parseInt(field()[0]))
+        if(f.length > 0)
+          f[0].name()
+
+    editFieldLogic: (field) =>
+      @is_editing(true)
+      field.editing(true)
+      @newFieldLogic(field)
+
+    cancelFieldLogic: (field) =>
+      @is_editing(false)
+      field.editing(false)
+
+    updateFieldLogic: (field) =>
+      @is_editing(false)
+      field.editing(false)
 
     addAttribute: =>
       return unless @attributeValid()
@@ -235,7 +295,11 @@ onLayers ->
       @newOption().hasFocus(true)
 
     removeFieldLogic: (field_logic) =>
+      @is_editing(false)
       @currentField().impl().field_logics.remove(field_logic)
+
+    removeSelectedFieldLogic: (field_logic) =>
+      @currentField().impl().selected_field_logics.remove(field_logic)
 
     removeAttribute: (attribute) =>
       @currentField().impl().attributes.remove(attribute)
