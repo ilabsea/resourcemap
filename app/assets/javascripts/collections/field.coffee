@@ -108,7 +108,7 @@ onCollections ->
               else if field.kind == "photo"
                 $('#'+field.code).focus()
               else if field.kind == "date"
-                $('#'+field.kind+'-input-'+field.esCode).focus()
+                $('#'+field.kind+'-input-'+field.esCode)[0].scrollIntoView(true)
               else
                 $('#'+field.kind+'-input-'+field.code).focus()
 
