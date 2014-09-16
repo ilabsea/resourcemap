@@ -7,7 +7,7 @@ onCollections ->
       @code = data.code
       @name = data.name
       @kind = data.kind
-      @is_mandatory = data.is_mandatory
+      @is_mandatory = data.is_mandatory 
 
       @is_enable_field_logic = data.is_enable_field_logic
 
@@ -37,7 +37,8 @@ onCollections ->
       if @kind == 'numeric'
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
-
+        @is_mandatory = if @range then true else data.is_mandatory
+        
       if @kind in ['yes_no', 'select_one', 'select_many']
         @field_logics = if data.config?.field_logics?
                           $.map data.config.field_logics, (x) => new FieldLogic x

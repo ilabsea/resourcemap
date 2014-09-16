@@ -82,7 +82,6 @@ class CollectionsController < ApplicationController
   end
 
   def show
-    p 'show'
     @snapshot = Snapshot.new
     add_breadcrumb I18n.t('views.collections.index.properties'), '#'
     respond_to do |format|
