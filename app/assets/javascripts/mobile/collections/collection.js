@@ -30,7 +30,6 @@ Collection.prototype.pushingPendingSites = function(){
 }
 
 Collection.prototype.fetchFields = function() {
-  console.log('fetchFields');
   var fields = [];
   var layers = this.layers();
   for (var i = 0; i < layers.length; i++) {
@@ -221,10 +220,19 @@ Collection.prototype.validateData = function(collectionId){
               break;
             case "numeric":
               value = $("#" + field["code"]).val();
+              range = field["config"]["range"];
               if(Collection.prototype.validateNumeric(value) == false){
                 Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
                 return false;
-              }  
+              }else{
+                if(range){                  
+                  if(Collection.prototype.validateRange(value, range) == false){
+                    Collection.prototype.showErrorMessage("Invalid number range");
+                    Collection.setFieldStyleFailed(field["code"]);
+                    return false;
+                  }
+                }
+              }
               state =  Collection.valiateMandatoryText(field);
               break;
             case "date":
@@ -320,7 +328,7 @@ Collection.prototype.validateEmail = function(email) {
   }
 }
 
-Collection.prototype.validateNumeric = function(number) { 
+Collection.prototype.validateNumeric = function(number) {
   if(number == ""){
     return true;
   }
@@ -330,6 +338,29 @@ Collection.prototype.validateNumeric = function(number) {
   }
 }
 
+Collection.prototype.validateRange = function(number, range=null) {
+  if(range["minimum"] && range["maximum"]){
+    if(parseInt(number) >= parseInt(range["minimum"]) && parseInt(number) <= parseInt(range["maximum"]))
+      return true;
+    else
+      return false;
+  }else{
+    if(range["maximum"]){
+      if(parseInt(number) <= parseInt(range["maximum"]))
+        return true;
+      else
+        return false;      
+    }
+    if(range["minimum"]){
+      if(parseInt(value) >= parseInt(range["minimum"]))
+        return true;
+      else
+        return false;      
+    }
+  }
+  return true;
+  
+}
 Collection.prototype.showErrorMessage = function(text){
   $.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, text, true );
   // hide after delay
@@ -467,17 +498,72 @@ Collection.prototype.getLocation = function(){
     navigator.geolocation.getCurrentPosition(Collection.prototype.showPosition, Collection.prototype.showError);
   }
   else{
-    x.innerHTML="Geolocati. is not supported by this browser.";
+    x.innerHTML="Geolocation is not supported by this browser.";
   }
 }
 
-Collection.prototype.setFieldFocus = function(){
-  // Collection.fetchFields();
-  // console.log(this.fields);
+Collection.prototype.setFieldFocus = function(fieldId,fieldCode, fieldKind){
+  $("div,span").removeClass('ui-focus');
+  fieldValue = Collection.prototype.setFieldValueByKind(fieldKind, fieldCode);
+  fieldLogics = Collection.prototype.getFieldLogicByFieldId(fieldId);
+
+  for(i=0; i<fieldLogics.length; i++){
+    if(fieldLogics[i]["field_id"] != null){
+      if(fieldLogics[i]["value"] == fieldValue){       
+        fieldFocus = Collection.prototype.findFieldById(fieldLogics[i]["field_id"]); 
+        Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
+        return;
+      }
+    }
+  }
 }
 
-Collection.findFieldById = function(){
-   console.log(Collection.prototype.fetchFields());
+Collection.prototype.setFieldFocusStyleByKind = function(fieldFocus){
+  if(fieldFocus['kind'] == 'select_many'){
+    $("[name='properties["+fieldFocus['id']+"][]']").first().parent().addClass('ui-focus');
+    $("[name='properties["+fieldFocus['id']+"][]']").first().focus();
+  }else{
+    $('#'+fieldFocus["code"]).parent().addClass('ui-focus');
+    $('#'+fieldFocus["code"]).focus();    
+  }
+}
+
+Collection.prototype.setFieldValueByKind = function(fieldKind, fieldCode){
+  if(fieldKind == 'yes_no'){
+    if($( "#"+fieldCode+":checked").length == 1){
+      value = 0;
+    }else{
+      value = 1;
+    }    
+  }else if(fieldKind == 'select_one'){
+    value = fieldCode;
+  }  
+
+  return value;
+}
+
+Collection.prototype.findFieldById = function(fieldId){
+  schema = Collection.getSchemaByCollectionId(window.currentCollectionId);
+  for(i=0; i<schema["layers"].length;i++){
+    for(j=0; j<schema["layers"][i]["fields"].length; j++){
+      var field = schema["layers"][i]["fields"][j];   
+      if(field["id"] == fieldId){
+        return field;
+      }
+    }
+  }
+}
+
+Collection.prototype.getFieldLogicByFieldId = function(fieldId){
+  schema = Collection.getSchemaByCollectionId(window.currentCollectionId);
+  for(i=0; i<schema["layers"].length;i++){
+    for(j=0; j<schema["layers"][i]["fields"].length; j++){
+      var field = schema["layers"][i]["fields"][j];   
+      if(field["id"] == fieldId){
+        return field["config"]["field_logics"];
+      }
+    }
+  }
 }
 
 Collection.prototype.showPosition = function(position){

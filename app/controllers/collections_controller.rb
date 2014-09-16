@@ -1,17 +1,16 @@
 class CollectionsController < ApplicationController
-  before_filter :setup_guest_user, :if => Proc.new { (collection && collection.public?) || Collection.public_collections }
-  # before_filter :setup_guest_user, :if => Proc.new { collection && collection.public? }
-  before_filter :authenticate_user!, :except => [:render_breadcrumbs, :index, :alerted_collections], :unless => Proc.new { collection && collection.public? }
-
+  before_filter :setup_guest_user, :if => Proc.new { collection }
+  before_filter :authenticate_user!, :except => [:render_breadcrumbs, :index, :alerted_collections], :unless => Proc.new { collection }
+  
   authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
 
-  expose(:collections) {
+  expose(:collections){
     if current_user && !current_user.is_guest
       # public collections are accesible by all users
       # here we only need the ones in which current_user is a member
       current_user.collections.reject{|c| c.id.nil?}
     else
-      Collection.accessible_by(current_ability)
+      Collection.all
     end
   }
 
@@ -21,22 +20,27 @@ class CollectionsController < ApplicationController
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
   before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders, :quotas]
 
-  #before_filter :prepare_for_mobile
+  
 
   def index
-
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
       add_breadcrumb I18n.t('views.collections.index.collections'), 'javascript:window.model.goToRoot()'
+      
       if current_user.is_guest
-        @collections = Collection.public_collections
+        if params[:collection_id] && !collection.public?
+          redirect_to new_user_session_url
+          return
+        end
+        collections = Collection.public_collections
       else
-        @collections = collections_with_snapshot
+        collections = current_user.collections.reject{|c| c.id.nil?}
       end
+
       respond_to do |format|
         format.html
-        format.json { render json:  @collections}
+        format.json { render json:  collections}
       end
     end
   end

@@ -72,6 +72,8 @@ class LayersController < ApplicationController
   def fix_field_config
     if params[:layer] && params[:layer][:fields_attributes]
       params[:layer][:fields_attributes].each do |field_idx, field|
+
+
         if field[:config]
           if field[:config][:options]
             field[:config][:options] = field[:config][:options].values
@@ -85,7 +87,7 @@ class LayersController < ApplicationController
 
           if field[:is_enable_field_logic] == "false"
             params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:field_logics)
-          end
+          end        
 
           if field[:config][:field_logics]
             field[:config][:field_logics] = field[:config][:field_logics].values
@@ -103,10 +105,33 @@ class LayersController < ApplicationController
               end
             }    
           end
+
+          field[:config][:range] = fix_field_config_range(field) if field[:is_enable_range]
+          
         end
       end
     end
   end
+
+  def fix_field_config_range(field)
+    if field[:is_enable_range] == "false"
+      params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:range)
+    else
+      if field[:config][:range]
+        if field[:config][:range][:minimum] == ""
+          field[:config][:range][:minimum] = nil
+        else
+          field[:config][:range][:minimum] = field[:config][:range][:minimum].to_i
+        end
+        if field[:config][:range][:maximum] == ""
+          field[:config][:range][:maximum] = nil
+        else
+          field[:config][:range][:maximum] = field[:config][:range][:maximum].to_i
+        end
+      end
+    end 
+    return field[:config][:range]   
+  end 
 
   def validate_field_logic
     field[:config][:field_logics].delete_if { |field_logic| !field_logic['layer_id'] }            

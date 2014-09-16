@@ -8,13 +8,12 @@ onLayers ->
       @kind = ko.observable data?.kind
       
       @is_enable_field_logic = ko.observable data?.is_enable_field_logic ? false
-
+      @is_enable_range = data?.is_enable_range
 
       @config = data?.config
       @field_logics_attributes = data?.field_logics_attributes
       @metadata = data?.metadata
-      @is_mandatory = data?.is_mandatory
-      
+      @is_mandatory = data?.is_mandatory      
 
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
@@ -109,9 +108,22 @@ onLayers ->
       super(field)
 
       @allowsDecimals = ko.observable field?.config?.allows_decimals == 'true'
+      @is_enable_range = ko.observable field?.is_enable_range ? false
+      @minimum = ko.observable field?.config?.range?.minimum
+      @maximum = ko.observable field?.config?.range?.maximum
+      @error = ko.computed =>
+        if parseInt(@minimum()) > parseInt(@maximum())
+          "Invalid range, maximum must greater than minimum"
+    
+    validate_number_only: (field,event) =>
+      if event.keyCode > 31 && (event.keyCode < 48 || event.keyCode > 57)
+        return false
+      return true
 
     toJSON: (json) =>
-      json.config = {allows_decimals: @allowsDecimals()}
+      json.is_enable_range = @is_enable_range()
+      json.config = {allows_decimals: @allowsDecimals(), range: {minimum: @minimum(), maximum: @maximum()}}      
+      return json
 
   class @Field_yes_no extends @FieldImpl
     constructor: (field) ->

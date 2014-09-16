@@ -7,7 +7,7 @@ onCollections ->
       @code = data.code
       @name = data.name
       @kind = data.kind
-      @is_mandatory = data.is_mandatory
+      @is_mandatory = data.is_mandatory 
 
       @is_enable_field_logic = data.is_enable_field_logic
 
@@ -15,12 +15,12 @@ onCollections ->
       @photoPath = '/photo_field/'
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
       @writeable = @originalWriteable = data?.writeable
-
+      
       @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
 
       @value = ko.observable()
       
-      @value.subscribe => @setFieldFocus()
+      @value.subscribe => @setFieldFocus() 
 
 
       @hasValue = ko.computed =>
@@ -34,7 +34,11 @@ onCollections ->
        write: (value) =>
          @value(@valueUIFrom(value))
 
-
+      if @kind == 'numeric'
+        @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
+                  data.config?.range
+        @is_mandatory = if @range then true else data.is_mandatory
+        
       if @kind in ['yes_no', 'select_one', 'select_many']
         @field_logics = if data.config?.field_logics?
                           $.map data.config.field_logics, (x) => new FieldLogic x
@@ -78,22 +82,33 @@ onCollections ->
       @expanded = ko.observable false # For select_many
       @errorMessage = ko.observable()
       @error = ko.computed => !!@errorMessage()
-
+     
     setFieldFocus: =>
       if window.model.newOrEditSite() 
         if @kind == 'yes_no'
           value = if @value() then 1 else 0
+        else if @kind == 'select_one'
+          value = @value()
         else
           return
 
         for field_logic in @field_logics
-          if field_logic.field_id()?
-            if value == field_logic.value()                           
-              field = window.model.newOrEditSite().findFieldByEsCode(field_logic.field_id())
+          if field_logic.field_id?
+            if value == field_logic.value                          
+              field = window.model.newOrEditSite().findFieldByEsCode(field_logic.field_id)
               if field.kind == "select_one"
                 $('#select-one-input-'+field.code).focus()  
-              else if field.kind == "select-many"
-                 $('#select-many-input-'+field.code).focus()
+              else if field.kind == "select_many"
+                field.expanded(true)
+                $('#select-many-input-'+field.code).focus()
+              else if field.kind == "hierarchy"           
+                $('#'+field.esCode)[0].scrollIntoView(true)
+              else if field.kind == "yes_no"
+                $('#yes-no-input-'+field.code).focus()
+              else if field.kind == "photo"
+                $('#'+field.code).focus()
+              else if field.kind == "date"
+                $('#'+field.kind+'-input-'+field.esCode)[0].scrollIntoView(true)
               else
                 $('#'+field.kind+'-input-'+field.code).focus()
 
@@ -162,6 +177,28 @@ onCollections ->
           @save()
         window.model.initDatePicker(optionsDatePicker)
         window.model.initAutocomplete()
+
+    validateRange: =>
+      if @range
+        if @range.minimum && @range.maximum
+          if parseInt(@value()) >= parseInt(@range.minimum) && parseInt(@value()) <= parseInt(@range.maximum)
+            @errorMessage('')
+          else
+            @errorMessage('Invalid value, value must in the range of ('+@range.minimum+'-'+@range.maximum+")")
+        else
+          if @range.maximum
+            if parseInt(@value()) <= parseInt(@range.maximum)
+              @errorMessage('')
+            else
+              @errorMessage('Invalid value, value must less than '+@range.maximum)
+            return
+          
+          if @range.minimum
+            if parseInt(@value()) >= parseInt(@range.minimum)
+              @errorMessage('')
+            else
+              @errorMessage('Invalid value, value must greater than '+@range.minimum)
+            return
 
     validate_number_only: (keyCode) =>
       if keyCode > 31 && (keyCode < 48 || keyCode > 57)

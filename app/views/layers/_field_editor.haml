@@ -49,6 +49,7 @@
   //ko
   
   /ko if: $root.selectLogicLayers().length > 0
+  
   /ko if: kind() == 'yes_no'
   %hr/
   = ko_check_box_tag :is_enable_field_logic, css: {error: :codeError}
@@ -81,6 +82,22 @@
   //ko
   //ko
   
+  //ko
+
+  /ko if: kind() == 'numeric'
+  %hr/
+  = ko_check_box_tag 'impl().is_enable_range', css: {error: :codeError}
+  %label
+    Enable Range  
+
+  %div{ko(if: 'impl().is_enable_range'), style: 'width:275px'}
+    %br/
+    %p.smalltext Mininum
+    = ko_number_field_tag 'impl().minimum', css: {error: :error}, event: {keydown: 'impl().validate_number_only'}
+    %br/
+    %br/
+    %p.smalltext Maximum
+    = ko_number_field_tag 'impl().maximum', css: {error: :error}, event: {keydown: 'impl().validate_number_only'}
   //ko
 
   /ko if: kind() == 'text'
