@@ -3,13 +3,29 @@ class SessionsController < Devise::SessionsController
   include RecaptchaSetting
   
   before_filter :prepare_for_mobile, :only => [:new]
+  prepend_before_filter :captcha_valid, :only => [:create]
+
+  def captcha_valid
+    if meet_alert_ip and meet_alert_ip.size > Settings.number_of_attempt_failed and params["recaptcha_response_field"] and params["recaptcha_challenge_field"]
+      res = validate_captcha(RecaptchaSetting.private_key, params["recaptcha_challenge_field"], params["recaptcha_response_field"])
+      if res.body.start_with? "true"
+        true
+      else      
+        build_resource
+        flash[:error] = "There was an error with the recaptcha code below. Please re-enter the code."
+        @captcha = true
+        respond_with_navigational(resource) { render :new }
+      end
+    end
+  end
+
   def new
     ip = meet_alert_ip
     if ip.size > Settings.number_of_attempt_failed
       @captcha = true
     else
       @captcha = false
-    end
+    end    
     # Check if user is login failed so it redirect from create action
     if params["user"]
       LoginFailedTracker.create!(:ip_address => request.remote_ip, :login_at => DateTime.now())
@@ -19,22 +35,10 @@ class SessionsController < Devise::SessionsController
   end
 
   def create
-  	allow_to_login = true
-    if meet_alert_ip and meet_alert_ip.size > Settings.number_of_attempt_failed
-      res = validate_captcha(RecaptchaSetting.private_key, params["recaptcha_challenge_field"], params["recaptcha_response_field"])
-      unless res.body.start_with? "true" 
-      	allow_to_login = false
-      end
-    end  
-    if allow_to_login
-      unless current_user.nil?
-        LoginFailedTracker.where("ip_address = ?",request.remote_ip).destroy_all
-      end
-      super
-    else
-    	sign_out current_user
-      redirect_to :action => :new
+    unless current_user.nil?
+      LoginFailedTracker.where("ip_address = ?",request.remote_ip).destroy_all
     end
+    super
   end
 
   def validate_captcha(key, challeng, response)
