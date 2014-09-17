@@ -32,9 +32,9 @@
           = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select'), style: 'height:30px;margin-left:0px;'
           %button.clist-add{ko(click: '$root.addOptionFieldLogic', enable: '$root.fieldSelectManyLogicValid'), title: 'Add another option'}
           /ko foreach: selected_options
-          .box.grey{:style => 'width:150;margin:5px 5px 5px 66px;'}
+          .box.grey{ko(click: '$root.removeOptionFieldLogic'), :style => 'width:150;margin:5px 5px 5px 66px;'}
             %span
-              %a{ko(click: '$root.removeOptionFieldLogic', text: 'label')}
+              %a{ko(text: 'label')}
             %button.cremove.right{style: "margin-top:0px;"}
           //ko
           %br
@@ -46,9 +46,9 @@
             %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}        
               %option{"data-bind" => "text: name, option: name, value: id"}
   .rightbuttons
-    %button.fdelete{ ko(click: '$root.removeFieldLogic') }
+    %button.fdelete{ ko(click: '$root.removeSelectedFieldLogic') }
   %button.white{ko(click: '$root.updateFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.save')
-  / %button.white{ko(click: '$root.cancelFieldLogic'), type: :button, title: 'Save'} Cancel
+  %button.white{ko(click: '$root.cancelFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.cancel')
 %br
 //ko
 /ko ifnot: editing
@@ -129,9 +129,10 @@
 %br
 //ko
 /ko ifnot: $root.is_editing
-.box.grey.add{:style => 'width:270px;'}
+.box.grey.add{ko(click: '$root.createNewFieldLogic'), :style => 'width:270px;'}
   %span
-    %a{ko(click: '$root.createNewFieldLogic')} Add skip logic
+    %a
+      = t('views.layers.form.field.add_skip_logic')
   %button.cadd.right
   %br{clear: :all}
 //ko

@@ -54,7 +54,7 @@
   %hr/
   = ko_check_box_tag :is_enable_field_logic, css: {error: :codeError}
   %label
-    Enable skip logic for this field   
+    = t('views.layers.form.field.enable_skip_logic_for_this_field')  
 
   %div{ko(if: :is_enable_field_logic)}
     = render :partial => "field_logic_yes_no"
@@ -64,7 +64,7 @@
   %hr/
   = ko_check_box_tag :is_enable_field_logic, css: {error: :codeError}
   %label
-    Enable skip logic for this field   
+    = t('views.layers.form.field.enable_skip_logic_for_this_field') 
 
   %div{ko(if: :is_enable_field_logic)}
     = render :partial => "field_logic_select_many"
@@ -75,7 +75,7 @@
   %hr/
   = ko_check_box_tag :is_enable_field_logic, css: {error: :codeError}
   %label
-    Enable skip logic for this field   
+    = t('views.layers.form.field.enable_skip_logic_for_this_field')
 
   %div{ko(if: :is_enable_field_logic)}
     = render :partial => "field_logic_select_one"  
