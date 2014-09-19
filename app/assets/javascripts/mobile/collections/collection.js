@@ -338,13 +338,14 @@ Collection.prototype.validateNumeric = function(number) {
   }
 }
 
-Collection.prototype.validateRange = function(number, range=null) {
+Collection.prototype.validateRange = function(number, range){
   if(range["minimum"] && range["maximum"]){
     if(parseInt(number) >= parseInt(range["minimum"]) && parseInt(number) <= parseInt(range["maximum"]))
       return true;
     else
       return false;
-  }else{
+  }
+  else{
     if(range["maximum"]){
       if(parseInt(number) <= parseInt(range["maximum"]))
         return true;
@@ -359,8 +360,8 @@ Collection.prototype.validateRange = function(number, range=null) {
     }
   }
   return true;
-  
 }
+
 Collection.prototype.showErrorMessage = function(text){
   $.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, text, true );
   // hide after delay
