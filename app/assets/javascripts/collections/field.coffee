@@ -20,8 +20,7 @@ onCollections ->
 
       @value = ko.observable()
       
-      @value.subscribe => @setFieldFocus() 
-
+      @value.subscribe => @setFieldFocus()
 
       @hasValue = ko.computed =>
         if @kind == 'yes_no'
@@ -101,14 +100,15 @@ onCollections ->
 
             if @kind == 'select_many'
               if field_logic.condition_type == 'any'
-                for field_value in value
-                  for field_logic_value in field_logic.selected_options
-                    if field_value == parseInt(field_logic_value.value)
-                      b = true
-                      @setFocusStyleByField(field_logic.field_id)
+                if value.length == 1
+                  for field_value in value
+                    for field_logic_value in field_logic.selected_options
+                      if field_value == parseInt(field_logic_value.value)
+                        b = true
+                        @setFocusStyleByField(field_logic.field_id)
+                        break
+                    if b
                       break
-                  if b
-                    break
               else
                 if field_logic.selected_options.length == value.length
                   for field_logic_value in field_logic.selected_options
@@ -120,8 +120,8 @@ onCollections ->
                       else
                         b = false
                           
-                if b && field_id?
-                  @setFocusStyleByField(field_id)      
+                  if b && field_id?
+                    @setFocusStyleByField(field_id)
 
     setFocusStyleByField: (field_id) =>
       field = window.model.newOrEditSite().findFieldByEsCode(field_id)
