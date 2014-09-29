@@ -111,15 +111,16 @@ onCollections ->
                       break
               else
                 if field_logic.selected_options.length == value.length
-                  for field_logic_value in field_logic.selected_options
-                    for field_value in value
+                  for field_value in value
+                    for field_logic_value in field_logic.selected_options
                       if field_value == parseInt(field_logic_value.value)
                         b = true
                         field_id = field_logic.field_id
                         break
                       else
                         b = false
-                          
+                    if !b
+                      break
                   if b && field_id?
                     @setFocusStyleByField(field_id)
 
