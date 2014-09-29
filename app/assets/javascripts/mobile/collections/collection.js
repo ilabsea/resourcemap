@@ -297,7 +297,7 @@ Collection.findNextFieldId = function(fieldId, options){
   for(var i=0; i<layers.length; i++){
     fields = layers[i].fields
     for(var j=0; j<fields.length; j++){
-      if(fields[j].id == fieldId);
+      if(fields[j].id == fieldId)
         field = fields[j];
     }
   }
