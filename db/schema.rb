@@ -213,6 +213,14 @@ ActiveRecord::Schema.define(:version => 20140911073733) do
     t.text     "rule",       :limit => 16777215
   end
 
+  create_table "reports", :force => true do |t|
+    t.string   "value"
+    t.integer  "field_id"
+    t.integer  "layer_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "share_channels", :force => true do |t|
     t.integer  "channel_id"
     t.integer  "collection_id"
