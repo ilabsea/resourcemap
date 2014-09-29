@@ -7,7 +7,7 @@ onCollections ->
       @code = data.code
       @name = data.name
       @kind = data.kind
-      @is_mandatory = data.is_mandatory
+      @is_mandatory = data.is_mandatory 
 
       @is_enable_field_logic = data.is_enable_field_logic
 
@@ -37,7 +37,8 @@ onCollections ->
       if @kind == 'numeric'
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
-
+        @is_mandatory = if @range then true else data.is_mandatory
+        
       if @kind in ['yes_no', 'select_one', 'select_many']
         @field_logics = if data.config?.field_logics?
                           $.map data.config.field_logics, (x) => new FieldLogic x
@@ -86,30 +87,59 @@ onCollections ->
       if window.model.newOrEditSite() 
         if @kind == 'yes_no'
           value = if @value() then 1 else 0
-        else if @kind == 'select_one'
+        else if @kind == 'select_one' || 'select_many'
           value = @value()
         else
           return
 
+        b = false
         for field_logic in @field_logics
           if field_logic.field_id?
-            if value == field_logic.value                          
-              field = window.model.newOrEditSite().findFieldByEsCode(field_logic.field_id)
-              if field.kind == "select_one"
-                $('#select-one-input-'+field.code).focus()  
-              else if field.kind == "select_many"
-                field.expanded(true)
-                $('#select-many-input-'+field.code).focus()
-              else if field.kind == "hierarchy"           
-                $('#'+field.esCode)[0].scrollIntoView(true)
-              else if field.kind == "yes_no"
-                $('#yes-no-input-'+field.code).focus()
-              else if field.kind == "photo"
-                $('#'+field.code).focus()
-              else if field.kind == "date"
-                $('#'+field.kind+'-input-'+field.esCode).focus()
+            if @kind == 'yes_no' || 'select_one'
+              if value == field_logic.value                          
+                @setFocusStyleByField(field_logic.field_id)
+
+            if @kind == 'select_many'
+              if field_logic.condition_type == 'any'
+                for field_value in value
+                  for field_logic_value in field_logic.selected_options
+                    if field_value == parseInt(field_logic_value.value)
+                      b = true
+                      @setFocusStyleByField(field_logic.field_id)
+                      break
+                  if b
+                    break
               else
-                $('#'+field.kind+'-input-'+field.code).focus()
+                if field_logic.selected_options.length == value.length
+                  for field_logic_value in field_logic.selected_options
+                    for field_value in value
+                      if field_value == parseInt(field_logic_value.value)
+                        b = true
+                        field_id = field_logic.field_id
+                        break
+                      else
+                        b = false
+                          
+                if b && field_id?
+                  @setFocusStyleByField(field_id)      
+
+    setFocusStyleByField: (field_id) =>
+      field = window.model.newOrEditSite().findFieldByEsCode(field_id)
+      if field.kind == "select_one"
+        $('#select-one-input-'+field.code).focus()  
+      else if field.kind == "select_many"
+        field.expanded(true)
+        $('#select-many-input-'+field.code).focus()
+      else if field.kind == "hierarchy"           
+        $('#'+field.esCode)[0].scrollIntoView(true)
+      else if field.kind == "yes_no"
+        $('#yes-no-input-'+field.code).focus()
+      else if field.kind == "photo"
+        $('#'+field.code).focus()
+      else if field.kind == "date"
+        $('#'+field.kind+'-input-'+field.esCode)[0].scrollIntoView(true)
+      else
+        $('#'+field.kind+'-input-'+field.code).focus() 
 
     setValueFromSite: (value) =>
       if @kind == 'date' && $.trim(value).length > 0

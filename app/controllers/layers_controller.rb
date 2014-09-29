@@ -106,14 +106,14 @@ class LayersController < ApplicationController
             }    
           end
 
-          field[:config][:range] = fix_field_config_range(field) if field[:is_enable_range]
+          field[:config][:range] = fix_field_config_range(field_idx,field) if field[:is_enable_range]
           
         end
       end
     end
   end
 
-  def fix_field_config_range(field)
+  def fix_field_config_range(field_idx,field)
     if field[:is_enable_range] == "false"
       params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:range)
     else

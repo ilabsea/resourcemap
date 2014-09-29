@@ -16,10 +16,10 @@ onCollections ->
     
     @goToRoot: ->
       @queryParams = $.url().param()
+      @currentCollection(null)
       @showingAlert(false)
       @cancelFilterAlertedSites()
       @exitSite() if @editingSite()
-      @currentCollection(null)
       @unselectSite() if @selectedSite()
       @search('')
       @lastSearch(null)
@@ -190,3 +190,6 @@ onCollections ->
           @alert_legend(false)
         else
           @alert_legend(true)
+
+    @hideDatePicker: ->
+      $("input").datepicker "hide"
