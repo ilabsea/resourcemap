@@ -48,7 +48,7 @@ onLayers ->
           []
 
       @is_editing = ko.computed =>
-        if @currentField()?
+        if @currentField() and @currentField().kind() == "select_many"
           for f in @currentField().impl().selected_field_logics()
             if f.editing() == true
               return true
@@ -250,16 +250,17 @@ onLayers ->
     saveNewFieldLogic: =>
 
     addOptionFieldLogic: (field) =>
-      option = $.map(@currentField()["config"].options, (x) -> x if x.id == field.value())
+      option = $.map(@currentField().impl().options(), (x) -> x if x.id() == field.value())
       if option.length > 0
         field_logic_value = new FieldLogicValue( 
-          label:option[0]["label"]
-          value: option[0]["id"]
+          label:option[0].label()
+          value: option[0].id()
         )
         tmp = @newFieldLogic().selected_options()
         tmp.push(field_logic_value)
         @newFieldLogic().selected_options([])
         @newFieldLogic().selected_options(tmp)
+
 
     removeOptionFieldLogic: (field) =>
       @newFieldLogic().selected_options.remove(field)

@@ -263,11 +263,11 @@ Collection.prototype.validateData = function(collectionId){
           }
           if(!state){
             Collection.prototype.showErrorMessage(field["name"] + " is mandatory.");
-            Collection.setFieldStyleFailed(field["code"])
+            Collection.setFieldStyleFailed(field["code"]);
             return false
           }
           else{
-            Collection.setFieldStyleSuccess(field["code"])
+            Collection.setFieldStyleSuccess(field["code"]);
           }
         }
       }
@@ -275,6 +275,81 @@ Collection.prototype.validateData = function(collectionId){
   }
 
   return true;
+}
+
+Collection.setFocusOnField = function(fieldId){
+  els = $(".field_" + fieldId);
+  selected_options = []
+  for(var i=0; i<els.length; i++){
+    if(els[i].checked)
+      selected_options.push(els[i].checked);
+  }
+  id = Collection.findNextFieldId(fieldId, selected_options);
+  if(id){
+    fieldFocus = Collection.prototype.findFieldById(id); 
+    Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
+  }
+}
+
+Collection.findNextFieldId = function(fieldId, options){
+  layers = Collection.getSchemaByCollectionId(window.currentCollectionId).layers;
+  field = null;
+  for(var i=0; i<layers.length; i++){
+    fields = layers[i].fields
+    for(var j=0; j<fields.length; j++){
+      if(fields[j].id == fieldId);
+        field = fields[j];
+    }
+  }
+  if(field.is_enable_field_logic){
+    field_logics = field.config["field_logics"]
+    for(var j=0; j<field_logics.length; j++){
+      if(field_logics[j].condition_type == "all"){
+        valid = Collection.checkAllConditionFieldLogic(field_logics[j]["selected_options"], options);
+        if(valid){
+          return field_logics[j]["field_id"];
+        }
+        return null;
+      }
+      else{
+        valid = Collection.checkAnyConditionFieldLogic(field_logics[j]["selected_options"], options);
+        if(valid){
+          return field_logics[j]["field_id"];
+        }
+        return null;
+      }
+    }
+  }
+  else{
+    return null;
+  }
+}
+
+Collection.checkAllConditionFieldLogic = function(selectedOptions, options){
+  for(op in selectedOptions){
+    meet_condition = false
+    for(var j=0; j<options.length; j++){
+      if(selectedOptions[op]["value"] == options[j]){
+        meet_condition = true;
+      }
+    }
+    if(meet_condition == false){
+      return false
+    }
+  }
+  return false;
+}
+
+Collection.checkAnyConditionFieldLogic = function(selectedOptions, options){
+  meet_condition = false
+  for(op in selectedOptions){
+    for(var j=0; j<options.length; j++){
+      if(selectedOptions[op]["value"] == options[j]){
+        meet_condition = true;
+      }
+    }
+  }
+  return meet_condition;
 }
 
 Collection.setFieldStyleSuccess = function(id){
@@ -379,8 +454,8 @@ Collection.prototype.addLayerForm = function(schema){
   for(i=0; i<schema["layers"].length;i++){
     form = form + '<div><h5>' + schema["layers"][i]["name"] + '</h5>';
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
-      var field = schema["layers"][i]["fields"][j]
-      myField = new Field(field)
+      var field = schema["layers"][i]["fields"][j];
+      myField = new Field(field);
       form = form + myField.getField();
     }
     form = form + "</div>";
@@ -392,8 +467,8 @@ Collection.prototype.handleFieldUI = function(schema){
   
   for(i=0; i<schema["layers"].length;i++){
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
-      var field = schema["layers"][i]["fields"][j]
-      myField = new Field(field)
+      var field = schema["layers"][i]["fields"][j];
+      myField = new Field(field);
       myField.completeFieldRequirement();
     }
     form = form + "</div>";
