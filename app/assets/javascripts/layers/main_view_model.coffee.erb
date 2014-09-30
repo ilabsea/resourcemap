@@ -286,7 +286,8 @@ onLayers ->
       return ""
 
     editFieldLogic: (field) =>
-      # field.editing(true)
+      if @currentField().kind() == 'select_one'
+        field.editing(true)
       if @currentField().kind() == 'select_many'      
         for f in @currentField().impl().selected_field_logics()
           if f.editing() == true
