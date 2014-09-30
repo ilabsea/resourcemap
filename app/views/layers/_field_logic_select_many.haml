@@ -29,7 +29,7 @@
       %li{ko(with: '$root.newFieldLogic()')}
         %div.box.w25{style: 'padding-bottom:10px'}
           %span.smalltext.left{style: 'padding-right:18px;padding-top:10px;'}= t('views.layers.form.field.if_input_is')
-          = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select'), style: 'height:30px;margin-left:0px;'
+          = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select', event: '{ change: $root.addOptionFieldLogic }'), style: 'height:30px;margin-left:0px;'
           %button.clist-add{ko(click: '$root.addOptionFieldLogic', enable: '$root.fieldSelectManyLogicValid'), title: 'Add another option'}
           /ko foreach: selected_options
           .box.grey{ko(click: '$root.removeOptionFieldLogic'), :style => 'width:150;margin:5px 5px 5px 66px;'}
@@ -107,12 +107,12 @@
       %li{ko(with: '$root.newFieldLogic()')}
         %div.box.w25{style: 'padding-bottom:10px'}
           %span.smalltext.left{style: 'padding-right:18px;padding-top:10px;'}= t('views.layers.form.field.if_input_is')
-          = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select'), style: 'height:30px;margin-left:0px;'
+          = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select', event: '{ change: $root.addOptionFieldLogic }'), style: 'height:30px;margin-left:0px;'
           %button.clist-add{ko(click: '$root.addOptionFieldLogic', enable: '$root.fieldSelectManyLogicValid'), title: 'Add another option'}
           /ko foreach: selected_options
-          .box.grey{:style => 'width:150;margin:5px 5px 5px 66px;'}
+          .box.grey{ko(click: '$root.removeOptionFieldLogic'), :style => 'width:150;margin:5px 5px 5px 66px;'}
             %span
-              %a{ko(click: '$root.removeOptionFieldLogic', text: 'label')}
+              %a{ko(text: 'label')}
             %button.cremove.right{style: "margin-top:0px;"}
           //ko
           %br
