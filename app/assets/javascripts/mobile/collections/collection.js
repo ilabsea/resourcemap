@@ -282,7 +282,7 @@ Collection.setFocusOnField = function(fieldId){
   selected_options = []
   for(var i=0; i<els.length; i++){
     if(els[i].checked)
-      selected_options.push(els[i].checked);
+      selected_options.push(els[i].value);
   }
   id = Collection.findNextFieldId(fieldId, selected_options);
   if(id){
@@ -309,16 +309,15 @@ Collection.findNextFieldId = function(fieldId, options){
         if(valid){
           return field_logics[j]["field_id"];
         }
-        return null;
       }
       else{
         valid = Collection.checkAnyConditionFieldLogic(field_logics[j]["selected_options"], options);
         if(valid){
           return field_logics[j]["field_id"];
         }
-        return null;
       }
     }
+    return null;
   }
   else{
     return null;
@@ -337,7 +336,7 @@ Collection.checkAllConditionFieldLogic = function(selectedOptions, options){
       return false
     }
   }
-  return false;
+  return true;
 }
 
 Collection.checkAnyConditionFieldLogic = function(selectedOptions, options){

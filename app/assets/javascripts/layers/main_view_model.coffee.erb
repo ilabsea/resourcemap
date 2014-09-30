@@ -219,8 +219,6 @@ onLayers ->
       if $.trim(attribute.code()).length == 0 && $.trim(attribute.length()).length == 0
         @removeAttribute(attribute)
 
-
-
     addOption: =>
       return unless @optionValid()
       @newOption().hasFocus = false
@@ -239,7 +237,7 @@ onLayers ->
       @newFieldLogic(field_logic)
       @currentField().impl().add_field_logic(@newFieldLogic())
       @newFieldLogic().condition_type("all")
-      $("#all")[0].checked = true      
+      $("#all")[0].checked = true
 
     assignConditionAll: =>
       @newFieldLogic().condition_type("all")
@@ -304,6 +302,8 @@ onLayers ->
         field.editing(true)
         @currentField().impl().field_logics([])
         @newFieldLogic(field)
+      if field.condition_type() == "all"
+        $("#all")[0].checked = true
 
     cancelFieldLogic: (field) =>
       if @currentField().kind() == 'select_one'   

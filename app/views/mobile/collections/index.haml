@@ -14,7 +14,7 @@
     %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.showMainSitePage()', "data-theme" => "c" }= t('views.back')
     %h1= @title || t('views.mobile.collections.location')
   %div{"data-role" => "content", "id" => "map-canvas"}
-  %br{style: 'clear:both;'}  
+  %br{style: 'clear:both;'}
   = render "footer"
 
 #mobile-sites-main{"data-fullscreen" => "true", :style => "display:none;"}
