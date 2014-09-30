@@ -9,7 +9,6 @@ onLayers ->
       
       @is_enable_field_logic = ko.observable data?.is_enable_field_logic ? false
       @is_enable_range = data?.is_enable_range
-
       @config = data?.config
       @field_logics_attributes = data?.field_logics_attributes
       @metadata = data?.metadata
@@ -211,13 +210,13 @@ onLayers ->
                       else
                         ko.observableArray()
 
-    addFieldLogic: (field_logic) =>
+    saveFieldLogic: (field_logic) =>
       if @field_logics().length > 0
         id = @field_logics()[@field_logics().length - 1].id() + 1
       else
         id = 0
       field_logic.id id
-      @field_logics.push field_logic    
+      @field_logics.push field_logic
                         
     toJSON: (json) =>
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId,field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}
