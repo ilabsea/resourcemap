@@ -8,7 +8,7 @@ class CollectionsController < ApplicationController
     if current_user && !current_user.is_guest
       # public collections are accesible by all users
       # here we only need the ones in which current_user is a member
-      current_user.collections.reject{|c| c.id.nil?}
+      Collection.accessible_by(current_ability)
     else
       Collection.all
     end
@@ -30,6 +30,7 @@ class CollectionsController < ApplicationController
       
       if current_user.is_guest
         if params[:collection_id] && !collection.public?
+          flash[:error] = "You need to sign in order to view this collection"
           redirect_to new_user_session_url
           return
         end
@@ -82,7 +83,6 @@ class CollectionsController < ApplicationController
   end
 
   def show
-    p 'show'
     @snapshot = Snapshot.new
     add_breadcrumb I18n.t('views.collections.index.properties'), '#'
     respond_to do |format|

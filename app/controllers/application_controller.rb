@@ -33,11 +33,7 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from CanCan::AccessDenied do |exception|
-    if params[:controller] == 'collections' && params[:action] == 'show'
-      redirect_to new_user_session_url
-    else
-      render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
-    end
+    render :file => '/error/doesnt_exist_or_unauthorized', :alert => exception.message, :status => :forbidden
   end
 
   before_filter :set_timezone

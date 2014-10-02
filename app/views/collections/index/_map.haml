@@ -115,7 +115,7 @@
         <!-- ko if: !inEditMode() -->
         %span= t('views.collections.index.new_site')
         <!-- /ko -->
-      .tablescroll
+      .tablescroll{ko(event: { mouseover: '$root.hideDatePicker'})}
         %table
           %tbody
             %tr
@@ -168,7 +168,7 @@
         %button.pback{ko(click: '$root.exitSite'), type: 'button'}
         %span
         %span{ko(text: :name)}
-      .tablescroll
+      .tablescroll{ko(event: { mouseover: '$root.hideDatePicker'})}
         %table{style: 'width:100%'}
           %tbody
             %tr
@@ -234,7 +234,7 @@
                   <!-- ko if: !hasValue() &&  !error() -->
                   <!-- ko if: writeable -->
                   <!-- ko if: kind != 'photo' -->
-                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} = t('views.collections.index.no_value')
+                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
                   <!-- /ko -->
                   <!-- /ko -->
                   <!-- ko if: !writeable -->
