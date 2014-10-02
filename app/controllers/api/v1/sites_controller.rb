@@ -27,7 +27,7 @@ module Api::V1
     end
 
     def update
-      site.attributes = sanitized_site_params.merge(user: current_user)
+      site.attributes = sanitized_site_params(false).merge(user: current_user)
       if site.valid?
         site.save!
         if params[:photosToRemove]
@@ -40,7 +40,7 @@ module Api::V1
     end
 
     def create
-      site = collection.sites.build sanitized_site_params.merge(user: current_user)
+      site = collection.sites.build sanitized_site_params(true).merge(user: current_user)
       if site.save
         current_user.site_count += 1
         current_user.update_successful_outcome_status
@@ -53,13 +53,14 @@ module Api::V1
     end
 
     private
-    def sanitized_site_params
+    def sanitized_site_params new_record
       parameters = params[:site]
       fields = collection.writable_fields_for(current_user).index_by &:es_code
       site_properties = parameters.delete("properties") || {}
       files = parameters.delete("files") || {}
+      
+      decoded_properties = new_record ? {} : site_properties
 
-      decoded_properties = {}
       site_properties.each_pair do |es_code, value|
         value = [ value, files[value] ] if fields[es_code].kind_of? Field::PhotoField
         decoded_properties[es_code] = fields[es_code].decode_from_ui(value) if fields[es_code]

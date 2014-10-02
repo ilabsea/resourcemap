@@ -106,7 +106,7 @@ class LayersController < ApplicationController
             }    
           end
 
-          field[:config][:range] = fix_field_config_range(field) if field[:is_enable_range]
+          field[:config][:range] = fix_field_config_range(field_idx, field) if field[:is_enable_range]
           
         end
       end

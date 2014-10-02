@@ -135,6 +135,7 @@ ResourceMap::Application.routes.draw do
       resources :collections do
         resources :sites, only: [:create,:index,:update,:show]
         resources :fields, only: [:create,:index,:update,:show]
+        resources :layer_memberships, only: [:create,:index,:update,:show]
       end
     end
   end
