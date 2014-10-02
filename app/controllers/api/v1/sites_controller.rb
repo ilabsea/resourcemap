@@ -61,10 +61,16 @@ module Api::V1
     end
 
     def create
+
       site = build_site
       create_state = site.id ? false : true #to create or update
       site.user = current_user
       site_aggregator = SiteAggregator.new(site)
+      site = collection.sites.build sanitized_site_params(true).merge(user: current_user)
+      if site.save
+        current_user.site_count += 1
+        current_user.update_successful_outcome_status
+        current_user.save!(:validate => false)
 
       if site_aggregator.save
         render json: site_aggregator.site, status: :created
@@ -83,8 +89,9 @@ module Api::V1
       site_properties = parameters.delete("properties") || {}
 
       files = parameters.delete("files") || {}
-
+      
       decoded_properties = new_record ? {} : result.properties
+
       site_properties.each_pair do |es_code, value|
         value = [ value, files[value] ] if fields[es_code].kind_of? Field::PhotoField
         #parse date from formate %m%d%Y to %d%m%Y for the phone_gap data old version

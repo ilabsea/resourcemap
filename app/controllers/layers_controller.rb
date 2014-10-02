@@ -147,13 +147,12 @@ class LayersController < ApplicationController
           else
             field[:config][:field_logics] = []
           end
-
-
           field[:config][:range] = fix_field_config_range(field_idx,field) if field[:is_enable_range]
         else
           field[:config] = {}
           field[:config][:field_logics] = []
           field[:config][:field_validations] = []
+          field[:config][:range] = fix_field_config_range(field_idx, field) if field[:is_enable_range]
         end
       end
     end

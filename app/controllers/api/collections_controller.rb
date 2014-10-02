@@ -17,7 +17,6 @@ class Api::CollectionsController < ApplicationController
   end
 
   def show
-<<<<<<< HEAD
     if params[:format] != 'csv'
       options = [:sort]
       if params[:page] == 'all'
@@ -30,18 +29,7 @@ class Api::CollectionsController < ApplicationController
         options << :page
       end
       @results = perform_search *options
-=======
-    options = [:sort]
 
-    if params[:format] == 'csv' || params[:page] == 'all'
-      options << :all
-      params.delete(:page)
-    elsif params[:format] == 'kml' || 'shp'
-      options << :require_location
-      options << :page
-    else
-      options << :page
->>>>>>> fix error on download shp file on collection with site no location
     end
     collection.time_zone = current_user.time_zone
 
