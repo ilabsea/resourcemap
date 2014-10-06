@@ -80,6 +80,10 @@ class Site < ActiveRecord::Base
     self.properties = properties
   end
 
+  def filter_site_by_id site_id
+    builder = Site.find site_id
+  end
+
   private
 
   def standardize_properties
@@ -128,6 +132,5 @@ class Site < ActiveRecord::Base
     fields_mandatory.each do |f|
       errors.add(:properties, {f.id.to_s => "#{f.code} is required."})
     end
-
   end
 end
