@@ -229,5 +229,9 @@ class Api::CollectionsController < ApplicationController
     send_data sites_kml, type: 'application/vnd.google-earth.kml+xml', filename: "#{collection.name}_sites.kml"
   end
 
+  def visible_layer_for_site
+    
+    
+  end
 
 end

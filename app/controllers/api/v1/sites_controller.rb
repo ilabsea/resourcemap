@@ -45,6 +45,25 @@ module Api::V1
       respond_to do |format|
         format.json { render json:  site_item_json(@result)}
       end
+      builder = Collection.filter_sites(params)
+
+      sites_size = builder.size
+      sites_by_page  = Collection.filter_page(params[:limit], params[:offset], builder)
+      render :json => {:sites => sites_by_page, :total => sites_size}
+    end
+
+    def show
+      result = site.filter_site_by_id(params[:id])
+      render json: result
+      # search = new_search
+
+      # search.id(site.id)
+      # @result = search.api_results[0]
+
+      # respond_to do |format|
+      #   format.rss
+      #   format.json { render json: site_item_json(@result) }
+      # end
     end
 
     def update
@@ -79,13 +98,82 @@ module Api::V1
       end
     end
 
+    def visible_layers_for
+      layers = []
+      if site.collection.site_ids_permission(current_user).include? site.id
+        target_fields = fields.includes(:layer).all
+        layers = target_fields.map(&:layer).uniq.map do |layer|
+          {
+            id: layer.id,
+            name: layer.name,
+            ord: layer.ord,
+          }
+        end
+        if site.collection.site_ids_write_permission(current_user).include? site.id
+          layers.each do |layer|
+            layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
+            layer[:fields].map! do |field|
+              {
+                id: field.es_code,
+                name: field.name,
+                code: field.code,
+                kind: field.kind,
+                config: field.config,
+                ord: field.ord,
+                is_mandatory: field.is_mandatory,
+                is_enable_field_logic: field.is_enable_field_logic,
+                writeable: true
+              }
+            end
+          end
+        elsif site.collection.site_ids_read_permission(current_user).include? site.id
+          layers.each do |layer|
+            layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
+            layer[:fields].map! do |field|
+              {
+                id: field.es_code,
+                name: field.name,
+                code: field.code,
+                kind: field.kind,
+                config: field.config,
+                ord: field.ord,
+                is_mandatory: field.is_mandatory,
+                is_enable_field_logic: field.is_enable_field_logic,
+                writeable: false
+              }
+            end
+          end
+        end
+        layers.sort! { |x, y| x[:ord] <=> y[:ord] }
+      else
+        layers = site.collection.visible_layers_for(current_user)
+      end
+      render json: layers
+    end
+
+    def prepare_site_property params
+      properties = {}
+      conflict_state_id = Field.find_by_code("con_state").id.to_s
+      conflict_type_id = Field.find_by_code("con_type").id.to_s
+      conflict_intensity_id = Field.find_by_code("con_intensity").id.to_s
+      properties.merge!(conflict_state_id => params[:conflict_state])
+      properties.merge!(conflict_type_id => params[:conflict_type])
+      properties.merge!(conflict_intensity_id => params[:conflict_intensity])
+
+      return properties
+    end
+
     private
     def sanitized_site_params new_record
       parameters = params[:site]
 
+<<<<<<< HEAD
       result = new_record ? {} : site.filter_site_by_id(params[:id])
 
       fields = collection.fields.index_by &:es_code
+=======
+      fields = collection.writable_fields_for(current_user).index_by &:es_code
+>>>>>>> customer site permission
       site_properties = parameters.delete("properties") || {}
 
       files = parameters.delete("files") || {}

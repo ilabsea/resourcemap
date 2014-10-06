@@ -216,6 +216,7 @@ class Collection < ActiveRecord::Base
       end
     end
     layers.sort! { |x, y| x[:ord] <=> y[:ord] }
+
     layers
   end
 

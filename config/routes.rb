@@ -241,7 +241,12 @@ ResourceMap::Application.routes.draw do
           post :update_property
           post :partial_update
         end
+        resources :sites, only: [:create,:index,:update,:show] do
+          get :visible_layers_for, on: :member
+        end
+        resources :fields, only: [:create,:index,:update,:show] 
         resources :layer_memberships, only: [:create,:index,:update,:show]
+        resources :site_permissions, only: [:create,:index,:update,:show]
       end
       get 'histogram/:field_id', to: 'collections#histogram_by_field', as: :histogram_by_field
       get 'collections/:collection_id/sites/:id/histories' => 'sites#histories', as: :histories
