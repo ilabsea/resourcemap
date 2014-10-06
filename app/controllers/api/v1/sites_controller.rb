@@ -53,17 +53,11 @@ module Api::V1
     end
 
     def show
-      result = site.filter_site_by_id(params[:id])
+      search = new_search
+
+      search.id params[:id]
+      result = search.ui_results.first['_source'] rescue {}
       render json: result
-      # search = new_search
-
-      # search.id(site.id)
-      # @result = search.api_results[0]
-
-      # respond_to do |format|
-      #   format.rss
-      #   format.json { render json: site_item_json(@result) }
-      # end
     end
 
     def update
@@ -166,14 +160,9 @@ module Api::V1
     private
     def sanitized_site_params new_record
       parameters = params[:site]
-
-<<<<<<< HEAD
       result = new_record ? {} : site.filter_site_by_id(params[:id])
 
       fields = collection.fields.index_by &:es_code
-=======
-      fields = collection.writable_fields_for(current_user).index_by &:es_code
->>>>>>> customer site permission
       site_properties = parameters.delete("properties") || {}
 
       files = parameters.delete("files") || {}
