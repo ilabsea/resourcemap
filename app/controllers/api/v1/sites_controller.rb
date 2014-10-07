@@ -161,7 +161,6 @@ module Api::V1
     def sanitized_site_params new_record
       parameters = params[:site]
       result = new_record ? {} : site.filter_site_by_id(params[:id])
-
       fields = collection.fields.index_by &:es_code
       site_properties = parameters.delete("properties") || {}
 
