@@ -576,13 +576,21 @@ onLayers ->
       @newFieldLogic().selected_options.remove(field)
 
     saveFieldLogic: (field_logic) =>
-      error = @validateFieldLogic(field_logic)
-      if error["status_failed"]
-        field_logic.valid(false)
-        field_logic.error(error["detail"])
-      else
-        field_logic.editing(false)
+      field_logic.editing(false)
+      if @currentField().kind() == 'numeric'
         @currentField().impl().saveFieldLogic(field_logic)
+        @isAddNew(false)
+
+      if @currentField().kind() == 'select_many'
+        @currentField().impl().save_field_logic(field_logic)
+        @currentField().impl().field_logics.remove(field_logic)
+
+      if @currentField().kind() == 'select_one'
+        if @currentField().config?.field_logics?[field_logic.id()]?
+          @currentField().config.field_logics[field_logic.id()].value = field_logic.value()
+          @currentField().config.field_logics[field_logic.id()].field_id = field_logic.field_id()
+        else
+          @currentField().impl().saveFieldLogic(field_logic)
         @isAddNew(false)
 
     saveFieldValidation: (field_validation) =>
@@ -620,17 +628,24 @@ onLayers ->
       field.editing(false)
 
     cancelFieldLogic: (field) =>
-      field_logic = @originalFieldLogic
-      if field_logic?.id?
-        field.value(field_logic.value)
-        field.field_id(field_logic.field_id)
-        field.condition_type(field_logic.condition_type)
-      else
-        @isAddNew(false)
+      if @currentField().kind() == 'select_one'   
+        field_logic =  @currentField().config.field_logics?[field.id()]
+        if field_logic?
+          field.value(field_logic.value)
+          field.field_id(field_logic.field_id)
+        else
+          @isAddNew(false)
 
-      field.editing(false)
-      @originalFieldLogic = null
+      if @currentField().kind() == 'select_many'
+        for f in @currentField().impl().selected_field_logics()
+          if f.editing() == true
+            f.selected_options(@currentFieldLogic.selected_options())
+            f.field_id(@currentFieldLogic.field_id())
+            f.condition_type(@currentFieldLogic.condition_type())
+            f.editing(false)
+        @currentFieldLogic = null   
 
+      field.editing(false) 
     updateFieldLogic: (field) =>
       field.editing(false)
 
