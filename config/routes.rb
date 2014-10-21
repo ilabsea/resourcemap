@@ -133,8 +133,12 @@ ResourceMap::Application.routes.draw do
     # v1
     namespace :v1 do
       resources :collections do
-        resources :sites, only: [:create,:index,:update,:show]
-        resources :fields, only: [:create,:index,:update,:show]
+        resources :sites, only: [:create,:index,:update,:show] do
+          get :visible_layers_for, on: :member
+        end
+        resources :fields, only: [:create,:index,:update,:show] 
+        resources :layer_memberships, only: [:create,:index,:update,:show]
+        resources :site_permissions, only: [:create,:index,:update,:show]
       end
     end
   end
