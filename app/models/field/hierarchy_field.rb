@@ -199,7 +199,7 @@ class Field::HierarchyField < Field
     option = hierarchy_options.find { |opt| opt[:name] == value }
     option if option
   end
-
+  
   def transform
     field_hierarchy = {}
     field_hierarchy["hierarchy"] = inject_parent_id(self.config["hierarchy"], nil, 0) if self.config["hierarchy"]

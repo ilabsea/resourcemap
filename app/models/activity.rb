@@ -221,8 +221,11 @@ class Activity < ActiveRecord::Base
                 end
               end
             end
+
+             
             row << activity.action
             #row << activity.description
+             
             csv << row
           end
           
