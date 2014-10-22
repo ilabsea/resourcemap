@@ -104,7 +104,7 @@ onCollections ->
             else
               b = false
           when "con"
-            if field.indexOf(compareField) != -1
+            if typeof field != 'undefined' && field.indexOf(compareField) != -1
               site
             else
               b = false                   
