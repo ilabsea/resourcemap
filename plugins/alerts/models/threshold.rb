@@ -10,7 +10,6 @@ class Threshold < ActiveRecord::Base
   serialize :email_notification
   serialize :sites, Array
 
-  before_save :strongly_type_conditions
   def strongly_type_conditions
     fields = collection.fields.index_by(&:es_code)
     self.conditions.each_with_index do |hash, i|

@@ -19,7 +19,7 @@ onCollections ->
       @color = data?.color
       @idWithPrefix = ko.observable data?.id_with_prefix
       @properties = ko.observable data?.properties
-      @updatedAt = ko.observable(data.updated_at)
+      @updatedAt = ko.observable(data?.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)

@@ -32,6 +32,7 @@ class ThresholdsController < ApplicationController
     params[:threshold][:phone_notification] = {} unless params[:threshold][:phone_notification] # phone not selected
     threshold = thresholds.new params[:threshold].except(:sites) 
     threshold.sites = Site.get_id_and_name params[:threshold][:sites] if params[:threshold][:sites]#select only id and name
+    threshold.strongly_type_conditions
     threshold.save!
     # collection.recreate_index
     Resque.enqueue IndexRecreateTask, collection.id
@@ -48,11 +49,16 @@ class ThresholdsController < ApplicationController
     params[:threshold][:email_notification] = {} unless params[:threshold][:email_notification] # email not selected
     params[:threshold][:phone_notification] = {} unless params[:threshold][:phone_notification] # phone not selected
     params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]} if params[:threshold][:sites]
+    threshold.strongly_type_conditions
     threshold.update_attributes! params[:threshold].except(:sites)
-    if params[:threshold][:sites]
+    if params[:threshold][:is_all_site] == "false" && params[:threshold][:sites]
       threshold.sites = Site.get_id_and_name params[:threshold][:sites]
       threshold.save
+    else
+      threshold.sites = nil
+      threshold.save
     end
+
     # collection.recreate_index
     Resque.enqueue IndexRecreateTask, collection.id
     render json: threshold
