@@ -357,10 +357,9 @@
         
         %div{ko(foreach: :collections), style: ''}
           <!-- ko if: checked() -->
-          <!-- ko if: thresholds().length > 0 -->
+          <!-- ko if: showLegend() -->
           %div{style: 'padding:10px 10px 0px 10px;border-bottom:1px solid #E6E6E6'}
             %b{ko(text: :name)}
-            / %p{ko(text: 'thresholdsCollection().length')}
             %ul#legend_alert_list{ko(foreach: :thresholds), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
 
               <!-- ko if: alertedSitesNum() > 0 -->

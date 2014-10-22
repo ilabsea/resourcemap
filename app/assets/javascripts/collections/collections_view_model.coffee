@@ -6,7 +6,7 @@ onCollections ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
       @alert_legend = ko.observable(false)
-      @showingLegend = ko.observable(true)
+      @showingLegend = ko.observable(false)
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
@@ -154,12 +154,13 @@ onCollections ->
 
     @setThresholds: ->     
       if @currentCollection()
+        @showingLegend(false)
         @currentCollection().thresholds([])  
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
           thresholds = @currentCollection().fetchThresholds(data)     
           @currentCollection().thresholds(@currentCollection().findSitesByThresholds(thresholds))
-          if @currentCollection().thresholds().length > 0
-            @showingLegend(true)
+          # if @currentCollection().thresholds().length > 0
+          #   @showingLegend(true)
       else
         $.get "/plugin/alerts/thresholds.json", (data) =>
           for collection in @collections()
