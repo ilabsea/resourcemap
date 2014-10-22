@@ -159,8 +159,6 @@ onCollections ->
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
           thresholds = @currentCollection().fetchThresholds(data)     
           @currentCollection().thresholds(@currentCollection().findSitesByThresholds(thresholds))
-          # if @currentCollection().thresholds().length > 0
-          #   @showingLegend(true)
       else
         $.get "/plugin/alerts/thresholds.json", (data) =>
           for collection in @collections()
