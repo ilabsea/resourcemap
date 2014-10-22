@@ -179,16 +179,23 @@ Field.prototype.getSelectManyField = function() {
     else{
       checked = "";
     }
-    list = list +   
-      '<div class="ui-checkbox">' +         
-          '<label for="' + this.options[i]["code"] + '"  for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c"  style="margin:0px;">' +  
-            '<span class="ui-btn-inner ui-corner-top">'+
-              '<span style="font-weight:normal;">' + this.options[i]["name"] + '</span>' +
-              '<input ' + checked + ' type="checkbox" value="' + this.options[i]["id"] + '" name="properties[' + this.id + '][]" id="' + this.options[i]["code"] + '" class="custom"  datatype="select_many">' +
-            '</span>'+
-          '</label>'+
-      '</div>';
-
+    if(this.options.length > 1 && i == 0){
+      classListName = "ui-first-child" 
+    }else if(this.options.length > 1 && i == (this.options.length - 1)){
+      classListName = "ui-last-child"
+    }else{
+      classListName = ""
+    }
+    list = list + '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ' + classListName + '" >' + 
+        '<div class="ui-btn-inner ui-li">' + 
+          '<div class="ui-checkbox" style="padding-top: 10px; height: 25px;" >' +
+              '<label for="' + this.id + "-" + this.options[i]["code"] + '"  data-theme="c" style="margin:0px;">' +  
+                '<span style="padding: 10px 100% 5px 40px;;font-weight:normal;height:20px;color: #2f3e46;text-decoration: none !important;" class="ui-link-inherit">' + this.options[i]["name"] + '</span>' +
+                '<input class="field_' + this.id + '" ' + checked + ' type="checkbox" value="' + this.options[i]["id"] + '" name="properties[' + this.id + '][]" id="' + this.id + "-" + this.options[i]["code"] + '" datatype="select_many">' +
+              '</label>'+
+          '</div>' +
+        '</div>' +
+      '</li>';
   }
 
   return  '<div class="ui-controlgroup-controls" style="margin-left:10px;">' + 
@@ -196,9 +203,11 @@ Field.prototype.getSelectManyField = function() {
               '<label>' + this.label + '</label>'+ 
             '</div>'+
             '<div class="ui-controlgroup-controls">' + 
-              list + 
+              '<ul id="listSitesView" class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-role="listSitesView" data-inset="true">' +
+                list + 
+              '</ul>' +
             '</div>'+
-          '</div>';
+          '</div>' ;
 };
 
 Field.prototype.getPhoneNumberField = function() {
@@ -232,7 +241,7 @@ Field.prototype.getPhotoField = function() {
   }
   return '<div class="ui-corner-all ui-controlgroup ui-controlgroup-vertical" style="margin-left:10px">'+
       '<div class="ui-controlgroup-controls">'+
-        '<label>' + this.label + '</label> <br /><br />'+ displayDiv +
+        '<label>' + this.label + '</label> <br />'+ displayDiv +
         '<input type="hidden" name="properties[' + this.id + ']" value="' + this.value + '" />' +
         '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
           '<input onchange="Collection.prototype.handleFileUpload(this)" class="ui-input-text ui-body-c" type="file" data-clear-btn="true" name="properties[' + this.id + ']" id="' + this.code + '"  datatype="photo">'+          
