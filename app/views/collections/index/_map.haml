@@ -234,7 +234,7 @@
                   <!-- ko if: !hasValue() &&  !error() -->
                   <!-- ko if: writeable -->
                   <!-- ko if: kind != 'photo' -->
-                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} = t('views.collections.index.no_value')
+                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
                   <!-- /ko -->
                   <!-- /ko -->
                   <!-- ko if: !writeable -->
