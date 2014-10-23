@@ -55,8 +55,7 @@ onCollections ->
           threshold_new = new Threshold(threshold, this.icon)
           thresholds.push(threshold_new)
       thresholds
-
-
+   
     findSitesByThresholds: (thresholds) =>
       b = false
       for site in this.sites()
@@ -73,6 +72,7 @@ onCollections ->
       for key,threshold of thresholds
         if threshold.alertedSitesNum() == 0
           thresholds.splice(key,1)
+      return thresholds
 
     operateWithCondition: (conditions, site) =>
       b = true    
