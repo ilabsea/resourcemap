@@ -4,7 +4,7 @@ en:
       collections:
         title: "My Collections"
         desktop_view: "Desktop View"
-        new_site: "New waste report"
+        new_site: "New site"
         name: "Location name:"
         location: "Location"
         lat: "Location'Lat"
