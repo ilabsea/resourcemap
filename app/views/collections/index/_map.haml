@@ -186,9 +186,9 @@
                   %label= t('views.collections.index.location')
                   <!-- ko if: !hasLocation() -->
                   - if current_user.is_guest
-                    %span.value{ko(visible: '!editingLocation()', style: 'color:grey;')}= t('views.collections.index.no_value')
+                    %span.value{ko(visible: '!editingLocation()', style: 'color:grey;')} =t('views.collections.index.no_value')
                   - else
-                    %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
+                    %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'} =t('views.collections.index.no_value')
                   <!-- /ko -->
                   <!-- ko if: hasLocation() && !editingLocation() -->
                   - if current_user.is_guest
@@ -234,11 +234,11 @@
                   <!-- ko if: !hasValue() &&  !error() -->
                   <!-- ko if: writeable -->
                   <!-- ko if: kind != 'photo' -->
-                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} = t('views.collections.index.no_value')
+                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'} =t('views.collections.index.no_value')
                   <!-- /ko -->
                   <!-- /ko -->
                   <!-- ko if: !writeable -->
-                  %span.value{style: 'color:grey'}= t('views.collections.index.no_value')
+                  %span.value{style: 'color:grey'} =t('views.collections.index.no_value')
                   <!-- /ko -->
                   <!-- /ko -->
                   <!-- ko if: editing() || error() -->
