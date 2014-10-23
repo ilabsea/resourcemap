@@ -29,6 +29,7 @@ onCollections ->
           @addSite @createSite(site)
         @loadingSites false
         window.model.refreshTimeago()
+        window.model.setThresholds()
 
     @reloadSites: ->
       @loadingSites true

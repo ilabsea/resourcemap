@@ -21,7 +21,8 @@ onCollections ->
       @name = data?.name
       @icon = data?.icon
       @currentSnapshot = if data?.snapshot_name then data?.snapshot_name else ''
-      @updatedAt = ko.observable(data.updated_at)
+      @updatedAt = ko.observable(data?.updated_at)
+      @showLegend = ko.observable(false)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @loadCurrentSnapshotMessage()
       @loadAllSites()
@@ -54,15 +55,16 @@ onCollections ->
           threshold_new = new Threshold(threshold, this.icon)
           thresholds.push(threshold_new)
       thresholds
-
-
+   
     findSitesByThresholds: (thresholds) =>
       b = false
       for site in this.sites()
         for key,threshold of thresholds
           if this.operateWithCondition(threshold.conditions(), site)?   
             b = true
-            thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)  
+            thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)
+            window.model.showingLegend(true)
+            @showLegend(true)
             break
           else
             b = false
@@ -70,7 +72,6 @@ onCollections ->
       for key,threshold of thresholds
         if threshold.alertedSitesNum() == 0
           thresholds.splice(key,1)
-
       return thresholds
 
     operateWithCondition: (conditions, site) =>
@@ -79,10 +80,8 @@ onCollections ->
       for condition in conditions
         operator = condition.op().code()
         if condition.valueType().code() is 'percentage'
-
           percentage = (site.properties()[condition.compareField()] * condition.value())/100
           compareField = percentage
-
         else
           compareField = condition.value()
           
