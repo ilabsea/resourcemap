@@ -87,7 +87,7 @@ Field.prototype.getHierarchyField = function() {
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.label + '</label>'+
               '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="hierarchy">' +
-              '<option value=""> (no value) </option>'+
+                '<option value="" > (no value) </option>' +
                  list +
               '</select>' +
           '</div>';
@@ -166,7 +166,8 @@ Field.prototype.getSelectOneField = function() {
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.label + '</label>'+
               '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="select_one">' +
-               '<option value="">(no value)</option>' + list +
+                '<option value="" > (no value) </option>' +
+                 list +
               '</select>' +
           '</div>';
 };
