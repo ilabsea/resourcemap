@@ -36,8 +36,11 @@ onCollections ->
     loadAllSites: =>
       @allSites = ko.observable()
 
-    findSiteById: (value) =>
-      sites = window.model.currentCollection().sites()
+    findSiteById: (value, collectionId) =>
+      if window.model.currentCollection()?
+        sites = window.model.currentCollection().sites()
+      else
+        sites = window.model.findCollectionById(collectionId).sites()
       return if not sites
       (site for site in sites when site.id() is parseInt(value))[0]
 
@@ -67,7 +70,7 @@ onCollections ->
         else
           sites = this.sites()
         for site in sites
-          site = @findSiteById(site.collection.id) if threshold.isAllSite() == "false"
+          site = @findSiteById(site.collection.id, threshold.collectionId) if threshold.isAllSite() == "false"
           alertSite = this.operateWithCondition(threshold.conditions(), site) if site?
           if alertSite? && alertSites.indexOf(alertSite) == -1
             b = true
