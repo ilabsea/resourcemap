@@ -35,9 +35,11 @@ onCollections ->
 
     loadAllSites: =>
       @allSites = ko.observable()
-      # $.get @sitesUrl(), (data) =>
-      #   for site in data
-      #     @addSite @createSite(site)  
+
+    findSiteById: (value) =>
+      sites = window.model.currentCollection().sites()
+      return if not sites
+      (site for site in sites when site.id() is parseInt(value))[0]
 
     findSiteNameById: (value) =>
       allSites = window.model.currentCollection().allSites()
@@ -55,28 +57,33 @@ onCollections ->
           threshold_new = new Threshold(threshold, this.icon)
           thresholds.push(threshold_new)
       thresholds
-   
+
     findSitesByThresholds: (thresholds) =>
+      alertSites = []
       b = false
-      for site in this.sites()
-        for key,threshold of thresholds
-          if this.operateWithCondition(threshold.conditions(), site)?   
+      for key,threshold of thresholds
+        if threshold.alertSites().length > 0
+          sites = threshold.alertSites()
+        else
+          sites = this.sites()
+        for site in sites
+          site = @findSiteById(site.collection.id) if threshold.isAllSite() == "false"
+          alertSite = this.operateWithCondition(threshold.conditions(), site) if site?
+          if alertSite? && alertSites.indexOf(alertSite) == -1
             b = true
+            alertSites.push(alertSite)
             thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)
             window.model.showingLegend(true)
             @showLegend(true)
-            break
           else
             b = false
-
       for key,threshold of thresholds
         if threshold.alertedSitesNum() == 0
           thresholds.splice(key,1)
       return thresholds
 
     operateWithCondition: (conditions, site) =>
-      b = true    
-      
+      b = true
       for condition in conditions
         operator = condition.op().code()
         if condition.valueType().code() is 'percentage'

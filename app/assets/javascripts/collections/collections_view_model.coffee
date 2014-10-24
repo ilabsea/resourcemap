@@ -152,7 +152,7 @@ onCollections ->
 
     @createCollection: -> window.location = "/collections/new"
 
-    @setThresholds: ->     
+    @setThresholds: ->
       if @currentCollection()
         @showingLegend(false)
         @currentCollection().thresholds([])  

@@ -15,7 +15,6 @@ onCollections ->
     # Loads SITES_PER_PAGE sites more from the server, it there are more sites.
     @loadMoreSites: ->
       return unless @hasMoreSites()
-
       @loadingSites true
       # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
       # extra element so the user always sees SITES_PER_PAGE elements.
@@ -29,7 +28,8 @@ onCollections ->
           @addSite @createSite(site)
         @loadingSites false
         window.model.refreshTimeago()
-        window.model.setThresholds()
+        if @hasMoreSites()
+          window.model.setThresholds()
 
     @reloadSites: ->
       @loadingSites true
