@@ -22,9 +22,11 @@ class Threshold < ActiveRecord::Base
     fields = collection.fields.index_by &:es_code
     throw :threshold, self if conditions.send(is_all_condition ? :all? : :any?) do |hash|
       field = fields[hash[:field]]
-      value = properties[hash[:field]] || field.strongly_type(value)
+      if field
+        value = properties[hash[:field]] || field.strongly_type(value)
 
-      true if condition(hash, properties).evaluate(value)
+        true if condition(hash, properties).evaluate(value)
+      end
     end
   end
 
