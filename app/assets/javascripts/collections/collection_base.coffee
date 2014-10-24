@@ -71,7 +71,7 @@ onCollections ->
           sites = this.sites()
         for site in sites
           site = @findSiteById(site.collection.id, threshold.collectionId) if threshold.isAllSite() == "false"
-          alertSite = this.operateWithCondition(threshold.conditions(), site) if site?
+          alertSite = this.operateWithCondition(threshold.conditions(), site, threshold.isAllCondition()) if site?
           if alertSite? && alertSites.indexOf(alertSite) == -1
             b = true
             alertSites.push(alertSite)
@@ -85,9 +85,9 @@ onCollections ->
           thresholds.splice(key,1)
       return thresholds
 
-    operateWithCondition: (conditions, site) =>
+    operateWithCondition: (conditions, site, isAllCondition) =>
       b = true
-      for condition in conditions
+      for key, condition of conditions
         operator = condition.op().code()
         if condition.valueType().code() is 'percentage'
           percentage = (site.properties()[condition.compareField()] * condition.value())/100
@@ -99,30 +99,32 @@ onCollections ->
         switch operator
           when "eq","eqi"
             if field is compareField
-              site
+              b = true
             else
               b = false
           when "gt"
             if field > compareField
-              site
+              b = true
             else
               b = false   
           when "lt"
             if field < compareField
-              site
+              b = true
             else
               b = false
           when "con"
             if typeof field != 'undefined' && field.toLowerCase().indexOf(compareField.toLowerCase()) != -1
-              site
+              b = true
             else
               b = false                   
           else
             null
+        if isAllCondition == "true"
+          return null if b == false            
+        else
+          return site if b == true            
+          return null if b == false && parseInt(key) == conditions.length-1
 
-        if b == false
-          return null
-          
       return site
 
 
