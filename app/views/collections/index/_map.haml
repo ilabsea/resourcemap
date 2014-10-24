@@ -308,11 +308,10 @@
         %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px;'}      
     <!-- /ko --> 
 
-    <!-- ko if: $root.alert_legend() -->
+    <!-- ko if: showLegend() && $root.alert_legend() -->
     %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:200px;overflow-y:auto;border-radius:10px'}
       %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
-        %b Legend     
-        / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
+        %b Legend
         %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
       
       %ul#legend_alert_list{ko(foreach: :thresholds), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none; max-width:350px;'}

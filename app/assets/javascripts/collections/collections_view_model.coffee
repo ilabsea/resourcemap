@@ -32,7 +32,7 @@ onCollections ->
       @refreshTimeago()
       @makeFixedHeaderTable()
       @hideRefindAlertOnMap()
-      @setThresholds()
+      # @setThresholds()
 
       @rewriteUrl()
 
@@ -155,7 +155,8 @@ onCollections ->
     @setThresholds: ->
       if @currentCollection()
         @showingLegend(false)
-        @currentCollection().thresholds([])  
+        @currentCollection().thresholds([])
+        @currentCollection().showLegend(false) 
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
           thresholds = @currentCollection().fetchThresholds(data)     
           @currentCollection().thresholds(@currentCollection().findSitesByThresholds(thresholds))
