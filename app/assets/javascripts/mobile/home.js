@@ -24,7 +24,7 @@ function initialize(locale){
           }
           return window.localStorage.setItem("cachedSites", JSON.stringify(cachedSites));
         }
-      });    
+      }); 
     }
   });
 

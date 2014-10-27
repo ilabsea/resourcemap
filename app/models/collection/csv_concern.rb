@@ -9,36 +9,12 @@ module Collection::CsvConcern
     end
   end
 
-<<<<<<< HEAD
-  def to_csv(current_user)
-    fields = fields_for_csv
-    csv_string = csv_header(fields)
-
-    search = new_search(current_user: current_user)
-    search.my_site_search current_user.id unless current_user.can_view_other? self.id
-    search.use_codes_instead_of_es_codes
-    pages = self.sites_count/search.page_size
-
-    if pages == 0
-      elastic_search_api_results = search.api_results
-      csv_body = csv_body(elastic_search_api_results, fields)
-      csv_string = csv_string + csv_body.inject([]) { |csv, row|  csv << CSV.generate_line(row) }.join("")
-    else
-      (1..pages).each do |page|
-        search.page page
-        elastic_search_api_results = search.api_results
-        csv_body = csv_body(elastic_search_api_results, fields)
-        csv_string = csv_string + csv_body.inject([]) { |csv, row|  csv << CSV.generate_line(row) }.join("")
-      end
-    end
-    csv_string
-  end
 
   def location_csv(locations)
     CSV.generate do |csv|
       locations.each do |location|
         csv << [location["code"], location["name"], location["latitude"], location["longitude"]]
-=======
+        
   def to_csv(elastic_search_api_results = new_search.unlimited.api_results, current_user)
     fields = self.fields.all
     hierarchy_fields = {}
@@ -108,7 +84,6 @@ module Collection::CsvConcern
         # row << Site.iso_string_to_rfc822(source['updated_at'])
         row << updated_at
         csv << row
->>>>>>> export as csv fix of select many and hierachy to display as column value
       end
     end
   end

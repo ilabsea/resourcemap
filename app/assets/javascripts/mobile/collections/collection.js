@@ -58,6 +58,11 @@ Collection.hideWhileOffline = function(){
     $("#linkPageMap").show();
     $("#unsupportPhotoField").hide();
   }
+
+
+Collection.hideLinkLocation = function(){
+  if(!window.navigator.onLine)
+    $("#linkPageMap").hide();
 }
 
 Collection.getSchemaByCollectionId = function(id){
@@ -1108,12 +1113,21 @@ Collection.prototype.showSite = function(collectionId, siteIdOnline, siteIdOffli
 Collection.prototype.showSiteOffline = function(collectionId, siteId){
   $.mobile.saving('show');
   $("#listSitesView").html("");
-  Collection.hidePages();
 
+  Collection.hidePages();
   sites = JSON.parse(localStorage.getItem("offlineSites"));
   for(var i=0; i< sites.length; i++){
     if(sites[i].formData["idSite"] == siteId){
      Collection.assignSite(sites[i].formData);
+
+  $.ajax({
+    url: "/mobile/collections/" + collectionId + "/sites/" + siteId + ".json",
+    success: function(site) {
+      Collection.hidePages();
+      Collection.assignSite(site);
+      Collection.hideLinkLocation();
+      $("#mobile-sites-main").show();
+      $.mobile.saving('hide');
     }
   }  
   Collection.hideWhileOffline();
