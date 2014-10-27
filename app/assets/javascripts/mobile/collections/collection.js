@@ -625,8 +625,6 @@ Collection.prototype.showSite = function(collectionId, siteId){
   $.ajax({
     url: "/mobile/collections/" + collectionId + "/sites/" + siteId + ".json",
     success: function(site) {
-      p 'hi '
-      p site
       Collection.hidePages();
       Collection.assignSite(site);
       $("#mobile-sites-main").show();
