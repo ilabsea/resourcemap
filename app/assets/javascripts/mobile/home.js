@@ -25,7 +25,7 @@ function initialize(locale){
           }
           return window.localStorage.setItem("cachedSites", JSON.stringify(cachedSites));
         }
-      });    
+      }); 
     }
   });
 
@@ -69,6 +69,7 @@ function initialize(locale){
     window.collectionSchema = window.JSON.parse(window.localStorage.getItem("collectionSchema"));
     Collection.prototype.addDataToCollectionList(window.collectionSchema);
   }
+  $('#map-page').hide();   
 }
 
 function prepareFlushMessage(id){

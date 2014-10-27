@@ -45,7 +45,13 @@ Collection.prototype.fetchFields = function() {
 };
 
 Collection.prototype.createSite = function(id){
+  Collection.hideLinkLocation();
   Collection.prototype.showFormAddSite(Collection.getSchemaByCollectionId(id));
+}
+
+Collection.hideLinkLocation = function(){
+  if(!window.navigator.onLine)
+    $("#linkPageMap").hide();
 }
 
 Collection.getSchemaByCollectionId = function(id){
@@ -799,6 +805,7 @@ Collection.prototype.showSite = function(collectionId, siteId){
     success: function(site) {
       Collection.hidePages();
       Collection.assignSite(site);
+      Collection.hideLinkLocation();
       $("#mobile-sites-main").show();
       $.mobile.saving('hide');
     }
