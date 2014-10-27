@@ -172,7 +172,7 @@ onCollections ->
 
     @showLegendState: ->
       for collection in @collections()
-        if collection.checked() == true && collection.thresholds().length > 0
+        if collection.checked() == true && collection.showLegend()
           @showingLegend(true)
           break
         else
