@@ -98,7 +98,7 @@ onCollections ->
         field = site.properties()[condition.field()]
         switch operator
           when "eq","eqi"
-            if field is compareField
+            if (field is compareField) || (field == 'on' && compareField == true)
               b = true
             else
               b = false
