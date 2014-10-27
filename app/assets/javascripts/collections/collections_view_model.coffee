@@ -88,12 +88,12 @@ onCollections ->
           @rewriteUrl()
 
         window.adjustContainerSize()
-
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
       window.model.updateSitesInfo()
       @showRefindAlertOnMap()
       @setThresholds()
+      @filters([])
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
@@ -172,7 +172,7 @@ onCollections ->
 
     @showLegendState: ->
       for collection in @collections()
-        if collection.checked() == true && collection.thresholds().length > 0
+        if collection.checked() == true && collection.showLegend()
           @showingLegend(true)
           break
         else
