@@ -88,12 +88,12 @@ onCollections ->
           @rewriteUrl()
 
         window.adjustContainerSize()
-
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
       window.model.updateSitesInfo()
       @showRefindAlertOnMap()
       @setThresholds()
+      @filters([])
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 

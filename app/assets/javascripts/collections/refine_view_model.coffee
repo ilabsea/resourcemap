@@ -98,7 +98,7 @@ onCollections ->
       return if field?.kind != 'select_one' && field?.kind != 'select_many' && @notValueSelected()
 
       filter = @filterFor(field)
-      if field.kind == 'numeric'
+      if field?.kind == 'numeric'
         @addOrReplaceFilter(filter, (f) => f.operator == @expandedRefinePropertyOperator())
       else
         @addOrReplaceFilter(filter)
@@ -120,8 +120,8 @@ onCollections ->
         @filters.push(filter)
 
     @filterFor: (field) ->
-      return new FilterByTextProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()) if field.isPluginKind()
-      return switch field.kind
+      return new FilterByTextProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue()) if field?.isPluginKind()
+      return switch field?.kind
         when 'text', 'user'
           new FilterByTextProperty(field, @expandedRefinePropertyOperator(), @expandedRefinePropertyValue())
         when 'site'
@@ -140,7 +140,7 @@ onCollections ->
         when 'hierarchy'
           new FilterByHierarchyProperty(field, 'under', @expandedRefinePropertyHierarchy().id, @expandedRefinePropertyHierarchy().name)
         else
-          throw "Unknown field kind: #{field.kind}"
+          throw "Unknown field kind: #{field?.kind}"
 
     @expandedRefinePropertyValueKeyPress: (model, event) ->
       switch event.keyCode
