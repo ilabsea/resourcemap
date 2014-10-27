@@ -23,6 +23,7 @@ class Mobile::SitesController < SitesController
       site_params[:properties] = params[:properties]
       site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
       site_params[:properties] = self.store_image_file(site_params[:properties])
+      site_params[:properties] = fix_value_on_yesNo_properties(site_params[:properties])
     end
     site = collection.sites.create(site_params.merge(user: current_user))
     if site.valid?
@@ -52,6 +53,7 @@ class Mobile::SitesController < SitesController
       site_params[:properties] = params[:properties]
       site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
       site_params[:properties] = self.store_image_file(site_params[:properties])
+      site_params[:properties] = fix_value_on_yesNo_properties(site_params[:properties])     
     end
     if collection.sites.find(params[:id]).update_attributes!(site_params.merge(user: current_user))
       Site::UploadUtils.uploadFile(params[:fileUpload])
@@ -81,6 +83,7 @@ class Mobile::SitesController < SitesController
         site_params[:properties] = params[:properties]
         site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
         site_params[:properties] = self.store_offline_image_file(site_params[:properties])
+        site_params[:properties] = fix_value_on_yesNo_properties(site_params[:properties])        
       end
       site = collection.sites.create(site_params.merge(user: current_user))
       if site.valid?
@@ -106,6 +109,7 @@ class Mobile::SitesController < SitesController
         site_params[:properties] = params[:properties]
         site_params[:properties] = fix_timezone_on_date_properties(site_params[:properties])
         site_params[:properties] = self.store_offline_image_file(site_params[:properties])
+        site_params[:properties] = fix_value_on_yesNo_properties(site_params[:properties])        
       end
       if collection.sites.find(params[:id]).update_attributes!(site_params.merge(user: current_user))
         Site::UploadUtils.uploadFile(params[:fileUpload])
@@ -152,6 +156,16 @@ class Mobile::SitesController < SitesController
         unless(value.strip == "")
           properties[key] = value + "T00:00:00Z"
         end 
+      end
+    end
+    properties
+  end
+
+  def fix_value_on_yesNo_properties(properties)
+    properties.each do |key,value|
+      if value == "on" #fix value for yes_no field
+        properties[key] = true
+        break
       end
     end
     properties
