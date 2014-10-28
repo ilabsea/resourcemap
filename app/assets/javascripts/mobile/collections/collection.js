@@ -595,13 +595,14 @@ Collection.prototype.setFieldFocus = function(fieldId,fieldCode, fieldKind){
   $("div,span").removeClass('ui-focus');
   fieldValue = Collection.prototype.setFieldValueByKind(fieldKind, fieldCode);
   fieldLogics = Collection.prototype.getFieldLogicByFieldId(fieldId);
-
-  for(i=0; i<fieldLogics.length; i++){
-    if(fieldLogics[i]["field_id"] != null){
-      if(fieldLogics[i]["value"] == fieldValue){       
-        fieldFocus = Collection.prototype.findFieldById(fieldLogics[i]["field_id"]); 
-        Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
-        return;
+  if(fieldLogics){
+    for(i=0; i<fieldLogics.length; i++){
+      if(fieldLogics[i]["field_id"] != null){
+        if(fieldLogics[i]["value"] == fieldValue){       
+          fieldFocus = Collection.prototype.findFieldById(fieldLogics[i]["field_id"]); 
+          Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
+          return;
+        }
       }
     }
   }
