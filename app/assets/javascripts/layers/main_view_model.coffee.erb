@@ -270,7 +270,7 @@ onLayers ->
         @currentField().impl().field_logics.remove(field_logic)
 
       if @currentField().kind() == 'select_one'
-        if @currentField().config.field_logics?[field_logic.id()]?
+        if @currentField().config?.field_logics?[field_logic.id()]?
             @currentField().config.field_logics[field_logic.id()].value = field_logic.value()
             @currentField().config.field_logics[field_logic.id()].field_id = field_logic.field_id()
         else
@@ -303,12 +303,12 @@ onLayers ->
         field.editing(true)
         @currentField().impl().field_logics([])
         @newFieldLogic(field)
-      if field.condition_type() == "all"
-        $("#all")[0].checked = true
+        if field.condition_type() == "all"
+          $("#all")[0].checked = true
 
     cancelFieldLogic: (field) =>
       if @currentField().kind() == 'select_one'   
-        field_logic =  @currentField().config.field_logics?[field.id()]
+        field_logic =  @currentField().config?.field_logics?[field.id()]
         if field_logic?
           field.value(field_logic.value)
           field.field_id(field_logic.field_id)
