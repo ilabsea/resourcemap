@@ -83,7 +83,7 @@ onCollections ->
       @error = ko.computed => !!@errorMessage()
      
     setFieldFocus: =>
-      if window.model.newOrEditSite() 
+      if window.model.newOrEditSite()
         if @kind == 'yes_no'
           value = if @value() then 1 else 0
         else if @kind == 'numeric' || @kind == 'select_one' || @kind == 'select_many'
