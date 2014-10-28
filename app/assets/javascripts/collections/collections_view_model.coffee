@@ -6,7 +6,7 @@ onCollections ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
       @alert_legend = ko.observable(false)
-      @showingLegend = ko.observable(true)
+      @showingLegend = ko.observable(false)
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @currentSnapshot = ko.computed =>
@@ -32,7 +32,7 @@ onCollections ->
       @refreshTimeago()
       @makeFixedHeaderTable()
       @hideRefindAlertOnMap()
-      @setThresholds()
+      # @setThresholds()
 
       @rewriteUrl()
 
@@ -88,12 +88,12 @@ onCollections ->
           @rewriteUrl()
 
         window.adjustContainerSize()
-
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
       window.model.updateSitesInfo()
       @showRefindAlertOnMap()
       @setThresholds()
+      @filters([])
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
@@ -152,14 +152,14 @@ onCollections ->
 
     @createCollection: -> window.location = "/collections/new"
 
-    @setThresholds: ->     
+    @setThresholds: ->
       if @currentCollection()
-        @currentCollection().thresholds([])  
+        @showingLegend(false)
+        @currentCollection().thresholds([])
+        @currentCollection().showLegend(false) 
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
           thresholds = @currentCollection().fetchThresholds(data)     
           @currentCollection().thresholds(@currentCollection().findSitesByThresholds(thresholds))
-          if @currentCollection().thresholds().length > 0
-            @showingLegend(true)
       else
         $.get "/plugin/alerts/thresholds.json", (data) =>
           for collection in @collections()
@@ -172,7 +172,7 @@ onCollections ->
 
     @showLegendState: ->
       for collection in @collections()
-        if collection.checked() == true && collection.thresholds().length > 0
+        if collection.checked() == true && collection.showLegend()
           @showingLegend(true)
           break
         else

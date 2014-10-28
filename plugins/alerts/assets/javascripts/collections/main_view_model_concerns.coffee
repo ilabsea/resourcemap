@@ -16,7 +16,8 @@ onCollections ->
             alertsCount += cluster.data.alert_count
         alertsCount += 1 if @selectedSite()?.alert?()
         @alertsCount alertsCount
-      @setThresholds()
+      if !@currentCollection()?
+        @setThresholds()
       @aliasMethodChain "setMarkerIcon", "Alerts"
 
     @setMarkerIconWithAlerts: (marker, icon) ->

@@ -524,12 +524,12 @@ Collection.prototype.getListSiteTemplate = function(collectionId, site, classLis
 
 Collection.prototype.showListSites = function(collectionId){
   $.mobile.saving('show');
-  $("#listSitesView").html("");
   window.currentCollectionId = collectionId;
   Collection.clearFormData();
   $.ajax({
     url: "/mobile/collections/" + collectionId + "/sites.json",
     success: function(sites) {
+      $("#listSitesView").html("");
       for(var i=0; i< sites.length; i++){
         if(sites.length > 1 && i == 0){
           classListName = "ui-first-child" 

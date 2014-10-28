@@ -95,7 +95,8 @@ Field.prototype.getHierarchyField = function() {
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.label + '</label>'+
               '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="hierarchy">' +
-                list +
+                '<option value="" > (no value) </option>' +
+                 list +
               '</select>' +
           '</div>';
 
@@ -173,7 +174,8 @@ Field.prototype.getSelectOneField = function() {
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.label + '</label>'+
               '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="select_one" onchange="Collection.prototype.setFieldFocus('+this.id+',this.value,\''+this.kind+'\')">' +
-                list +
+                '<option value="" > (no value) </option>' +
+                 list +
               '</select>' +
           '</div>';
 };

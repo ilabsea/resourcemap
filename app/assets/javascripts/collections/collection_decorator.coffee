@@ -24,6 +24,7 @@ onCollections ->
       @groupByOptions = collection.groupByOptions
       @sitesPermission = collection.sitesPermission
       @thresholds = collection.thresholds
+      @showLegend = collection.showLegend
       @allSites(collection.allSites())
 
 

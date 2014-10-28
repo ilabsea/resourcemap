@@ -1,9 +1,9 @@
-//= require mobile/collections/on_mobile_collections
-//= require mobile/collections/collection
-//= require mobile/events
-//= require mobile/field
-//= require mobile/option
-//= require mobile/sub_hierarchy
+// = require mobile/collections/on_mobile_collections
+// = require mobile/collections/collection
+// = require mobile/events
+// = require mobile/field
+// = require mobile/option
+// = require mobile/sub_hierarchy
 
 function initialize(locale){
   var cachedSites, collectionSchema, i, id;
