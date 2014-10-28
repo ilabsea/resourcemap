@@ -22,8 +22,10 @@ function Field (field) {
 
   if(field["is_enable_field_logic"] == true){
     this.field_logics = [];
-    for(var i=0; i<field["config"]["field_logics"].length; i++){
-      this.field_logics.push(new FieldLogic(field["config"]["field_logics"][i]));
+    if(field["config"]["field_logics"] != undefined){
+      for(var i=0; i<field["config"]["field_logics"].length; i++){
+        this.field_logics.push(new FieldLogic(field["config"]["field_logics"][i]));
+      }
     }
   }
 };

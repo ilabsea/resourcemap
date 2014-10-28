@@ -315,17 +315,19 @@ Collection.findNextFieldId = function(fieldId, options){
   }
   if(field.is_enable_field_logic){
     field_logics = field.config["field_logics"]
-    for(var j=0; j<field_logics.length; j++){
-      if(field_logics[j].condition_type == "all"){
-        valid = Collection.checkAllConditionFieldLogic(field_logics[j]["selected_options"], options);
-        if(valid){
-          return field_logics[j]["field_id"];
+    if (field_logics != undefined) {
+      for(var j=0; j<field_logics.length; j++){
+        if(field_logics[j].condition_type == "all"){
+          valid = Collection.checkAllConditionFieldLogic(field_logics[j]["selected_options"], options);
+          if(valid){
+            return field_logics[j]["field_id"];
+          }
         }
-      }
-      else{
-        valid = Collection.checkAnyConditionFieldLogic(field_logics[j]["selected_options"], options);
-        if(valid){
-          return field_logics[j]["field_id"];
+        else{
+          valid = Collection.checkAnyConditionFieldLogic(field_logics[j]["selected_options"], options);
+          if(valid){
+            return field_logics[j]["field_id"];
+          }
         }
       }
     }
@@ -607,7 +609,7 @@ Collection.prototype.setFieldFocus = function(fieldId,fieldCode, fieldKind){
 
 Collection.prototype.setFieldFocusStyleByKind = function(fieldFocus){
   if(fieldFocus['kind'] == 'select_many'){
-    $("[name='properties["+fieldFocus['id']+"][]']").first().parent().addClass('ui-focus');
+    $("[name='properties["+fieldFocus['id']+"][]']").first().parent().parent().addClass('ui-focus');
     $("[name='properties["+fieldFocus['id']+"][]']").first().focus();
   }else{
     $('#'+fieldFocus["code"]).parent().addClass('ui-focus');
