@@ -24,6 +24,7 @@
 
     %h4= t('views.mobile.collections.new_site')
   %form#formSite{ action: 'javascript:void(0)', method: :post}
+    %p{"id" => "unsupportPhotoField", "style" => "margin-left: 15px; margin-bottom: 0px;color: rgb(255, 87, 0)"}= t('views.mobile.collections.unsupport_photo_field')
     %hidden{id: "id"}
     %div{"data-role" => "content"}
       %div

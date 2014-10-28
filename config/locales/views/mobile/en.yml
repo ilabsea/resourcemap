@@ -14,3 +14,4 @@ en:
         save_site: "Save Site"
         saving: "Saving..."
         sign_out: "Sign Out"
+        unsupport_photo_field: "Photo fields are not supported while offline"
