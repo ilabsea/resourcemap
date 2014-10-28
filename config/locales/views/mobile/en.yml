@@ -13,3 +13,4 @@ en:
         enter_location_lng: "Enter your location's lng"
         save_site: "Save Site"
         saving: "Saving..."
+        unsupport_photo_field: "Photo fields are not supported while offline"
