@@ -144,7 +144,6 @@ onCollections ->
                     @setFocusStyleByField(field_id)
                     return
 
-
     setFocusStyleByField: (field_id) =>
       field = window.model.newOrEditSite().findFieldByEsCode(field_id)
       @removeFocusStyle()
@@ -181,6 +180,9 @@ onCollections ->
     removeFocusStyle: =>
       $('div').removeClass('focus')
       $('input').removeClass('focus')
+      $('select').removeClass('focus')
+      $('select').blur()
+      $('input').blur()
 
     codeForLink: (api = false) =>
       if api then @code else @esCode
