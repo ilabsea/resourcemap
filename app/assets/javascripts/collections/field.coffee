@@ -83,10 +83,10 @@ onCollections ->
       @error = ko.computed => !!@errorMessage()
      
     setFieldFocus: =>
-      if window.model.newOrEditSite() 
+      if window.model.newOrEditSite()
         if @kind == 'yes_no'
           value = if @value() then 1 else 0
-        else if @kind == 'select_one' || 'select_many'
+        else if @kind == 'select_one' ||  @kind == 'select_many'
           value = @value()
         else
           return
@@ -94,7 +94,7 @@ onCollections ->
         b = false
         for field_logic in @field_logics
           if field_logic.field_id?
-            if @kind == 'yes_no' || 'select_one'
+            if @kind == 'yes_no' || @kind == 'select_one'
               if value == field_logic.value                          
                 @setFocusStyleByField(field_logic.field_id)
 
