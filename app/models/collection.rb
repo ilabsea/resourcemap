@@ -120,7 +120,7 @@ class Collection < ActiveRecord::Base
       target_fields = target_fields.select { |f| lms[f.layer_id] && lms[f.layer_id].read }
 
     end
-    target_fields
+    target_fields.sort! { |x, y| x[:ord] <=> y[:ord] }
   end
 
   def visible_layers_for(user, options = {}, language = nil)
