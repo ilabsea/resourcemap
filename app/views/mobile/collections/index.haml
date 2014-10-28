@@ -22,8 +22,13 @@
     %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.prototype.showListSites(window.currentCollectionId, false)', "data-theme" => "c" }= t('views.back')
     %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c"  }= t('views.default.account.sign_out')
 
+<<<<<<< HEAD
     %h4= t('views.mobile.collections.new_site')
   %form#formSite{ action: 'javascript:void(0)', method: :post, novalidate: 'novalidate'}
+=======
+    %h4{:style => "margin:15px"}= t('views.mobile.collections.new_site')
+  %form#formSite{ action: 'javascript:void(0)', method: :post}
+>>>>>>> add message on photo field unsupport while offline
     %p{"id" => "unsupportPhotoField", "style" => "margin-left: 15px; margin-bottom: 0px;color: rgb(255, 87, 0)"}= t('views.mobile.collections.unsupport_photo_field')
     %hidden{id: "id"}
     %div{"data-role" => "content"}
