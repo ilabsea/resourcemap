@@ -8,7 +8,7 @@ class CollectionsController < ApplicationController
     if current_user && !current_user.is_guest
       # public collections are accesible by all users
       # here we only need the ones in which current_user is a member
-      Collection.accessible_by(current_ability)
+      current_user.collections
     else
       Collection.all
     end
