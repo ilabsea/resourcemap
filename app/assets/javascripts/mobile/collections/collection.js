@@ -290,6 +290,7 @@ Collection.prototype.validateData = function(collectionId){
 }
 
 Collection.setFocusOnField = function(fieldId){
+  $("div,span").removeClass('ui-focus');
   els = $(".field_" + fieldId);
   selected_options = []
   for(var i=0; i<els.length; i++){
