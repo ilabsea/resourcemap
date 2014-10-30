@@ -835,6 +835,7 @@ Collection.prototype.applyBrowserLocation = function(){
   Collection.prototype.getLocation();
 }
 
+
  Collection.prototype.showError = function(error){
    switch(error.code){
      case error.PERMISSION_DENIED:
@@ -851,6 +852,7 @@ Collection.prototype.applyBrowserLocation = function(){
        break;
    }
  }
+
 
 Collection.prototype.getLocation = function(){
   if (navigator.geolocation){
