@@ -155,7 +155,9 @@ Field.prototype.getYesNoField = function() {
           '<label for="' + this.code + '" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c">' +
             '<span class="ui-btn-inner">'+
               '<span style="font-weight:normal;">' + this.label + '</span>' +
-              '<input ' + checked + ' type="checkbox" name="properties[' + this.id + ']" id="' + this.code + '" class="custom"  datatype="yes_no" onchange="Collection.prototype.setFieldFocus('+this.id+','+this.code+',\''+this.kind+'\')">' +
+              '<input ' + checked + ' type="checkbox" name="properties[' + this.id + ']" id="' +
+               this.code + 
+               '" class="custom"  datatype="yes_no" onchange="Collection.prototype.setFieldFocus('+this.id+','+this.code+',\''+this.kind+'\')">' +
             '</span>'+
           '</label>'+
       '</div>'+
