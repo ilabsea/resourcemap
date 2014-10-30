@@ -339,6 +339,7 @@ Collection.prototype.validateData = function(collectionId){
   return true;
 }
 
+
 Collection.setFocusOnFieldFromSelectMany = function(fieldId){
   $("div,span").removeClass('ui-focus');
   els = $(".field_" + fieldId);
