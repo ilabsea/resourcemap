@@ -129,7 +129,7 @@ onCollections ->
       @removeFocusStyle()
       if field.kind == "select_one"
         $('#select-one-input-'+field.code).focus()  
-      else if field.kind == "selectlect_many"
+      else if field.kind == "select_many"
         field.expanded(true)
         $('#select-many-input-'+field.code).focus()
       else if field.kind == "hierarchy"           

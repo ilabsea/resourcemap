@@ -271,8 +271,8 @@ onLayers ->
 
       if @currentField().kind() == 'select_one'
         if @currentField().config?.field_logics?[field_logic.id()]?
-            @currentField().config.field_logics[field_logic.id()].value = field_logic.value()
-            @currentField().config.field_logics[field_logic.id()].field_id = field_logic.field_id()
+          @currentField().config.field_logics[field_logic.id()].value = field_logic.value()
+          @currentField().config.field_logics[field_logic.id()].field_id = field_logic.field_id()
         else
           @currentField().impl().saveFieldLogic(field_logic)
         @isAddNew(false)
