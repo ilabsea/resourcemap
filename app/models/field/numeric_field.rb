@@ -46,18 +46,19 @@ class Field::NumericField < Field
   end
 
   def validate_range(value)
-    if config['range']['minimum'] && config['range']['maximum']
+    if config['range']['minimum'] && config['range']['maximum'] && config['range']['minimum'] <= config['range']['maximum']
       unless value.to_i >= config['range']['minimum'] && value.to_i <= config['range']['maximum']
         raise "Invalid value, value must in the range of (#{config['range']['minimum']}-#{config['range']['maximum']})"
       end
     end
     
-    if config['range']['maximum']
-      raise "Invalid value, value must less than #{config['range']['maximum']}" unless value.to_i <= config['range']['maximum']
-    end
     if config['range']['minimum']
       raise "Invalid value, value must greater than #{config['range']['minimum']}" unless value.to_i >= config['range']['minimum']
-    end    
+    end
+
+    if config['range']['maximum']
+      raise "Invalid value, value must less than #{config['range']['maximum']}" unless value.to_i <= config['range']['maximum']
+    end   
   end
 
   def to_dbf_field
