@@ -104,14 +104,12 @@ onLayers ->
 
   class @Field_numeric extends @FieldImpl
     constructor: (field) ->
-      super(field)
-
       @allowsDecimals = ko.observable field?.config?.allows_decimals == 'true'
       @is_enable_range = ko.observable field?.is_enable_range ? false
       @minimum = ko.observable field?.config?.range?.minimum
       @maximum = ko.observable field?.config?.range?.maximum
       @error = ko.computed =>
-        if parseInt(@minimum()) > parseInt(@maximum())
+        if (@is_enable_range() && @minimum() && @minimum())&& parseInt(@minimum()) > parseInt(@maximum())
           "Invalid range, maximum must greater than minimum"
     
     validate_number_only: (field,event) =>
