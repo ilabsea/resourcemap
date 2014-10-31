@@ -168,7 +168,6 @@ onLayers ->
 
     toJSON: (json) =>
       json.config = {field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}
-      # json.field_logics_attributes = $.map(@field_logics(), (x) -> x.toJSON())
 
   class @FieldSelect extends @FieldImpl
     constructor: (field) ->
@@ -211,12 +210,13 @@ onLayers ->
                         ko.observableArray()
 
     saveFieldLogic: (field_logic) =>
-      if @field_logics().length > 0
-        id = @field_logics()[@field_logics().length - 1].id() + 1
-      else
-        id = 0
-      field_logic.id id
-      @field_logics.push field_logic
+      if !field_logic.id()?
+        if @field_logics().length > 0
+          id = @field_logics()[@field_logics().length - 1].id() + 1
+        else
+          id = 0
+        field_logic.id id
+        @field_logics.push field_logic
                         
     toJSON: (json) =>
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId,field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}
