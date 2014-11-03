@@ -53,11 +53,11 @@ class Field::NumericField < Field
     end
     
     if config['range']['minimum']
-      raise "Invalid value, value must greater than #{config['range']['minimum']}" unless value.to_i >= config['range']['minimum']
+      raise "Invalid value, value must greater than or equal #{config['range']['minimum']}" unless value.to_i >= config['range']['minimum']
     end
 
     if config['range']['maximum']
-      raise "Invalid value, value must less than #{config['range']['maximum']}" unless value.to_i <= config['range']['maximum']
+      raise "Invalid value, value must less than or equal #{config['range']['maximum']}" unless value.to_i <= config['range']['maximum']
     end   
   end
 
