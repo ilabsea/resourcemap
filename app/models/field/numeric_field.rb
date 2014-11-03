@@ -115,6 +115,7 @@ class Field::NumericField < Field
     else
       false
     end
+
   end
 
   def to_dbf_field
