@@ -585,12 +585,14 @@ Collection.prototype.showListSites = function(collectionId, isFromCollectionList
   } else {
     sites = JSON.parse(localStorage.getItem("offlineSites"));
     $("#listSitesView").html("");
-    for(var i=0; i< sites.length; i++){
-      classListName = Collection.prototype.addClassToSiteList(sites, i);
-      if(sites[i].collectionId == collectionId){
-        item = Collection.prototype.getListSiteTemplate(collectionId, sites[i].formData, classListName);
-        $("#listSitesView").append(item);
-        have_site = true;
+    if(sites){
+      for(var i=0; i< sites.length; i++){
+        classListName = Collection.prototype.addClassToSiteList(sites, i);
+        if(sites[i].collectionId == collectionId){
+          item = Collection.prototype.getListSiteTemplate(collectionId, sites[i].formData, classListName);
+          $("#listSitesView").append(item);
+          have_site = true;
+        }
       }
     }
   }
