@@ -20,6 +20,7 @@
 #mobile-sites-main{"data-fullscreen" => "true", :style => "display:none;"}
   %div{"data-role" => "header", "data-theme" => "b"}
     %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.prototype.showListSites(window.currentCollectionId, false)', "data-theme" => "c" }= t('views.back')
+
     %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c"  }= t('views.default.account.sign_out')
 
     %h4= t('views.mobile.collections.new_site')

@@ -763,6 +763,7 @@ Collection.prototype.getListSiteTemplate = function(collectionId, site, classLis
               '<div class="ui-btn-text">' +
                 '<a style="cursor: pointer;" onclick="Collection.prototype.showSite(' + collectionId + ','+ site["id"] +  ','+ site["idSite"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + site["name"] + '</a>' + 
                '</div>' + 
+
               '<span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>' +
             '</div>' +
           '</li>';
@@ -784,6 +785,7 @@ Collection.prototype.addClassToSiteList = function(sites , index){
 
 Collection.prototype.showListSites = function(collectionId, isFromCollectionList){
   $.mobile.saving('show');
+
    window.currentCollectionId = collectionId;
    Collection.clearFormData();
   var have_site = false;
@@ -823,6 +825,7 @@ Collection.prototype.showListSites = function(collectionId, isFromCollectionList
     }
     $.mobile.saving('hide');
   } else {
+
     Collection.hidePages();
     $("#mobile-list-sites-main").show();
     schema = Collection.getSchemaByCollectionId(collectionId);
@@ -1134,8 +1137,8 @@ Collection.prototype.showSiteOffline = function(collectionId, siteId){
     url: "/mobile/collections/" + collectionId + "/sites/" + siteId + ".json",
     success: function(site) {
       Collection.hidePages();
-      Collection.assignSite(site);
       Collection.hideWhileOffline();
+      Collection.assignSite(site);
       $("#mobile-sites-main").show();
       $.mobile.saving('hide');
     }
