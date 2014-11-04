@@ -101,7 +101,8 @@ Collection.prototype.saveSite = function(){
         state = "update";
       }else{
         sites = JSON.parse(localStorage.getItem("offlineSites"));
-        offlineData["idSite"] = sites.length + 1;
+        if(!sites) offlineData["idSite"] = 1;
+        else offlineData["idSite"] = sites.length + 1;
         state = "create";
       }
       Collection.prototype.storeOfflineData(collectionId, offlineData, state);
