@@ -7,5 +7,6 @@ test:
   public_key: 6LcnvvISAAAAAA994GoKxT6XUfpmE_k98Cvef26D
 
 production:
-  private_key: 6Ld-of4SAAAAANsuZf6azOc6KCpwgIc1APxCtqyS
-  public_key: 6Ld-of4SAAAAABHPc8zaPp9bJBI3lmMq-tTDZFFI
+  private_key: 6Lc7hf0SAAAAAC02pnwPhL1hj1JAP5LTuYZvkXHy
+  public_key: 6Lc7hf0SAAAAAHkNSQjNvkPcgaDS2Nbneur_9lyc
+

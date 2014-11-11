@@ -1,6 +1,7 @@
 mobile_id: on
-host: wfp.development.com:3000
-full_host: http://wfp.development.com:3000
+
+full_host: http://resmap-stg-ilab.instedd.org
+host: resmap-stg-ilab.instedd.org
 number_of_attempt_failed: 5
 default_mail_sender: noreply@ilabsea.org
 devise_mail_sender: resourcemap@ilabsea.org
