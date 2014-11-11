@@ -283,7 +283,7 @@ a.lbutton{
   vertical-align: middle;
 }
 
-input:focus:not(.error), textarea:focus:not(.error),select:focus:not(.error) {
+#editorContent input:focus:not(.error), textarea:focus:not(.error),select:focus:not(.error) {
   box-shadow: 0 0 5px rgba(81, 203, 238, 1);
   padding: 3px 0px 3px 3px;
   margin: 5px 1px 3px 0px;
