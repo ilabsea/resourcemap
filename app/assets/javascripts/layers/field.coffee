@@ -42,10 +42,10 @@ onLayers ->
 
     selectingLayerClick: =>
       @switchMoveToLayerElements true
+      return
 
     selectingLayerSelect: =>
       return unless @selecting
-
       if window.model.currentLayer() != @layer()
         $("a[id='#{@name()}']").html("Move to layer '#{@layer().name()}' upon save")
       else
