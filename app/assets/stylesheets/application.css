@@ -296,3 +296,10 @@ a.lbutton{
   margin: 5px 1px 3px 0px !important;
   border: 1px solid rgba(81, 203, 238, 1) !important;  
 }
+.BreadCrumb li a{
+    display: inline-block;
+    max-width: 230px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
