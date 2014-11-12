@@ -152,7 +152,7 @@ onCollections ->
       else if field.kind == "select_many"
         field.expanded(true)
         $('#select-many-input-'+field.code).focus()
-      else if field.kind == "hierarchy"           
+      else if field.kind == "hierarchy" 
         $('#'+field.esCode)[0].scrollIntoView(true)
         $('#'+field.esCode).addClass('focus')
       else if field.kind == "yes_no"
@@ -386,4 +386,7 @@ onCollections ->
       @value('')
       $("#" + @code).attr("value",'')
       $("#divUpload-" + @code).hide()
+
+
+
 
