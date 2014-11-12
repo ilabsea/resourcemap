@@ -283,7 +283,7 @@ a.lbutton{
   vertical-align: middle;
 }
 
-input:focus:not(.error), textarea:focus:not(.error),select:focus:not(.error) {
+#editorContent input:focus:not(.error), textarea:focus:not(.error),select:focus:not(.error) {
   box-shadow: 0 0 5px rgba(81, 203, 238, 1);
   border: 1px solid rgba(81, 203, 238, 1) !important;
 }
@@ -293,3 +293,10 @@ input:focus:not(.error), textarea:focus:not(.error),select:focus:not(.error) {
   margin: 5px 1px 3px 0px !important;
   border: 1px solid rgba(81, 203, 238, 1) !important;  
 }
+.BreadCrumb li a{
+    display: inline-block;
+    max-width: 230px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }

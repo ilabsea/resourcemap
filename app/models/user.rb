@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   has_one :user_snapshot
   
   validates_uniqueness_of :phone_number, :allow_blank => true
-  validates_strength_of :password, :with => :email
+  validates_strength_of :password, :with => :email, :if => lambda {|u| u.password.present?}
 
   attr_accessor :is_guest
 
