@@ -297,9 +297,9 @@ a.lbutton{
   border: 1px solid rgba(81, 203, 238, 1) !important;  
 }
 .BreadCrumb li a{
-    display: inline-block;
-    max-width: 230px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  display: inline-block;
+  max-width: 230px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
