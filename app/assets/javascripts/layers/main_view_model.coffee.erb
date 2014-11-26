@@ -627,6 +627,7 @@ onLayers ->
         @isAddNewValidation(false)
       field.editing(false)
 
+
     cancelFieldLogic: (field) =>
       if @currentField().kind() == 'select_one'   
         field_logic =  @currentField().config?.field_logics?[field.id()]
