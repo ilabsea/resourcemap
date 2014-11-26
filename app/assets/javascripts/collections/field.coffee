@@ -37,7 +37,11 @@ onCollections ->
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
         @is_mandatory = if @range then true else data.is_mandatory
-        
+        @field_logics = if data.config?.field_logics?
+                          $.map data.config.field_logics, (x) => new FieldLogic x
+                        else
+                          []
+
       if @kind in ['yes_no', 'select_one', 'select_many']
         @field_logics = if data.config?.field_logics?
                           $.map data.config.field_logics, (x) => new FieldLogic x
@@ -100,6 +104,13 @@ onCollections ->
                   @setFocusStyleByField(field_logic.field_id)
                   return
               if @kind == 'numeric'
+<<<<<<< HEAD
+=======
+                if field_logic.condition_type == 'empty'
+                  if value == "" || value == null
+                    @setFocusStyleByField(field_logic.field_id)
+                    return
+>>>>>>> add config skip logic field number on web interface
                 if field_logic.condition_type == '<'
                   if parseInt(value) < field_logic.value
                     @setFocusStyleByField(field_logic.field_id)
