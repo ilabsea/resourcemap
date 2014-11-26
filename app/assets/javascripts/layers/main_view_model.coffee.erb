@@ -15,7 +15,7 @@ onLayers ->
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
       @fieldLogicValid = ko.computed =>
-        $.trim(@newFieldLogic().value()).length > 0 && $.trim(@newFieldLogic().field_id()).length > 0
+        ($.trim(@newFieldLogic().value()).length > 0 || $.trim(@newFieldLogic().condition_type()).length > 0) && $.trim(@newFieldLogic().field_id()).length > 0
 
       @fieldSelectManyLogicValid = ko.computed =>
         # $.trim(@newFieldLogic().value()).length > 0      
@@ -262,6 +262,10 @@ onLayers ->
 
     saveFieldLogic: (field_logic) =>
       field_logic.editing(false)
+      if @currentField().kind() == 'numeric'
+        @currentField().impl().saveFieldLogic(field_logic)
+        @isAddNew(false)
+
       if @currentField().kind() == 'select_many'
         @currentField().impl().save_field_logic(field_logic)
         @currentField().impl().field_logics.remove(field_logic)
@@ -283,8 +287,13 @@ onLayers ->
       return ""
 
     editFieldLogic: (field) =>
-      if @currentField().kind() == 'select_one'
+      if @currentField().kind() == 'select_one' || @currentField().kind() == 'numeric'
         field.editing(true)
+        @newFieldLogic(new FieldLogic)
+        @newFieldLogic().id(field.id())
+        @newFieldLogic().field_id(field.field_id())
+        @newFieldLogic().value(field.value())
+        @newFieldLogic().condition_type(field.condition_type())
       if @currentField().kind() == 'select_many'      
         for f in @currentField().impl().selected_field_logics()
           if f.editing() == true
@@ -306,11 +315,12 @@ onLayers ->
           $("#any")[0].checked = true
 
     cancelFieldLogic: (field) =>
-      if @currentField().kind() == 'select_one'   
-        field_logic =  @currentField().config?.field_logics?[field.id()]
-        if field_logic?
-          field.value(field_logic.value)
-          field.field_id(field_logic.field_id)
+      if @currentField().kind() == 'select_one' || @currentField().kind() == 'numeric'
+        field_logic = @newFieldLogic()
+        if field_logic.id()?
+          field.value(field_logic.value())
+          field.field_id(field_logic.field_id())
+          field.condition_type(field_logic.condition_type())
         else
           @isAddNew(false)
 

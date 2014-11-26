@@ -37,7 +37,11 @@ onCollections ->
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
         @is_mandatory = if @range then true else data.is_mandatory
-        
+        @field_logics = if data.config?.field_logics?
+                          $.map data.config.field_logics, (x) => new FieldLogic x
+                        else
+                          []
+
       if @kind in ['yes_no', 'select_one', 'select_many']
         @field_logics = if data.config?.field_logics?
                           $.map data.config.field_logics, (x) => new FieldLogic x
@@ -86,7 +90,7 @@ onCollections ->
       if window.model.newOrEditSite() 
         if @kind == 'yes_no'
           value = if @value() then 1 else 0
-        else if @kind == 'select_one' || @kind == 'select_many'
+        else if @kind == 'numeric' || @kind == 'select_one' || @kind == 'select_many'
           value = @value()
         else
           return
@@ -99,6 +103,31 @@ onCollections ->
                 if value == field_logic.value                          
                   @setFocusStyleByField(field_logic.field_id)
                   return
+              if @kind == 'numeric'
+                if field_logic.condition_type == 'empty'
+                  if value == "" || value == null
+                    @setFocusStyleByField(field_logic.field_id)
+                    return
+                if field_logic.condition_type == '<'
+                  if parseInt(value) < field_logic.value
+                    @setFocusStyleByField(field_logic.field_id)
+                    return
+                if field_logic.condition_type == '<='
+                  if parseInt(value) <= field_logic.value
+                    @setFocusStyleByField(field_logic.field_id)  
+                    return         
+                if field_logic.condition_type == '='
+                  if parseInt(value) == field_logic.value
+                    @setFocusStyleByField(field_logic.field_id)  
+                    return        
+                if field_logic.condition_type == '>'
+                  if parseInt(value) > field_logic.value
+                    @setFocusStyleByField(field_logic.field_id)
+                    return            
+                if field_logic.condition_type == '>='
+                  if parseInt(value) >= field_logic.value
+                    @setFocusStyleByField(field_logic.field_id)
+                    return
 
               if @kind == 'select_many'
                 if field_logic.condition_type == 'any'

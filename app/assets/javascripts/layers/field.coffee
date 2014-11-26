@@ -111,7 +111,13 @@ onLayers ->
       @error = ko.computed =>
         if (@is_enable_range() && @minimum() && @minimum())&& parseInt(@minimum()) > parseInt(@maximum())
           "Invalid range, maximum must greater than minimum"
-    
+      @field_logics = if field.config?.field_logics?
+                        ko.observableArray(
+                          $.map(field.config.field_logics, (x) -> new FieldLogic(x))
+                        )
+                      else
+                        ko.observableArray()
+
     validate_number_only: (field,event) =>
       if event.keyCode > 31 && (event.keyCode < 48 || event.keyCode > 57)
         return false
@@ -119,8 +125,17 @@ onLayers ->
 
     toJSON: (json) =>
       json.is_enable_range = @is_enable_range()
-      json.config = {allows_decimals: @allowsDecimals(), range: {minimum: @minimum(), maximum: @maximum()}}      
+      json.config = {allows_decimals: @allowsDecimals(), range: {minimum: @minimum(), maximum: @maximum()}, field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}    
       return json
+
+    saveFieldLogic: (field_logic) =>
+      if !field_logic.id()?
+        if @field_logics().length > 0
+          id = @field_logics()[@field_logics().length - 1].id() + 1
+        else
+          id = 0
+        field_logic.id id
+        @field_logics.push field_logic
 
   class @Field_yes_no extends @FieldImpl
     constructor: (field) ->

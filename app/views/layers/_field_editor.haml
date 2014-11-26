@@ -48,8 +48,36 @@
       %button.clist-add{ko(click: '$root.addOption', enable: '$root.optionValid'), title: t('views.layers.form.field.add_option')}
   //ko
   
+  /ko if: kind() == 'numeric'
+  %hr/
+  = ko_check_box_tag 'impl().is_enable_range', css: {error: :codeError}
+  %label
+    Enable Range  
+
+  %div{ko(if: 'impl().is_enable_range'), style: 'width:275px'}
+    %br/
+    %p.smalltext Mininum
+    = ko_number_field_tag 'impl().minimum', css: {error: :error}, event: {keydown: 'impl().validate_number_only'}
+    %br/
+    %br/
+    %p.smalltext Maximum
+    = ko_number_field_tag 'impl().maximum', css: {error: :error}, event: {keydown: 'impl().validate_number_only'}
+  //ko
+
+  /ko if: kind() == 'text'
+  = render 'layers/advanced_field_editor'
+  //ko
+
   /ko if: $root.selectLogicLayers().length > 0
-  
+  /ko if: kind() == 'numeric'
+  %hr/
+  = ko_check_box_tag :is_enable_field_logic, css: {error: :codeError}
+  %label
+    = t('views.layers.form.field.enable_skip_logic_for_this_field')
+  %div{ko(if: :is_enable_field_logic)}
+    = render :partial => "field_logic_numeric"    
+  //ko
+
   /ko if: kind() == 'yes_no'
   %hr/
   = ko_check_box_tag :is_enable_field_logic, css: {error: :codeError}
@@ -81,27 +109,6 @@
     = render :partial => "field_logic_select_one"  
   //ko
   //ko
-  
-  //ko
-
-  /ko if: kind() == 'numeric'
-  %hr/
-  = ko_check_box_tag 'impl().is_enable_range', css: {error: :codeError}
-  %label
-    Enable Range  
-
-  %div{ko(if: 'impl().is_enable_range'), style: 'width:275px'}
-    %br/
-    %p.smalltext Mininum
-    = ko_number_field_tag 'impl().minimum', css: {error: :error}, event: {keydown: 'impl().validate_number_only'}
-    %br/
-    %br/
-    %p.smalltext Maximum
-    = ko_number_field_tag 'impl().maximum', css: {error: :error}, event: {keydown: 'impl().validate_number_only'}
-  //ko
-
-  /ko if: kind() == 'text'
-  = render 'layers/advanced_field_editor'
   //ko
 
   /ko if: kind() == 'photo'
