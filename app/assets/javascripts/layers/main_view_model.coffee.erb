@@ -607,33 +607,38 @@ onLayers ->
       return ""
 
     editFieldLogic: (field) =>
-      field.editing(true)
-      @currentFieldLogic(field)
-      @originalFieldLogic = {id: field.id(), field_id: field.field_id(), condition_type: field.condition_type(), value: field.value()}
-
-    editFieldValidation: (field) =>
-      field.editing(true)
-      @newFieldValidation(new FieldValidation)
-      @newFieldValidation().id(field.id())
-      @newFieldValidation().field_id(field.field_id())
-      @newFieldValidation().condition_type(field.condition_type())
-
-    cancelFieldValidation: (field) =>
-      field_validation = @newFieldValidation()
-      if field_validation.id()?
-        field.field_id(field_validation.field_id())
-        field.condition_type(field_validation.condition_type())
-      else
-        @isAddNewValidation(false)
-      field.editing(false)
-
+      if @currentField().kind() == 'select_one' || @currentField().kind() == 'numeric'
+        field.editing(true)
+        @newFieldLogic(new FieldLogic)
+        @newFieldLogic().id(field.id())
+        @newFieldLogic().field_id(field.field_id())
+        @newFieldLogic().value(field.value())
+        @newFieldLogic().condition_type(field.condition_type())
+      if @currentField().kind() == 'select_many'      
+        for f in @currentField().impl().selected_field_logics()
+          if f.editing() == true
+            f.selected_options(@currentFieldLogic.selected_options())
+            f.field_id(@currentFieldLogic.field_id())
+            f.condition_type(@currentFieldLogic.condition_type())
+            f.editing(false)
+        @currentFieldLogic = new FieldLogic
+        for op in field.selected_options()
+          @currentFieldLogic.selected_options.push(op)
+        @currentFieldLogic.field_id(field.field_id())
+        @currentFieldLogic.condition_type(field.condition_type())
+        field.editing(true)
+        @currentField().impl().field_logics([])
+        @newFieldLogic(field)
+        if field.condition_type() == "all"
+          $("#all")[0].checked = true
 
     cancelFieldLogic: (field) =>
-      if @currentField().kind() == 'select_one'   
-        field_logic =  @currentField().config?.field_logics?[field.id()]
-        if field_logic?
-          field.value(field_logic.value)
-          field.field_id(field_logic.field_id)
+      if @currentField().kind() == 'select_one' || @currentField().kind() == 'numeric'
+        field_logic = @newFieldLogic()
+        if field_logic.id()?
+          field.value(field_logic.value())
+          field.field_id(field_logic.field_id())
+          field.condition_type(field_logic.condition_type())
         else
           @isAddNew(false)
 

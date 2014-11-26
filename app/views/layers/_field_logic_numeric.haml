@@ -25,8 +25,6 @@
         /ko if: condition_type() != 'empty'
         %input{ko(value: :value, enable: :editing), style: 'width:45px;text-align:center;color:black;'}
         //ko
-
-
       .rightbuttons
         %button.fdelete{ ko(click: '$root.removeFieldLogic'), title: 'Remove logic' }
       %br
@@ -55,14 +53,18 @@
         /ko if: condition_type() != 'empty'
         %input{ko(value: :value, enable: :editing), style: 'width:45px;text-align:center;color:black;'}
         //ko
-
-
       .rightbuttons
         %button.fdelete{ ko(click: '$root.removeFieldLogic'), title: 'Remove logic' }
       %br
+
+      /ko if: editing
       %button.white{ko(click: '$root.saveFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.save')
       %button.white{ko(click: '$root.cancelFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.cancel')
-  //ko
+      //ko
+      /ko ifnot: editing
+      %button.farrow{ko(click: '$root.editFieldLogic'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
+      //ko
+
   //ko
   /ko if: $root.isAddNew
   %li{ko(with: '$root.newFieldLogic()')}
@@ -85,15 +87,19 @@
           %option{value: ">"}=t('views.layers.form.field.greater_than')
           %option{value: ">="}=t('views.layers.form.field.greater_than_or_equal_to')
           //ko
-
       %div
         /ko if: condition_type() != 'empty'
         %input{ko(value: :value), style: 'width:45px;text-align:center'}
         //ko
-      / ko ifnot: valid()
-      %span{ko(text: "error()"), style: 'color:red;margin-left:0px'}
-      %br
-      //ko
+
+        %span.smalltext skip form to
+        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id, selectedOptions: field_id', style: 'max-width:135px;background-color:white'}
+          /ko if: $index() == 0
+          %option{value: ""} (no value)
+          //ko
+          %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}        
+            %option{"data-bind" => "text: name, option: name, value: id"}
+
       %button.white{ko(click: '$root.saveFieldLogic', enable: '$root.fieldLogicValid'), type: :button, title: 'Save'}= t('views.layers.form.field.save')
       %button.white{ko(click: '$root.cancelFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.cancel')
 
