@@ -15,7 +15,7 @@ onLayers ->
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
       @fieldLogicValid = ko.computed =>
-        $.trim(@newFieldLogic().value()).length > 0 && $.trim(@newFieldLogic().field_id()).length > 0
+        ($.trim(@newFieldLogic().value()).length > 0 || $.trim(@newFieldLogic().condition_type()).length > 0) && $.trim(@newFieldLogic().field_id()).length > 0
 
       @fieldSelectManyLogicValid = ko.computed =>
         # $.trim(@newFieldLogic().value()).length > 0      
