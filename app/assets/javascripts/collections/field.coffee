@@ -12,6 +12,7 @@ onCollections ->
       @is_enable_field_logic = data.is_enable_field_logic
 
       @photo = '' 
+      @preKeyCode = null
       @photoPath = '/photo_field/'
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
       @writeable = @originalWriteable = data?.writeable
@@ -268,10 +269,16 @@ onCollections ->
               @errorMessage('Invalid value, value must greater than or equal '+@range.minimum)
             return
 
-    validate_integer_only: (keyCode) =>
-      if keyCode > 31 && (keyCode < 48 || keyCode > 57) && keyCode != 46
+
+
+    validate_integer_only: (keyCode, code) =>
+      value = $("#numeric-input-"+code).val()
+      if keyCode == 189 && (value == null || value == "") && (@preKeyCode != 189 || @preKeyCode == null)
+        @preKeyCode = keyCode
+        return true
+      else if keyCode > 31 && (keyCode < 48 || keyCode > 57) && keyCode != 46 
         return false
-      return true
+      else return true
 
     validate_decimal_only: (keyCode) =>
       value = @value()
@@ -291,7 +298,7 @@ onCollections ->
             if field.allowsDecimals()
               return @validate_decimal_only(event.keyCode)
             else
-              return @validate_integer_only(event.keyCode)
+              return @validate_integer_only(event.keyCode, field.code)
           return true     
 
     exit: =>
