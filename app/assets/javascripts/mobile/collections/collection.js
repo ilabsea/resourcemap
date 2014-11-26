@@ -1012,7 +1012,6 @@ Collection.mapContainer.createCurrentMarker = function() {
 
     var point = Collection.mapContainer.currentMarker.getPosition();
     Collection.mapContainer.map.panTo(point);
-
   });
 }
 
