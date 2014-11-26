@@ -302,6 +302,8 @@ onLayers ->
         @newFieldLogic(field)
         if field.condition_type() == "all"
           $("#all")[0].checked = true
+        else 
+          $("#any")[0].checked = true
 
     cancelFieldLogic: (field) =>
       if @currentField().kind() == 'select_one'   
