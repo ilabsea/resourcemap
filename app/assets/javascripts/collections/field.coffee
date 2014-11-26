@@ -148,7 +148,7 @@ onCollections ->
       field = window.model.newOrEditSite().findFieldByEsCode(field_id)
       @removeFocusStyle()
       if field.kind == "select_one"
-        $('#-'+field.code).focus()  
+        $('#select-one-input-'+field.code).focus()  
       else if field.kind == "select_many"
         field.expanded(true)
         $('#select-many-input-'+field.code).focus()
