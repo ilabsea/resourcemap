@@ -1,5 +1,6 @@
 $(function() {
   Map.loadMap();
+  $("#map-page").hide();
 }); 
 
 var Map = {
