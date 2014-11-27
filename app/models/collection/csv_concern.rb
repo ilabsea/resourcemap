@@ -16,6 +16,7 @@ module Collection::CsvConcern
         csv << [location["code"], location["name"], location["latitude"], location["longitude"]]
         
   def to_csv(elastic_search_api_results = new_search.unlimited.api_results, current_user)
+
     fields = self.fields.all
     hierarchy_fields = {}
     CSV.generate do |csv|
