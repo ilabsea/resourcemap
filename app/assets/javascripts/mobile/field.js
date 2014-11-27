@@ -124,7 +124,7 @@ Field.prototype.getNumericField = function() {
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.label + '</label>'+
         '<div id="div_wrapper_' + this.code + '" class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="number" datatype="numberic">'+
+          '<input onchange="Collection.setFocusOnFieldFromNumeric('+ this.id+ ',\''+this.code +'\')" value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="number" datatype="numberic">'+
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+
@@ -205,7 +205,7 @@ Field.prototype.getSelectManyField = function() {
           '<div class="ui-checkbox" style="padding-top: 10px; height: 25px;" >' +
               '<label for="' + this.id + "-" + this.options[i]["code"] + '"  data-theme="c" style="margin:0px;">' +  
                 '<span style="padding: 10px 100% 5px 40px;;font-weight:normal;height:20px;color: #2f3e46;text-decoration: none !important;" class="ui-link-inherit">' + this.options[i]["name"] + '</span>' +
-                '<input class="field_' + this.id + '" onchange="Collection.setFocusOnField(' + this.id + ')" ' + checked + ' type="checkbox" value="' + this.options[i]["id"] + '" name="properties[' + this.id + '][]" id="' + this.id + "-" + this.options[i]["code"] + '" datatype="select_many">' +
+                '<input class="field_' + this.id + '" onchange="Collection.setFocusOnFieldFromSelectMany(' + this.id + ')" ' + checked + ' type="checkbox" value="' + this.options[i]["id"] + '" name="properties[' + this.id + '][]" id="' + this.id + "-" + this.options[i]["code"] + '" datatype="select_many">' +
               '</label>'+
           '</div>' +
         '</div>' +
