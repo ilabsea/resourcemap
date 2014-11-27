@@ -156,6 +156,7 @@ onCollections ->
 
         @fields(fields)
         @refineFields(fields)
+<<<<<<< HEAD
         window.model.loadingFields(false)
         window.model.enableCreateSite()
 
@@ -181,6 +182,8 @@ onCollections ->
         oldPhrase = phrase
         i++
       out.join ''
+=======
+>>>>>>> ordering fields on site list
 
     findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 
