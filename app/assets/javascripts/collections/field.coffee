@@ -105,10 +105,6 @@ onCollections ->
                   @setFocusStyleByField(field_logic.field_id)
                   return
               if @kind == 'numeric'
-                if field_logic.condition_type == 'empty'
-                  if value == "" || value == null
-                    @setFocusStyleByField(field_logic.field_id)
-                    return
                 if field_logic.condition_type == '<'
                   if parseInt(value) < field_logic.value
                     @setFocusStyleByField(field_logic.field_id)
