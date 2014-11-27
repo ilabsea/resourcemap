@@ -338,7 +338,6 @@ Collection.prototype.validateData = function(collectionId){
   return true;
 }
 
-
 Collection.setFocusOnFieldFromSelectMany = function(fieldId){
   $("div,span").removeClass('ui-focus');
   els = $(".field_" + fieldId);
@@ -519,7 +518,6 @@ Collection.enableSelectOneField = function(fieldCode){
   $("#" + fieldCode).removeAttr("disabled");
 }
 
-
 Collection.checkNumericConditionFieldLogic = function(fieldLogic, value){
   switch(fieldLogic["condition_type"]){
     case "=":
@@ -539,7 +537,6 @@ Collection.checkNumericConditionFieldLogic = function(fieldLogic, value){
       break;        
   }
 }
-
 
 Collection.findNextFieldId = function(fieldId, options){
   layers = Collection.getSchemaByCollectionId(window.currentCollectionId).layers;
