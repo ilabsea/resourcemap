@@ -317,7 +317,7 @@ Collection.prototype.validateData = function(collectionId){
   return true;
 }
 
-Collection.setFocusOnField = function(fieldId){
+Collection.setFocusOnFieldFromSelectMany = function(fieldId){
   $("div,span").removeClass('ui-focus');
   els = $(".field_" + fieldId);
   selected_options = []
@@ -329,6 +329,64 @@ Collection.setFocusOnField = function(fieldId){
   if(id){
     fieldFocus = Collection.prototype.findFieldById(id); 
     Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
+  }
+}
+
+Collection.setFocusOnFieldFromNumeric = function(fieldId, fieldCode){
+  $("div,span").removeClass('ui-focus');
+  els = $("#" + fieldCode);
+  console.log(els.val());
+  id = Collection.findNextFieldIdByValue(fieldId, els.val());
+  if(id){
+    fieldFocus = Collection.prototype.findFieldById(id); 
+    Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
+  }
+}
+
+Collection.findNextFieldIdByValue = function(fieldId, value){
+  layers = Collection.getSchemaByCollectionId(window.currentCollectionId).layers;
+  field = null;
+  for(var i=0; i<layers.length; i++){
+    fields = layers[i].fields
+    for(var j=0; j<fields.length; j++){
+      if(fields[j].id == fieldId)
+        field = fields[j];
+    }
+  }
+  if(field.is_enable_field_logic){
+    field_logics = field.config["field_logics"]
+    if (field_logics != undefined) {
+      for(var j=0; j<field_logics.length; j++){
+        valid = Collection.checkNumericConditionFieldLogic(field_logics[j], value);
+        if(valid){
+          return field_logics[j]["field_id"];
+        }
+      }
+    }
+    return null;
+  }
+  else{
+    return null;
+  }
+}
+
+Collection.checkNumericConditionFieldLogic = function(fieldLogic, value){
+  switch(fieldLogic["condition_type"]){
+    case "=":
+      return (fieldLogic["value"] == value);     
+      break;
+    case "<":
+      return (value < fieldLogic["value"]);
+      break;
+    case ">":
+      return (value > fieldLogic["value"]);
+      break;
+    case "<=":
+      return (value <= fieldLogic["value"]);
+      break;
+    case ">=":
+      return (value >= fieldLogic["value"]);    
+      break;        
   }
 }
 
