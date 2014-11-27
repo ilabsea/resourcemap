@@ -271,14 +271,16 @@ onCollections ->
 
 
 
-    validate_integer_only: (keyCode, code) =>
-      value = $("#numeric-input-"+code).val()
+    validate_integer_only: (keyCode) =>
+      value = $('#'+@kind+'-input-'+@code).val()
       if keyCode == 189 && (value == null || value == "") && (@preKeyCode != 189 || @preKeyCode == null)
         @preKeyCode = keyCode
         return true
       else if keyCode > 31 && (keyCode < 48 || keyCode > 57) && keyCode != 46 
         return false
-      else return true
+      else 
+        @preKeyCode = keyCode
+        return true
 
     validate_decimal_only: (keyCode) =>
       value = $('#'+@kind+'-input-'+@code).val()
@@ -298,7 +300,7 @@ onCollections ->
             if field.allowsDecimals()
               return @validate_decimal_only(event.keyCode)
             else
-              return @validate_integer_only(event.keyCode, field.code)
+              return @validate_integer_only(event.keyCode)
           return true     
 
     exit: =>
