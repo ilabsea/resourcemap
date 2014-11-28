@@ -89,7 +89,6 @@ onCollections ->
       @refreshTimeago()
       @makeFixedHeaderTable()
       @hideRefindAlertOnMap()
-
       @rewriteUrl()
 
       $('.BreadCrumb').load("/collections/breadcrumbs", {})
