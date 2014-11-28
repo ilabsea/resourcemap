@@ -335,7 +335,6 @@ Collection.setFocusOnFieldFromSelectMany = function(fieldId){
 Collection.setFocusOnFieldFromNumeric = function(fieldId, fieldCode){
   $("div,span").removeClass('ui-focus');
   els = $("#" + fieldCode);
-  console.log(els.val());
   id = Collection.findNextFieldIdByValue(fieldId, els.val());
   if(id){
     fieldFocus = Collection.prototype.findFieldById(id); 
