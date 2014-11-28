@@ -8,5 +8,5 @@
   - if single_editing_mode
     = ko_text_field_tag :value, hasfocus: true, event: {keydown: :keyPress, blur: :save}, css: { error: :error }, html: {step: "any"}, attr: {id: "'numeric-input-' + code", class: "'right w20 key-map-' + keyType+ ' '+ errorClass()"}
   - else
-    = ko_text_field_tag :value, css: { error: :error }, event: {keydown: :keyPress}, attr: {id: "'numeric-input-' + code", class: "'right w20 key-map-' + keyType+ ' '+ errorClass()"}
+    = ko_number_field_tag :value, valueUpdate: :afterblur, css: { error: :error }, event: {keydown: :keyPress}, html: {class: 'right w20 key-map', step: "any"}, attr: {id: "'numeric-input-' + code"}
     .clear

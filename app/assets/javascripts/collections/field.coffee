@@ -270,19 +270,21 @@ onCollections ->
               @errorMessage('')
             else
               @errorMessage('Invalid value, value must greater than or equal '+@range.minimum)
-            return
-
-
+            return      
 
     validate_integer_only: (keyCode) =>
       value = $('#'+@kind+'-input-'+@code).val()
-      if keyCode == 189 && (value == null || value == "") && (@preKeyCode != 189 || @preKeyCode == null)
-        @preKeyCode = keyCode
-        return true
-      else if keyCode > 31 && (keyCode < 48 || keyCode > 57) && keyCode != 46 && keyCode != 37 && keyCode != 39 #allow right and left arrow key
+      if value == null || value == ""
+        if(keyCode == 189) && (@preKeyCode != 189 || @preKeyCode == null)
+          @preKeyCode = keyCode
+          return true
+      else
+        if(keyCode == 189 && value.charAt(0) != '-') 
+          @preKeyCode = keyCode
+          return true
+      if keyCode > 31 && (keyCode < 48 || keyCode > 57) && (keyCode != 8 && keyCode != 46) && keyCode != 37 && keyCode != 39  #allow right and left arrow key
         return false
       else 
-        @preKeyCode = keyCode
         return true
 
     validate_decimal_only: (keyCode) =>
@@ -304,7 +306,7 @@ onCollections ->
               return @validate_decimal_only(event.keyCode)
             else
               return @validate_integer_only(event.keyCode)
-          return true     
+          return true   
 
     exit: =>
       @value(@originalValue)
