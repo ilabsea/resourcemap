@@ -64,9 +64,6 @@ onCollections ->
       else
         for collection in @collections()
           @resetCollectionStatus(collection)
-          if collection.checked() == true
-            collection.checked(false)
-          collection.checked(true)
       @rewriteUrl()
 
 
