@@ -268,11 +268,11 @@ onCollections ->
     validate_integer_only: (keyCode) =>
       value = $('#'+@kind+'-input-'+@code).val()
       if value == null || value == ""
-        if(keyCode == 189) && (@preKeyCode != 189 || @preKeyCode == null)
+        if(keyCode == 189 || keyCode == 173) && (@preKeyCode != 189 || @preKeyCode == null || @preKeyCode == 173) #allow '-' for both chrome & firefox
           @preKeyCode = keyCode
           return true
       else
-        if(keyCode == 189 && value.charAt(0) != '-') 
+        if(keyCode == 189 || keyCode == 173) && value.charAt(0) != '-'
           @preKeyCode = keyCode
           return true
       if keyCode > 31 && (keyCode < 48 || keyCode > 57) && (keyCode != 8 && keyCode != 46) && keyCode != 37 && keyCode != 39  #allow right and left arrow key
