@@ -7,7 +7,7 @@ kh:
         remember_me: 'ចងចាំខ្ញុំ'
         login: 'ចូលប្រើប្រាស់'
         reset_it: 'កំណត់ឡើងវិញ'
-        didnot_receive_confirmation_instruction: "តើអ្នកពិតជាមិនទទួលបានរបៀបនៃការបញ្ជាក់មែនទេ?"
+        didnot_receive_confirmation_instruction: "មិនទទួលបានរបៀបនៃការបញ្ជាក់មែនទេ?"
         didnot_receive_unlock_instruction: "តើអ្នកពិតជាមិនទទួលបានរបៀបនៃការដោះសោរមែនទេ?"
         sign_in_with: 'ចូលប្រើប្រាស់តាមរយះ'
         create_account: "បង្កើតគណនេយ្យ"
