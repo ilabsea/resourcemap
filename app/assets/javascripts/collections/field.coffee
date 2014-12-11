@@ -249,20 +249,20 @@ onCollections ->
           if parseInt(@value()) >= parseInt(@range.minimum) && parseInt(@value()) <= parseInt(@range.maximum)
             @errorMessage('')
           else
-            @errorMessage('Invalid value, value must in the range of ('+@range.minimum+'-'+@range.maximum+")")
+            @errorMessage('Invalid value, value must be in the range of ('+@range.minimum+'-'+@range.maximum+")")
         else
           if @range.maximum
             if parseInt(@value()) <= parseInt(@range.maximum)
               @errorMessage('')
             else
-              @errorMessage('Invalid value, value must less than or equal '+@range.maximum)
+              @errorMessage('Invalid value, value must be less than or equal '+@range.maximum)
             return
           
           if @range.minimum
             if parseInt(@value()) >= parseInt(@range.minimum)
               @errorMessage('')
             else
-              @errorMessage('Invalid value, value must greater than or equal '+@range.minimum)
+              @errorMessage('Invalid value, value must be greater than or equal '+@range.minimum)
             return      
 
     validate_integer_only: (keyCode) =>
