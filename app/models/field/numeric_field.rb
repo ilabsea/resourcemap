@@ -39,7 +39,7 @@ class Field::NumericField < Field
       raise not_allow_decimals_message if !value.integer? && value.real?
       raise invalid_field_message unless value.integer?
     end
-    if config['range']
+    if config and config['range']
       validate_range(value)
     end
     true
