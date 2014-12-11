@@ -113,28 +113,32 @@ onImportWizard ->
     showAllColumns: =>
       @visibleColumns(@columns())
       @visibleSites(@sites())
-      @showingColumns('all')
+      $("#all-columns")[0].checked = true
+      # @showingColumns('all')
 
     showColumnsWithErrors: =>
       with_errors = $.grep @columns(), (c, i) ->
         c.errors().length > 0
       @visibleColumns(with_errors)
       @loadVisibleSites()
-      @showingColumns('with_errors')
+      $("#columns-with-errors")[0].checked = true
+      # @showingColumns('with_errors')
 
     showNewColumns: =>
       new_columns = $.grep @columns(), (c, i) ->
         c.usage() == 'new_field'
       @visibleColumns(new_columns)
       @loadVisibleSites()
-      @showingColumns('new')
+      $("#new-columns")[0].checked = true
+      # @showingColumns('new')
 
     showExistingColumns: =>
       existing_columns = $.grep @columns(), (c, i) ->
         c.usage() == 'existing_field'
       @visibleColumns(existing_columns)
       @loadVisibleSites()
-      @showingColumns('existing')
+      $("#existing-columns")[0].checked = true
+      # @showingColumns('existing')
 
     startImport: =>
       @importing(true)
