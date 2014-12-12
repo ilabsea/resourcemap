@@ -4,7 +4,6 @@
 
 <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :id => 'edit_user' }) do |f| %>
 
-
   <h2><%= t('views.devise.sessions.edit_account') %></h2>
 
   <hr class="shadow" />
@@ -47,5 +46,8 @@
   </div>
 
 <% end %>
+<hr>
+
+<p><%= t('views.registrations.unhappy') %> <%= link_to t('views.registrations.cancel_my_account'), registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %>.</p>
 
 </div>
