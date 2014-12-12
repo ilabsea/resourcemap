@@ -37,6 +37,7 @@ en:
       password_confirmation: "Password confirmation"
       phone_number: "Phone number"
       sample_phone_number: "85512345678"
+      time_zone: "Time zone"
       update: "Update"
       unhappy: "Unhappy?"
       cancel_my_account: "Cancel my account"

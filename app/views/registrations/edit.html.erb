@@ -5,17 +5,17 @@
 <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :id => 'edit_user' }) do |f| %>
 
 
-  <h2>Edit Account</h2>
+  <h2><%= t('views.registrations.edit_account') %></h2>
 
   <hr class="shadow" />
 
   <div class="field w30">
-    <%= f.label :current_password %> <p>we need your current password to confirm your changes</p>
+    <%= f.label t('views.registrations.current_password') %> <p><%= t('views.registrations.we_need_your_current_password') %></p>
     <%= f.password_field :current_password %>
   </div>
 
   <div class="field w30">
-    <%= f.label :password %>
+    <%= f.label t('views.registrations.password') %>
     <%= f.password_field :password, :autocomplete => "off" %>
     <div style='padding-top:10px; padding-left:5px; line-height:5px;'>
       <div id='validateMeter' style='height:5px; float:left;'></div>
@@ -25,7 +25,7 @@
   </div>
 
   <div class="field w30">
-    <%= f.label :password_confirmation %>
+    <%= f.label t('views.registrations.password_confirmation') %>
     <%= f.password_field :password_confirmation %>
     <div style='padding-top:10px; padding-left:5px; line-height:5px;'>
       <p id='confirmMessage' style='color:red'></p>
@@ -33,23 +33,23 @@
   </div>
 
   <div class="field w30">
-    <%= f.label :phone_number %> <p>85512345678</p>
+    <%= f.label t('views.registrations.phone_number') %> <p>85512345678</p>
     <%= f.telephone_field :phone_number, :type => 'text' %>
   </div>
 
   <div class="field w30">
-    <%= f.label :time_zone %>
+    <%= f.label t('views.registrations.time_zone')  %>
     <%= f.time_zone_select :time_zone %>
   </div>
 
   <div class="actions">
-    <button type="submit" class="white">Update</button>
+    <button type="submit" class="white"><%= t('views.registrations.update') %></button>
   </div>
 
 <% end %>
 
 <hr>
 
-<p>Unhappy? <%= link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %>.</p>
+<p><%= t('views.registrations.unhappy') %> <%= link_to t('views.registrations.cancel_my_account'), registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %>.</p>
 
 </div>
