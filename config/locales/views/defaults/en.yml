@@ -19,6 +19,11 @@ en:
       login:  "Log in"
       sign_out: "Sign Out"
       create_account: "Create account"
+      sign_up: "Sign up"
+      email: "Email"
+      password: "Password"
+      password_confirmation: "Password confirmation"
+      phone_number: "Phone number"
     settings:
       title: "Enable map view for public"
       description: "Allow public to see these layers"
