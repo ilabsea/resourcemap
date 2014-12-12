@@ -12,7 +12,6 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20180228025955) do
-
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
     t.integer  "collection_id"
@@ -51,7 +50,6 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
 
   create_table "collections", :force => true do |t|
     t.string   "name"
-
     t.text     "description",           :limit => 16777215
     t.boolean  "public"
     t.datetime "created_at",                                                                                  :null => false
@@ -76,7 +74,6 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
     t.string   "name"
     t.string   "code"
     t.string   "kind"
-
     t.datetime "created_at",                                                           :null => false
     t.datetime "updated_at",                                                           :null => false
     t.binary   "config",                      :limit => 2147483647
@@ -85,6 +82,7 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
     t.datetime "valid_since"
     t.datetime "valid_to"
     t.integer  "field_id"
+    
     t.text     "metadata",                    :limit => 16777215
     t.boolean  "is_mandatory",                                      :default => false
     t.boolean  "is_enable_field_logic",                             :default => false
@@ -262,6 +260,14 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "queries", :force => true do |t|
+    t.string   "name"
+    t.text     "conditions"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.integer  "collection_id"
+  end
+
   create_table "reminders", :force => true do |t|
     t.string   "name"
     t.text     "reminder_message"
@@ -283,9 +289,9 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
   create_table "repeats", :force => true do |t|
     t.string   "name"
     t.integer  "order"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
-    t.text     "rule",       :limit => 16777215
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.text     "rule"
   end
 
   create_table "report_cachings", :force => true do |t|
