@@ -37,7 +37,6 @@ onCollections ->
         else
           q.sort = @sort
         q.sort_direction = if @sortDirection then 'asc' else 'desc'
-
       filter.setQueryParams(q, api) for filter in @filters
       
       q
