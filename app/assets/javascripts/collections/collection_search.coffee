@@ -36,7 +36,10 @@ onCollections ->
           q.sort = if field then field.code() else @sort
         else
           q.sort = @sort
-        q.sort_direction = if @sortDirection then 'asc' else 'desc'
+          if @sort == 'updated_at'
+            q.sort_direction = if @sortDirection then 'desc' else 'asc'
+          else
+            q.sort_direction = if @sortDirection then 'asc' else 'desc'
       filter.setQueryParams(q, api) for filter in @filters
       q
 
