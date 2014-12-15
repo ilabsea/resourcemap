@@ -1,6 +1,6 @@
 %td.member{style: 'cursor:pointer;', colspan: 6}
   .memberHeaderRow
-    .memberHeaderColumn.collapsed{style: 'height: 35px;'}
+    .memberHeaderColumn.collapsed
       %img.members-collapse-icon{ko(click: :toggleExpanded, attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrowRight.png'"})}
       %span{ko(text: :userDisplayName, click: :toggleExpanded)}
       - if 'userPhoneNumber'
@@ -13,4 +13,4 @@
 
     .permissionColumn.admin.collapsed
       %input{ko(checked: :admin), type: :checkbox}
-    .lastColumn.collapsed
+    .lastColumn.collapsed{style: 'width:auto'}
