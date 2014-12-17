@@ -663,23 +663,26 @@ Collection.prototype.validateNumeric = function(number) {
 
 Collection.prototype.validateRange = function(number, range){
   if(range["minimum"] && range["maximum"]){
-    if(parseInt(number) >= parseInt(range["minimum"]) && parseInt(number) <= parseInt(range["maximum"]))
-      return true;
-    else
-      return false;
+    if(parseInt(number) >= parseInt(range["minimum"]) && parseInt(number) <= parseInt(range["maximum"])){
+      return '';
+    }else{
+      return('Invalid value, value must be in the range of ('+range["minimum"]+'-'+range["maximum"]+')');
+    }
   }
   else{
     if(range["maximum"]){
-      if(parseInt(number) <= parseInt(range["maximum"]))
-        return true;
-      else
-        return false;      
+      if(parseInt(number) <= parseInt(range["maximum"])){
+        return "";
+      }else{
+        return('Invalid value, value must be less than or equal to '+range["maximum"]);
+      }      
     }
     if(range["minimum"]){
-      if(parseInt(value) >= parseInt(range["minimum"]))
-        return true;
-      else
-        return false;      
+      if(parseInt(value) >= parseInt(range["minimum"])){
+        return "";
+      }else{
+        return('Invalid value, value must be greater than or equal to '+range["minimum"]);
+      }      
     }
   }
   return true;

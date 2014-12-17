@@ -82,7 +82,7 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
     t.datetime "valid_since"
     t.datetime "valid_to"
     t.integer  "field_id"
-    
+
     t.text     "metadata",                    :limit => 16777215
     t.boolean  "is_mandatory",                                      :default => false
     t.boolean  "is_enable_field_logic",                             :default => false
