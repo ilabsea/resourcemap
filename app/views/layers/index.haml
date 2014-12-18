@@ -97,7 +97,7 @@
 
               .feditor-button{ko(click: '$root.selectField'),style: 'margin-top:-5px;'}
                 %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"}), title: t('views.layers.form.select_field')}
-              .feditor-content{style:'width:395px'}
+              .feditor-content{style:'width:395px; word-wrap: break-word;'}
                 %h1{ko(text: :name)}
                 -# This is to make the h1 occupy the vertical space even if no name is set yet
                 /ko if: !name()
