@@ -63,7 +63,7 @@
 
               .feditor-button{style: 'margin-top:-5px;'}
                 %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"}), title: t('views.layers.form.select_field')}
-              .feditor-content{style:'width:395px'}
+              .feditor-content{style:'width:395px; word-wrap: break-word;'}
                 %h1{ko(text: :name)}
                 -# This is to make the h1 occupy the vertical space even if no name is set yet
                 /ko if: !name()
@@ -131,7 +131,7 @@
 
       .middlebuttons
         /ko foreach: fields
-        %div{ko(attr: {class: 'iconClass()'}, text: :name), :style => 'line-height:21px;color:black; height:inherit;'}
+        %div{ko(attr: {class: 'iconClass()'}, text: :name), :style => 'line-height:21px;color:black; height:inherit;max-width: 515px;;word-wrap: break-word;'}
         //ko
 
       - if current_user_snapshot.at_present? && collection_admin?
