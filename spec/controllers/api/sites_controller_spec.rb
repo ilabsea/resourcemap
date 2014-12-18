@@ -46,5 +46,62 @@ describe Api::SitesController do
       json = JSON.parse response.body
       json["sites"].length.should eq(2)
     end
+
+  end
+
+  describe "Create sites" do
+    before(:each) do
+      user = 'iLab'
+      pw = '1c4989610bce6c4879c01bb65a45ad43'
+      request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user,pw)
+    end
+
+    it "should save site in the collection" do
+      post :create, format: 'json', name: 'Hello', lat: 12.618897, lng: 104.765625, collection_id: collection.id, properties: {}, phone_number: user.phone_number
+      response.should be_success
+      json = JSON.parse response.body
+      json["site"]["name"].should eq("Hello")
+      json["site"]["lat"].should eq("12.618897")
+      json["site"]["lng"].should eq("104.765625")
+      json["site"]["collection_id"].should eq(collection.id)
+      json["site"]["properties"].should eq({})
+    end
+  end
+
+  describe "Update sites" do
+    before(:each) do
+      user = 'iLab'
+      pw = '1c4989610bce6c4879c01bb65a45ad43'
+      request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user,pw)
+    end
+
+    it "should save site in the collection" do
+      put :update, format: 'json', id: site.id, name: 'Hello', lat: 12.618897, lng: 104.765625, collection_id: collection.id, properties: {}, phone_number: user.phone_number
+      response.should be_success
+      json = JSON.parse response.body
+      json["site"]["name"].should eq("Hello")
+      json["site"]["lat"].should eq("12.618897")
+      json["site"]["lng"].should eq("104.765625")
+      json["site"]["collection_id"].should eq(collection.id)
+      json["site"]["properties"].should eq({})
+    end
+  end
+
+  describe "Delete sites" do
+    before(:each) do
+      user = 'iLab'
+      pw = '1c4989610bce6c4879c01bb65a45ad43'
+      request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user,pw)
+    end
+
+    it "should have two sites befor delete" do
+      collection.sites.length.should eq(2)
+    end
+
+    it "should save site in the collection" do
+      delete :destroy, format: 'json', id: site.id, collection_id: collection.id
+      response.should be_success
+      collection.sites.length.should eq(1)
+    end
   end
 end

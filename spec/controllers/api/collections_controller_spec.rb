@@ -176,6 +176,19 @@ describe Api::CollectionsController do
     it { response.should be_success }
   end
 
+  describe "GET some sites from collection" do
+    before(:each) do
+      get :show, id: collection.id, format: 'shp'
+    end
+
+    it "should return some sites based on provided ids params" do
+      get :get_some_sites ,sites: [site.id, site2.id].join(","), format: 'json', collection_id: collection.id
+      response.should be_success
+      json = JSON.parse response.body
+      json["sites"].length.should eq(1)
+    end
+  end
+
   describe "validate query fields" do
 
     it "should validate numeric fields in equal queries" do
