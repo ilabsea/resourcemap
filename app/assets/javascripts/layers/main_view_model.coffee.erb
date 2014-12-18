@@ -238,9 +238,11 @@ onLayers ->
 
     assignConditionAll: =>
       @newFieldLogic().condition_type("all")
+      $("#all")[0].checked = true
 
     assignConditionAny: =>
       @newFieldLogic().condition_type("any")
+      $("#any")[0].checked = true
 
     saveNewFieldLogic: =>
 

@@ -105,10 +105,6 @@ onCollections ->
                   @setFocusStyleByField(field_logic.field_id)
                   return
               if @kind == 'numeric'
-                if field_logic.condition_type == 'empty'
-                  if value == "" || value == null
-                    @setFocusStyleByField(field_logic.field_id)
-                    return
                 if field_logic.condition_type == '<'
                   if parseInt(value) < field_logic.value
                     @setFocusStyleByField(field_logic.field_id)
@@ -165,7 +161,7 @@ onCollections ->
         $('#'+field.esCode)[0].scrollIntoView(true) 
         $('#'+field.esCode).focus() 
       else if field.kind == "yes_no"
-        $('#yes_no-input-'+field.code).focus()
+        $('#yes-no-input-'+field.code).focus()
       else if field.kind == "photo"
         $('#'+field.code).focus()
       else if field.kind == "date"
@@ -253,30 +249,33 @@ onCollections ->
           if parseInt(@value()) >= parseInt(@range.minimum) && parseInt(@value()) <= parseInt(@range.maximum)
             @errorMessage('')
           else
-            @errorMessage('Invalid value, value must in the range of ('+@range.minimum+'-'+@range.maximum+")")
+            @errorMessage('Invalid value, value must be in the range of ('+@range.minimum+'-'+@range.maximum+")")
         else
           if @range.maximum
             if parseInt(@value()) <= parseInt(@range.maximum)
               @errorMessage('')
             else
-              @errorMessage('Invalid value, value must less than or equal '+@range.maximum)
+              @errorMessage('Invalid value, value must be less than or equal '+@range.maximum)
             return
           
           if @range.minimum
             if parseInt(@value()) >= parseInt(@range.minimum)
               @errorMessage('')
             else
-              @errorMessage('Invalid value, value must greater than or equal '+@range.minimum)
-            return
-
-
+              @errorMessage('Invalid value, value must be greater than or equal '+@range.minimum)
+            return      
 
     validate_integer_only: (keyCode) =>
       value = $('#'+@kind+'-input-'+@code).val()
-      if keyCode == 189 && (value == null || value == "") && (@preKeyCode != 189 || @preKeyCode == null)
-        @preKeyCode = keyCode
-        return true
-      else if keyCode > 31 && (keyCode < 48 || keyCode > 57) && keyCode != 46 
+      if value == null || value == ""
+        if(keyCode == 189 || keyCode == 173) && (@preKeyCode != 189 || @preKeyCode == null || @preKeyCode == 173) #allow '-' for both chrome & firefox
+          @preKeyCode = keyCode
+          return true
+      else
+        if(keyCode == 189 || keyCode == 173) && value.charAt(0) != '-'
+          @preKeyCode = keyCode
+          return true
+      if keyCode > 31 && (keyCode < 48 || keyCode > 57) && (keyCode != 8 && keyCode != 46) && keyCode != 37 && keyCode != 39  #allow right and left arrow key
         return false
       else 
         @preKeyCode = keyCode
@@ -301,7 +300,7 @@ onCollections ->
               return @validate_decimal_only(event.keyCode)
             else
               return @validate_integer_only(event.keyCode)
-          return true     
+          return true   
 
     exit: =>
       @value(@originalValue)

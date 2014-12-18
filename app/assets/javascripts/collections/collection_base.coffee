@@ -26,7 +26,7 @@ onCollections ->
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @loadCurrentSnapshotMessage()
       @loadAllSites()
-      @loadSites()
+      @loadSites() unless window.currentUserIsGuest
 
     loadSites: =>
       $.get @sitesUrl(), (data) =>
@@ -148,7 +148,6 @@ onCollections ->
 
         @fields(fields)
         @refineFields(fields)
-        callback() if callback && typeof(callback) == 'function'
 
     findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 

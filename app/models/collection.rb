@@ -15,7 +15,7 @@ class Collection < ActiveRecord::Base
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
   has_many :layers, order: 'ord', dependent: :destroy
-  has_many :fields
+  has_many :fields, order: 'ord'
   has_many :thresholds, dependent: :destroy
   has_many :reminders, dependent: :destroy
   has_many :share_channels, dependent: :destroy
