@@ -121,7 +121,7 @@ hr.underlineExpandedMember {
 }
 
 .memberHeaderColumn {
-  width:290px;
+  width:280px;
   height:32px;
   float: left;
   padding-left:6px;
@@ -154,6 +154,11 @@ hr.underlineExpandedMember {
   text-align: center;
   height:21px;
   margin-left:5px;
+  float: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 230px;  
 }
 
 .layerRow .memberHeaderColumn {
@@ -174,8 +179,8 @@ hr.underlineExpandedMember {
 }
 
 .customPermissionsTitleRow .frame {
-  height:14px;
-  padding-top: 10px;
+  height:19px;
+  padding-top: 5px;
 }
 
 .customPermissionsTitleRow .permissionColumn {
