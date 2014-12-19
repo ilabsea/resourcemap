@@ -6,6 +6,20 @@ describe Api::SitesController do
   let!(:user) { User.make }
   let!(:collection) { user.create_collection(Collection.make_unsaved) }
   let!(:collection2) { user.create_collection(Collection.make_unsaved) }
+
+  let!(:layer) { collection.layers.make }
+
+  let!(:text) { layer.text_fields.make :code => 'text'}
+  let!(:numeric) { layer.numeric_fields.make :code => 'numeric' }
+  let!(:yes_no) { layer.yes_no_fields.make :code => 'yes_no'}
+  let!(:select_one) { layer.select_one_fields.make :code => 'select_one', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  let!(:select_many) { layer.select_many_fields.make :code => 'select_many', :config => {'options' => [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}]} }
+  config_hierarchy = [{ id: 'dad', name: 'Dad', sub: [{id: 'son', name: 'Son'}, {id: 'bro', name: 'Bro'}]}]
+  let!(:hierarchy) { layer.hierarchy_fields.make :code => 'hierarchy',  config: { hierarchy: config_hierarchy }.with_indifferent_access }
+  let!(:site_ref) { layer.site_fields.make :code => 'site' }
+  let!(:date) { layer.date_fields.make :code => 'date' }
+  let!(:director) { layer.user_fields.make :code => 'user'}
+  
   let!(:site) { collection.sites.make }
   let!(:site1) { collection.sites.make }
 
@@ -98,7 +112,7 @@ describe Api::SitesController do
       collection.sites.length.should eq(2)
     end
 
-    it "should save site in the collection" do
+    it "should delete site in the collection" do
       delete :destroy, format: 'json', id: site.id, collection_id: collection.id
       response.should be_success
       collection.sites.length.should eq(1)
