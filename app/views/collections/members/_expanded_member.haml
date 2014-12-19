@@ -22,7 +22,8 @@
     .memberHeaderColumn
       %hr.underlineExpandedMember
       .defaultLayerPermissionsTitle{ko(click: :toggleDefaultLayerPermissions)}
-        %img.members-collapse-icon{ko(attr: {src: "defaultLayerPermissionsArrow('#{InsteddRails.url}')" })}
+        %span{style: 'float:left'}
+          %img.members-collapse-icon{ko(attr: {src: "defaultLayerPermissionsArrow('#{InsteddRails.url}')" })}
         %span.memberDetailsTitle
           = t('views.collections.members.default_permissions_for_all_layers')
 
