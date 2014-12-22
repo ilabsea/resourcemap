@@ -15,12 +15,12 @@ onCollections ->
     # Loads SITES_PER_PAGE sites more from the server, it there are more sites.
     @loadMoreSites: ->
       return unless @hasMoreSites()
-
       @loadingSites true
       # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
       # extra element so the user always sees SITES_PER_PAGE elements.
       $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1, _alert: window.model.showingAlert() if window.model.showingAlert()}, (data) =>
         @sitesPage += 1
+        window.model.setThresholds() if @hasMoreSites()
         if data.length == SITES_PER_PAGE + 1
           data.pop()
         else

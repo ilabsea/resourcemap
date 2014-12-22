@@ -8,7 +8,7 @@ class CollectionsController < ApplicationController
     if current_user && !current_user.is_guest
       # public collections are accesible by all users
       # here we only need the ones in which current_user is a member
-      Collection.accessible_by(current_ability)
+      current_user.collections
     else
       Collection.all
     end
@@ -193,10 +193,11 @@ class CollectionsController < ApplicationController
     search.full_text_search params[:search]
     search.offset params[:offset]
     search.limit params[:limit]
+    search.alerted_search params[:_alert] if params[:_alert] 
     search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
     search.hierarchy params[:hierarchy_code], params[:hierarchy_value] if params[:hierarchy_code]
     search.location_missing if params[:location_missing].present?
-    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing)
+    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing, :_alert)
 
     search.apply_queries
 

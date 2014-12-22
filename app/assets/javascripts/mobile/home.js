@@ -1,9 +1,9 @@
-//= require mobile/collections/on_mobile_collections
-//= require mobile/collections/collection
-//= require mobile/events
-//= require mobile/field
-//= require mobile/option
-//= require mobile/sub_hierarchy
+// = require mobile/collections/on_mobile_collections
+// = require mobile/collections/collection
+// = require mobile/events
+// = require mobile/field
+// = require mobile/option
+// = require mobile/sub_hierarchy
 
 function initialize(locale){
   var cachedSites, collectionSchema, i, id;
@@ -25,7 +25,7 @@ function initialize(locale){
           }
           return window.localStorage.setItem("cachedSites", JSON.stringify(cachedSites));
         }
-      });    
+      }); 
     }
   });
 
@@ -69,6 +69,7 @@ function initialize(locale){
     window.collectionSchema = window.JSON.parse(window.localStorage.getItem("collectionSchema"));
     Collection.prototype.addDataToCollectionList(window.collectionSchema);
   }
+  $('#map-page').hide();   
 }
 
 function prepareFlushMessage(id){

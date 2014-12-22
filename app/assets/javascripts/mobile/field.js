@@ -22,8 +22,10 @@ function Field (field) {
 
   if(field["is_enable_field_logic"] == true){
     this.field_logics = [];
-    for(var i=0; i<field["config"]["field_logics"].length; i++){
-      this.field_logics.push(new FieldLogic(field["config"]["field_logics"][i]));
+    if(field["config"]["field_logics"] != undefined){
+      for(var i=0; i<field["config"]["field_logics"].length; i++){
+        this.field_logics.push(new FieldLogic(field["config"]["field_logics"][i]));
+      }
     }
   }
 };
@@ -95,7 +97,8 @@ Field.prototype.getHierarchyField = function() {
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.label + '</label>'+
               '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="hierarchy">' +
-                list +
+                '<option value="" > (no value) </option>' +
+                 list +
               '</select>' +
           '</div>';
 
@@ -121,7 +124,7 @@ Field.prototype.getNumericField = function() {
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.label + '</label>'+
         '<div id="div_wrapper_' + this.code + '" class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="number" datatype="numberic">'+
+          '<input onchange="Collection.setFocusOnFieldFromNumeric('+ this.id+ ',\''+this.code +'\')" value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="number" datatype="numberic">'+
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+
@@ -152,7 +155,9 @@ Field.prototype.getYesNoField = function() {
           '<label for="' + this.code + '" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c">' +
             '<span class="ui-btn-inner">'+
               '<span style="font-weight:normal;">' + this.label + '</span>' +
-              '<input ' + checked + ' type="checkbox" name="properties[' + this.id + ']" id="' + this.code + '" class="custom"  datatype="yes_no" onchange="Collection.prototype.setFieldFocus('+this.id+','+this.code+',\''+this.kind+'\')">' +
+              '<input ' + checked + ' type="checkbox" name="properties[' + this.id + ']" id="' +
+               this.code + 
+               '" class="custom"  datatype="yes_no" onchange="Collection.prototype.setFieldFocus('+this.id+','+this.code+',\''+this.kind+'\')">' +
             '</span>'+
           '</label>'+
       '</div>'+
@@ -173,7 +178,8 @@ Field.prototype.getSelectOneField = function() {
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.label + '</label>'+
               '<select name="properties[' + this.id + ']" id="' + this.code + '"  datatype="select_one" onchange="Collection.prototype.setFieldFocus('+this.id+',this.value,\''+this.kind+'\')">' +
-                list +
+                '<option value="" > (no value) </option>' +
+                 list +
               '</select>' +
           '</div>';
 };
@@ -199,7 +205,7 @@ Field.prototype.getSelectManyField = function() {
           '<div class="ui-checkbox" style="padding-top: 10px; height: 25px;" >' +
               '<label for="' + this.id + "-" + this.options[i]["code"] + '"  data-theme="c" style="margin:0px;">' +  
                 '<span style="padding: 10px 100% 5px 40px;;font-weight:normal;height:20px;color: #2f3e46;text-decoration: none !important;" class="ui-link-inherit">' + this.options[i]["name"] + '</span>' +
-                '<input class="field_' + this.id + '" onchange="Collection.setFocusOnField(' + this.id + ')" ' + checked + ' type="checkbox" value="' + this.options[i]["id"] + '" name="properties[' + this.id + '][]" id="' + this.id + "-" + this.options[i]["code"] + '" datatype="select_many">' +
+                '<input class="field_' + this.id + '" onchange="Collection.setFocusOnFieldFromSelectMany(' + this.id + ')" ' + checked + ' type="checkbox" value="' + this.options[i]["id"] + '" name="properties[' + this.id + '][]" id="' + this.id + "-" + this.options[i]["code"] + '" datatype="select_many">' +
               '</label>'+
           '</div>' +
         '</div>' +
@@ -243,20 +249,28 @@ Field.prototype.getEmailField = function() {
 };
 
 Field.prototype.getPhotoField = function() {
-  displayDiv = ""
+  displayDiv = "";
+  protectPhoto = "";
+
   if(this.value != ""){
     displayDiv = "<img style='width:100%;' src='/photo_field/" + this.value + "' alt='" + this.value + "' />";
   }
+
+  if(!window.navigator.onLine)
+    protectPhotoDisplay = '<input type="hidden" name="properties[' + this.id + ']" value="' + this.value + '" />';
+  else 
+    protectPhotoDisplay = '<label>' + this.label + '</label> <br /><br />'+ displayDiv +
+            '<input type="hidden" name="properties[' + this.id + ']" value="' + this.value + '" />' +
+            '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
+              '<input onchange="Collection.prototype.handleFileUpload(this)" class="ui-input-text ui-body-c" type="file" data-clear-btn="true" name="properties[' + this.id + ']" id="' + this.code + '"  datatype="photo">'+          
+            '</div>';
+            
   return '<div class="ui-corner-all ui-controlgroup ui-controlgroup-vertical" style="margin-left:10px">'+
-      '<div class="ui-controlgroup-controls">'+
-        '<label>' + this.label + '</label> <br /><br />'+ displayDiv +
-        '<input type="hidden" name="properties[' + this.id + ']" value="' + this.value + '" />' +
-        '<div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input onchange="Collection.prototype.handleFileUpload(this)" class="ui-input-text ui-body-c" type="file" data-clear-btn="true" name="properties[' + this.id + ']" id="' + this.code + '"  datatype="photo">'+          
-        '</div>'+
-        '<div class="clear"></div>'+
-      '</div>'+
-    '</div>';
+          '<div class="ui-controlgroup-controls">'+
+            protectPhotoDisplay +
+            '<div class="clear"></div>'+
+          '</div>'+
+        '</div>';
 };
 
 function setSubHierarchy(sub, field, level){

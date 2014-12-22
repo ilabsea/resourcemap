@@ -33,7 +33,6 @@ onCollections ->
       @makeFixedHeaderTable()
       @hideRefindAlertOnMap()
       @setThresholds()
-
       @rewriteUrl()
 
       $('.BreadCrumb').load("/collections/breadcrumbs", {})
@@ -88,12 +87,12 @@ onCollections ->
           @rewriteUrl()
 
         window.adjustContainerSize()
-
       $('.BreadCrumb').load("/collections/breadcrumbs", { collection_id: collection.id })
       window.adjustContainerSize()
       window.model.updateSitesInfo()
       @showRefindAlertOnMap()
       @setThresholds()
+      @filters([])
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
@@ -154,11 +153,14 @@ onCollections ->
 
     @setThresholds: ->
       if @currentCollection()
-        @currentCollection().thresholds([])  
+        @showingLegend(false)
+        @currentCollection().thresholds([])
+        @currentCollection().showLegend(false) 
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
           thresholds = @currentCollection().fetchThresholds(data)     
           @currentCollection().thresholds(@currentCollection().findSitesByThresholds(thresholds))
-          @showLegendState()
+          if @currentCollection().thresholds().length > 0
+            @showLegendState()
       else
         $.get "/plugin/alerts/thresholds.json", (data) =>
           for collection in @collections()
@@ -178,7 +180,7 @@ onCollections ->
             @showingLegend(false)
       else
         for collection in @collections()
-          if collection.checked() == true && collection.thresholds().length > 0
+        if collection.checked() == true && collection.showLegend()
             @showingLegend(true)
             break
           else

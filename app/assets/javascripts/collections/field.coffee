@@ -12,6 +12,7 @@ onCollections ->
       @is_enable_field_logic = data.is_enable_field_logic
 
       @photo = '' 
+      @preKeyCode = null
       @photoPath = '/photo_field/'
       @showInGroupBy = @kind in ['select_one', 'select_many', 'hierarchy']
       @writeable = @originalWriteable = data?.writeable
@@ -20,8 +21,7 @@ onCollections ->
 
       @value = ko.observable()
       
-      @value.subscribe => @setFieldFocus() 
-
+      @value.subscribe => @setFieldFocus()
 
       @hasValue = ko.computed =>
         if @kind == 'yes_no'
@@ -38,7 +38,11 @@ onCollections ->
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
         @is_mandatory = if @range then true else data.is_mandatory
-        
+        @field_logics = if data.config?.field_logics?
+                          $.map data.config.field_logics, (x) => new FieldLogic x
+                        else
+                          []
+
       if @kind in ['yes_no', 'select_one', 'select_many']
         @field_logics = if data.config?.field_logics?
                           $.map data.config.field_logics, (x) => new FieldLogic x
@@ -87,18 +91,41 @@ onCollections ->
       if window.model.newOrEditSite() 
         if @kind == 'yes_no'
           value = if @value() then 1 else 0
-        else if @kind == 'select_one' || 'select_many'
+        else if @kind == 'numeric' || @kind == 'select_one' || @kind == 'select_many'
           value = @value()
         else
           return
-
-        b = false
+        
+        if @field_logics
         if @field_logic
           for field_logic in @field_logics
+            b = false
             if field_logic.field_id?
-              if @kind == 'yes_no' || 'select_one'
+              if @kind == 'yes_no' || @kind == 'select_one'
                 if value == field_logic.value                          
                   @setFocusStyleByField(field_logic.field_id)
+                  return
+              if @kind == 'numeric'
+                if field_logic.condition_type == '<'
+                  if parseInt(value) < field_logic.value
+                    @setFocusStyleByField(field_logic.field_id)
+                    return
+                if field_logic.condition_type == '<='
+                  if parseInt(value) <= field_logic.value
+                    @setFocusStyleByField(field_logic.field_id)  
+                    return         
+                if field_logic.condition_type == '='
+                  if parseInt(value) == field_logic.value
+                    @setFocusStyleByField(field_logic.field_id)  
+                    return        
+                if field_logic.condition_type == '>'
+                  if parseInt(value) > field_logic.value
+                    @setFocusStyleByField(field_logic.field_id)
+                    return            
+                if field_logic.condition_type == '>='
+                  if parseInt(value) >= field_logic.value
+                    @setFocusStyleByField(field_logic.field_id)
+                    return
 
               if @kind == 'select_many'
                 if field_logic.condition_type == 'any'
@@ -107,38 +134,40 @@ onCollections ->
                       if field_value == parseInt(field_logic_value.value)
                         b = true
                         @setFocusStyleByField(field_logic.field_id)
-                        break
-                    if b
-                      break
-                else
-                  if field_logic.selected_options.length == value.length
+                        return
+
+                if field_logic.condition_type == 'all'
+                  tmp = []
+                  for field_value in value             
                     for field_logic_value in field_logic.selected_options
-                      for field_value in value
-                        if field_value == parseInt(field_logic_value.value)
+                      if field_value == parseInt(field_logic_value.value)                        
                           b = true
                           field_id = field_logic.field_id
-                          break
+                        tmp.push field_value
                         else
                           b = false
-                            
-                  if b && field_id?
-                    @setFocusStyleByField(field_id)      
+                  if tmp.length == field_logic.selected_options.length
+                    @setFocusStyleByField(field_id)
+                    return
 
     setFocusStyleByField: (field_id) =>
       field = window.model.newOrEditSite().findFieldByEsCode(field_id)
+      @removeFocusStyle()
       if field.kind == "select_one"
         $('#select-one-input-'+field.code).focus()  
       else if field.kind == "select_many"
         field.expanded(true)
         $('#select-many-input-'+field.code).focus()
-      else if field.kind == "hierarchy"           
-        $('#'+field.esCode)[0].scrollIntoView(true)
+      else if field.kind == "hierarchy"  
+        $('#'+field.esCode)[0].scrollIntoView(true) 
+        $('#'+field.esCode).focus() 
       else if field.kind == "yes_no"
         $('#yes-no-input-'+field.code).focus()
       else if field.kind == "photo"
         $('#'+field.code).focus()
       else if field.kind == "date"
         $('#'+field.kind+'-input-'+field.esCode)[0].scrollIntoView(true)
+        $('#'+field.kind+'-input-'+field.esCode).focus()
       else
         $('#'+field.kind+'-input-'+field.code).focus() 
 
@@ -153,6 +182,13 @@ onCollections ->
       value = '' unless value
 
       @value(value)
+    
+    removeFocusStyle: =>
+      $('div').removeClass('focus')
+      $('input').removeClass('focus')
+      $('select').removeClass('focus')
+      $('select').blur()
+      $('input').blur()
 
     codeForLink: (api = false) =>
       if api then @code else @esCode
@@ -214,26 +250,46 @@ onCollections ->
           if parseInt(@value()) >= parseInt(@range.minimum) && parseInt(@value()) <= parseInt(@range.maximum)
             @errorMessage('')
           else
-            @errorMessage('Invalid value, value must in the range of ('+@range.minimum+'-'+@range.maximum+")")
+            @errorMessage('Invalid value, value must be in the range of ('+@range.minimum+'-'+@range.maximum+")")
         else
           if @range.maximum
             if parseInt(@value()) <= parseInt(@range.maximum)
               @errorMessage('')
             else
-              @errorMessage('Invalid value, value must less than '+@range.maximum)
+              @errorMessage('Invalid value, value must be less than or equal '+@range.maximum)
             return
           
           if @range.minimum
             if parseInt(@value()) >= parseInt(@range.minimum)
               @errorMessage('')
             else
-              @errorMessage('Invalid value, value must greater than '+@range.minimum)
-            return
+              @errorMessage('Invalid value, value must be greater than or equal '+@range.minimum)
+            return      
 
-    validate_number_only: (keyCode) =>
-      if keyCode > 31 && (keyCode < 48 || keyCode > 57)
+    validate_integer_only: (keyCode) =>
+      value = $('#'+@kind+'-input-'+@code).val()
+      if value == null || value == ""
+        if(keyCode == 189 || keyCode == 173) && (@preKeyCode != 189 || @preKeyCode == null || @preKeyCode == 173) #allow '-' for both chrome & firefox
+          @preKeyCode = keyCode
+          return true
+      else
+        if(keyCode == 189 || keyCode == 173) && value.charAt(0) != '-'
+          @preKeyCode = keyCode
+          return true
+      if keyCode > 31 && (keyCode < 48 || keyCode > 57) && (keyCode != 8 && keyCode != 46) && keyCode != 37 && keyCode != 39  #allow right and left arrow key
         return false
-      return true
+      else 
+        @preKeyCode = keyCode
+        return true
+
+    validate_decimal_only: (keyCode) =>
+      value = $('#'+@kind+'-input-'+@code).val()
+      if (value == null || value == "")&& (keyCode == 229 || keyCode == 190) #prevent dot at the beginning
+        return false
+      if (keyCode != 8 && keyCode != 46) && (keyCode != 190 || value.indexOf('.') != -1) && (keyCode < 48 || keyCode > 57) #prevent multiple dot
+        return false
+      else
+        return true
 
     keyPress: (field, event) =>
       switch event.keyCode
@@ -241,8 +297,11 @@ onCollections ->
         when 27 then @exit()
         else
           if field.kind == "numeric"
-            return @validate_number_only(event.keyCode)
-          return true     
+            if field.allowsDecimals()
+              return @validate_decimal_only(event.keyCode)
+            else
+              return @validate_integer_only(event.keyCode)
+          return true   
 
     exit: =>
       @value(@originalValue)
@@ -344,4 +403,9 @@ onCollections ->
       @value('')
       $("#" + @code).attr("value",'')
       $("#divUpload-" + @code).hide()
+  
+
+
+
+
 

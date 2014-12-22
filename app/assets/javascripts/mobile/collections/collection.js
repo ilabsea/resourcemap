@@ -45,7 +45,19 @@ Collection.prototype.fetchFields = function() {
 };
 
 Collection.prototype.createSite = function(id){
+  Collection.hideWhileOffline();
   Collection.prototype.showFormAddSite(Collection.getSchemaByCollectionId(id));
+}
+
+Collection.hideWhileOffline = function(){
+  if(!window.navigator.onLine){
+    $("#linkPageMap").hide();
+    $("#unsupportPhotoField").show();
+  }
+  else{
+    $("#linkPageMap").show();
+    $("#unsupportPhotoField").hide();
+  }
 }
 
 Collection.getSchemaByCollectionId = function(id){
@@ -82,15 +94,23 @@ Collection.prototype.saveSite = function(){
     }
     else{
       var offlineData = Collection.prototype.getFormValue();
+      var state;
       if(window.currentSiteId){
-        offlineData["id"] = window.currentSiteId;
+        offlineData["idSite"] = window.currentSiteId;
+        Collection.prototype.removePreviousSite(collectionId, window.currentSiteId);
+        state = "update";
+      }else{
+        sites = JSON.parse(localStorage.getItem("offlineSites"));
+        if(!sites) offlineData["idSite"] = 1;
+        else offlineData["idSite"] = sites.length + 1;
+        state = "create";
       }
-      Collection.prototype.storeOfflineData(collectionId, offlineData);
+      Collection.prototype.storeOfflineData(collectionId, offlineData, state);
     }
   }
 }
 
-Collection.prototype.storeOfflineData = function(collectionId, formData){
+Collection.prototype.storeOfflineData = function(collectionId, formData, state){
   pendingSites = JSON.parse(window.localStorage.getItem("offlineSites"));
   if(pendingSites != null && pendingSites.length > 0){
     pendingSites.push({"collectionId" : collectionId, "formData" : formData});
@@ -100,12 +120,26 @@ Collection.prototype.storeOfflineData = function(collectionId, formData){
   }
   try {
     window.localStorage.setItem("offlineSites", JSON.stringify(pendingSites));
-    Collection.prototype.goHome();
-    Collection.prototype.showErrorMessage("Offline site saved locally.");
+    if (state == "update") {
+      Collection.prototype.showListSites(collectionId, true);
+      Collection.prototype.showErrorMessage("Offline site updated successfully.");
+    } else{
+      Collection.prototype.goHome();
+      Collection.prototype.showErrorMessage("Offline site saved locally.");
+    }
   }catch (e) {
     Collection.prototype.showErrorMessage("Unable to save record because your data is too big.");
   }
-  
+}
+
+Collection.prototype.removePreviousSite = function(collectionId, siteId){
+  sites = JSON.parse(window.localStorage.getItem("offlineSites"));
+  for(var i=0 ; i<sites.length; i++){
+    if(sites[i].formData["idSite"] == siteId){
+      sites.splice(i, 1);
+      window.localStorage.setItem("offlineSites", JSON.stringify(sites));
+    }
+  }
 }
 
 Collection.prototype.ajaxCreateSite = function(collectionId, formData){
@@ -114,7 +148,7 @@ Collection.prototype.ajaxCreateSite = function(collectionId, formData){
       url: '/mobile/collections/' + collectionId + '/sites',  //Server script to process data
       type: 'POST',
       success: function(){
-        Collection.prototype.showListSites(collectionId);
+        Collection.prototype.showListSites(collectionId , true);
         Collection.prototype.showErrorMessage("Successfully saved.");
       },
       error: function(data){
@@ -141,7 +175,7 @@ Collection.prototype.ajaxUpdateSite = function(collectionId, siteId, formData){
       url: '/mobile/collections/' + collectionId + '/sites/' + siteId + '.json',  //Server script to process data
       type: 'PUT',
       success: function(){
-        Collection.prototype.showListSites(collectionId);
+        Collection.prototype.showListSites(collectionId, true);
         Collection.prototype.showErrorMessage("Successfully updated.");
       },
       error: function(data){
@@ -224,7 +258,14 @@ Collection.prototype.validateData = function(collectionId){
               if(Collection.prototype.validateNumeric(value) == false){
                 Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
                 return false;
-              }else{
+              }
+              if(field["config"]["allows_decimals"] == "false"){
+                if(value.indexOf(".") != -1){
+                  Collection.prototype.showErrorMessage("Please enter an integer.");
+                  Collection.setFieldStyleFailed(field["code"]);
+                  return false;                  
+                }
+              }
                 if(range){
                   msg = Collection.prototype.validateRange(value, range);
                   if(msg != ""){
@@ -233,7 +274,6 @@ Collection.prototype.validateData = function(collectionId){
                     Collection.setFieldStyleFailed(field["code"]);                    
                     return false;
                   }
-                }
               }
               state =  Collection.valiateMandatoryText(field);
               break;
@@ -279,17 +319,75 @@ Collection.prototype.validateData = function(collectionId){
   return true;
 }
 
-Collection.setFocusOnField = function(fieldId){
+Collection.setFocusOnFieldFromSelectMany = function(fieldId){
+  $("div,span").removeClass('ui-focus');
   els = $(".field_" + fieldId);
   selected_options = []
   for(var i=0; i<els.length; i++){
     if(els[i].checked)
-      selected_options.push(els[i].checked);
+      selected_options.push(els[i].value);
   }
   id = Collection.findNextFieldId(fieldId, selected_options);
   if(id){
     fieldFocus = Collection.prototype.findFieldById(id); 
     Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
+  }
+}
+
+Collection.setFocusOnFieldFromNumeric = function(fieldId, fieldCode){
+  $("div,span").removeClass('ui-focus');
+  els = $("#" + fieldCode);
+  id = Collection.findNextFieldIdByValue(fieldId, els.val());
+  if(id){
+    fieldFocus = Collection.prototype.findFieldById(id); 
+    Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
+  }
+}
+
+Collection.findNextFieldIdByValue = function(fieldId, value){
+  layers = Collection.getSchemaByCollectionId(window.currentCollectionId).layers;
+  field = null;
+  for(var i=0; i<layers.length; i++){
+    fields = layers[i].fields
+    for(var j=0; j<fields.length; j++){
+      if(fields[j].id == fieldId)
+        field = fields[j];
+    }
+  }
+  if(field.is_enable_field_logic){
+    field_logics = field.config["field_logics"]
+    if (field_logics != undefined) {
+      for(var j=0; j<field_logics.length; j++){
+        valid = Collection.checkNumericConditionFieldLogic(field_logics[j], value);
+        if(valid){
+          return field_logics[j]["field_id"];
+        }
+      }
+    }
+    return null;
+  }
+  else{
+    return null;
+  }
+}
+
+Collection.checkNumericConditionFieldLogic = function(fieldLogic, value){
+  switch(fieldLogic["condition_type"]){
+    case "=":
+      return (fieldLogic["value"] == value);     
+      break;
+    case "<":
+      return (value < fieldLogic["value"]);
+      break;
+    case ">":
+      return (value > fieldLogic["value"]);
+      break;
+    case "<=":
+      return (value <= fieldLogic["value"]);
+      break;
+    case ">=":
+      return (value >= fieldLogic["value"]);    
+      break;        
   }
 }
 
@@ -299,28 +397,29 @@ Collection.findNextFieldId = function(fieldId, options){
   for(var i=0; i<layers.length; i++){
     fields = layers[i].fields
     for(var j=0; j<fields.length; j++){
-      if(fields[j].id == fieldId);
+      if(fields[j].id == fieldId)
         field = fields[j];
     }
   }
   if(field.is_enable_field_logic){
     field_logics = field.config["field_logics"]
-    for(var j=0; j<field_logics.length; j++){
-      if(field_logics[j].condition_type == "all"){
-        valid = Collection.checkAllConditionFieldLogic(field_logics[j]["selected_options"], options);
-        if(valid){
-          return field_logics[j]["field_id"];
+    if (field_logics != undefined) {
+      for(var j=0; j<field_logics.length; j++){
+        if(field_logics[j].condition_type == "all"){
+          valid = Collection.checkAllConditionFieldLogic(field_logics[j]["selected_options"], options);
+          if(valid){
+            return field_logics[j]["field_id"];
+          }
         }
-        return null;
-      }
-      else{
-        valid = Collection.checkAnyConditionFieldLogic(field_logics[j]["selected_options"], options);
-        if(valid){
-          return field_logics[j]["field_id"];
+        else{
+          valid = Collection.checkAnyConditionFieldLogic(field_logics[j]["selected_options"], options);
+          if(valid){
+            return field_logics[j]["field_id"];
+          }
         }
-        return null;
       }
     }
+    return null;
   }
   else{
     return null;
@@ -339,7 +438,7 @@ Collection.checkAllConditionFieldLogic = function(selectedOptions, options){
       return false
     }
   }
-  return false;
+  return true;
 }
 
 Collection.checkAnyConditionFieldLogic = function(selectedOptions, options){
@@ -502,7 +601,7 @@ Collection.prototype.getListCollectionTemplate = function(collection, classListN
   item = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ' + classListName + '" >' + 
             '<div class="ui-btn-inner ui-li">' + 
               '<div class="ui-btn-text">' +
-                '<a style="cursor: pointer;" onclick="Collection.prototype.showListSites(' + collection["id"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + collection["name"] + '</a>' + 
+                '<a style="cursor: pointer;" onclick="Collection.prototype.showListSites(' + collection["id"]  + ', ' + true + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + collection["name"] + '</a>' + 
               '</div>' + 
               '<span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>' +
             '</div>' +
@@ -514,7 +613,7 @@ Collection.prototype.getListSiteTemplate = function(collectionId, site, classLis
   item = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ' + classListName + '" >' + 
             '<div class="ui-btn-inner ui-li">' + 
               '<div class="ui-btn-text">' +
-                '<a style="cursor: pointer;" onclick="Collection.prototype.showSite(' + collectionId + ',' + site["id"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + site["name"] + '</a>' + 
+                '<a style="cursor: pointer;" onclick="Collection.prototype.showSite(' + collectionId + ','+ site["id"] +  ','+ site["idSite"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + site["name"] + '</a>' + 
               '</div>' + 
               '<span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>' +
             '</div>' +
@@ -522,36 +621,67 @@ Collection.prototype.getListSiteTemplate = function(collectionId, site, classLis
   return item;
 }
 
-Collection.prototype.showListSites = function(collectionId){
-  $.mobile.saving('show');
-  $("#listSitesView").html("");
-  window.currentCollectionId = collectionId;
-  Collection.clearFormData();
-  $.ajax({
-    url: "/mobile/collections/" + collectionId + "/sites.json",
-    success: function(sites) {
-      for(var i=0; i< sites.length; i++){
-        if(sites.length > 1 && i == 0){
-          classListName = "ui-first-child" 
-        }
-        else if(sites.length > 1 && i == (sites.length - 1)){
-          classListName = "ui-last-child"
-        }
-        else{
-          classListName = ""
-        }
-        item = Collection.prototype.getListSiteTemplate(collectionId, sites[i], classListName)
-        $("#listSitesView").append(item);
-      }
-      Collection.hidePages();
-      $("#mobile-list-sites-main").show();
-      schema = Collection.getSchemaByCollectionId(collectionId);
-      $("#collectionTitle").html(schema["name"]);
-      $.mobile.saving('hide');
-    }
-  });
+Collection.prototype.addClassToSiteList = function(sites , index){
+  if(sites.length > 1 && index == 0){
+    classListName = "ui-first-child" 
+  }
+  else if(sites.length > 1 && index == (sites.length - 1)){
+    classListName = "ui-last-child"
+  }
+  else{
+    classListName = ""
+  }
+  return classListName;
 }
 
+Collection.prototype.showListSites = function(collectionId, isFromCollectionList){
+  $.mobile.saving('show');
+  window.currentCollectionId = collectionId;
+  Collection.clearFormData();
+  var have_site = false;
+  if(window.navigator.onLine){
+    $.ajax({
+      url: "/mobile/collections/" + collectionId + "/sites.json",
+      success: function(sites) {
+        $("#listSitesView").html("");
+        for(var i=0; i< sites.length; i++){
+          classListName = Collection.prototype.addClassToSiteList(sites, i);
+          item = Collection.prototype.getListSiteTemplate(collectionId, sites[i], classListName)
+          $("#listSitesView").append(item);
+        }
+      }
+    });
+  } else {
+    sites = JSON.parse(localStorage.getItem("offlineSites"));
+    $("#listSitesView").html("");
+    if(sites){
+      for(var i=0; i< sites.length; i++){
+        classListName = Collection.prototype.addClassToSiteList(sites, i);
+        if(sites[i].collectionId == collectionId){
+          item = Collection.prototype.getListSiteTemplate(collectionId, sites[i].formData, classListName);
+          $("#listSitesView").append(item);
+          have_site = true;
+        }
+      }
+    }
+  }
+  if(!have_site && !window.navigator.onLine){
+    Collection.hidePages();
+    if(!isFromCollectionList){
+      Collection.prototype.goHome();
+    }else{
+      $("#mobile-sites-main").show();
+      Collection.prototype.createSite(window.currentCollectionId);
+    }
+    $.mobile.saving('hide');
+  }else{
+    Collection.hidePages();
+    $("#mobile-list-sites-main").show();
+    schema = Collection.getSchemaByCollectionId(collectionId);
+    $("#collectionTitle").html(schema["name"]);
+    $.mobile.saving('hide');
+  }
+}
 
 Collection.prototype.applyBrowserLocation = function(){
   Collection.prototype.getLocation();
@@ -560,16 +690,16 @@ Collection.prototype.applyBrowserLocation = function(){
 Collection.prototype.showError = function(error){
   switch(error.code){
     case error.PERMISSION_DENIED:
-      x.innerHTML="User denied the request for Geolocation."
+      Collection.prototype.showErrorMessage("User denied the request for Geolocation.")
       break;
     case error.POSITION_UNAVAILABLE:
-      x.innerHTML="Location information is unavailable."
+      Collection.prototype.showErrorMessage("Location information is unavailable.")
       break;
     case error.TIMEOUT:
-      x.innerHTML="The request to get user location timed out."
+      Collection.prototype.showErrorMessage("The request to get user location timed out.")
       break;
     case error.UNKNOWN_ERROR:
-      x.innerHTML="An unknown error occurred."
+      Collection.prototype.showErrorMessage("An unknown error occurred.")
       break;
   }
 }
@@ -587,13 +717,14 @@ Collection.prototype.setFieldFocus = function(fieldId,fieldCode, fieldKind){
   $("div,span").removeClass('ui-focus');
   fieldValue = Collection.prototype.setFieldValueByKind(fieldKind, fieldCode);
   fieldLogics = Collection.prototype.getFieldLogicByFieldId(fieldId);
-
-  for(i=0; i<fieldLogics.length; i++){
-    if(fieldLogics[i]["field_id"] != null){
-      if(fieldLogics[i]["value"] == fieldValue){       
-        fieldFocus = Collection.prototype.findFieldById(fieldLogics[i]["field_id"]); 
-        Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
-        return;
+  if(fieldLogics){
+    for(i=0; i<fieldLogics.length; i++){
+      if(fieldLogics[i]["field_id"] != null){
+        if(fieldLogics[i]["value"] == fieldValue){       
+          fieldFocus = Collection.prototype.findFieldById(fieldLogics[i]["field_id"]); 
+          Collection.prototype.setFieldFocusStyleByKind(fieldFocus);
+          return;
+        }
       }
     }
   }
@@ -601,7 +732,7 @@ Collection.prototype.setFieldFocus = function(fieldId,fieldCode, fieldKind){
 
 Collection.prototype.setFieldFocusStyleByKind = function(fieldFocus){
   if(fieldFocus['kind'] == 'select_many'){
-    $("[name='properties["+fieldFocus['id']+"][]']").first().parent().addClass('ui-focus');
+    $("[name='properties["+fieldFocus['id']+"][]']").first().parent().parent().addClass('ui-focus');
     $("[name='properties["+fieldFocus['id']+"][]']").first().focus();
   }else{
     $('#'+fieldFocus["code"]).parent().addClass('ui-focus');
@@ -680,6 +811,7 @@ Collection.showMapPage = function() {
   Collection.hidePages();
   Collection.mapContainer.setLatLng( $("#lat").val(),$("#lng").val());
   $("#map-page").show();
+  Map.loadMap();
 }
 
 Collection.showMainSitePage = function(){
@@ -724,7 +856,6 @@ Collection.mapContainer.createCurrentMarker = function() {
 
     var point = Collection.mapContainer.currentMarker.getPosition();
     Collection.mapContainer.map.panTo(point);
-
   });
 }
 
@@ -750,7 +881,10 @@ Collection.createMap = function(canvasId){
 
 Collection.assignSite = function(site){
   Collection.clearFormData();
-  window.currentSiteId = site["id"]
+  if(window.navigator.onLine)
+    window.currentSiteId = site["id"]
+  else
+    window.currentSiteId = site["idSite"]
   $("#name").val(site["name"]);
   $("#lat").val(site["lat"]);
   $("#lng").val(site["lng"]);
@@ -790,20 +924,40 @@ Collection.editLayerForm = function(schema, properties){
 }
 
 Collection.mapContainer.refresh =  function(){
-  setTimeout(function() {
-    google.maps.event.trigger(Collection.mapContainer.map,'resize');
-    $("#map-page").hide();
-  }, 500);
+  google.maps.event.trigger(Collection.mapContainer.map, 'resize');
 }
 
+Collection.prototype.showSite = function(collectionId, siteIdOnline, siteIdOffline){
+  if(window.navigator.onLine)
+    Collection.prototype.showSiteOnline(collectionId, siteIdOnline);
+  else
+    Collection.prototype.showSiteOffline(collectionId, siteIdOffline);
+}
 
-Collection.prototype.showSite = function(collectionId, siteId){
+Collection.prototype.showSiteOffline = function(collectionId, siteId){
+  $.mobile.saving('show');
+  $("#listSitesView").html("");
+  Collection.hidePages();
+
+  sites = JSON.parse(localStorage.getItem("offlineSites"));
+  for(var i=0; i< sites.length; i++){
+    if(sites[i].formData["idSite"] == siteId){
+      Collection.assignSite(sites[i].formData);
+    }
+  }
+  Collection.hideWhileOffline();
+  $("#mobile-sites-main").show();
+  $.mobile.saving('hide');
+}
+
+Collection.prototype.showSiteOnline = function(collectionId, siteId){
   $.mobile.saving('show');
   $("#listSitesView").html("");
   $.ajax({
     url: "/mobile/collections/" + collectionId + "/sites/" + siteId + ".json",
     success: function(site) {
       Collection.hidePages();
+      Collection.hideWhileOffline();
       Collection.assignSite(site);
       $("#mobile-sites-main").show();
       $.mobile.saving('hide');

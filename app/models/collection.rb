@@ -15,7 +15,7 @@ class Collection < ActiveRecord::Base
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
   has_many :layers, order: 'ord', dependent: :destroy
-  has_many :fields
+  has_many :fields, order: 'ord'
   has_many :thresholds, dependent: :destroy
   has_many :reminders, dependent: :destroy
   has_many :share_channels, dependent: :destroy
@@ -120,7 +120,7 @@ class Collection < ActiveRecord::Base
       target_fields = target_fields.select { |f| lms[f.layer_id] && lms[f.layer_id].read }
 
     end
-    target_fields
+    target_fields.sort! { |x, y| x[:ord] <=> y[:ord] }
   end
 
   def visible_layers_for(user, options = {}, language = nil)

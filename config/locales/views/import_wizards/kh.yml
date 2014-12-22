@@ -27,7 +27,7 @@ kh:
       import_failed: "ការ​​​បញ្ចូលទិន្នន័យបានបរជ័យ :-("
       could_not_import: "យើងមិនអាចបញ្ចូលទិន្នន័យរបស់អ្នកពីឯកសារ %{filename}."
       import_finished: "ការ​​​បញ្ចូលទិន្នន័យបានបញ្ចប់!"
-      finished_importing: "Wយើងបញ្ចប់ការបញ្ចូលទិន្នន័យរបស់អ្នកពីឯកសារ %{filename}."
+      finished_importing: "យើងបញ្ចប់ការបញ្ចូលទិន្នន័យរបស់អ្នកពីឯកសារ %{filename}."
       browse_collection: "ស្វែងរក បញ្ជីទិន្នន័យ"
       importing_data: "កំពុងបញ្ចូលទិន្នន័យ"
       importing: "កំពុងបញ្ចូលទិន្នន័យ..."
