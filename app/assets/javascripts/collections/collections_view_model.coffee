@@ -254,8 +254,34 @@ onCollections ->
       else
         $.get "/plugin/alerts/thresholds.json", (data) =>
           for collection in @collections()
-            thresholds = collection.fetchThresholds(data)
-            collection.thresholds(thresholds)
+            if collection.checked() == true && collection.sites().length > 0
+              thresholds = collection.fetchThresholds(data)
+              collection.thresholds(collection.findSitesByThresholds(thresholds))
+              thresholds = []
+          @showLegendState()
+
+    @showLegendState: ->
+      if @currentCollection()
+        for threshold in @currentCollection().thresholds()
+          if threshold.alertedSitesNum() > 0
+            @showingLegend(true)
+            break
+          else
+            @showingLegend(false)
+      else
+        for collection in @collections()
+          if collection.checked() == true && collection.showLegend()
+              @showingLegend(true)
+              break
+            else
+              @showingLegend(false)
+
+    @toggleAlertLegend: ->
+      if @showingLegend() == true
+        if @alert_legend() == true
+          @alert_legend(false)
+        else
+          @alert_legend(true)
 
     @hideDatePicker: ->
       $("input").datepicker "hide"
