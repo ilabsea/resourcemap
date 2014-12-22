@@ -1,5 +1,5 @@
 mobile_id: on
-host: localhost:3000
+host: resmap-stg-ilab.instedd.org
 number_of_attempt_failed: 5
 
 plugins:

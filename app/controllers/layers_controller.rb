@@ -118,13 +118,13 @@ class LayersController < ApplicationController
       params[:layer][:fields_attributes][field_idx][:config] = params[:layer][:fields_attributes][field_idx][:config].except(:range)
     else
       if field[:config][:range]
-        if field[:config][:range][:minimum] == ""
-          field[:config][:range][:minimum] = nil
+        if field[:config][:range][:minimum] == "" || field[:config][:range][:minimum].nil?
+          field[:config][:range] = field[:config][:range].except(:minimum)
         else
           field[:config][:range][:minimum] = field[:config][:range][:minimum].to_i
         end
-        if field[:config][:range][:maximum] == ""
-          field[:config][:range][:maximum] = nil
+        if field[:config][:range][:maximum] == "" || field[:config][:range][:maximum].nil?
+          field[:config][:range] = field[:config][:range].except(:maximum)
         else
           field[:config][:range][:maximum] = field[:config][:range][:maximum].to_i
         end

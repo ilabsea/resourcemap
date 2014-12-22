@@ -9,7 +9,7 @@ onLayers ->
         @selected_options = ko.observableArray([])
       @label = ko.observable(data?.label)
       @field_id = ko.observableArray([data?.field_id])
-      @condition_type = ko.observable(data?.condition_type || "all")
+      @condition_type = ko.observable(data?.condition_type)
       @editing = ko.observable(false)
 
     toJSON: =>

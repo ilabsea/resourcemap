@@ -1,0 +1,10 @@
+%select{"data-theme" => "b", "onchange" => "Collection.switchLangTo()" , "id" => "lang-switcher"}
+  - Language.all.each do |language|
+    - if (language.code == params[:locale])
+      %option{value: "#{language.code}", selected: 'selected' }
+        = language.name
+    -else
+      %option{value: "#{language.code}" }
+        = language.name
+        
+      / = link_to language.name, "?locale=#{language.code}", "data-role" => "none", "data-ajax" => "false", class: "ui-link 

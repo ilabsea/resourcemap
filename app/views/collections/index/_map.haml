@@ -186,7 +186,8 @@
                   %label= t('views.collections.index.location')
                   <!-- ko if: !hasLocation() -->
                   - if current_user.is_guest
-                    %span.value{ko(visible: '!editingLocation()', style: 'color:grey;')}= t('views.collections.index.no_value')
+                    %span.value{style: 'color:grey;'}
+                      = t('views.collections.index.no_value')
                   - else
                     %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
                   <!-- /ko -->
@@ -307,7 +308,7 @@
         %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px;'}      
     <!-- /ko --> 
 
-    <!-- ko if: $root.alert_legend() -->
+    <!-- ko if: showLegend() && $root.alert_legend() -->
     %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:200px;overflow-y:auto;border-radius:10px'}
       %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
         %b Legend
@@ -353,7 +354,7 @@
         
         %div{ko(foreach: :collections), style: ''}
           <!-- ko if: checked() -->
-          <!-- ko if: thresholds().length > 0 -->
+          <!-- ko if: showLegend() -->
           %div{style: 'padding:10px 10px 0px 10px;border-bottom:1px solid #E6E6E6'}
             %b{ko(text: :name)}
             %ul#legend_alert_list{ko(foreach: :thresholds), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}

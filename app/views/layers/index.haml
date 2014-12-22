@@ -42,7 +42,7 @@
       #form-editor
         .left
           /ko foreach: fields
-          .feditor{ko(css: {first: '$data == $parent.fields()[0]'}, click: '$root.selectField')}
+          .feditor{ko(css: {first: '$data == $parent.fields()[0]'})}
             .feditor-top
             .feditor-container
               .rightbuttons{style:'width:250px;'}
@@ -61,7 +61,7 @@
                     = t('views.layers.form.move_to_layer')
                 //ko
 
-              .feditor-button{style: 'margin-top:-5px;'}
+              .feditor-button{ko(click: '$root.selectField'),style: 'margin-top:-5px;'}
                 %button{ko(attr: {class: "buttonClass()"}, css: {active: "$data == $root.currentField()"}), title: t('views.layers.form.select_field')}
               .feditor-content{style:'width:395px; word-wrap: break-word;'}
                 %h1{ko(text: :name)}
