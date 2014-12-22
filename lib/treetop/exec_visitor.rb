@@ -110,7 +110,11 @@ class ExecVisitor < Visitor
     site.user = user
     props.each do |p|
       field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
-      site.properties[field.es_code] = p.values[1]
+      if field.kind == "yes_no"
+        site.properties[field.es_code] = not(["n", "N", "no", "NO", "No", "nO",  "0"].include? p.values[1])
+      else
+        site.properties[field.es_code] = p.values[1]
+      end
     end
     if site.valid?
       site.save!
@@ -150,7 +154,13 @@ class ExecVisitor < Visitor
       if code != 'name' and code != 'lat' and code != 'lng'
         id = get_field_id(code,collection_id)
         if id
-          properties[id.to_s] =  property[:value]
+          field =Field.find_by_id id
+          p property[:value]
+          if field.kind == "yes_no"
+            properties[id.to_s] =  not(["n", "N", "no", "NO", "No", "nO",  "0"].include? property[:value])
+          else
+            properties[id.to_s] =  property[:value]
+          end
         else
           properties['not_exist'] = [] if properties['not_exist'].nil?
           properties['not_exist'].push code
