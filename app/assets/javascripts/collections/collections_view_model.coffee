@@ -180,11 +180,11 @@ onCollections ->
             @showingLegend(false)
       else
         for collection in @collections()
-        if collection.checked() == true && collection.showLegend()
-            @showingLegend(true)
-            break
-          else
-            @showingLegend(false)
+          if collection.checked() == true && collection.showLegend()
+              @showingLegend(true)
+              break
+            else
+              @showingLegend(false)
 
     @toggleAlertLegend: ->
       if @showingLegend() == true

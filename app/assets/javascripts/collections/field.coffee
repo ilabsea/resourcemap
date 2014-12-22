@@ -97,7 +97,6 @@ onCollections ->
           return
         
         if @field_logics
-        if @field_logic
           for field_logic in @field_logics
             b = false
             if field_logic.field_id?
@@ -141,11 +140,11 @@ onCollections ->
                   for field_value in value             
                     for field_logic_value in field_logic.selected_options
                       if field_value == parseInt(field_logic_value.value)                        
-                          b = true
-                          field_id = field_logic.field_id
+                        b = true
+                        field_id = field_logic.field_id
                         tmp.push field_value
-                        else
-                          b = false
+                      else
+                        b = false
                   if tmp.length == field_logic.selected_options.length
                     @setFocusStyleByField(field_id)
                     return
