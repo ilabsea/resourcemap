@@ -62,22 +62,47 @@
       /ko foreach: fields
       %label{ko(text: :name), style: 'width:150px; float:left'}
       %input{ko(checked: 'is_mandatory'), type: 'checkbox', checked: 'checked'} visible
+
       %br/
-      //ko
+      %br/        
+      %label{style: 'width:150px; float:left'} Name
+      %input{ko(checked: 'isVisibleName'), type: 'checkbox', checked: 'checked'} visible
+      %br/
+      %br/
+      %label{style: 'width:150px; float:left'} Location
+      %input{ko(checked: 'isVisibleLocation'), type: 'checkbox', checked: 'checked'} visible
+      %br/
+      %br/      
       .bottom-actions
-        / ko if: $root.savingLayer()
-        = t('views.layers.saving_layer')
-        / /ko
-        / ko if: !$root.savingLayer()
-        %button.white{ko(click: '$root.saveLayer', enable: :valid), type: :button, title: 'Save layer'}= t('views.layers.save_layer')
-        %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'}= t('views.layers.cancel')
-        / /ko
-        / ko if: !valid()
-        %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
-        / /ko         
+        %button.white{ko(click: '$root.saveDefaultLayer'), type: :button, title: 'Save layer'}= t('views.layers.save_layer')
+        %a.tgrey{ko(click: '$root.cancelDefaultLayer'), href: 'javascript:void(0)'}= t('views.layers.cancel')
     //ko
-    
-    /ko if: $index() > 0
+
+    /ko ifnot: $root.editingDefaultLayer
+    .box.grey.w60
+      .toptitle
+        %span Default layer
+      %br/
+      %br/
+      %label{style: 'width:150px; float:left'} Name
+      / %input{ko(checked: 'isVisibleName'), type: 'checkbox', checked: 'checked'} visible
+      %label{"data-bind"=>"text: isVisibleName() ? 'visible' : 'invisible'"}
+      %br/
+      %br/
+      %label{style: 'width:150px; float:left'} Location
+      %label{"data-bind"=>"text: isVisibleLocation() ? 'visible' : 'invisible'"}
+      %br/
+      %br/
+      .bottom-actions
+        %button.farrow{ko(click: '$root.editDefaultLayer'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
+        / %button.white{ko(click: '$root.saveDefaultLayer'), type: :button, title: 'Save layer'}= t('views.layers.save_layer')
+    //ko
+
+
+    %br/
+    -# Layers
+    /ko foreach: layers
+    /ko if: $data == $root.currentLayer()
     .box.w80
       %p{style: 'margin-top:0px;'}
         %label{ko(css: {error: :nameError}), :for => :name}= t('views.layers.name')
@@ -184,30 +209,8 @@
           %span{ko(text: "error()"), style: 'color:red;margin-left:20px'}
           / /ko
     //ko
-    //ko
 
     /ko if: $data != $root.currentLayer()
-    /ko if: $index() == 0
-    .box.grey.w60
-      %p{style: 'margin-top:0px'} Default layer
-      /ko foreach: fields
-      %label{ko(text: :name), style: 'width:150px; float:left'}
-      /ko if: is_mandatory
-      %label visible
-      //ko
-
-      /ko ifnot: is_mandatory
-      %label invisible
-      //ko
-
-      %br/
-      //ko
-      %br/
-      /ko if: !$root.savingLayer()
-      %button.farrow{ko(click: '$root.editLayer'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
-      //ko 
-    //ko
-    /ko if: $index() > 0
     .box.grey.w60
       .toptitle
         %span{ko(text: :name)}
@@ -242,7 +245,6 @@
         /ko if: !$root.savingLayer()
         %button.farrow{ko(click: '$root.editLayer'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
         //ko
-    //ko
     //ko
     %br/
     //ko

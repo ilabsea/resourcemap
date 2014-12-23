@@ -11,7 +11,9 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+
 ActiveRecord::Schema.define(:version => 20180228025955) do
+
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
     t.integer  "collection_id"
@@ -52,6 +54,7 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
     t.string   "name"
     t.text     "description",           :limit => 16777215
     t.boolean  "public"
+
     t.datetime "created_at",                                                                                  :null => false
     t.datetime "updated_at",                                                                                  :null => false
     t.decimal  "lat",                                       :precision => 10, :scale => 6
@@ -65,7 +68,10 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
     t.boolean  "is_aggregator",                                                            :default => false
     t.text     "print_template"
     t.boolean  "is_published_template",                                                    :default => true
-    t.integer  "sites_count"
+    t.integer  "sites_count"                                              :default => 0
+    t.boolean  "is_visible_name",                                    :default => true
+    t.boolean  "is_visible_location",                                :default => true
+
   end
 
   create_table "field_histories", :force => true do |t|

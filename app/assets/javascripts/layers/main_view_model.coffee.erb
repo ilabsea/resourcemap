@@ -11,6 +11,7 @@ onLayers ->
       @currentField = ko.observable()
       @default_select = '(no value)'
 
+
       @defaultLayer = ko.observable(new Layer)
       @defaultLayer().name('Default layer')
       @defaultLayer().ord(0)
@@ -234,6 +235,23 @@ onLayers ->
         @layers.remove(@currentLayer()) unless @currentLayer().id()
       @currentLayer(null)
       @currentField(null)
+
+    editDefaultLayer: =>
+      @tmpVisibleName = @isVisibleName()
+      @tmpVisibleLocation = @isVisibleLocation()
+      @editingDefaultLayer(true)
+
+    saveDefaultLayer: =>
+      @savingLayer(true)
+      json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
+      json._method = 'put'
+      $.post "/collections/#{@collectionId}.json", json
+      @editingDefaultLayer(false)
+
+    cancelDefaultLayer: =>
+      @isVisibleName(@tmpVisibleName)
+      @isVisibleLocation(@tmpVisibleLocation)
+      @editingDefaultLayer(false)
 
     saveLayer: =>
       @savingLayer(true)
