@@ -6,6 +6,14 @@ onLayers ->
       @currentLayer = ko.observable()
       @currentField = ko.observable()
       @default_select = '(no value)'
+      @defaultLayer = ko.observable(new Layer)
+      @defaultLayer().name('Default layer')
+      @defaultLayer().ord(0)
+
+      @defaultLayer().fields.push(new Field(@defaultLayer(), { name: "Name", kind: "text", code: "name", ord: 0}))
+      @defaultLayer().fields.push(new Field(@defaultLayer(), { name: "Location", kind: "text", code: "location", ord: 1}))
+      # @defaultLayer().fields.push(new Field(@defaultLayer(), { name: "Longitude", kind: "text"}))
+      @layers.unshift @defaultLayer() unless layers
 
       @newOption = ko.observable(new Option)
       @newFieldLogic = ko.observable(new FieldLogic)     
@@ -64,6 +72,7 @@ onLayers ->
       layer.hasFocus(true)
 
     editLayer: (layer) =>
+      console.log layer
       @originalFields = $.map(layer.fields(), (x) -> new Field(layer, x.toJSON()))
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0

@@ -1,6 +1,7 @@
 onLayers ->
   class @Field
     constructor: (layer, data) ->
+      # console.log data
       @layer = ko.observable layer
       @id = ko.observable data?.id
       @name = ko.observable data?.name
@@ -30,11 +31,12 @@ onLayers ->
       @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
       @codeError = ko.computed =>
         if !@hasCode() then return "the field #{@fieldErrorDescription()} is missing a Code"
-        if (@code() in ['lat', 'long', 'name', 'resmap-id', 'last updated']) then return "the field #{@fieldErrorDescription()} code is reserved"
+        if (@code() in ['lat', 'long', 'resmap-id', 'last updated']) then return "the field #{@fieldErrorDescription()} code is reserved"
         null
         
       @error = ko.computed => @nameError() || @codeError() || @impl().error()
       @valid = ko.computed => !@error()
+      # @visible = ko.observable(true)
 
     hasName: => $.trim(@name()).length > 0
 
