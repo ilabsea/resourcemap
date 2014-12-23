@@ -20,6 +20,8 @@ onCollections ->
       @id = data?.id
       @name = data?.name
       @icon = data?.icon
+      @isVisibleName = data?.is_visible_name
+      @isVisibleLocation = data?.is_visible_location
       @currentSnapshot = if data?.snapshot_name then data?.snapshot_name else ''
       @updatedAt = ko.observable(data?.updated_at)
       @showLegend = ko.observable(false)

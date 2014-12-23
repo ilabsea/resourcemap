@@ -1,19 +1,15 @@
 onLayers ->
   class @MainViewModel
-    constructor: (collectionId, layers) ->
+    constructor: (collectionId, layers, is_visible_name, is_visible_location) ->
       @collectionId = collectionId
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
       @currentLayer = ko.observable()
       @currentField = ko.observable()
       @default_select = '(no value)'
-      @defaultLayer = ko.observable(new Layer)
-      @defaultLayer().name('Default layer')
-      @defaultLayer().ord(0)
-
-      @defaultLayer().fields.push(new Field(@defaultLayer(), { name: "Name", kind: "text", code: "name", ord: 0}))
-      @defaultLayer().fields.push(new Field(@defaultLayer(), { name: "Location", kind: "text", code: "location", ord: 1}))
-      # @defaultLayer().fields.push(new Field(@defaultLayer(), { name: "Longitude", kind: "text"}))
-      @layers.unshift @defaultLayer() unless layers
+      
+      @isVisibleName = ko.observable is_visible_name ? true
+      @isVisibleLocation = ko.observable is_visible_location ? true
+      @editingDefaultLayer = ko.observable(false)
 
       @newOption = ko.observable(new Option)
       @newFieldLogic = ko.observable(new FieldLogic)     
@@ -72,7 +68,6 @@ onLayers ->
       layer.hasFocus(true)
 
     editLayer: (layer) =>
-      console.log layer
       @originalFields = $.map(layer.fields(), (x) -> new Field(layer, x.toJSON()))
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
@@ -86,6 +81,23 @@ onLayers ->
         @layers.remove(@currentLayer()) unless @currentLayer().id()
       @currentLayer(null)
       @currentField(null)
+
+    editDefaultLayer: =>
+      @tmpVisibleName = @isVisibleName()
+      @tmpVisibleLocation = @isVisibleLocation()
+      @editingDefaultLayer(true)
+
+    saveDefaultLayer: =>
+      @savingLayer(true)
+      json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
+      json._method = 'put'
+      $.post "/collections/#{@collectionId}.json", json
+      @editingDefaultLayer(false)
+
+    cancelDefaultLayer: =>
+      @isVisibleName(@tmpVisibleName)
+      @isVisibleLocation(@tmpVisibleLocation)
+      @editingDefaultLayer(false)
 
     saveLayer: =>
       @savingLayer(true)
