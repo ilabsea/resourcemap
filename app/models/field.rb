@@ -49,7 +49,7 @@ class Field < ActiveRecord::Base
   serialize :metadata
 
   def self.reserved_codes
-    ['lat', 'long', 'name', 'resmap-id', 'last updated']
+    ['lat', 'long', 'resmap-id', 'last updated']
   end
 
   before_save :set_collection_id_to_layer_id, :unless => :collection_id?
