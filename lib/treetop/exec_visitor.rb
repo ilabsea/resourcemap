@@ -110,7 +110,7 @@ class ExecVisitor < Visitor
     site.user = user
     props.each do |p|
       field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
-      site.properties[field.es_code] = p.values[1]
+      site.properties[field.es_code] = to_supported_value(field, p.values[1])
     end
     if site.valid?
       site.save!
@@ -150,7 +150,8 @@ class ExecVisitor < Visitor
       if code != 'name' and code != 'lat' and code != 'lng'
         id = get_field_id(code,collection_id)
         if id
-          properties[id.to_s] =  property[:value]
+          field =Field.find_by_id id
+          properties[id.to_s] = to_supported_value(field, property[:value])
         else
           properties['not_exist'] = [] if properties['not_exist'].nil?
           properties['not_exist'].push code
@@ -167,5 +168,18 @@ class ExecVisitor < Visitor
       site[code] = property[:value] if code == 'name' or code == 'lat' or code == 'lng'
     }
     site
+  end
+
+  def to_supported_value(field, value)
+    case field.kind
+    when "yes_no"
+      return not(["n", "N", "no", "NO", "No", "nO",  "0"].include? value)
+    when "select_one"
+      field.config["options"].each do |op|
+        return op["id"] if (op["code"] == value || op["label"] == value)
+      end
+    else
+      return value
+    end
   end
 end
