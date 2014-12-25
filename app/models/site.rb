@@ -31,9 +31,10 @@ class Site < ActiveRecord::Base
   include Site::ElasticSearchConcern
   include HistoryConcern
   include Report::CachingConcern
-
+  
   belongs_to :collection, :counter_cache => true
   validates_presence_of :name
+
 
   #Site belong to user created
   belongs_to :user

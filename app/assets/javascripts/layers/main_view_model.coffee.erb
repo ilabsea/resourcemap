@@ -240,18 +240,20 @@ onLayers ->
       @tmpVisibleName = @isVisibleName()
       @tmpVisibleLocation = @isVisibleLocation()
       @editingDefaultLayer(true)
+      @currentLayer(null)
 
     saveDefaultLayer: =>
-      @savingLayer(true)
       json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
       json._method = 'put'
       $.post "/collections/#{@collectionId}.json", json
       @editingDefaultLayer(false)
+      @currentLayer(null)
 
     cancelDefaultLayer: =>
       @isVisibleName(@tmpVisibleName)
       @isVisibleLocation(@tmpVisibleLocation)
       @editingDefaultLayer(false)
+      @currentLayer(null)
 
     saveLayer: =>
       @savingLayer(true)

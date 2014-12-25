@@ -8,11 +8,13 @@
           %span.stat-r
           %span{ko(html: :highlightedName)}
       %button.farrow{ko(click: '$root.editSite'), type: :button}
+    /ko if: collection.isVisibleLocation
     %td.padded
       %span{ko(text: :safe_lat)}
     %td.padded
       %span{ko(text: :safe_lng)}
-    <!-- ko foreach: $root.currentCollection().fieldsForTableView() -->
+    //ko
+    <!-- ko foreach: $root.currentCollection().fields() -->
     %td.padded
       <!-- ko if: kind == 'photo' -->
       <!-- ko if: $parent.propertyValue($data) -->
