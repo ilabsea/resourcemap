@@ -120,14 +120,18 @@
           %tbody
             %tr
               %td
+                /ko if: collection.isVisibleName
                 %div
                   = label_tag :name, t('views.collections.index.name')
                   = text_field_tag :name, '', placeholder: 'Enter new site name', class: 'w20 right', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true), :autofocus => true
                   .clear
+                //ko
+                /ko if: collection.isVisibleLocation
                 %div
                   %label Location:
                   = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: t('views.collections.index.search_or_drug_the_pin')}
                   .clear
+                //ko
                 / ko if: collection.readable($data)
                 <!-- ko foreach: layers -->
                 %div
@@ -173,6 +177,7 @@
           %tbody
             %tr
               %td
+                /ko if: collection.isVisibleName
                 %div{style: 'margin-bottom:14px'}
                   %label= t('views.collections.index.name')
                   - if current_user.is_guest
@@ -182,6 +187,8 @@
                   <!-- ko if: editingName() -->
                   = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                   <!-- /ko -->
+                //ko
+                /ko if: collection.isVisibleLocation
                 %div{style: 'margin-bottom:14px'}
                   %label= t('views.collections.index.location')
                   <!-- ko if: !hasLocation() -->
@@ -200,6 +207,7 @@
                   <!-- ko if: editingLocation() -->
                   = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search'}
                   <!-- /ko -->
+                //ko
                 - if Settings.mobile_id?
                   %div{style: 'margin-bottom:14px'}
                     %label= t('views.collections.index.id_with_prefix')

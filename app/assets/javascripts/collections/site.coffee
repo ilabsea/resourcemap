@@ -28,14 +28,18 @@ onCollections ->
       @alert = ko.observable data?.alert
       @locationText = ko.computed
         read: =>
-          if @hasLocation()
+          if @hasLocation() && @collection.isVisibleLocation
             (Math.round(@lat() * 100000000000) / 100000000000) + ', ' + (Math.round(@lng() * 100000000000) / 100000000000)
           else
             ''
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
-      @valid = ko.computed => @hasName() and @hasInputMendatoryProperties()
+      @valid = ko.computed => 
+        if collection.isVisibleName
+          @hasName() and @hasInputMendatoryProperties()
+        else
+          @hasInputMendatoryProperties()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
 
@@ -344,7 +348,7 @@ onCollections ->
         field.originalValue = field.value()
 
       @inEditMode(true)
-      @startEditLocationInMap()
+      @startEditLocationInMap() if @collection.isVisibleLocation
       window.model.initDatePicker()
       window.model.initAutocomplete()
 
@@ -420,8 +424,8 @@ onCollections ->
       json =
         id: @id()
         name: @name()
-      json.lat = @lat() if @lat()
-      json.lng = @lng() if @lng()
+      json.lat = @lat() if @lat() && @collection.isVisibleLocation
+      json.lng = @lng() if @lng() && @collection.isVisibleLocation
       json.properties = @properties() if @properties()
       json
 

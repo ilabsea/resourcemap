@@ -66,12 +66,14 @@ onLayers ->
       @layers.push(layer)
       @currentLayer(layer)
       layer.hasFocus(true)
+      @editingDefaultLayer(false)
 
     editLayer: (layer) =>
       @originalFields = $.map(layer.fields(), (x) -> new Field(layer, x.toJSON()))
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
       layer.hasFocus(true)
+      @editingDefaultLayer(false)
 
     cancelLayer: =>
       if @currentLayer().id()
@@ -86,18 +88,20 @@ onLayers ->
       @tmpVisibleName = @isVisibleName()
       @tmpVisibleLocation = @isVisibleLocation()
       @editingDefaultLayer(true)
+      @currentLayer(null)
 
     saveDefaultLayer: =>
-      @savingLayer(true)
       json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
       json._method = 'put'
       $.post "/collections/#{@collectionId}.json", json
       @editingDefaultLayer(false)
+      @currentLayer(null)
 
     cancelDefaultLayer: =>
       @isVisibleName(@tmpVisibleName)
       @isVisibleLocation(@tmpVisibleLocation)
       @editingDefaultLayer(false)
+      @currentLayer(null)
 
     saveLayer: =>
       @savingLayer(true)

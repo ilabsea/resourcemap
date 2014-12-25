@@ -8,7 +8,7 @@ class Site < ActiveRecord::Base
   include HistoryConcern
 
   belongs_to :collection
-  validates_presence_of :name
+  validates_presence_of :name, :if => Proc.new {collection.is_visible_name}
 
   serialize :properties, Hash
   validate :valid_properties

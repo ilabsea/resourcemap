@@ -34,7 +34,7 @@ onCollections ->
 
         @unselectSite()
         @editingSite site
-        @editingSite().startEditLocationInMap()
+        @editingSite().startEditLocationInMap() if @currentCollection().isVisibleLocation
         window.model.initDatePicker()
         window.model.initAutocomplete()
 
