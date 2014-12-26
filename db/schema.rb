@@ -179,14 +179,6 @@ ActiveRecord::Schema.define(:version => 20141223043729) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "queries", :force => true do |t|
-    t.string   "name"
-    t.text     "conditions"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-    t.integer  "collection_id"
-  end
-
   create_table "reminders", :force => true do |t|
     t.string   "name"
     t.text     "reminder_message"
@@ -211,14 +203,6 @@ ActiveRecord::Schema.define(:version => 20141223043729) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.text     "rule"
-  end
-
-  create_table "reports", :force => true do |t|
-    t.string   "value"
-    t.integer  "field_id"
-    t.integer  "layer_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
   end
 
   create_table "share_channels", :force => true do |t|
