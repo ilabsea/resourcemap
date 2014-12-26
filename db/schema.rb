@@ -266,14 +266,6 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "queries", :force => true do |t|
-    t.string   "name"
-    t.text     "conditions"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-    t.integer  "collection_id"
-  end
-
   create_table "reminders", :force => true do |t|
     t.string   "name"
     t.text     "reminder_message"
@@ -300,6 +292,7 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
     t.text     "rule"
   end
 
+<<<<<<< HEAD
   create_table "report_cachings", :force => true do |t|
     t.integer  "collection_id"
     t.integer  "report_query_id"
@@ -342,6 +335,8 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
   add_index "report_query_templates", ["collection_id"], :name => "index_report_query_templates_on_collection_id"
   add_index "report_query_templates", ["report_query_id"], :name => "index_report_query_templates_on_report_query_id"
 
+=======
+>>>>>>> add attribute to get each collection api
   create_table "share_channels", :force => true do |t|
     t.integer  "channel_id"
     t.integer  "collection_id"
