@@ -8,6 +8,7 @@ function Collection (collection) {
   this.id = collection != null ? collection.id : void 0;
   this.name = collection != null ? collection.name : void 0;
   this.layers = collection != null ? collection.layers : void 0;
+  console.log(this.name());
   this.fields = [];
 };
 
@@ -45,8 +46,9 @@ Collection.prototype.fetchFields = function() {
 };
 
 Collection.prototype.createSite = function(id){
+  currentCollectionSchema = Collection.getSchemaByCollectionId(id);
   Collection.hideWhileOffline();
-  Collection.prototype.showFormAddSite(Collection.getSchemaByCollectionId(id));
+  Collection.prototype.showFormAddSite(currentCollectionSchema);
 }
 
 Collection.hideWhileOffline = function(){
@@ -227,15 +229,16 @@ Collection.prototype.ajaxUpdateOfflineSite = function(collectionId, formData){
 }
 
 Collection.prototype.validateData = function(collectionId){
-  if($("#name").val().trim() == ""){
+  currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
+  if(currentCollectionSchema["is_visible_name"] == true && $("#name").val().trim() == ""){
     Collection.prototype.showErrorMessage("Name can not be empty.");
     return false;
   }
-  if($("#lat").val().trim() == ""){
+  if(currentCollectionSchema["is_visible_location"] == true && $("#lat").val().trim() == ""){
     Collection.prototype.showErrorMessage("Location's latitude can not be empty.");
     return false;
   }
-  if($("#lng").val().trim() == ""){
+  if(currentCollectionSchema["is_visible_location"] == true && $("#lng").val().trim() == ""){
     Collection.prototype.showErrorMessage("Location's longitude can not be empty.");
     return false;
   }
@@ -568,7 +571,13 @@ Collection.prototype.addLayerForm = function(schema){
 }
 
 Collection.prototype.handleFieldUI = function(schema){
-  
+  if(schema["is_visible_name"] == false){
+    $('#collectionName').hide();
+    $('#name').val("");
+  }
+  if(schema["is_visible_location"] == false){
+    $('#location').hide();
+  }  
   for(i=0; i<schema["layers"].length;i++){
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j];
@@ -580,7 +589,6 @@ Collection.prototype.handleFieldUI = function(schema){
 }
 
 Collection.prototype.addDataToCollectionList = function(collection_schema){
-  
   for(var i=0; i< collection_schema.length; i++){
     if(collection_schema.length > 1 && i == 0){
       classListName = "ui-first-child" 
@@ -889,6 +897,12 @@ Collection.assignSite = function(site){
   $("#lat").val(site["lat"]);
   $("#lng").val(site["lng"]);
   focusSchema = Collection.getSchemaByCollectionId(window.currentCollectionId);
+  if(focusSchema["is_visible_name"] == false){
+    $('#collectionName').hide();
+  }
+  if(focusSchema["is_visible_location"] == false){
+    $('#location').hide();
+  }
   var currentSchemaData = jQuery.extend(true, {}, focusSchema);
   $("#title").html(currentSchemaData["name"]);
   fieldHtml = Collection.editLayerForm(currentSchemaData, site["properties"]);

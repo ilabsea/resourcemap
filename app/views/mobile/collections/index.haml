@@ -27,11 +27,11 @@
     %p{"id" => "unsupportPhotoField", "style" => "margin-left: 15px; margin-bottom: 0px;color: rgb(255, 87, 0)"}= t('views.mobile.collections.unsupport_photo_field')
     %hidden{id: "id"}
     %div{"data-role" => "content"}
-      %div
+      %div#collectionName
         %label{:for => "basic"}= t('views.mobile.collections.name')
         %input#name{:name => "name", :type => "text", :autofocus => true}
         .clear
-      %div
+      %div#location
         %label= t('views.mobile.collections.location')
         %a{id: 'linkPageMap', href:'#map', onclick: 'Collection.showMapPage()', }
           %label= t('views.mobile.collections.location')
