@@ -16,7 +16,7 @@ class Api::CollectionsController < ApplicationController
     if params[:format] == 'csv' || params[:page] == 'all'
       options << :all
       params.delete(:page)
-    elsif params[:format] == 'kml' || 'shp'
+    elsif params[:format] == 'kml' || params[:format] == 'shp'
       options << :require_location
       options << :page
     else
