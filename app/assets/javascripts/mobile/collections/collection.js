@@ -8,7 +8,6 @@ function Collection (collection) {
   this.id = collection != null ? collection.id : void 0;
   this.name = collection != null ? collection.name : void 0;
   this.layers = collection != null ? collection.layers : void 0;
-  console.log(this.name());
   this.fields = [];
 };
 
@@ -573,7 +572,6 @@ Collection.prototype.addLayerForm = function(schema){
 Collection.prototype.handleFieldUI = function(schema){
   if(schema["is_visible_name"] == false){
     $('#collectionName').hide();
-    $('#name').val("");
   }
   if(schema["is_visible_location"] == false){
     $('#location').hide();
