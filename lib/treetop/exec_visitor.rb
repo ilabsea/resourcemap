@@ -56,7 +56,7 @@ class ExecVisitor < Visitor
     if collection
       key_value_properties = node_to_properties(node.property_list)
       site = node_to_site key_value_properties
-      if not site.keys.include?('name')
+      if collection.is_visible_name == true && (not site.keys.include?('name'))
         return MSG[:name_is_required]
       end
       properties = node_to_site_properties key_value_properties,collection.id

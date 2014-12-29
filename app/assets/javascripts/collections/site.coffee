@@ -261,7 +261,7 @@ onCollections ->
         @alertMarker.setData( id: @id(), collection_id: @collection.id, lat: @lat(), lng: @lng(), color: @color, icon: @icon, target: true)
       else
         @marker.setPosition(@position()) if position
-        @marker.setDraggable false
+        @marker.setDraggable false if @marker
         @deleteMarker() if !@position()
 
       window.model.setAllMarkersActive()
