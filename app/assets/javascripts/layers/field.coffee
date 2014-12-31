@@ -31,7 +31,7 @@ onLayers ->
       @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
       @codeError = ko.computed =>
         if !@hasCode() then return "the field #{@fieldErrorDescription()} is missing a Code"
-        if (@code() in ['lat', 'long', 'resmap-id', 'last updated']) then return "the field #{@fieldErrorDescription()} code is reserved"
+        if (@code() in ['lat', 'long', 'name', 'resmap-id', 'last updated']) then return "the field #{@fieldErrorDescription()} code is reserved"
         null
         
       @error = ko.computed => @nameError() || @codeError() || @impl().error()
