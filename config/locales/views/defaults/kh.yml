@@ -25,6 +25,13 @@ kh:
       password_confirmation: "ការបញ្ជាក់ពាក្យសម្ងាត់"
       phone_number: "លេខទូរស័ព្ទ"
     settings:
+      index:
+        title: "ការកំណត់"
+        description: "ផ្លាស់ប្ដូរព័តមានរបស់តំបន់នេះ"
+        name: "ឈ្មោះ"
+        label: "ការពិពណ៌នា"
+        public: "សាធារណៈ"
+        icon: "រូបតំណាង"             
       title: "អនុញ្ញាតការបង្ហាញផែនទីសម្រាប់សាធារណៈជន"
       description: "អនុញ្ញាតឱ្យសាធារណៈជនដើម្បីមើលទិន្នន័យទាំងនេះ"
       last_24h_truck_route: "ផ្លូវឡាន 24 ម៉ោងចុងក្រោយ"
@@ -33,6 +40,7 @@ kh:
       use_field: "ប្រើប្រាស់សំណួរ"
       in_the_report_to_mark_the_approval_status: "នៅក្នុងរបាយការណ៍ដើម្បីសម្គាល់ស្ថានភាពនៃការអនុម័ត"
       save: "រក្សាទុក"
+      cancel: "បោះបង់"
     registrations:
       edit_account: "ការកែប្រែគណនី"
       current_password: "ពាក្យសម្ងាត់បច្ចុប្បន្ន"

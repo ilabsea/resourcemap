@@ -36,7 +36,6 @@ onLayers ->
         
       @error = ko.computed => @nameError() || @codeError() || @impl().error()
       @valid = ko.computed => !@error()
-      # @visible = ko.observable(true)
 
     hasName: => $.trim(@name()).length > 0
 
