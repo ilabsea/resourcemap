@@ -1,8 +1,8 @@
 = render '/tabs'
 
 .tabsline.settings-form
-  %h2 Settings
-  %p Change basic information about this collection
+  %h2= t('views.settings.index.title')
+  %p= t('views.settings.index.description')
   %br/
 
   = render 'form', creation: false

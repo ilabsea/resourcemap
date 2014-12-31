@@ -25,6 +25,13 @@ en:
       password_confirmation: "Password confirmation"
       phone_number: "Phone number"
     settings:
+      index:
+        title: "Settings"
+        description: "Change basic information about this collection"
+        name: "Name"
+        label: "Description"
+        public: "Public"
+        icon: "Icon"    
       title: "Enable map view for public"
       description: "Allow public to see these layers"
       last_24h_truck_route: "Last 24h truck route"
@@ -33,6 +40,7 @@ en:
       use_field: "Use field"
       in_the_report_to_mark_the_approval_status: "in the report to mark the approval status"
       save: "Save"
+      cancel: "Cancel"
     registrations:
       edit_account: "Edit Account"
       current_password: "Current password"
