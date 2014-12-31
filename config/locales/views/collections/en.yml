@@ -20,6 +20,8 @@ en:
       index:
         'yes': "Yes"
         'no': "No"
+        new: "Create new collection"
+        description: "Define basic information about this collection"
         collections: "Collections"
         go_back_to_present: "Go back to present"
         mobile_version: "Mobile Version"
@@ -177,3 +179,4 @@ en:
         year: "Year"
         remaining_messages: "this collection remain"
         message_quota: " message quota"
+

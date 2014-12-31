@@ -20,6 +20,8 @@ kh:
       index:
         'yes': "បាទ"
         'no': "ទេ"
+        new: "បង្កើតទិន្នន័យថ្មី"
+        description: "កំណត់ព័ត៌មានជាមូលដ្ឋានអំពីទិន្នន័យនេះ"
         collections: "ទិន្នន័យ"
         go_back_to_present: "ត្រឡប់ទៅបច្ចុប្បន្ន"
         mobile_version: "ទំរង់លើទូរស័ព្ទ"

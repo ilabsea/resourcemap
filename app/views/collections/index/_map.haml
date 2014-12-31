@@ -128,7 +128,7 @@
                 //ko
                 /ko if: collection.isVisibleLocation
                 %div
-                  %label Location:
+                  %label= t('views.collections.index.location')
                   = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: t('views.collections.index.search_or_drug_the_pin')}
                   .clear
                 //ko
