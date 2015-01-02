@@ -96,7 +96,11 @@ onCollections ->
         else
           return
         
+<<<<<<< HEAD
         if @field_logics
+=======
+        if @field_logic
+>>>>>>> resolve conflict
           for field_logic in @field_logics
             b = false
             if field_logic.field_id?
