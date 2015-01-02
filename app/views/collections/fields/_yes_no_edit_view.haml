@@ -1,7 +1,7 @@
 - if single_editing_mode
   %input{ko(checked: 'value', attr: {id: "'yes-no-input-' + code"}), type: 'checkbox'}
-  %button{ko(click: :save)} OK
-  %button{ko(click: :exit)} Cancel
+  %button{ko(click: :save)}= t('views.collections.index.ok')
+  %button{ko(click: :exit)}= t('views.collections.index.cancel')
 - else
   - if mobile 
     %br

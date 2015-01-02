@@ -1,0 +1,54 @@
+%ul{style: 'padding:0px; list-style:none'}
+  /ko foreach: impl().field_logics
+  %li{style: 'padding-bottom:20px'}
+    %div.box.grey.w25{style: 'padding-bottom:10px'}
+      %div{style: 'padding-bottom:5px'}
+        %span.smalltext.left{style: 'padding-right:18px;padding-top:10px'} if input is
+        = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select', enable: :editing), style: 'color:black;height:30px; background-color:white'
+      %div
+        %span.smalltext skip form to
+        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id, selectedOptions: field_id, enable: editing', style: 'color:black;max-width:135px;height:30px;background-color:white'}
+          /ko if: $index() == 0
+          %option{value: ""} (no value)
+          //ko
+          %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}        
+            %option{"data-bind" => "text: name, option: name, value: id"}
+
+      .rightbuttons
+        %button.fdelete{ ko(click: '$root.removeFieldLogic'), title: 'Remove logic' }
+      %br
+      /ko if: editing
+      %button.white{ko(click: '$root.saveFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.save')
+      %button.white{ko(click: '$root.cancelFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.cancel')
+      //ko
+      /ko ifnot: editing
+      %button.farrow{ko(click: '$root.editFieldLogic'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
+      //ko
+  //ko
+  /ko if: $root.isAddNew
+  %li{ko(with: '$root.newFieldLogic()')}
+    %div.box.grey.w25{style: 'padding-bottom:10px'}
+      %div{style: 'padding-bottom:5px'}
+        %span.smalltext.left{style: 'padding-right:18px;padding-top:10px'} if input is
+        = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select'), style: 'height:30px;background-color:white'
+        
+      %div
+        %span.smalltext skip form to
+        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id, selectedOptions: field_id', style: 'max-width:135px;height:30px;background-color:white'}
+          /ko if: $index() == 0
+          %option{value: ""} (no value)
+          //ko
+          %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}        
+            %option{"data-bind" => "text: name, option: name, value: id"}
+      
+      %button.white{ko(click: '$root.saveFieldLogic', enable: '$root.fieldLogicValid'), type: :button, title: 'Save'}= t('views.layers.form.field.save')
+      %button.white{ko(click: '$root.cancelFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.cancel')
+  //ko
+  /ko ifnot: $root.isAddNew
+  %div.box.grey.add{ko(click: '$root.addFieldLogic'), :style => 'width:270px;'}
+    %span
+      %a
+        = t('views.layers.form.field.add_skip_logic')
+    %button.cadd.right
+    %br{clear: :all}
+  //ko

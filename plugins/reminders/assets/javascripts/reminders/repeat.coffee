@@ -2,10 +2,11 @@ onReminders ->
   class @Repeat 
     constructor: (data) ->
       @id = ko.observable data?.id
-      @name = ko.observable data?.name
+      @_name = ko.observable data?.name
+      @name = ko.computed => window.t('javascripts.plugins.reminders.repeats.' + @_name())
       @order = ko.observable data?.order
 
     toJSON: =>
       id: @id()
-      name: @name()
+      name: @_name()
       order: @order()

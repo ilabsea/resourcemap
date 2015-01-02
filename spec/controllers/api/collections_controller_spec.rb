@@ -162,9 +162,9 @@ describe Api::CollectionsController do
 
       csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, yes_no.code, select_one.code, select_many.code, hierarchy.code, site_ref.code, date.code, director.code, 'last updated'])
 
-      csv.should include [site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "Bro", "", "", "", site2.updated_at.to_datetime.rfc822]
+      csv.include?([site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "Bro", "", "", "", site2.updated_at.to_datetime.rfc822]).should eq(true)
 
-      csv.should include [site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'yes', 'one', 'one, two', 'Dad', site2.id.to_s, '10/24/2012', user.email, site.updated_at.to_datetime.rfc822]
+      csv.include?([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, 'yes', 'one', 'one, two', 'Dad', site2.id.to_s, '10/24/2012', user.email, site.updated_at.to_datetime.rfc822]).should eq(true)
     end
   end
 
@@ -174,6 +174,19 @@ describe Api::CollectionsController do
     end
 
     it { response.should be_success }
+  end
+
+  describe "GET some sites from collection" do
+    before(:each) do
+      get :show, id: collection.id, format: 'shp'
+    end
+
+    it "should return some sites based on provided ids params" do
+      get :get_some_sites ,sites: [site.id, site2.id].join(","), format: 'json', collection_id: collection.id
+      response.should be_success
+      json = JSON.parse response.body
+      json["sites"].length.should eq(1)
+    end
   end
 
   describe "validate query fields" do

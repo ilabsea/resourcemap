@@ -1,0 +1,13 @@
+kh:
+  views:
+    report_submit_datas:
+      login:
+        statistic_report: របាយការណ៏ស្ថិតិ
+        today: 'ថ្ងៃនេះ'
+        this_month: 'ខែនេះ'
+        previous_month: 'ខែមុន'
+        custom: 'ការកណត់'
+        from: 'ចាប់ផ្តើម'
+        to: 'រហូតដល់'
+        from_mobile: 'ផ្ញើរពីទូរស័ព្ធ'
+        from_web: 'ផ្ញើរពីកុំព្យូទ័រ'

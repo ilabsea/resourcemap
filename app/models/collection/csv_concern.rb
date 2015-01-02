@@ -10,7 +10,14 @@ module Collection::CsvConcern
   end
 
   def to_csv(elastic_search_api_results = new_search.unlimited.api_results, current_user)
-    fields = self.fields.all
+    layers = self.layers.all
+    fields = []
+    layers.each do |layer|
+      allFields = layer.fields
+      allFields.each do |field|
+        fields.push(field)
+      end
+    end
 
     CSV.generate do |csv|
       header = ['resmap-id', 'name', 'lat', 'long']

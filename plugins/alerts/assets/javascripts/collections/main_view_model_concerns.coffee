@@ -3,7 +3,7 @@ onCollections ->
     @constructor: ->
       @alertsCount = ko.observable(0)
       @showingAlert= ko.observable(false)
-      @alertsCountText = ko.computed => if @alertsCount() == 1 then '1 alert' else "#{@alertsCount()} alerts"
+      @alertsCountText = ko.computed => if @alertsCount() == 1 then window.t('javascripts.plugins.alerts.one_alert') else window.t('javascripts.plugins.alerts.n_alerts', {n: @alertsCount()})
       
       @onSitesChanged =>      
         alertsCount = 0
@@ -16,7 +16,8 @@ onCollections ->
             alertsCount += cluster.data.alert_count
         alertsCount += 1 if @selectedSite()?.alert?()
         @alertsCount alertsCount
-      @setThresholds()
+      if !@currentCollection()?
+        @setThresholds()
       @aliasMethodChain "setMarkerIcon", "Alerts"
 
     @setMarkerIconWithAlerts: (marker, icon) ->
@@ -58,14 +59,11 @@ onCollections ->
 
       @showingAlert(false)
       if @currentCollection()
-        @resetCollectionStatus(@currentCollection()) 
+        @resetCollectionStatus(@currentCollection())
         @enterCollection(@currentCollection())
       else
         for collection in @collections()
           @resetCollectionStatus(collection)
-          if collection.checked() == true
-            collection.checked(false)
-          collection.checked(true)
       @rewriteUrl()
 
 

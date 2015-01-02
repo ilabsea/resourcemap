@@ -8,8 +8,8 @@
     
 .tabsline
   #memberships-main.hidden-until-loaded
-    %h2 Members
-    %p Manage who can see this collection and who can read/write its layers
+    %h2= t('views.collections.members.title')
+    %p= t('views.collections.members.description')
     %br/
 
   .tablewrapp
@@ -22,11 +22,17 @@
         %col{width: '60px'}
         %col{width: '420px'}
       %tr
-        %th.members-tree{style: '-webkit-border-radius:8px 0 0 0;-moz-border-radius:8px 0 0 0;'} Member &rarr; Site &rarr; Layer
-        %th.members-permission None
-        %th.members-permission Read
-        %th.members-permission Update
-        %th.members-permission Admin
+        %th.members-tree{style: '-webkit-border-radius:8px 0 0 0;-moz-border-radius:8px 0 0 0;'} 
+          = t('views.collections.members.member')
+          &rarr; 
+          = t('views.collections.members.site')
+          &rarr; 
+          = t('views.collections.members.layer')
+        %th.members-permission= t('views.collections.members.none')
+        %th.members-permission= t('views.collections.members.read')
+        %th.members-permission= t('views.collections.members.update')
+        %th.members-permission= t('views.collections.members.admin')
+
         %th
       %tr{ :class => :membersFirstRow }
         %td

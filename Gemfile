@@ -27,7 +27,9 @@ gem 'whenever', :require => false
 gem 'georuby'
 gem 'dbf', :require => 'dbf'
 gem 'rubyzip', :require => 'zip/zip'
-gem 'password_strength'
+gem "password_strength"
+gem "ruby-recaptcha"
+gem 'i18n-coffee'
 
 group :test do
   gem 'shoulda-matchers'
@@ -44,7 +46,7 @@ group :test, :development do
   gem 'rspec-rails'
   gem 'faker'
   gem 'machinist', '1.0.6'
-  gem 'capistrano'
+  gem 'capistrano', '~> 2.15'
   gem 'rvm'
   gem 'rvm-capistrano', '1.2.2'
   gem 'jasminerice'

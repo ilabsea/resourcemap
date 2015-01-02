@@ -44,7 +44,7 @@ module Api::V1
       if site.save
         current_user.site_count += 1
         current_user.update_successful_outcome_status
-        current_user.save!
+        current_user.save!(:validate => false)
 
         render json: site, status: :created
       else

@@ -9,8 +9,8 @@
     %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
       %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
         %a{ko(text: :label, click: '$parent.selectOption')}
-    %button{ko(click: :save), style: 'float:right'} Update options
-    %button{ko(click: :exit), style: 'float:right'} Cancel
+    %button{ko(click: :save), style: 'float:right'}= t('views.collections.index.update_options')
+    %button{ko(click: :exit), style: 'float:right'}= t('views.collections.index.cancel')
     .clear
 
   - else
@@ -29,8 +29,8 @@
     %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
       %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
         %a{ko(text: :label, click: '$parent.selectOption')}
-    %button{ko(click: :save), style: 'float:right'} Update options
-    %button{ko(click: :exit), style: 'float:right'} Cancel
+    %button{ko(click: :save), style: 'float:right'}= t('views.collections.index.update_options')
+    %button{ko(click: :exit), style: 'float:right'}= t('views.collections.index.cancel')
     .clear
 
   - else
@@ -39,7 +39,7 @@
         %span{ko(text: '$parent.labelFor($data)')}
         %a x
     <!-- ko if: !expanded() -->
-    %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer', id: "Add more"} Add more...
+    %span{ko(click: :expand), style: 'text-decoration:underline;cursor:pointer', id: "Add more"}= t('views.collections.index.add_more')
     <!-- /ko -->
     .superblyTagfieldClearer
       <!-- ko if: expanded() -->

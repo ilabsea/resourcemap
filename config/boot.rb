@@ -28,3 +28,24 @@ module Settings
   end
 end
 
+module RecaptchaSetting
+  extend self
+
+  CONFIG = YAML.load_file(File.expand_path('../recaptcha.yml', __FILE__))
+
+  def method_missing(method_name)
+    if method_name.to_s =~ /(\w+)\?$/
+      CONFIG[Rails.env][$1] == true
+    else
+      CONFIG[Rails.env][method_name.to_s]
+    end
+  end
+  
+  def validate_captcha(key, challeng, response)
+    uri = URI('http://www.google.com/recaptcha/api/verify')
+    params = { :privatekey => key, :remoteip => Settings.host, :challenge => challeng, :response => response }
+    res = Net::HTTP.post_form(uri, params)
+  end
+
+end
+

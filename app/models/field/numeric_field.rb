@@ -1,4 +1,5 @@
 class Field::NumericField < Field
+
   def value_type_description
     "numeric values"
   end
@@ -38,7 +39,26 @@ class Field::NumericField < Field
       raise not_allow_decimals_message if !value.integer? && value.real?
       raise invalid_field_message unless value.integer?
     end
+    if config and config['range']
+      validate_range(value)
+    end
     true
+  end
+
+  def validate_range(value)
+    if config['range']['minimum'] && config['range']['maximum'] && config['range']['minimum'] <= config['range']['maximum']
+      unless value.to_i >= config['range']['minimum'] && value.to_i <= config['range']['maximum']
+        raise "Invalid value, value must be in the range of (#{config['range']['minimum']}-#{config['range']['maximum']})"
+      end
+    end
+    
+    if config['range']['minimum']
+      raise "Invalid value, value must be greater than or equal #{config['range']['minimum']}" unless value.to_i >= config['range']['minimum']
+    end
+
+    if config['range']['maximum']
+      raise "Invalid value, value must be less than or equal #{config['range']['maximum']}" unless value.to_i <= config['range']['maximum']
+    end   
   end
 
   def to_dbf_field
@@ -60,4 +80,7 @@ class Field::NumericField < Field
     "#{invalid_field_message}. This numeric field is configured not to allow decimal values."
   end
 
+  def invalid_range()
+    "Invalid range"
+  end
 end

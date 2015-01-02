@@ -1,9 +1,9 @@
 
 #mobile-collections-main{ "data-fullscreen" => "true" }
   %div{"data-role"=> "header", "data-theme" => "b"}  
-    %h1= @title || 'My Collections'
+    %h1= @title || t('views.mobile.collections.title')
 
-    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c" }Sign out
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c" }= t('views.mobile.collections.sign_out')
   %div{"data-role" => "content"}
     %ul{ id: "listview", "data-role" => "listview", "data-inset" => "true"}
   %br{style: 'clear:both;'}  
@@ -11,50 +11,50 @@
 
 #map-page{"data-fullscreen" => "true"}
   %div{"data-role"=> "header", "data-theme" => "b"}
-    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.showMainSitePage()', "data-theme" => "c" } Back  
-    %h1= @title || "Location"
+    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.showMainSitePage()', "data-theme" => "c" }= t('views.back')
+    %h1= @title || t('views.mobile.collections.location')
   %div{"data-role" => "content", "id" => "map-canvas"}
-  %br{style: 'clear:both;'}  
+  %br{style: 'clear:both;'}
   = render "footer"
 
 #mobile-sites-main{"data-fullscreen" => "true", :style => "display:none;"}
   %div{"data-role" => "header", "data-theme" => "b"}
-    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.prototype.showListSites(window.currentCollectionId)', "data-theme" => "c" } Back
-    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c"  }Sign out
-    %h1{:id => "title"}
+    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.prototype.showListSites(window.currentCollectionId, false)', "data-theme" => "c" }= t('views.back')
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c"  }= t('views.mobile.collections.sign_out')
 
-  %h4{:style => "margin:15px"} New Site
-  %form#formSite{ action: 'javascript:void(0)', method: :post}
+    %h4= t('views.mobile.collections.new_site')
+  %form#formSite{ action: 'javascript:void(0)', method: :post, novalidate: 'novalidate'}
+    %p{"id" => "unsupportPhotoField", "style" => "margin-left: 15px; margin-bottom: 0px;color: rgb(255, 87, 0)"}= t('views.mobile.collections.unsupport_photo_field')
     %hidden{id: "id"}
     %div{"data-role" => "content"}
       %div
-        %label{:for => "basic"} Name: 
+        %label{:for => "basic"}= t('views.mobile.collections.name')
         %input#name{:name => "name", :type => "text", :autofocus => true}
         .clear
       %div
-        %label Location:
-        %a{href:'#map', onclick: 'Collection.showMapPage()',}
-          %label Location
+        %label= t('views.mobile.collections.location')
+        %a{id: 'linkPageMap', href:'#map', onclick: 'Collection.showMapPage()', }
+          %label= t('views.mobile.collections.location')
         %div{"data-role" => "controlgroup", style: "margin-left:10px"}
-          %label Location'Lat
+          %label= t('views.mobile.collections.lat')
           %input#lat{:name => "lat", placeholder: "Enter your location's lat"}
-          %label Location'Lng
+          %label= t('views.mobile.collections.lng')
           %input#lng{:name => "lng", placeholder: "Enter your location's lng"}
         .clear
       %div{"id" => "fields", "data-role" => "content", "style" => "padding-left:0px; padding-right:0px"}
-    %button{onclick: 'Collection.prototype.saveSite()', "data-theme" => "b"} Save Site
+    %button{onclick: 'Collection.prototype.saveSite()', "data-theme" => "b"}= t('views.mobile.collections.save_site')
   %div{"align" => "center"}
   %br{style: 'clear:both;'}  
   = render "footer"
 
 #mobile-list-sites-main{"data-fullscreen" => "true", :style => "display:none;"}
   %div{"data-role"=> "header", "data-theme" => "b"}  
-    %h1{:id => "collectionTitle"}
-    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.showCollectionPage()', "data-theme" => "c" } Back
-    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c" }Sign out
+    %h1{:style => "margin:15px" , :id => "collectionTitle"}
+    %a{"data-icon" => "arrow-l",  "data-add-back-btn" => "true", onclick: 'Collection.showCollectionPage()', "data-theme" => "c" }= t('views.back')
+    %a.ui-btn-right{"data-icon" => "arrow-r", :href => "/users/sign_out", "data-method" => "delete", "rel" => "external", "data-ajax" => false, "data-theme" => "c" }= t('views.mobile.collections.sign_out')
 
   %div{"data-role" => "content"}
-    %button{onclick: 'Collection.prototype.createSite(window.currentCollectionId)', "data-theme" => "b"} Add site
+    %button{onclick: 'Collection.prototype.createSite(window.currentCollectionId)', "data-theme" => "b"}= t('views.mobile.collections.new_site')
     %ul{ id: "listSitesView", "data-role" => "listSitesView", "data-inset" => "true", "class" => "ui-listview ui-listview-inset ui-corner-all ui-shadow"}
   %br{style: 'clear:both;'}  
   = render "footer"

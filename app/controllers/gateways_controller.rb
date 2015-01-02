@@ -16,7 +16,7 @@ class GatewaysController < ApplicationController
       channel.save!
       current_user.gateway_count += 1
       current_user.update_successful_outcome_status
-      current_user.save!
+      current_user.save!(:validate => false)
       render json: channel.as_json
     else
       render json: {status: 200, errors: channel.errors.full_messages}

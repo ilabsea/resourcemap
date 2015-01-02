@@ -19,7 +19,7 @@ onCollections ->
       @color = data?.color
       @idWithPrefix = ko.observable data?.id_with_prefix
       @properties = ko.observable data?.properties
-      @updatedAt = ko.observable(data.updated_at)
+      @updatedAt = ko.observable(data?.updated_at)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @editingName = ko.observable(false)
       @editingLocation = ko.observable(false)
@@ -70,7 +70,6 @@ onCollections ->
         window.model.currentCollection().performHierarchyChanges(@, [{field: field, oldValue: @properties()[esCode], newValue: value}])
 
       @properties()[esCode] = value
-
       $.ajax({
         type: "POST",
         url: "/sites/#{@id()}/update_property.json",
@@ -155,16 +154,16 @@ onCollections ->
           try
             propertyErrors = JSON.parse(data.responseText)["properties"]
             for field in @fields()
-                field.errorMessage("")
+              field.errorMessage("")
             if data.status == 422 && propertyErrors
               for prop in propertyErrors
                 for es_code, value of prop
-                  f = @collection.findFieldByEsCode(es_code)
+                  f = this.findFieldByEsCode(es_code)
                   f.errorMessage(value)
             else
               $.handleAjaxError(data)
           catch error
-              $.handleAjaxError(data))
+            $.handleAjaxError(data))
 
 
     create_site: (json, callback, callbackError) =>
@@ -182,7 +181,7 @@ onCollections ->
             @propagateUpdatedAt(data.updated_at)
             @id(data.id)
             @idWithPrefix(data.id_with_prefix)
-            $.status.showNotice "Site '#{@name()}' successfully created", 2000
+            $.status.showNotice window.t('javascripts.collections.index.site_created', {name: @name()}), 2000
             callback(data) if callback && typeof(callback) == 'function' )
           error: ((request, status, error) =>
             callbackError())
@@ -191,7 +190,7 @@ onCollections ->
           try
             propertyErrors = JSON.parse(data.responseText)["properties"]
             for field in @fields()
-                field.errorMessage("")
+              field.errorMessage("")
             if data.status == 422 && propertyErrors
               for prop in propertyErrors
                 for es_code, value of prop

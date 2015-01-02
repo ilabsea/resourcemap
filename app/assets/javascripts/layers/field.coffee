@@ -6,9 +6,13 @@ onLayers ->
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
+      
+      @is_enable_field_logic = ko.observable data?.is_enable_field_logic ? false
+      @is_enable_range = data?.is_enable_range
       @config = data?.config
+      @field_logics_attributes = data?.field_logics_attributes
       @metadata = data?.metadata
-      @is_mandatory = data?.is_mandatory
+      @is_mandatory = data?.is_mandatory      
 
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
@@ -28,7 +32,7 @@ onLayers ->
         if !@hasCode() then return "the field #{@fieldErrorDescription()} is missing a Code"
         if (@code() in ['lat', 'long', 'name', 'resmap-id', 'last updated']) then return "the field #{@fieldErrorDescription()} code is reserved"
         null
-
+        
       @error = ko.computed => @nameError() || @codeError() || @impl().error()
       @valid = ko.computed => !@error()
 
@@ -38,10 +42,10 @@ onLayers ->
 
     selectingLayerClick: =>
       @switchMoveToLayerElements true
+      return
 
     selectingLayerSelect: =>
       return unless @selecting
-
       if window.model.currentLayer() != @layer()
         $("a[id='#{@name()}']").html("Move to layer '#{@layer().name()}' upon save")
       else
@@ -69,6 +73,7 @@ onLayers ->
         ord: @ord()
         layer_id: @layer().id()
         is_mandatory: @is_mandatory
+        is_enable_field_logic: @is_enable_field_logic
       @impl().toJSON(json)
       json
 
@@ -99,14 +104,83 @@ onLayers ->
 
   class @Field_numeric extends @FieldImpl
     constructor: (field) ->
-      super(field)
-
       @allowsDecimals = ko.observable field?.config?.allows_decimals == 'true'
+      @is_enable_range = ko.observable field?.is_enable_range ? false
+      @minimum = ko.observable field?.config?.range?.minimum
+      @maximum = ko.observable field?.config?.range?.maximum
+      @error = ko.computed =>
+        if (@is_enable_range() && @minimum() && @minimum())&& parseInt(@minimum()) > parseInt(@maximum())
+          "Invalid range, maximum must greater than minimum"
+      @field_logics = if field.config?.field_logics?
+                        ko.observableArray(
+                          $.map(field.config.field_logics, (x) -> new FieldLogic(x))
+                        )
+                      else
+                        ko.observableArray()
+
+    validate_number_only: (field,event) =>
+      if event.keyCode > 31 && (event.keyCode < 48 || event.keyCode > 57)
+        return false
+      return true
 
     toJSON: (json) =>
-      json.config = {allows_decimals: @allowsDecimals()}
+      json.is_enable_range = @is_enable_range()
+      json.config = {allows_decimals: @allowsDecimals(), range: {minimum: @minimum(), maximum: @maximum()}, field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}    
+      return json
+
+    saveFieldLogic: (field_logic) =>
+      if !field_logic.id()?
+        if @field_logics().length > 0
+          id = @field_logics()[@field_logics().length - 1].id() + 1
+        else
+          id = 0
+        field_logic.id id
+        @field_logics.push field_logic
 
   class @Field_yes_no extends @FieldImpl
+    constructor: (field) ->
+      super(field)
+
+      @field_logics = if field.config?.field_logics?
+                        ko.observableArray(
+                          $.map(field.config.field_logics, (x) ->
+                            if field.config.field_logics.length == 1
+                              if x.label() == 'Yes'
+                                field_logic_no = new FieldLogic
+                                field_logic_no.id(0)
+                                field_logic_no.value(0)
+                                field_logic_no.label('No')
+
+                                return [field_logic_no, new FieldLogic(x)]
+                              if x.label() == 'No'
+                                field_logic_yes = new FieldLogic
+                                field_logic_yes.id(1)
+                                field_logic_yes.value(1)
+                                field_logic_yes.label('Yes')
+
+                                return [new FieldLogic(x), field_logic_yes]
+
+                            if field.config.field_logics.length == 2
+                              new FieldLogic(x)
+                          ))
+                     else
+                        field_logic_yes = new FieldLogic
+                        field_logic_yes.id(1)
+                        field_logic_yes.value(1)
+                        field_logic_yes.label("Yes")
+
+                        field_logic_no = new FieldLogic
+                        field_logic_no.id(0)
+                        field_logic_no.value(0)     
+                        field_logic_no.label("No")
+
+                        ko.observableArray([field_logic_no, field_logic_yes])
+
+    validFieldLogic: =>
+      @field_logics().filter (field_logic) -> typeof field_logic.field_id() isnt 'undefined'
+
+    toJSON: (json) =>
+      json.config = {field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}
 
   class @FieldSelect extends @FieldImpl
     constructor: (field) ->
@@ -129,10 +203,11 @@ onLayers ->
         else
           "the field '#{@field.name()}' must have at least one option"
 
+
     addOption: (option) =>
       option.id @nextId
       @options.push option
-      @nextId += 1
+      @nextId += 1 
 
     toJSON: (json) =>
       json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId}
@@ -140,10 +215,43 @@ onLayers ->
   class @Field_select_one extends @FieldSelect
     constructor: (field) ->
       super(field)
+      @field_logics = if field.config?.field_logics?
+                        ko.observableArray(
+                          $.map(field.config.field_logics, (x) -> new FieldLogic(x))
+                        )
+                      else
+                        ko.observableArray()
+
+    saveFieldLogic: (field_logic) =>
+      if !field_logic.id()?
+        if @field_logics().length > 0
+          id = @field_logics()[@field_logics().length - 1].id() + 1
+        else
+          id = 0
+        field_logic.id id
+        @field_logics.push field_logic
+                        
+    toJSON: (json) =>
+      json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId,field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}
 
   class @Field_select_many extends @FieldSelect
     constructor: (field) ->
       super(field)
+      @selected_field_logics = if field.config?.field_logics?
+        ko.observableArray(
+          $.map(field.config.field_logics, (x) -> new FieldLogic(x))
+        )
+      else
+        ko.observableArray()
+      @field_logics = ko.observableArray()
+    add_field_logic: (field_logic) =>
+      @field_logics.push field_logic
+
+    save_field_logic: (field_logic) =>
+      @selected_field_logics.push(field_logic)
+
+    toJSON: (json) =>
+      json.config = {options: $.map(@options(), (x) -> x.toJSON()), next_id: @nextId,field_logics: $.map(@selected_field_logics(), (x) ->  x.toJSON())}
 
   class @Field_hierarchy extends @FieldImpl
     constructor: (field) ->

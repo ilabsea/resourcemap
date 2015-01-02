@@ -110,4 +110,4 @@ onCollections -> if $('#collections-main').length > 0
            $refinePopup.get(0) == event.target ||
            $refine.has(event.target).length > 0 ||
            $refinePopup.has(event.target).length > 0
-      window.model.toggleRefinePopup() if window.model.showingRefinePopup()
+      window.model.toggleRefinePopup() if window.model.showingRefinePopup()  

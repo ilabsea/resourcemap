@@ -96,7 +96,7 @@ class Collection < ActiveRecord::Base
     site_ids.uniq
   end
 
-  def visible_fields_for(user, options)
+  def visible_fields_for(user, options, language = nil)
     if user.try(:is_guest)
       return fields.includes(:layer).all
     end
@@ -120,11 +120,11 @@ class Collection < ActiveRecord::Base
       target_fields = target_fields.select { |f| lms[f.layer_id] && lms[f.layer_id].read }
 
     end
-    target_fields
+    target_fields.sort! { |x, y| x[:ord] <=> y[:ord] }
   end
 
-  def visible_layers_for(user, options = {})
-    target_fields = visible_fields_for(user, options)
+  def visible_layers_for(user, options = {}, language = nil)
+    target_fields = visible_fields_for(user, options, language)
     layers = target_fields.map(&:layer).uniq.map do |layer|
       {
         id: layer.id,
@@ -152,6 +152,8 @@ class Collection < ActiveRecord::Base
           config: field.config,
           ord: field.ord,
           is_mandatory: field.is_mandatory,
+          is_enable_field_logic: field.is_enable_field_logic,
+          # field_logic_value: field.field_logic_value,
           writeable: user.is_guest ? false : !lms || lms[field.layer_id].write
         }
       end

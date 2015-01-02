@@ -1,11 +1,12 @@
 = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { "data-ajax" => false}) do |f|
   %p
-    = f.label :email
+    = f.label :email, t('views.devise.sessions.email')
     = f.email_field :email
   %p
-    = f.label :password
+    = f.label :password, t('views.devise.sessions.password')
     = f.password_field :password
-  %p= f.submit "Log in", "data-theme" => 'b'
+  %p= f.submit t('views.devise.sessions.login'), "data-theme" => 'b'
   
 
-  %a{"data-role" => "footer", "data-theme" => "f", "data-position" => "fixed", 'align' => 'center', href: "/users/sign_up", "style" => "padding-bottom:20px;"} Create account for Resource Map
+  %a{"data-role" => "footer", "data-theme" => "f", "data-position" => "fixed", 'align' => 'center', href: "/users/sign_up", "style" => "padding-bottom:20px;"} 
+  = t("Create account for Resource Map")

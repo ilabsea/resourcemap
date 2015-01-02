@@ -7,8 +7,8 @@
 = render '/tabs'
 
 .tabsline
-  %h2 Import wizard
-  %p Now specify how to map each column to a field.
+  %h2= t('views.import_wizards.title')
+  %p= t('views.import_wizards.adjustments.description')
   %br/
 
   - if current_user_snapshot.at_present?
@@ -17,15 +17,15 @@
     = render '/current_snapshot_message'
     %br
 
-  %h2.loading Curate Data
-  %p Specify how to map each column to a field
+  %h2.loading= t('views.import_wizards.adjustments.curate_data')
+  %p= t('views.import_wizards.adjustments.specify_column_mapping')
 
   #generating_preview.grey
-    We are generating a preview for the sites you are importing.
+    = t('views.import_wizards.adjustments.we_are_generating_preview')
     %br
-    Then you will be able to define how to use each column.
+    = t('views.import_wizards.adjustments.then_you_can_define_column')
     %br
-    This may take a while depending on the size of your file.
+    = t('views.import_wizards.adjustments.this_may_take_a_while')
 
   #import-wizard-main.hidden-until-loaded
     
@@ -35,16 +35,16 @@
         /ko if: !hasId()
         - if collection.sites.exists?
           %span
-            = raw "All sites will be imported as new. If you want to modify the existing ones, follow the instructions in the #{link_to "previous page", :back, :class => 'black', :style => 'text-decoration:underline'}."
+            = raw t('views.import_wizards.adjustments.instruction', link: link_to("previous page", :back, :class => 'black', :style => 'text-decoration:underline'))
           %br
         //ko
-        %span If you notice issues with some characters (such as accents) try exporting the CSV with UTF-8 encoding.
+        %span= t('views.import_wizards.adjustments.if_you_notice_issues_with_characters')
       .clear
     %br
 
     /ko if: (validationErrors() && validationErrors().hasErrors())
     .box.error_description
-      %h2 Resolve these conflicts in order to complete the upload
+      %h2= t('views.import_wizards.adjustments.resolve_these_conflicts')
       %ul
         / ko foreach: validationErrors().summarizedErrorList()
         %li
@@ -54,15 +54,15 @@
     %br
     //ko
     .show_column_options
-      Show columns:
+      = t('views.import_wizards.adjustments.show_columns')
       %input#all-columns{ko(click: 'showAllColumns', checked: 'showingColumns'), type: :radio, value: 'all'}
-      %label{:for => 'all-columns'} all
+      %label{:for => 'all-columns'}= t('views.import_wizards.adjustments.all')
       %input#new-columns{ko(click: 'showNewColumns', checked: 'showingColumns'), type: :radio, value: 'new'}
-      %label{:for => 'new-columns'} new
+      %label{:for => 'new-columns'}= t('views.import_wizards.adjustments.new')
       %input#existing-columns{ko(click: 'showExistingColumns', checked: 'showingColumns'), type: :radio, value: 'existing'}
-      %label{:for => 'existing-columns'} existing
+      %label{:for => 'existing-columns'}= t('views.import_wizards.adjustments.existing')
       %input#columns-with-errors{ko(click: 'showColumnsWithErrors', checked: 'showingColumns'), type: :radio, value: 'with_errors'}
-      %label{:for => 'columns-with-errors'} with errors
+      %label{:for => 'columns-with-errors'}= t('views.import_wizards.adjustments.with_errors')
 
     %br
 
@@ -93,20 +93,20 @@
 
     %br/
     / ko if: sitesCount() > 10
-    Showing first 10 records.
+    = t('views.import_wizards.adjustments.showing_first_10_records')
     / /ko
     %br/
     /ko if: importing()
-    Importing, please wait. This might take several minutes.
+    = t('views.import_wizards.adjustments.importing_please_wait')
     //ko
     /ko if: importError()
-    %span{style: 'color:red'} Sorry, something failed during the import. Please contact InSTEDD for support.
+    %span{style: 'color:red'}= t('views.import_wizards.adjustments.sorry_something_failed')
     //ko
     /ko if: !importing() && !importError()
     /ko if: !validationErrors() || (validationErrors() && !validationErrors().hasErrors())
-    %button.grey{ko(click: :startImport)} Start importing
+    %button.grey{ko(click: :startImport)}= t('views.import_wizards.adjustments.start_importing')
     //ko
     /ko if: (validationErrors() && validationErrors().hasErrors())
-    %span.error Fix the errors to start importing
+    %span.error= t('views.import_wizards.adjustments.fix_the_errors_to_start_importing')
     //ko
     //ko

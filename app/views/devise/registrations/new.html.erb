@@ -1,8 +1,7 @@
-<%= devise_error_messages! :class => 'centered w30' %>
-
+<%= devise_error_messages!  :class => 'centered w30' %>
 
 <div class="box centered w30" id='registration'>
-<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => {:id => 'create_user' }) do |f| %>
 
 
 
@@ -36,6 +35,24 @@
   <div class="field w30">
     <%= f.label :phone_number %> <i>(85512345678)</i>
     <%= f.telephone_field :phone_number %>
+  </div>
+
+  <div class="field w30">
+    <input type="hidden" id="public_key" value="<%= get_public_key %>" />
+    <div style="padding-left:10px;padding-top:10px;padding-bottom:10px; border-radius:4px; background: none repeat scroll 0 0 #D0D0D0;">
+      <div id="recaptcha_main_widget" style="display:block;">
+        <div id="recaptcha_image" style='margin:0px;padding:0px;'></div>
+        <div class="recaptcha_only_if_incorrect_sol" style="color:red"></div>
+        <span class="recaptcha_only_if_image" style='width:200px;'></span>
+        <input id="recaptcha_response_field" placeholder="Enter your captcha here" class="button" name="recaptcha_response_field" type="text" style="width: 274px;" />
+        <div>
+          <button type="button" onclick="javascript:Recaptcha.reload()" />Refresh</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      Recaptcha.create($("#public_key").val(),"recaptcha_widget",{theme: "custom"})
+    </script>
   </div>
 
   <div class="actions">

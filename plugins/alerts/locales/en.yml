@@ -1,0 +1,70 @@
+en:
+  javascripts:
+    plugins:
+      alerts:
+        one_alert: "1 alert"
+        n_alerts: "%{n} alerts"
+        cant_save: "Can't save: %{error}"
+        operators:
+          is_less_than: "is less than"
+          is_greater_than: "is greater than"
+          is_equal_to: "is equal to"
+          contains: "contains"
+        value_types:
+          a_value_of: "a value of"
+          a_percentage_of: "a percentage of"
+        errors:
+          name_is_missing: "Alert property's name is missing"
+          must_have_at_least_one_condition: "the threshold must have at least one condition"
+          condition: "condition #%{n} %{message}"
+          value_is_missing: "value is missing"
+          value_is_invalid: "value is invalid"
+          notification_message_is_missing: "Notification's message is missing"
+  views:
+    collections:
+      tab:
+        alerts: "Alerts"
+    plugins:
+      alerts:
+        title: "Alert"
+        close_alert: "Close Alert"
+        move_up: "Move up"
+        move_down: "Move down"
+        in: "in"
+        all_sites: "all sites"
+        when: "When"
+        and: "and"
+        or: "or"
+        of: "of"
+        change_icon_to: ",change icon to:"
+        edit: "Edit"
+        thresholds: "Thresholds"
+        form:
+          properties: "Properties"
+          name: "Name"
+          apply_this_alert_to: "Apply this alert to"
+          all_sites: "All sites"
+          some_sites: "Some sites"
+          conditions: "Conditions"
+          all_of_following_conditions: "All of following conditions"
+          any_of_the_following_conditions: "Any of the following conditions"
+          compared_to: "compared to"
+          add_another_condition: "Add another condition"
+          change_site_display_on_map: "Change site display on map"
+          notifications: "Notifications"
+          do_not_send_notifications: "Do not send notifications"
+          notify_these_people: "Notify these people"
+          send_emails_to: "Send emails to:"
+          send_text_messages_to: "Send text messages to:"
+          message: "Message"
+          use_the_following_expression: "Use the following expressions to fill your message with sites data"
+          site_name: "Site Name"
+          message_template: "This alert is about [site name]. Occupation is now at [occupation]"
+          save: "Save"
+          cancel: "Cancel"
+          please: "Please"
+          add_layers: "add Layers"
+          first_before_managing_your_thresholds: "first before managing your thresholds."
+          add_alert: "Add Alert"
+          sample_phone_number: "85512345678"
+          compare_to: "compare to"

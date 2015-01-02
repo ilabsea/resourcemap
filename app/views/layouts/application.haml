@@ -1,8 +1,9 @@
 - content_for :head do
+  %script{:type => "text/javascript", :src => "http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"}
   :javascript
     $.handleAjaxError = function(xhr) {
       if (!xhr || (xhr.status !== 0 && xhr.readyState !== 0)) {
-        $.status.showError('Unexpected error occurred, please refresh the page.');
+        $.status.showError("Unexpected error");
       }
     };
     
@@ -11,16 +12,16 @@
     });
 
 - content_for :navigation do
-  = section "Home", root_path(explicit: true), :home  
-  = section "Collections", collections_path, :collections
+  = section t('views.nav.home'), root_path(explicit: true), :home  
+  = section t('views.nav.collections'), collections_path, :collections
   
   - if user_signed_in?
     - if !current_user.is_guest
-      = section "Activity", activities_path, :activities
+      = section t('views.nav.activity'), activities_path, :activities
       - if Settings.is_on? :channels
-        = section "SMS", gateways_path, :gateways
+        = section t('views.nav.sms'), gateways_path, :gateways
       - if current_user.is_super_user
-        = section "Quota", quotas_path, :quotas
+        = section t('views.nav.quota'), quotas_path, :quotas
   -#= section "Tour", '', :tour
   -#= section "Community", '', :community
   -#= section "Help", '', :help
@@ -34,21 +35,24 @@
           %br
           .container
             %ul
-              %li= link_to 'Settings', edit_user_registration_path
+              %li= link_to t('views.account.settings'), edit_user_registration_path
             %hr/
             %ul
               %li
-                %a{:href => "mailto:support@instedd.org?subject=[#{application_name.underscore}-bug]"} Report a bug
-              %li= link_to "Sign Out", destroy_user_session_path, method: :delete
+                %a{:href => "mailto:support@instedd.org?subject=[#{application_name.underscore}-bug]"}= t('views.report_a_bug')
+              %li= link_to t('views.account.sign_out'), destroy_user_session_path, method: :delete
       %li
         = link_to '', edit_user_registration_path, class: 'fsettings'
     - else
       %li
-        = link_to "Create account", new_user_registration_path, class: 'fedit'
+        = link_to t('views.account.create_account'), new_user_registration_path, class: 'fedit'
       %li
-        = link_to "Log in", new_user_session_path, class: 'fuser'
+        = link_to t('views.account.login'), new_user_session_path, class: 'fuser'
+    %li{style: "padding: 7px 5px;", id: "locale-switcher"}
+      %div{style: "padding-top:0px;"}
+        = show_language_options
 - content_for :footer_links do
-  %a{:href => root_path} Home
+  %a{:href => root_path}= t('views.home')
   %span.VersionRevision{style: "display: none;"} 
     = ResourceMap::Application.config.revision 
 = render file: 'layouts/instedd_application'

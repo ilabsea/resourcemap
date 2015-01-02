@@ -1,5 +1,9 @@
 class RegistrationsController < Devise::RegistrationsController
   include Concerns::MobileDeviceDetection
+  include RecaptchaSetting
+
+  helper_method :get_public_key
+  helper_method :get_private_key
 
   before_filter :prepare_for_mobile
 
@@ -8,8 +12,17 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    params['user']['phone_number'].delete!('+')
-    super
+    validate = validate_captcha(RecaptchaSetting.private_key, params["recaptcha_challenge_field"], params["recaptcha_response_field"])
+    if validate.body.start_with? "true"
+      flash.delete :recaptcha_error
+      super
+    else
+      flash.delete :recaptcha_error
+      build_resource(sign_up_params)
+      resource.valid?
+      resource.errors.add(:base, "There was an error with the recaptcha code below. Please re-enter the code.")
+      respond_with_navigational(resource) { render :new }    
+    end
   end
 
   def update
@@ -31,4 +44,13 @@ class RegistrationsController < Devise::RegistrationsController
       render "edit"
     end
   end
+
+  def get_public_key
+    RecaptchaSetting.public_key
+  end
+
+  def get_private_key
+    RecaptchaSetting.private_key
+  end
+
 end

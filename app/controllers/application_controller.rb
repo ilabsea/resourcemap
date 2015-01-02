@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   expose(:collection)
   expose(:current_user_snapshot) { UserSnapshot.for current_user, collection }
-  expose(:collection_memberships) { collection.memberships.includes(:user) }
+  expose(:collection_memberships){ collection.memberships.includes(:user) }
   expose(:layers) {if !current_user_snapshot.at_present? && collection then collection.layer_histories.at_date(current_user_snapshot.snapshot.date) else collection.layers end}
   expose(:layer)
   expose(:fields) {if !current_user_snapshot.at_present? && collection then collection.field_histories.at_date(current_user_snapshot.snapshot.date) else collection.fields end}
@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   expose(:threshold)
   expose(:reminders) { collection.reminders }
   expose(:reminder)
+  expose(:language) { Language.find_by_code I18n.locale.to_s }
 
   expose(:new_search_options) do
     if current_user_snapshot.at_present?
@@ -36,13 +37,37 @@ class ApplicationController < ActionController::Base
   end
 
   before_filter :set_timezone
+  before_filter :set_locale
+  before_filter :store_location
+  before_filter :set_request_header
+
+  def store_location
+    return unless request.get? 
+    if (request.path != "/users/sign_in" &&
+        request.path != "/users/sign_up" &&
+        request.path != "/users/password/new" &&
+        request.path != "/users/password/edit" &&
+        request.path != "/users/confirmation" &&
+        request.path != "/users/sign_out" &&
+        !request.xhr?)
+      session[:previous_url] = request.fullpath 
+    end
+  end
+
+
+
+  def set_locale
+    cookies.signed[:locale] = params[:locale]  || cookies.signed[:locale] || I18n.default_locale
+    I18n.locale = cookies.signed[:locale]
+  end
+
   def set_timezone
     # current_user.time_zone #=> 'London'
     Time.zone = current_user.time_zone if current_user
   end
 
   def setup_guest_user
-    u = User.new is_guest: true
+    u = User.new is_guest: true 
     # Empty membership for the current collection
     # This is used in SitesPermissionController.index
     # TODO: Manage permissions passing current_ability to client
@@ -58,17 +83,17 @@ class ApplicationController < ActionController::Base
     if user_signed_in?
       return if !current_user.try(:is_guest)
     end
-
+    
     if params.has_key? "collection"
       return if !Collection.find(params["collection"]).public
       u = User.find_by_is_guest true
       sign_in :user, u
       current_user.is_login = true
-      current_user.save!
+      current_user.save!(:validate => false)
     else
       if current_user.try(:is_login)
         current_user.is_login = false
-        current_user.save!
+        current_user.save!(:validate => false)
       else
         sign_out :user
       end
@@ -108,12 +133,12 @@ class ApplicationController < ActionController::Base
 
   def show_collection_breadcrumb
     show_collections_breadcrumb
-    add_breadcrumb "Collections", collections_path
+    add_breadcrumb I18n.t('views.collections.index.collections'), collections_path
     add_breadcrumb collection.name, collections_path + "?collection_id=#{collection.id}"
   end
 
   def show_properties_breadcrumb
-    add_breadcrumb "Properties", collection_path(collection)
+    add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
   end
 
   def get_user_auth_token
@@ -129,6 +154,10 @@ class ApplicationController < ActionController::Base
     authenticate_or_request_with_http_basic do |user, password|
       user == USER && password == PASSWORD
     end
+  end
+
+  def set_request_header
+    headers['Access-Control-Allow-Origin'] = '*' 
   end
 
 end

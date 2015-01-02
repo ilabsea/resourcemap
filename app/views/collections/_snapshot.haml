@@ -1,16 +1,16 @@
 %hr.clear/
-%h2(id='snapshots') Snapshots
-%p This will allow you to browse data in the future as it is looking right now.
+%h2(id='snapshots')= t('views.collections.overview.snapshots')
+%p= t('views.collections.overview.snapshots_description')
 - if collection_admin?
 
   = form_for(@snapshot, :url => collection_create_snapshot_path(collection)) do |f|
     %span.snapshot_name_field.w30
-      = f.text_field :name, :placeholder => "Enter Snapshot name"
+      = f.text_field :name, :placeholder => t('views.collections.overview.enter_snapshot_name')
       - if f.object.errors[:name].present?
         %br/
-        %label.error= "Name #{f.object.errors[:name].join(', ')}"
+        %label.error= t('views.collections.form.errors.name', errors: f.object.errors[:name].join(', '))
     %button.icon_button.fsnapshot
-      Take new snapshot
+      = t('views.collections.overview.take_new_snapshot')
 
 - if collection.snapshots.count > 0
   %table
@@ -19,7 +19,7 @@
         %td.w30
           .snapshot_info{:class => if current_user_snapshot.at_present? then "active rounded" end}
             = radio_button_tag(:name, "", current_user_snapshot.at_present?, :onclick => "this.form.submit();")
-            = label :name, "Present time"
+            = label :name, t('views.collections.overview.present_time')
         %td
 
     - collection.snapshots.each do |snapshot|
@@ -33,7 +33,7 @@
           %td.grey
             = label_tag :date, snapshot.date.rfc822
 - elsif !collection_admin?
-  There are no snapshots for this collection.
+  = t('views.collections.overview.no_snapshots')
 
 %br/
 %br/

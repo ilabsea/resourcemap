@@ -1,0 +1,138 @@
+%br
+/ko foreach: impl().selected_field_logics
+/ko if:editing
+.box.grey{:style => 'width:260px;'}
+  .toptitle
+  %span
+    %ul{style: 'padding:0px; list-style:none;'}
+      %li{style: 'display: inline;'}
+        /ko if: condition_type() == 'all'
+        %input#all{ko(click: '$root.assignConditionAll'), type: "radio", checked: "checked", name: "logic_condition"}
+        //ko
+        /ko ifnot: condition_type() == 'all'
+        %input#all{ko(click: '$root.assignConditionAll'), type: "radio", name: "logic_condition"}
+        //ko
+        %label{class: "radio", for: "all"}
+          %font{size: 1}
+            = t('views.layers.form.field.all_of_following')
+      %li{style: 'display: inline;'}
+        /ko if: condition_type() == 'any'
+        %input#any{ko(click: '$root.assignConditionAny'), type: "radio", checked: "checked", name: "logic_condition"}
+        //ko
+        /ko ifnot: condition_type() == 'any'
+        %input#any{ko(click: '$root.assignConditionAny'), type: "radio", name: "logic_condition"}
+        //ko
+        %label{class: "radio", for: "any"}
+          %font{size: 1}
+            = t('views.layers.form.field.any_of_following')
+    %ul{style: 'padding:0px; list-style:none'}
+      %li{ko(with: '$root.newFieldLogic()')}
+        %div.box.w25{style: 'padding-bottom:10px'}
+          %span.smalltext.left{style: 'padding-right:18px;padding-top:10px;'}= t('views.layers.form.field.if_input_is')
+          = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select', event: '{ change: $root.addOptionFieldLogic }'), style: 'height:30px;margin-left:0px;'
+          %button.clist-add{ko(click: '$root.addOptionFieldLogic', enable: '$root.fieldSelectManyLogicValid'), title: 'Add another option'}
+          /ko foreach: selected_options
+          .box.grey{ko(click: '$root.removeOptionFieldLogic'), :style => 'width:150;margin:5px 5px 5px 66px;'}
+            %span
+              %a{ko(text: 'label')}
+            %button.cremove.right{style: "margin-top:0px;"}
+          //ko
+          %br
+          %span.smalltext= t('views.layers.form.field.skip_form_to')
+          %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id, selectedOptions: field_id', style: 'max-width:135px;height:30px'}
+            /ko if: $index() == 0
+            %option{value: ""}= t('views.layers.form.field.no_value')
+            //ko
+            %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}        
+              %option{"data-bind" => "text: name, option: name, value: id"}
+  .rightbuttons
+    %button.fdelete{ ko(click: '$root.removeSelectedFieldLogic') }
+  %button.white{ko(click: '$root.updateFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.save')
+  %button.white{ko(click: '$root.cancelFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.cancel')
+%br
+//ko
+/ko ifnot: editing
+.box.grey{:style => 'width:260px;margin:0px 0px 10px;'}
+  .toptitle
+  %span
+    %ul{style: 'padding:0px; list-style:none;'}
+      /ko if: condition_type() == 'all'
+      %li{style: 'display: inline;'}
+        = t('views.layers.form.field.when_all_following')
+      //ko
+      /ko if: condition_type() == 'any'
+      %li{style: 'display: inline;'}
+        = t('views.layers.form.field.when_any_following')
+      //ko
+    %ul{style: 'overflow-y:0px;'}
+      /ko foreach: selected_options
+      %li
+        %label{ko(text: 'label')}
+      //ko
+    %span.smalltext= t('views.layers.form.field.is_select_then_skip_form_to')
+    %label{ko(text: '$root.to_field_name(field_id)')}
+    %br
+    %button.farrow{ko(click: '$root.editFieldLogic'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
+  .rightbuttons
+    %button.fdelete{ ko(click: '$root.removeSelectedFieldLogic') }
+//ko
+//ko
+
+/ko foreach: impl().field_logics
+.box.grey{:style => 'width:260px;'}
+  .toptitle
+  %span
+    %ul{style: 'padding:0px; list-style:none;'}
+      %li{style: 'display: inline;'}
+        /ko if: condition_type() == 'all'
+        %input#all{ko(click: '$root.assignConditionAll'), type: "radio", checked: "checked", name: "logic_condition"}
+        //ko
+        /ko ifnot: condition_type() == 'all'
+        %input#all{ko(click: '$root.assignConditionAll'), type: "radio", name: "logic_condition"}
+        //ko
+        %label{class: "radio", for: "all"}
+          %font{size: 1}
+            = t('views.layers.form.field.all_of_following')
+      %li{style: 'display: inline;'}
+        /ko if: condition_type() == 'any'
+        %input#any{ko(click: '$root.assignConditionAny'), type: "radio", checked: "checked", name: "logic_condition"}
+        //ko
+        /ko ifnot: condition_type() == 'any'
+        %input#any{ko(click: '$root.assignConditionAny'), type: "radio", name: "logic_condition"}
+        //ko
+        %label{class: "radio", for: "any"}
+          %font{size: 1}
+            = t('views.layers.form.field.any_of_following')
+    %ul{style: 'padding:0px; list-style:none'}
+      %li{ko(with: '$root.newFieldLogic()')}
+        %div.box.w25{style: 'padding-bottom:10px'}
+          %span.smalltext.left{style: 'padding-right:18px;padding-top:10px;'}= t('views.layers.form.field.if_input_is')
+          = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select', event: '{ change: $root.addOptionFieldLogic }'), style: 'height:30px;margin-left:0px;'
+          %button.clist-add{ko(click: '$root.addOptionFieldLogic', enable: '$root.fieldSelectManyLogicValid'), title: 'Add another option'}
+          /ko foreach: selected_options
+          .box.grey{ko(click: '$root.removeOptionFieldLogic'), :style => 'width:150;margin:5px 5px 5px 66px;'}
+            %span
+              %a{ko(text: 'label')}
+            %button.cremove.right{style: "margin-top:0px;"}
+          //ko
+          %br
+          %span.smalltext= t('views.layers.form.field.skip_form_to')
+          %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id, selectedOptions: field_id', style: 'max-width:135px;height:30px'}
+            /ko if: $index() == 0
+            %option{value: ""}= t('views.layers.form.field.no_value')
+            //ko
+            %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}        
+              %option{"data-bind" => "text: name, option: name, value: id"}
+  .rightbuttons
+    %button.fdelete{ ko(click: '$root.removeFieldLogic') }
+  %button.white{ko(click: '$root.saveFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.save')
+%br
+//ko
+/ko ifnot: $root.is_editing
+.box.grey.add{ko(click: '$root.createNewFieldLogic'), :style => 'width:270px;'}
+  %span
+    %a
+      = t('views.layers.form.field.add_skip_logic')
+  %button.cadd.right
+  %br{clear: :all}
+//ko

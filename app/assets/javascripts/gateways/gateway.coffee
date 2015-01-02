@@ -45,9 +45,9 @@ onGateways ->
       @nameError              = ko.computed => 
         length = $.trim(@name()).length
         if length < 1
-          "Channel's name is missing"
+          window.t('javascripts.gateways.form.channel_missing')
         else if length < 4
-          "Channel's name require at least 4 characters"
+          window.t('javascripts.gateways.form.channel_require_four_characters')
         else
           null
       
@@ -55,18 +55,18 @@ onGateways ->
         return null if !@advancedSetup()
         length = $.trim(@password()).length
         if length < 1
-          "Channel's password is missing"
+          window.t('javascripts.gateways.form.channel_password_missing')
         else if length < 4
-          "Channel's password require at least 4 characters"
+          window.t('javascripts.gateways.form.channel_password_required_four_characters')
         else
           null
       @ticketCodeError        = ko.computed =>
         return null if !@basicSetup()
         length = $.trim(@ticketCode()).length
         if length < 1
-          "SMS gateway key is missing"        
+          window.t('javascripts.gateways.form.sms_gateway_missing')
         else if length != 4
-          "SMS gateway key is must be 4 characters"
+          window.t('javascripts.gateways.form.sms_gateway_key_must_be_four')
         else 
           null
 
@@ -74,7 +74,7 @@ onGateways ->
         return null if !@isTry()
         length = $.trim(@tryPhoneNumber()).length
         if length < 1
-          "Destination phone number is missing"        
+          window.t('javascripts.gateways.form.destination_phone_missing')       
         else 
           null
       

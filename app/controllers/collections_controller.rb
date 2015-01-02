@@ -1,17 +1,16 @@
 class CollectionsController < ApplicationController
-  before_filter :setup_guest_user, :if => Proc.new { (collection && collection.public?) || Collection.public_collections }
-  # before_filter :setup_guest_user, :if => Proc.new { collection && collection.public? }
-  before_filter :authenticate_user!, :except => [:render_breadcrumbs, :index, :alerted_collections], :unless => Proc.new { collection && collection.public? }
-
+  before_filter :setup_guest_user, :if => Proc.new { collection }
+  before_filter :authenticate_user!, :except => [:render_breadcrumbs, :index, :alerted_collections], :unless => Proc.new { collection }
+  
   authorize_resource :except => [:render_breadcrumbs], :decent_exposure => true, :id_param => :collection_id
 
-  expose(:collections) {
+  expose(:collections){
     if current_user && !current_user.is_guest
       # public collections are accesible by all users
       # here we only need the ones in which current_user is a member
-      current_user.collections.reject{|c| c.id.nil?}
+      current_user.collections
     else
-      Collection.accessible_by(current_ability)
+      Collection.all
     end
   }
 
@@ -21,28 +20,34 @@ class CollectionsController < ApplicationController
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
   before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders, :quotas]
 
-  #before_filter :prepare_for_mobile
+  
 
   def index
-
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
     else
-      add_breadcrumb "Collections", 'javascript:window.model.goToRoot()'
+      add_breadcrumb I18n.t('views.collections.index.collections'), 'javascript:window.model.goToRoot()'
+      
       if current_user.is_guest
-        @collections = Collection.public_collections
+        if params[:collection_id] && !collection.public?
+          flash[:error] = "You need to sign in order to view this collection"
+          redirect_to new_user_session_url
+          return
+        end
+        collections = Collection.public_collections
       else
-        @collections = collections_with_snapshot
+        collections = current_user.collections.reject{|c| c.id.nil?}
       end
+
       respond_to do |format|
         format.html
-        format.json { render json:  @collections}
+        format.json { render json:  collections}
       end
     end
   end
 
   def render_breadcrumbs
-    add_breadcrumb "Collections", 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
+    add_breadcrumb I18n.t('views.collections.index.collections'), 'javascript:window.model.goToRoot()' if current_user && !current_user.is_guest
     if params.has_key? :collection_id
       add_breadcrumb collection.name, 'javascript:window.model.exitSite()'
       if params.has_key? :site_id
@@ -53,16 +58,16 @@ class CollectionsController < ApplicationController
   end
 
   def new
-    add_breadcrumb "Collections", collections_path
-    add_breadcrumb "Create new collection", nil
+    add_breadcrumb I18n.t('views.collections.index.collections'), collections_path
+    add_breadcrumb I18n.t('views.collections.form.create_new_collection'), nil
   end
 
   def create
     if current_user.create_collection collection
       current_user.collection_count += 1
       current_user.update_successful_outcome_status
-      current_user.save!
-      redirect_to collection_path(collection), notice: "Collection #{collection.name} created"
+      current_user.save!(:validate => false)
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.collection_created', name: collection.name)
     else
       render :new
     end
@@ -71,7 +76,7 @@ class CollectionsController < ApplicationController
   def update
     if collection.update_attributes params[:collection]
       collection.recreate_index
-      redirect_to collection_settings_path(collection), notice: "Collection #{collection.name} updated"
+      redirect_to collection_settings_path(collection), notice: I18n.t('views.collections.form.collection_updated', name: collection.name)
     else
       render :settings
     end
@@ -79,7 +84,7 @@ class CollectionsController < ApplicationController
 
   def show
     @snapshot = Snapshot.new
-    add_breadcrumb "Properties", '#'
+    add_breadcrumb I18n.t('views.collections.index.properties'), '#'
     respond_to do |format|
       format.html
       format.json { render json: collection }
@@ -87,28 +92,28 @@ class CollectionsController < ApplicationController
   end
 
   def members
-    add_breadcrumb "Members", collection_members_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.members'), collection_members_path(collection)
   end
 
   def reminders
-    add_breadcrumb "Reminders", collection_reminders_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.reminders'), collection_reminders_path(collection)
   end
 
   def settings
-    add_breadcrumb "Settings", collection_settings_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.settings'), collection_settings_path(collection)
   end
 
   def quotas
-    add_breadcrumb "Quotas", collection_settings_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.quotas'), collection_settings_path(collection)
   end
 
   def destroy
     if params[:only_sites]
       collection.delete_sites_and_activities
-      redirect_to collection_path(collection), notice: "Collection #{collection.name}'s sites deleted"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.sites_deleted', name: collection.name)
     else
       collection.destroy
-      redirect_to collections_path, notice: "Collection #{collection.name} deleted"
+      redirect_to collections_path, notice: I18n.t('views.collections.form.collection_deleted', name: collection.name)
     end
   end
 
@@ -124,9 +129,9 @@ class CollectionsController < ApplicationController
   def create_snapshot
     @snapshot = Snapshot.create(date: Time.now, name: params[:snapshot][:name], collection: collection)
     if @snapshot.valid?
-      redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} created"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.snapshot_created', name: params[:name])
     else
-      flash[:error] = "Snapshot could not be created: #{@snapshot.errors.to_a.join ", "}"
+      flash[:error] = I18n.t('views.collections.form.snapshot_could_not_be_created', errors: @snapshot.errors.to_a.join(", "))
       redirect_to collection_path(collection)
     end
   end
@@ -137,7 +142,7 @@ class CollectionsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        flash[:notice] = "Snapshot #{loaded_snapshot.name} unloaded" if loaded_snapshot
+        flash[:notice] = I18n.t('views.collections.form.snapshot_unloaded', name: loaded_snapshot.name) if loaded_snapshot if loaded_snapshot
         redirect_to  collection_path(collection) }
       format.json { render json: :ok }
     end
@@ -145,7 +150,7 @@ class CollectionsController < ApplicationController
 
   def load_snapshot
     if current_user_snapshot.go_to!(params[:name])
-      redirect_to collection_path(collection), notice: "Snapshot #{params[:name]} loaded"
+      redirect_to collection_path(collection), notice: I18n.t('views.collections.form.snapshot_loaded', name: params[:name])
     end
   end
 
@@ -188,10 +193,11 @@ class CollectionsController < ApplicationController
     search.full_text_search params[:search]
     search.offset params[:offset]
     search.limit params[:limit]
+    search.alerted_search params[:_alert] if params[:_alert] 
     search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
     search.hierarchy params[:hierarchy_code], params[:hierarchy_value] if params[:hierarchy_code]
     search.location_missing if params[:location_missing].present?
-    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing)
+    search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing, :_alert)
 
     search.apply_queries
 
