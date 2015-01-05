@@ -242,6 +242,7 @@ onCollections ->
           @save()
         window.model.initDatePicker(optionsDatePicker)
         window.model.initAutocomplete()
+        $('textarea').autogrow()
 
     validateRange: =>
       if @range

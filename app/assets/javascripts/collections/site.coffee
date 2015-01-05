@@ -347,6 +347,7 @@ onCollections ->
       @startEditLocationInMap()
       window.model.initDatePicker()
       window.model.initAutocomplete()
+      $('textarea').autogrow()
 
     exitEditMode: (saved) =>
       @inEditMode(false)

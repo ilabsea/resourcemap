@@ -283,7 +283,7 @@ a.lbutton{
   vertical-align: middle;
 }
 
-.hierarchy-container:focus , #editorContent input:focus:not(.error), textarea:focus:not(.error),select:focus:not(.error) {
+.hierarchy-container:focus , #editorContent input:focus:not(.error),select:focus:not(.error) {
   box-shadow: 0 0 5px rgba(81, 203, 238, 1);
   border: 1px solid rgba(81, 203, 238, 1) !important;
 }
@@ -300,4 +300,8 @@ a.lbutton{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+textarea.text{
+  height: 22px;
 }
