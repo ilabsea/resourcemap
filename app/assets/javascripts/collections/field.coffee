@@ -95,12 +95,7 @@ onCollections ->
           value = @value()
         else
           return
-        
-<<<<<<< HEAD
         if @field_logics
-=======
-        if @field_logic
->>>>>>> resolve conflict
           for field_logic in @field_logics
             b = false
             if field_logic.field_id?
@@ -109,13 +104,10 @@ onCollections ->
                   @setFocusStyleByField(field_logic.field_id)
                   return
               if @kind == 'numeric'
-<<<<<<< HEAD
-=======
                 if field_logic.condition_type == 'empty'
                   if value == "" || value == null
                     @setFocusStyleByField(field_logic.field_id)
                     return
->>>>>>> add config skip logic field number on web interface
                 if field_logic.condition_type == '<'
                   if parseInt(value) < field_logic.value
                     @setFocusStyleByField(field_logic.field_id)
@@ -253,6 +245,7 @@ onCollections ->
           @save()
         window.model.initDatePicker(optionsDatePicker)
         window.model.initAutocomplete()
+        $('textarea').autogrow()
 
     validateRange: =>
       if @range

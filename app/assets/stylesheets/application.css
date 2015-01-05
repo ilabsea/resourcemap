@@ -305,8 +305,12 @@ a.lbutton{
   vertical-align: middle;
 }
 
+<<<<<<< HEAD
 
 .hierarchy-container:focus, #editorContent input:focus:not(.error), textarea:focus:not(.error),select:focus:not(.error) {
+=======
+.hierarchy-container:focus , #editorContent input:focus:not(.error),select:focus:not(.error) {
+>>>>>>> enable text field auto expand
   box-shadow: 0 0 5px rgba(81, 203, 238, 1);
   border: 1px solid rgba(81, 203, 238, 1);
 }

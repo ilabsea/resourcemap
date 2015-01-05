@@ -409,6 +409,7 @@ onCollections ->
       @startEditLocationInMap() if @collection.isVisibleLocation
       window.model.initDatePicker()
       window.model.initAutocomplete()
+<<<<<<< HEAD
       window.model.initControlKey()
       window.model.newOrEditSite().scrollable(false)
       $('#name').focus()
@@ -424,6 +425,9 @@ onCollections ->
       @prepareCalculatedField()
       window.model.newOrEditSite().scrollable(false)
       $('#name').focus()
+=======
+      $('textarea').autogrow()
+>>>>>>> enable text field auto expand
 
     exitEditMode: (saved) =>
       @inEditMode(false)
