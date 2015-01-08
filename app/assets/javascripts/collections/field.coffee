@@ -96,7 +96,7 @@ onCollections ->
         else
           return
         
-        if @field_logic
+        if @field_logics
           for field_logic in @field_logics
             b = false
             if field_logic.field_id?
