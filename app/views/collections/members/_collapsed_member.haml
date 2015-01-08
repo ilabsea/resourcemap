@@ -1,6 +1,6 @@
 %td.member{style: 'cursor:pointer;', colspan: 9}
   .memberHeaderRow
-    .memberHeaderColumn.collapsed
+    .memberHeaderColumn.collapsed{style: 'height:45px;'}
       %img.members-collapse-icon{ko(click: :toggleExpanded, attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/black/arrowRight.png'"})}
       %span{ko(text: :userDisplayName, click: :toggleExpanded)}
       - if 'userPhoneNumber'
@@ -9,9 +9,9 @@
 
 
     - ['None', 'Read', 'Update'].each do |permission|
-      .permissionColumn.collapsed{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == window.t('javascripts.collections.members.permissions.all'), summarySome: summary#{permission}() == window.t('javascripts.collections.members.permissions.some') }")}
+      .permissionColumn.collapsed{ko(text: "summary#{permission}", css: "{ summaryAll: summary#{permission}() == window.t('javascripts.collections.members.permissions.all'), summarySome: summary#{permission}() == window.t('javascripts.collections.members.permissions.some') }"), style: 'height:42px;'}
 
-    .permissionColumn.admin.collapsed
+    .permissionColumn.admin.collapsed{style: 'height:44px;'}
       %input{ko(checked: :admin), type: :checkbox}
     .permissionColumn.admin.collapsed{style: 'width:200px'}
       %input{ko(checked: :can_view_other), type: :checkbox}
