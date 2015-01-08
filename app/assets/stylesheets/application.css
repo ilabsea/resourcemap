@@ -333,6 +333,7 @@ select.error , input[type="file"].error{
   white-space: nowrap;
 }
 
+
 .slocation {
   background: url("/assets/fields_small_icons/location.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
   display: inline-block;
