@@ -132,12 +132,12 @@
                 .btupdn{style: 'float:right;'}
                   %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'margin-top:0', title: t('views.layers.form.move_field_up')}
                   %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'}), title: t('views.layers.form.move_field_down')}
-                /ko if: $parent.id()
+                /ko if: $parent.id() && id
                 .change_layer{style:'float:right;position:relative;top:4px;width:180px;'}
                   %a{ko(click: 'selectingLayerClick', attr: '{id: name}'), style: 'float:right', href: '#'}= t('views.layers.form.move_to_layer')
                   = select_tag :layer, nil, 'data-bind' => kov(attr: '{id: name}', options: '$root.layers()', optionsText: 'function(item) { return item.name() }', value: 'layer', event: '{ change: selectingLayerSelect }'), :style => "display: none; position:relative;float:right;"
                 //ko
-                /ko ifnot: $parent.id()
+                /ko ifnot: id || $parent.id()
                 .change_layer{style:'float:right;position:relative;top:4px;width:180px;'}
                   %span{style: 'float:right; cursor:default; color:grey;'}
                     = t('views.layers.form.move_to_layer')
