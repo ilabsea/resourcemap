@@ -103,7 +103,7 @@ onCollections ->
             else
               b = false
           when "eqi"
-            if field.toLowerCase() is compareField.toLowerCase()
+            if field?.toLowerCase() is compareField.toLowerCase()
               b = true
             else
               b = false
