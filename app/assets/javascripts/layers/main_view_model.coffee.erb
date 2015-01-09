@@ -64,6 +64,7 @@ onLayers ->
       layer.hasFocus(true)
 
     editLayer: (layer) =>
+      @layers.remove(@currentLayer()) if @currentLayer() && not @currentLayer().id() #remove the new created layer that haven't savaed
       @originalFields = $.map(layer.fields(), (x) -> new Field(layer, x.toJSON()))
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
