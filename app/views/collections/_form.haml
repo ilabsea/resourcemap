@@ -32,7 +32,6 @@
         = f.label :public, t('views.collections.form.public')
         = f.check_box :public, :disabled => !creation && (cannot? :update, collection)
 
-
   .field.w60
     %label
       = t('views.collections.form.icon') 
