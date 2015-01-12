@@ -763,12 +763,12 @@ Collection.prototype.getListCollectionTemplate = function(collection, classListN
 }
 
 Collection.prototype.getListSiteTemplate = function(collectionId, site, classListName){
+  siteName = site["name"] ? site["name"] : "&nbsp;";
   item = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ' + classListName + '" >' + 
             '<div class="ui-btn-inner ui-li">' + 
               '<div class="ui-btn-text">' +
                 '<a style="cursor: pointer;" onclick="Collection.prototype.showSite(' + collectionId + ','+ site["id"] +  ','+ site["idSite"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + site["name"] + '</a>' + 
                '</div>' + 
-
               '<span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>' +
             '</div>' +
           '</li>';
