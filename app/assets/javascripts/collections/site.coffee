@@ -11,7 +11,7 @@ onCollections ->
       @collection = collection
       @selected = ko.observable()
       @id = ko.observable data?.id
-      @name = ko.observable data?.name
+      @name = ko.observable data?.name ? ""
       @layers = ko.observableArray()
       @fields = ko.observableArray()
       @fieldsInitialized = false
