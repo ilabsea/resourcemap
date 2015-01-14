@@ -99,8 +99,13 @@ onCollections ->
           
         field = site?.properties()[condition.field()]
         switch operator
-          when "eq","eqi"
+          when "eq"
             if field is compareField
+              b = true
+            else
+              b = false
+          when "eqi"
+            if field?.toLowerCase() is compareField.toLowerCase()
               b = true
             else
               b = false

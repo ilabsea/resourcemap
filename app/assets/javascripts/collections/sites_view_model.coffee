@@ -37,6 +37,7 @@ onCollections ->
         @editingSite().startEditLocationInMap() if @currentCollection().isVisibleLocation
         window.model.initDatePicker()
         window.model.initAutocomplete()
+        $('textarea').autogrow()
 
     @editSite: (site) ->
       initialized = @initMap()

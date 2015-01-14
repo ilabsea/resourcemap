@@ -19,24 +19,25 @@
     });
 
   .field.w60
-    = f.label :name, t('views.settings.index.name')
+    = f.label t('views.collections.form.name') 
     = f.text_field :name, :readonly => !creation && (cannot? :update, collection)
     - if f.object.errors[:name].present?
       %label.error= "Name #{f.object.errors[:name].join(', ')}"
   .field.w60
-    = f.label :description, t('views.settings.index.label')
+    = f.label t('views.collections.form.description') 
     = f.text_area :description, rows: 3, :readonly =>  !creation && (cannot? :update, collection)
   - if Settings.is_on? :public_collection
     .field.w60
-      = f.label :public, t('views.settings.index.public')
+      = f.label t('views.collections.form.public') 
       = f.check_box :public, :disabled => !creation && (cannot? :update, collection)
 
   .field.w60
-    %label=t('views.settings.index.icon')
+    %label
+      = t('views.collections.form.icon') 
     = render 'icon_selector', :f => f
   .w60
   %br{clear: :all}
 
   - if (creation || can?(:update, collection))
-    = f.button t('views.settings.save'), :class => 'white'
-    = link_to t('views.settings.cancel'), collections_path, :class=> 'grey'
+    = f.button t('views.collections.form.save') , :class => 'white'
+    = link_to t('views.collections.form.cancel'), collections_path, :class=> 'grey'
