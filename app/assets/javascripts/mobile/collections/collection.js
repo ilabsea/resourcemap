@@ -78,6 +78,7 @@ Collection.prototype.showFormAddSite = function(schema){
   $("#fields").html(fieldHtml);
   Collection.prototype.applyBrowserLocation();
   Collection.prototype.handleFieldUI(schema);
+  Collection.prototype.formSiteWithPermission(schema);
 }
 
 Collection.prototype.saveSite = function(){  
@@ -558,15 +559,28 @@ Collection.prototype.progressHandlingFunction =function(e){
 Collection.prototype.addLayerForm = function(schema){
   form = "";
   for(i=0; i<schema["layers"].length;i++){
-    form = form + '<div><h5>' + schema["layers"][i]["name"] + '</h5>';
+    form = form + '<div id="wrapper_layer_' + schema["layers"][i]["id"] + '"><h5>' + schema["layers"][i]["name"] + '</h5>';
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j];
       myField = new Field(field);
       form = form + myField.getField();
+      writeable = schema["layers"][i]["fields"][j].writeable;
     }
     form = form + "</div>";
   }
   return form;
+}
+
+Collection.prototype.formSiteWithPermission = function(schema){
+  for(i=0; i<schema["layers"].length;i++){
+    var writeable = false;
+    for(j=0; j<schema["layers"][i]["fields"].length; j++){
+      writeable = schema["layers"][i]["fields"][j].writeable;
+      break;
+    }
+    if(!writeable)
+      $("#wrapper_layer_" + schema["layers"][i]["id"]).addClass("ui-disabled");
+  }
 }
 
 Collection.prototype.handleFieldUI = function(schema){
@@ -907,6 +921,7 @@ Collection.assignSite = function(site){
   fieldHtml = Collection.editLayerForm(currentSchemaData, site["properties"]);
   $("#fields").html(fieldHtml);
   Collection.prototype.handleFieldUI(currentSchemaData);
+  Collection.prototype.formSiteWithPermission(currentSchemaData);
 }
 
 Collection.clearFormData = function(){
@@ -920,7 +935,7 @@ Collection.clearFormData = function(){
 Collection.editLayerForm = function(schema, properties){
   form = "";
   for(i=0; i<schema["layers"].length;i++){
-    form = form + '<div><h5>' + schema["layers"][i]["name"] + '</h5>';
+    form = form + '<div id="wrapper_layer_' + schema["layers"][i]["id"] + '"><h5>' + schema["layers"][i]["name"] + '</h5>';
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j]
       for(var key in properties){
