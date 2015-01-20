@@ -154,6 +154,7 @@ ResourceMap::Application.routes.draw do
   namespace :api do
     get 'collections/:id' => 'collections#show',as: :collection
     get 'collections/:id/download_location_csv' => 'collections#download_location_csv', as: :download_location_csv
+    get 'collections/:id/export_layers' => 'collections#export_layers', as: :export_layers
     get 'collections/:id/sample_csv' => 'collections#sample_csv',as: :sample_csv
     get 'collections/:id/sample_members_csv' => 'collections#sample_members_csv',as: :sample_members_csv
     get 'collections/:id/count' => 'collections#count',as: :count
