@@ -118,7 +118,7 @@ class @Membership extends Expandable
       if @sitesWithCustomPermissions().length == 0
         window.t('javascripts.collections.members.custom_permissions_for_sites')
       else if @sitesWithCustomPermissions().length == 1
-        window.t('javascripts.collections.members.custom_permissions_for_1_site')
+        window.t('javascripts.collections.members.custom_permissions_1_site')
       else
         window.t("javascripts.collections.members.custom_permissions_for_#{@sitesWithCustomPermissions().length}_sites ")
 
