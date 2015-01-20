@@ -33,6 +33,12 @@ class Api::CollectionsController < ApplicationController
       format.shp { collection_shp(collection, @results) }
     end
   end
+  
+  def export_layers    
+    respond_to do |format|
+      format.json {send_data layers.to_json(include: :fields), filename: "#{collection.name}_layers.csv"}
+    end
+  end
 
   def sample_csv
     respond_to do |format|
@@ -204,8 +210,7 @@ class Api::CollectionsController < ApplicationController
     send_data sites_kml, type: 'application/vnd.google-earth.kml+xml', filename: "#{collection.name}_sites.kml"
   end
 
-  def visible_layer_for_site
-    
+  def visible_layer_for_site    
     
   end
 
