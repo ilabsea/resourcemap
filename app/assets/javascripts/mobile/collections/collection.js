@@ -1119,6 +1119,7 @@ Collection.handleDisableFieldSkip = function(schema, properties){
 }
 
 Collection.editLayerForm = function(schema, properties){
+  console.log("schema : ", schema)
   form = "";
   for(i=0; i<schema["layers"].length;i++){
     form = form + '<div id="wrapper_layer_' + schema["layers"][i]["id"] + '"><h5>' + schema["layers"][i]["name"] + '</h5>';
