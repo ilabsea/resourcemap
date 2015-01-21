@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
     t.boolean  "readonly_custom_widgeted",                             :default => false
     t.boolean  "is_enable_custom_validation",                          :default => false
     t.boolean  "is_enable_dependancy_hierarchy",                       :default => false
+
   end
 
   create_table "import_jobs", :force => true do |t|
