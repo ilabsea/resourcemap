@@ -86,8 +86,6 @@ ActiveRecord::Schema.define(:version => 20141223043729) do
     t.integer  "ord"
     t.text     "metadata"
     t.boolean  "is_mandatory",                                :default => false
-    t.boolean  "is_enable_field_logic",                       :default => false
-    t.boolean  "is_enable_range",                             :default => false
   end
 
   create_table "import_jobs", :force => true do |t|
