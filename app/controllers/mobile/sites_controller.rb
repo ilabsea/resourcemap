@@ -170,5 +170,5 @@ class Mobile::SitesController < SitesController
     end
     properties
   end
-
+  
 end
