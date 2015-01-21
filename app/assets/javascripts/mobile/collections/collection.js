@@ -3,6 +3,7 @@
 //= require mobile/option
 //= require mobile/field_logic
 //= require mobile/sub_hierarchy
+//= require mobile/collections/sites_permission
 
 function Collection (collection) {
   this.id = collection != null ? collection.id : void 0;
@@ -727,6 +728,8 @@ Collection.prototype.formSiteWithPermission = function(schema){
     }
     if(!writeable)
       $("#wrapper_layer_" + schema["layers"][i]["id"]).addClass("ui-disabled");
+    else
+      $("#wrapper_layer_" + schema["layers"][i]["id"]).removeClass("ui-disabled");
   }
 }
 
@@ -1073,7 +1076,23 @@ Collection.assignSite = function(site){
   }
   var currentSchemaData = jQuery.extend(true, {}, focusSchema);
   $("#title").html(currentSchemaData["name"]);
-  fieldHtml = Collection.editLayerForm(currentSchemaData, site["properties"]);
+  var rule = SitesPermission.allRule(window.currentCollectionId, window.currentSiteId);
+  $("#fields").show();
+  if(rule.canRead || rule.canWrite){
+    Collection.visibleLayer(window.currentCollectionId, window.currentSiteId, function(visible_layers){
+      Collection.handleViewEdit({layers: visible_layers}, site)
+      Collection.prototype.handleFieldUI(currentSchemaData);
+    });
+  }else if(rule.none){
+    $("#fields").hide();
+  }else{
+    Collection.handleViewEdit(currentSchemaData, site);
+    Collection.prototype.handleFieldUI(currentSchemaData);
+  }
+}
+
+Collection.handleViewEdit = function(schema, site){
+  fieldHtml = Collection.editLayerForm(schema, site["properties"]);
   $("#fields").html(fieldHtml);
   Collection.prototype.handleFieldUI(currentSchemaData);
   Collection.handleDisableFieldSkip(currentSchemaData, site["properties"])
@@ -1119,7 +1138,6 @@ Collection.handleDisableFieldSkip = function(schema, properties){
 }
 
 Collection.editLayerForm = function(schema, properties){
-  console.log("schema : ", schema)
   form = "";
   for(i=0; i<schema["layers"].length;i++){
     form = form + '<div id="wrapper_layer_' + schema["layers"][i]["id"] + '"><h5>' + schema["layers"][i]["name"] + '</h5>';
@@ -1187,6 +1205,13 @@ Collection.prototype.showSiteOnline = function(collectionId, siteId){
        $.mobile.saving('hide');
      }
    });
+}
+
+Collection.visibleLayer = function(collectionId, siteId, callback){
+  $.ajax({
+    url: "/mobile/collections/" + collectionId + "/sites/" + siteId + "/visible_layers_for",
+    success: callback
+  });
 }
 
 Collection.prototype.getFormValue = function(){
