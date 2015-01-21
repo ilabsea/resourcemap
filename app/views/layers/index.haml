@@ -22,6 +22,15 @@
 
     - if !current_user_snapshot.at_present?
       = render '/current_snapshot_message'
+
+    .box.w60
+      = link_to 'Export all layers as JSON', api_export_layers_path(collection, format: :json), :class => 'icon fimport black'
+      %span.right
+        %form#upload_form{action: upload_json_collection_layers_path(collection), method: :post, enctype: 'multipart/form-data'}
+          %button.icon.fexport.black Import layers
+          %input#upload{type: :file, name: :file}
+    %br
+
     /ko if: $root.editingDefaultLayer
     .box.grey.w60
       .toptitle
