@@ -31,6 +31,11 @@ ResourceMap::Application.routes.draw do
       member do
         put :set_order
       end
+
+      collection do
+        post :upload_json
+        get :import_json
+      end
     end
     resources :fields
 

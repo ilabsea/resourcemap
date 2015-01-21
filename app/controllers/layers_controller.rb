@@ -3,6 +3,9 @@ class LayersController < ApplicationController
   before_filter :authenticate_collection_admin!, :except => [:index]
   before_filter :fix_field_config, only: [:create, :update]
 
+  expose(:import_job) { ImportJob.last_for current_user, collection }
+  expose(:failed_import_jobs) { ImportJob.where(collection_id: collection.id).where(status: 'failed').order('id desc').page(params[:page]).per_page(10) }
+
   def index
     respond_to do |format|
       format.html do
@@ -63,6 +66,20 @@ class LayersController < ApplicationController
     layer.user = current_user
     layer.destroy
     head :ok
+  end
+
+  def upload_json
+    debugger
+    begin
+      ImportWizard.import current_user, layers, params[:file].original_filename, params[:file].read
+      # redirect_to adjustments_collection_import_wizard_path(collection)
+    rescue => ex
+      redirect_to import_json_collection_layers_path(collection), :alert => ex.message
+    end    
+  end
+
+  def import_json
+    
   end
 
   private
@@ -171,4 +188,5 @@ class LayersController < ApplicationController
 
     params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
   end
+
 end
