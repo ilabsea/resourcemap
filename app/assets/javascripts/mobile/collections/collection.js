@@ -243,77 +243,78 @@ Collection.prototype.validateData = function(collectionId){
     Collection.prototype.showErrorMessage("Location's longitude can not be empty.");
     return false;
   }
-
   for(var k=0; k< window.collectionSchema.length; k++){
     if(window.collectionSchema[k]["id"] == collectionId){
-      schema = window.collectionSchema[k];
-      for(i=0; i<schema["layers"].length;i++){
-        for(j=0; j<schema["layers"][i]["fields"].length; j++){
-          var field = schema["layers"][i]["fields"][j];
-          state = true;
-          switch(field["kind"])
-          {
-            case "text":
-              state = Collection.valiateMandatoryText(field);
-              break;
-            case "numeric":
-              value = $("#" + field["code"]).val();
-              range = field["config"]["range"];
-              if(Collection.prototype.validateNumeric(value) == false){
-                Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
-                return false;
-              }
-              if(field["config"]["allows_decimals"] == "false"){
-                if(value.indexOf(".") != -1){
-                  Collection.prototype.showErrorMessage("Please enter an integer.");
-                  Collection.setFieldStyleFailed(field["code"]);
-                  return false;                  
+      var rule = SitesPermission.allRule(window.currentCollectionId, window.currentSiteId);
+      if(!rule.none){
+        for(i=0; i<schema["layers"].length;i++){
+          for(j=0; j<schema["layers"][i]["fields"].length; j++){
+            var field = schema["layers"][i]["fields"][j];
+            state = true;
+            switch(field["kind"])
+            {
+              case "text":
+                state = Collection.valiateMandatoryText(field);
+                break;
+              case "numeric":
+                value = $("#" + field["code"]).val();
+                range = field["config"]["range"];
+                if(Collection.prototype.validateNumeric(value) == false){
+                  Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
+                  return false;
                 }
-              }
-                if(range){
-                  msg = Collection.prototype.validateRange(value, range);
-                  if(msg != ""){
-                    Collection.prototype.showErrorMessage(msg);
-                    $('div').removeClass('invalid_field');
-                    Collection.setFieldStyleFailed(field["code"]);                    
-                    return false;
+                if(field["config"]["allows_decimals"] == "false"){
+                  if(value.indexOf(".") != -1){
+                    Collection.prototype.showErrorMessage("Please enter an integer.");
+                    Collection.setFieldStyleFailed(field["code"]);
+                    return false;                  
                   }
-              }
-              state =  Collection.valiateMandatoryText(field);
-              break;
-            case "date":
-              state =  Collection.valiateMandatoryText(field);
-              break;
-            case "yes_no":
-              break;
-            case "select_one":
-              state =  Collection.valiateMandatorySelectOne(field);
-              break;
-            case "select_many":
-              state =  Collection.valiateMandatorySelectMany(field);
-              break;
-            case "phone number":
-              state =  Collection.valiateMandatoryText(field);
-              break;
-            case "email":
-              value = $("#" + field["code"]).val();
-              if(Collection.prototype.validateEmail(value) == false){
-                Collection.prototype.showErrorMessage(field["name"] + " is not a valid email value.");
-                return false;
-              }
-              state =  Collection.valiateMandatoryText(field);
-              break;
-            case "photo":
-              state =  Collection.valiateMandatoryPhoto(field);
-              break;
-          }
-          if(!state){
-            Collection.prototype.showErrorMessage(field["name"] + " is mandatory.");
-            Collection.setFieldStyleFailed(field["code"]);
-            return false
-          }
-          else{
-            Collection.setFieldStyleSuccess(field["code"]);
+                }
+                  if(range){
+                    msg = Collection.prototype.validateRange(value, range);
+                    if(msg != ""){
+                      Collection.prototype.showErrorMessage(msg);
+                      $('div').removeClass('invalid_field');
+                      Collection.setFieldStyleFailed(field["code"]);                    
+                      return false;
+                    }
+                }
+                state =  Collection.valiateMandatoryText(field);
+                break;
+              case "date":
+                state =  Collection.valiateMandatoryText(field);
+                break;
+              case "yes_no":
+                break;
+              case "select_one":
+                state =  Collection.valiateMandatorySelectOne(field);
+                break;
+              case "select_many":
+                state =  Collection.valiateMandatorySelectMany(field);
+                break;
+              case "phone number":
+                state =  Collection.valiateMandatoryText(field);
+                break;
+              case "email":
+                value = $("#" + field["code"]).val();
+                if(Collection.prototype.validateEmail(value) == false){
+                  Collection.prototype.showErrorMessage(field["name"] + " is not a valid email value.");
+                  return false;
+                }
+                state =  Collection.valiateMandatoryText(field);
+                break;
+              case "photo":
+                state =  Collection.valiateMandatoryPhoto(field);
+                break;
+            }
+            if(!state){
+              Collection.prototype.showErrorMessage(field["name"] + " is mandatory.");
+              Collection.setFieldStyleFailed(field["code"]);
+              return false
+            }
+            else{
+              Collection.setFieldStyleSuccess(field["code"]);
+            }
           }
         }
       }
