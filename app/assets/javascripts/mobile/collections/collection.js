@@ -257,7 +257,6 @@ Collection.prototype.validateData = function(collectionId){
     Collection.prototype.showErrorMessage("Location's longitude can not be empty.");
     return false;
   }
-
   for(var k=0; k< window.collectionSchema.length; k++){
     if(window.collectionSchema[k]["id"] == collectionId){
       schema = window.collectionSchema[k];
