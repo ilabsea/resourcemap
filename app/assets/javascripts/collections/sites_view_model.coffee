@@ -56,7 +56,7 @@ onCollections ->
             if @selectedSite() && @selectedSite().id() == site.id()
               @unselectSite()
 
-            if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
+            if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site) || site.collection.sitesPermission.canNone(site)
               site.fetchFields()
 
             @selectSite(site)
