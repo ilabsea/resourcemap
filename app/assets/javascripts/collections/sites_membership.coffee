@@ -15,9 +15,6 @@ onCollections ->
         @sitesPermission = new SitesPermission(data)
         callback() if typeof(callback) is 'function'
 
-    @unreadable: (site) ->
-      @sitesPermission.canNone(site)
-
     @readable: (site) ->
       @sitesPermission.canRead(site)
 
