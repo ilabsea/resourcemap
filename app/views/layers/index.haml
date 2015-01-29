@@ -94,9 +94,12 @@
       %label{"data-bind"=>"text: isVisibleLocation() ? 'visible' : 'invisible'"}
       %br/
       %br/
-      .bottom-actions
-        %button.farrow{ko(click: '$root.editDefaultLayer'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
-        / %button.white{ko(click: '$root.saveDefaultLayer'), type: :button, title: 'Save layer'}= t('views.layers.save_layer')
+      - if current_user_snapshot.at_present? && collection_admin?
+        /ko if: !$root.savingLayer()
+        .bottom-actions
+          %button.farrow{ko(click: '$root.editDefaultLayer'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
+          / %button.white{ko(click: '$root.saveDefaultLayer'), type: :button, title: 'Save layer'}= t('views.layers.save_layer')
+        //ko
     //ko
 
 
