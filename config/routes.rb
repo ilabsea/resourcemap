@@ -58,6 +58,7 @@ ResourceMap::Application.routes.draw do
     end
 
     resources :layers do
+      
       member do
         put :set_order
       end
@@ -65,6 +66,10 @@ ResourceMap::Application.routes.draw do
       collection do
         get 'list_layers'
         post :upload_json
+        post :upload_layers
+        get :adjust_layers
+        get :pending_layers
+
         get :import_json
       end
     end

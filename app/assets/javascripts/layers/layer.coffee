@@ -35,7 +35,7 @@ onLayers ->
 
         # Check that the name and code are not duplicated
         for field in @fields()
-          field_error = field.error()
+          field_error = fiel   d.error()
           return field_error if field_error
           return window.t('javascripts.layers.fields.errors.duplicated_field_name') + " '#{field.name()}'" if names.indexOf(field.name()) >= 0
           return window.t('javascripts.layers.fields.errors.duplicated_field_code') +" '#{field.code()}'" if codes.indexOf(field.code()) >= 0

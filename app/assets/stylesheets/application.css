@@ -333,7 +333,6 @@ select.error , input[type="file"].error{
   white-space: nowrap;
 }
 
-
 .slocation {
   background: url("/assets/fields_small_icons/location.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
   display: inline-block;
@@ -390,4 +389,13 @@ select.error , input[type="file"].error{
   font-weight: 400;
   src: local('Khmer'), url(/assets/MjQImit_vPPwpG-NrtymepmCgL4.woff2) format('woff2');
   unicode-range: U+1780-17FF, U+200C, U+25CC;
+
+
+textarea.text{
+  height: 18px;
+}
+
+.pending{
+  color: red;
+}
 

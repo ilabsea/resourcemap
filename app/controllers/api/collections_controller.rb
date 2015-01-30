@@ -44,7 +44,7 @@ class Api::CollectionsController < ApplicationController
   
   def export_layers    
     respond_to do |format|
-      format.json {send_data layers.to_json(include: :fields), filename: "#{collection.name}_layers.csv"}
+      format.json {send_data layers.to_json(include: :fields), filename: "#{collection.name}_layers.json"}
     end
   end
 

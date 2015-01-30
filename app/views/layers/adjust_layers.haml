@@ -16,104 +16,9 @@
     //ko
 
 .tabsline
-  %div
-    %img{src: '/images/loading.gif',id: 'loadProgress', style: 'position: absolute; left: 0; top: 0; right: 0; bottom: 0;margin: auto; display: none'}
-  %br/
-  #layers-main.hidden-until-loaded{style: ''}
+  #adjust-layers.hidden-until-loaded
     %h2= t('views.layers.title')
     %p= t('views.layers.description')
-
-    /ko if: isShowingCopyForm
-    .box.grey.w60
-      %span=t('views.layers.copy_layers_to_new_collection')
-
-      %div#copy_progress{style: 'padding-top: 30px; display:none'}
-        %img{src: '/images/progress_bar.gif', style: 'position: absolute; top: 0; bottom: 0;margin: auto 0px; width: 20px'}
-        %span#copy_notice_message{style: 'color: #3b89bc'}=t('views.layers.copying')
-      %div#form_copy{style: 'padding-top: 5px;'}
-        %p#copy_error_message{style: 'color: red;'}
-        %input.w30#newCollectionName{placeholder: t('views.layers.input_new_collection_name')}
-        %button{ko(click: :copyLayerToNewCollection)}=t('views.layers.copy')
-      %div#browse_copy_collection{style: 'padding-top: 10px; display:none'}
-        %span#success_copy_notice_message{style: 'color: #3b89bc'}
-        %br
-        %br
-        = link_to t('views.layers.browse_copy_collection'), collections_path, id: 'btn_browse_collection', :class => "button grey" , :style => "margin: auto;"
-    //ko
-
-    /ko ifnot: isShowingCopyForm
-    - if current_user_snapshot.at_present? && collection_admin?
-      %div.right{style:'padding-right:340px'}
-        %button{ko(click: :showCopyLayerForm)}=t('views.layers.copy_layers_to_new_collection')
-      %br
-    //ko
-    - if !current_user_snapshot.at_present?
-      = render '/current_snapshot_message'
-
-    %br/
-
-
-    -# Layers
-    /ko foreach: layers
-    /ko if: $data == $root.currentLayer()
-    
-    /ko if: $index() == 0
-    .box.w60
-      %p{style: 'margin-top:0px'} Default layer
-      /ko foreach: fields
-      %label{ko(text: :name), style: 'width:150px; float:left'}
-      %input{ko(checked: 'is_mandatory'), type: 'checkbox', checked: 'checked'} visible
-
-      = link_to 'Export all layers as JSON', api_export_layers_path(collection, format: :json), :class => 'icon fimport black'
-      %span.right
-        %form#import_layer_form{action: upload_layers_collection_layers_path(collection), method: :post, enctype: 'multipart/form-data'}
-          %button.icon.fexport.black Import layers
-          %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
-          %input.layer_upload{type: :file, name: :file, id: :layer_upload}
-    %br
-
-    /ko if: $root.editingDefaultLayer
-    .box.grey.w60
-      .toptitle
-        %span Default layer
-      %br/
-      %br/        
-      %label{style: 'width:150px; float:left'} Name
-      %input{ko(checked: 'isVisibleName'), type: 'checkbox', checked: 'checked'} visible
-      %br/
-      %br/
-      %label{style: 'width:150px; float:left'} Location
-      %input{ko(checked: 'isVisibleLocation'), type: 'checkbox', checked: 'checked'} visible
-      %br/
-      %br/      
-      .bottom-actions
-        %button.white{ko(click: '$root.saveDefaultLayer'), type: :button, title: 'Save layer'}= t('views.layers.save_layer')
-        %a.tgrey{ko(click: '$root.cancelDefaultLayer'), href: 'javascript:void(0)'}= t('views.layers.cancel')
-    //ko
-
-    /ko ifnot: $root.editingDefaultLayer
-    .box.grey.w60
-      .toptitle
-        %span Default layer
-      %br/
-      %br/
-      %label{style: 'width:150px; float:left'} Name
-      / %input{ko(checked: 'isVisibleName'), type: 'checkbox', checked: 'checked'} visible
-      %label{"data-bind"=>"text: isVisibleName() ? 'visible' : 'invisible'"}
-      %br/
-      %br/
-      %label{style: 'width:150px; float:left'} Location
-      %label{"data-bind"=>"text: isVisibleLocation() ? 'visible' : 'invisible'"}
-      %br/
-      %br/
-      - if current_user_snapshot.at_present? && collection_admin?
-        /ko if: !$root.savingLayer()
-        .bottom-actions
-          %button.farrow{ko(click: '$root.editDefaultLayer'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
-          / %button.white{ko(click: '$root.saveDefaultLayer'), type: :button, title: 'Save layer'}= t('views.layers.save_layer')
-        //ko
-    //ko
-
 
     %br/
     -# Layers
@@ -138,13 +43,7 @@
             .feditor-top
             .feditor-container
               .rightbuttons{style:'width:250px;'}
-                /ko if: deletable()
                 %button.fdelete{ko(click: "$root.deleteField"), style:'margin-top:0px;float:right;', title: t('views.layers.form.remove_field') }
-                %button.farrange{ko(click: "$root.copyField"), style:'margin-top:0px;float:right;', title: t('views.layers.form.duplicate_field') }
-                //ko
-                /ko if: !deletable()
-                %button.fdelete{ko(click: "$root.alertCannotDelete"), style:'margin-top:0px;float:right;', title: t('views.layers.form.remove_field') }
-                //ko
                 .btupdn{style: 'float:right;'}
                   %button.fmoveup{ko(click: '$root.moveFieldUp', attr: {disabled: '$root.isFirstField($parent, $data)'}, css: {disabled: '$root.isFirstField($parent, $data)'}), style: 'margin-top:0', title: t('views.layers.form.move_field_up')}
                   %button.fmovedown{ko(click: '$root.moveFieldDown', attr: {disabled: '$root.isLastField($parent, $data)'}, css: {disabled: '$root.isLastField($parent, $data)'}), title: t('views.layers.form.move_field_down')}
@@ -172,26 +71,8 @@
 
             .feditor-bottom
 
-            /ko if: $data == $root.currentField()
-            .feditor-add
-              .feditor-add-top{ko(css: {empty: '$parent.fields().length == 0'})}
-              .feditor-add-container
-                .feditor-add-content
-                  %h1 Add form field
-                  - Field::BaseKinds.clone.concat(Field::plugin_kinds.map{|k,v| v}).in_groups_of(6).each do |field_row|
-                    .feditor-field-type-row
-                    - field_row.compact.each do |field|
-                      - if field
-                        %span{ko(click: "function() { $root.newField('#{field[:name]}') }")}
-                          %button{ style: "margin-left:10px; margin-bottom:4px;", class: field[:css_class], title: "Add new #{field[:name].titleize.downcase} field" }
-                          %br/
-                          = t("views.layers.fields.#{field[:name]}").titleize
-                    %br/
-                    %br/
-
-            //ko
           //ko
-          /ko if: fields().length == 0
+
           .feditor-add
             .feditor-add-top{ko(css: {empty: 'fields().length == 0'})}
             .feditor-add-container
@@ -207,7 +88,6 @@
                         = t("views.layers.fields.#{field[:name]}").titleize
                   %br/
                   %br/
-          //ko
 
         = render 'layers/field_editor'
 
@@ -222,7 +102,7 @@
           %a.tgrey{ko(click: '$root.cancelLayer'), href: 'javascript:void(0)'}= t('views.layers.cancel')
           / /ko
           / ko if: !valid()
-          %span{ko(text: "error()"), style: 'color:red;margin-left:20px'}
+          %span{ko(text: "'Can\\'t save: ' + error()"), style: 'color:red;margin-left:20px'}
           / /ko
     //ko
 
@@ -234,28 +114,23 @@
         -#%em{ko(visible: :public)} Public layer
         -#%em{ko(visible: '!public()')} Private layer
 
-      - if current_user_snapshot.at_present? && collection_admin?
+      - if current_user_snapshot.at_present?
         .rightbuttons
+          %span.pending Pending
           / ko if: !$root.savingLayer() && !$root.currentLayer()
           .btupdn
             %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'}), title: t('views.layers.move_layer_up')}
             %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'}), title: t('views.layers.move_layer_down')}
           / /ko
           / ko if: !$root.savingLayer() && !$root.currentLayer()
-          %button.farrange{ko(click: '$root.copyLayer'), title: t('views.layers.copy_layer') }
-          %button.fdelete{ko(click: '$root.deleteLayer'), title: t('views.layers.remove_layer') }
+          - if current_user_snapshot.at_present? && collection_admin?
+            %button.fdelete{ko(click: '$root.deleteLayer'), title: t('views.layers.remove_layer') }
           / /ko
 
       .middlebuttons
-        /ko foreach: displayed_fields
-        %div{ko(attr: {class: 'iconClass()'}, text: :name), :style => 'line-height:21px;color:black;'}
+        /ko foreach: fields
+        %div{ko(attr: {class: 'iconClass()'}, text: :name), :style => 'line-height:21px;color:black; height:inherit;max-width: 515px;;word-wrap: break-word;'}
         //ko
-        %br/
-        / ko if: total
-        =t('views.layers.total_fields')
-        %b
-          %a{ko(click: :expandAllField, text: :total), href: 'javascript:void(0)'}
-        / /ko
 
       - if current_user_snapshot.at_present? && collection_admin?
         /ko if: !$root.savingLayer()
