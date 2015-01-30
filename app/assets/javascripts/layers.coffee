@@ -10,6 +10,9 @@ onLayers -> if $('#layers-main').length > 0
     $('.hierarchy_form').submit()
     window.model.startUploadHierarchy()
 
+  $('#layer_upload').live 'change', ->
+    $('#import_layer_form').submit()
+
   $.get "/collections/#{collectionId}/layers.json", {}, (layers) =>
   	$.get "/collections/#{collectionId}.json", {}, (collection) ->
 	    isVisibleName = collection.is_visible_name

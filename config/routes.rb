@@ -28,12 +28,15 @@ ResourceMap::Application.routes.draw do
       get :visible_layers_for
     end
     resources :layers do
+      
       member do
         put :set_order
       end
 
       collection do
-        post :upload_json
+        post :upload_layers
+        get :adjust_layers
+        get :pending_layers
         get :import_json
       end
     end

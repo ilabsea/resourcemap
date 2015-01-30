@@ -306,3 +306,7 @@ a.lbutton{
 textarea.text{
   height: 18px;
 }
+
+.pending{
+  color: red;
+}
