@@ -151,3 +151,10 @@ kh:
           enable_dependency_hierarchy: "បេីកឋានានុក្រមនៃភាពអាស្រ័យ"
           this_field_will_be_rendering_as_the_dependancy_hierarchy_select: "សំណួរនេះនឹងត្រូវបានបង្ហាញជាឋានានុក្រម select"
           this_field_is_required: "សំណួរនេះ​ត្រូវតែ​បំពេញ !"
+          enable_skip_logic_for_this_field: "បើកអោយដំណើរការសំរាប់រំលងហ្វៀល"
+      defaults:
+        default_layer: "ស្រទាប់លំនាំដើម"
+        name: "ឈ្មោះ"
+        location: "ទីតាំង"
+        visible: "អាចមើលឃើញ"
+        invisible: "មើលមិនឃើញ"

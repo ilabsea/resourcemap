@@ -75,14 +75,14 @@
     /ko if: $root.editingDefaultLayer
     .box.grey.w60
       .toptitle
-        %span Default layer
+        %span= t('views.layers.defaults.default_layer')
       %br/
       %br/        
-      %label{style: 'width:150px; float:left'} Name
+      %label{style: 'width:150px; float:left'}= t('views.layers.defaults.name')
       %input{ko(checked: 'isVisibleName'), type: 'checkbox', checked: 'checked'} visible
       %br/
       %br/
-      %label{style: 'width:150px; float:left'} Location
+      %label{style: 'width:150px; float:left'}= t('views.layers.defaults.location')
       %input{ko(checked: 'isVisibleLocation'), type: 'checkbox', checked: 'checked'} visible
       %br/
       %br/      
@@ -94,15 +94,15 @@
     /ko ifnot: $root.editingDefaultLayer
     .box.grey.w60
       .toptitle
-        %span Default layer
+        %span= t('views.layers.defaults.default_layer')
       %br/
       %br/
-      %label{style: 'width:150px; float:left'} Name
+      %label{style: 'width:150px; float:left'}= t('views.layers.defaults.name')
       / %input{ko(checked: 'isVisibleName'), type: 'checkbox', checked: 'checked'} visible
       %label{"data-bind"=>"text: isVisibleName() ? 'visible' : 'invisible'"}
       %br/
       %br/
-      %label{style: 'width:150px; float:left'} Location
+      %label{style: 'width:150px; float:left'}= t('views.layers.defaults.location')
       %label{"data-bind"=>"text: isVisibleLocation() ? 'visible' : 'invisible'"}
       %br/
       %br/
