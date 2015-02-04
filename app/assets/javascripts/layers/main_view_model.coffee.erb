@@ -1,12 +1,13 @@
 onLayers ->
   class @MainViewModel
-    constructor: (collectionId, layers, is_visible_name, is_visible_location) ->
+    constructor: (collectionId, layers, is_visible_name, is_visible_location, is_pending = false) ->
       @collectionId = collectionId
-      @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
+      @layers = ko.observableArray $.map(layers, (x) -> new Layer(x, is_pending))
       @currentLayer = ko.observable()
       @currentField = ko.observable()
       @default_select = '(no value)'
-      
+      @allLayers = null
+
       @isVisibleName = ko.observable is_visible_name ? true
       @isVisibleLocation = ko.observable is_visible_location ? true
       @editingDefaultLayer = ko.observable(false)
@@ -14,7 +15,7 @@ onLayers ->
       @newOption = ko.observable(new Option)
       @newFieldLogic = ko.observable(new FieldLogic)     
       @newAttribute = ko.observable(new Attribute)
-      
+
       @optionValid = ko.computed =>
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
@@ -74,10 +75,11 @@ onLayers ->
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
       layer.hasFocus(true)
+      layer.importError(layer.validate())
       @editingDefaultLayer(false)
 
     cancelLayer: =>
-      if @currentLayer().id()
+      if @currentLayer().id() || @currentLayer().isPending()
         @currentLayer().fields.removeAll()
         @currentLayer().fields.push(field) for field in @originalFields
       else
