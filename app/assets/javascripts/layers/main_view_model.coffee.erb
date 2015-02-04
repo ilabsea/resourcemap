@@ -1,5 +1,6 @@
 onLayers ->
   class @MainViewModel
+
     constructor: (collectionId, layers, collectionList) ->
       @collectionId = collectionId
       @fields = ko.observableArray()
@@ -11,7 +12,6 @@ onLayers ->
       @currentField = ko.observable()
       @default_select = '(no value)'
 
-
       @defaultLayer = ko.observable(new Layer)
       @defaultLayer().name('Default layer')
       @defaultLayer().ord(0)
@@ -21,12 +21,20 @@ onLayers ->
       # @defaultLayer().fields.push(new Field(@defaultLayer(), { name: "Longitude", kind: "text"}))
       @layers.unshift @defaultLayer() unless layers
 
+      @allLayers = null
+
+      @isVisibleName = ko.observable is_visible_name ? true
+      @isVisibleLocation = ko.observable is_visible_location ? true
+      @editingDefaultLayer = ko.observable(false)
+
+
       @newOption = ko.observable(new Option)
       @newFieldLogic = ko.observable(new FieldLogic)
       @currentFieldLogic = ko.observable()
       @newFieldValidation = ko.observable(new FieldValidation)
       @newAttribute = ko.observable(new Attribute)
       @collectionList = window.collectionList
+
       @optionValid = ko.computed =>
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
