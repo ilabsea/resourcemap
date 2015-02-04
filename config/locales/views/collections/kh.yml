@@ -172,8 +172,8 @@ kh:
       quotas:
         title: "កូតា"
         messages_sent: "ទិន្នន័យ នេះបានផ្ញើរ"
-        message_in_last: "  សារដែលបានផ្ញើរនៅក្នុងទៅ"
-        messages_in_last: "  សារដែលបានផ្ញើរនៅក្នុងទៅ"
+        message_in_last: "  សារគិតជា"
+        messages_in_last: "  សារគិតជា"
         week: "សប្តាហ៏"
         month: "ខែ"
         year: "ឆ្នាំ"
