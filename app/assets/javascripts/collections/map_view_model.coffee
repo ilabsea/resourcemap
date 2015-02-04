@@ -1,6 +1,7 @@
 onCollections ->
   class @MapViewModel
     @constructor: ->
+      @loading = ko.observable(false)
       @showingMap = ko.observable(true)
       @mapSitesCount = ko.observable(0)
       @mapSitesCountText = ko.computed =>
@@ -124,6 +125,7 @@ onCollections ->
       currentMapRequestNumber = @mapRequestNumber
 
       getCallback = (data = {}) =>
+        @loading(false)
         return unless currentMapRequestNumber == @mapRequestNumber
         if @showingMap()
           @drawSitesInMap data.sites
@@ -141,6 +143,7 @@ onCollections ->
         # Save a request to the server if there are no selected collections
         getCallback()
       else
+        @loading(true)
         $.get "/sites/search.json", query, getCallback
 
     @generateQueryParams: (bounds, collection_ids, zoom) ->

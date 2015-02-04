@@ -58,11 +58,12 @@ onCollections ->
 
             if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
               site.fetchFields()
+            else if site.collection.sitesPermission.canNone(site)
+              site.layers([])
 
             @selectSite(site)
             @editingSite(site)
             @currentCollection(site.collection)
-
             @loadBreadCrumb()
 
           $('a#previewimg').fancybox()

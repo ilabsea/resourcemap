@@ -28,10 +28,13 @@ onCollections ->
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @loadCurrentSnapshotMessage()
       @loadAllSites()
+      @loading = ko.observable(false)
       @loadSites() unless window.currentUserIsGuest
 
     loadSites: =>
+      @loading(true)
       $.get @sitesUrl(), (data) =>
+        @loading(false)
         for site in data
           @addSite @createSite(site)    
 
@@ -71,8 +74,11 @@ onCollections ->
           sites = threshold.alertSites()
         else
           sites = this.sites()
+          
         for site in sites
           site = @findSiteById(site.collection.id, threshold.collectionId) if threshold.isAllSite() == "false"
+          this.assignFalseForYesNo(site) if site?
+          
           alertSite = this.operateWithCondition(threshold.conditions(), site, threshold.isAllCondition()) if site?
           if alertSite? && alertSites.indexOf(alertSite) == -1
             b = true
@@ -134,6 +140,11 @@ onCollections ->
 
       return site
 
+    assignFalseForYesNo: (site) =>
+      for layer in site.collection.layers()
+        for field in layer.fields
+          if field.kind is "yes_no" && !site.properties()[field.esCode]
+            site.properties()[field.esCode] = false;
 
     loadCurrentSnapshotMessage: =>
       @viewingCurrentSnapshotMessage = ko.observable()

@@ -41,6 +41,7 @@
     -else
       = link_to t('views.import_wizards.download_csv_template'), api_sample_csv_path(collection, format: 'csv'), class: "icon fimport black"
 
+
     %form#upload_form{action: upload_csv_collection_import_wizard_path(collection), method: :post, enctype: 'multipart/form-data'}
       %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
       .icon.fexport.black= t('views.import_wizards.upload_a_csv')
