@@ -106,6 +106,7 @@ onLayers ->
 
     saveLayer: =>
       @savingLayer(true)
+      # unless @currentLayer().ord()
       json = {layer: @currentLayer().toJSON()}
 
       if @currentLayer().id()
@@ -164,6 +165,9 @@ onLayers ->
             $.status.showNotice("Layer '#{layer.name()}' successfully deleted", 2000)
       else
         $.status.showError("This layer is being used with #{layer.threshold_ids.length} alert(s), you are not allowed to delete", 2000)
+
+    deletePendingLayer: (layer) =>
+      @layers.remove(layer)
 
     selectingLayer: =>
       alert 'selectingLayer'

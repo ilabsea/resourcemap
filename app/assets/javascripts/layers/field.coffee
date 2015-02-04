@@ -1,9 +1,8 @@
 onLayers ->
   class @Field
     constructor: (layer, data) ->
-      # console.log data
       @layer = ko.observable layer
-      @id = ko.observable data?.id
+      @id = ko.observable data?.id ? undefined
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
