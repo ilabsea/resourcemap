@@ -3,7 +3,8 @@
     .error { color: red; }
 
 = render '/tabs'
-
+:javascript
+  $(".tabs li:nth-last-child(7)").addClass("active")
 -# Hierarchy item template
 %script{type: "text/html", id: "hierarchy-items-template"}
   %div
