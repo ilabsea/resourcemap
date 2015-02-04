@@ -16,9 +16,6 @@ class LayersController < ApplicationController
   before_filter :authenticate_collection_admin!, :except => [:index, :list_layers]
   before_filter :fix_field_config, only: [:create, :update]
 
-  # expose(:import_job) { ImportJob.last_for current_user, collection }
-  # expose(:failed_import_jobs) { ImportJob.where(collection_id: collection.id).where(status: 'failed').order('id desc').page(params[:page]).per_page(10) }
-
   def index
     respond_to do |format|
       format.html do
@@ -77,6 +74,7 @@ class LayersController < ApplicationController
 
   def create
     layer = layers.new params[:layer]
+    layer.ord = layers.length unless layer.ord 
     layer.user = current_user
     layer.save!
     current_user.layer_count += 1
@@ -123,25 +121,6 @@ class LayersController < ApplicationController
     redirect_to :action => "adjust_layers"
   end
 
-  # def upload_json
-  #   # debugger
-  #   raw_layers = File.read(params[:file].path, :encoding => 'utf-8')
-  #   all_layers = JSON.parse raw_layers
-  #   all_new_layers = []
-  #   all_layers.each do |l|
-  #     result = layer.decode_raw_layer l
-  #     new_layer = layers.new result
-  #     new_layer.user = current_user
-  #     # new_layer.save!
-  #     # current_user.layer_count += 1
-  #     # current_user.update_successful_outcome_status
-  #     # current_user.save!(:validate => false)
-  #     all_new_layers.push(new_layer.as_json(include: :fields))
-  #   end
-  #   # redirect_to action: "index"
-  #   redirect_to :action => "adjust_layers"
-  # end
-
   def adjust_layers
     # directory = "public/upload"
     # path = File.join(directory, 'tmp_layers.json')
@@ -162,7 +141,7 @@ class LayersController < ApplicationController
       # current_user.layer_count += 1
       # current_user.update_successful_outcome_status
       # current_user.save!(:validate => false)
-      all_new_layers.push(new_layer.as_json(include: :fields))
+      all_new_layers.push(new_layer.as_json(include: :fields.as_json(:except => [:id]), :except => [:id, :ord]))
     end
     render json: all_new_layers
   end

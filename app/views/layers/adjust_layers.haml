@@ -116,15 +116,15 @@
 
       - if current_user_snapshot.at_present?
         .rightbuttons
+          /ko if: id
+          %span Saved
+          //ko
+          /ko ifnot: id
           %span.pending Pending
-          / ko if: !$root.savingLayer() && !$root.currentLayer()
-          .btupdn
-            %button.fmoveup{ko(click: '$root.moveLayerUp', attr: {disabled: '$root.isFirstLayer($data)'}, css: {disabled: '$root.isFirstLayer($data)'}), title: t('views.layers.move_layer_up')}
-            %button.fmovedown{ko(click: '$root.moveLayerDown', attr: {disabled: '$root.isLastLayer($data)'}, css: {disabled: '$root.isLastLayer($data)'}), title: t('views.layers.move_layer_down')}
-          / /ko
+          //ko
           / ko if: !$root.savingLayer() && !$root.currentLayer()
           - if current_user_snapshot.at_present? && collection_admin?
-            %button.fdelete{ko(click: '$root.deleteLayer'), title: t('views.layers.remove_layer') }
+            %button.fdelete{ko(click: '$root.deletePendingLayer'), title: t('views.layers.remove_layer') }
           / /ko
 
       .middlebuttons
@@ -139,13 +139,4 @@
     //ko
     %br/
     //ko
-
-    - if current_user_snapshot.at_present? && collection_admin?
-      /ko if: !savingLayer()
-      -# New layer link
-      .box.grey.add{ko(visible: '!currentLayer()', click: 'newLayer'), style: 'display:none;'}
-        %span{style:'padding-top:6px;'}
-          = t('views.layers.add_layer')
-        %button.cadd.right{type: :button, style: 'margin-top:3px;margin-right:0px;', title: t('views.layers.add_new_layer')}
-        %br{clear: :all}
-      //ko
+    #{link_to 'View all layers', collection_layers_path(collection), :class => 'button grey'}

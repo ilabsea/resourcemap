@@ -257,6 +257,7 @@ onLayers ->
 
     saveLayer: =>
       @savingLayer(true)
+      # unless @currentLayer().ord()
       json = {layer: @currentLayer().toJSON()}
       if @currentLayer().id()
         json._method = 'put'
@@ -446,6 +447,11 @@ onLayers ->
           match = true
       )
       return match
+
+    deletePendingLayer: (layer) =>
+      @layers.remove(layer)
+
+
     selectingLayer: =>
       alert 'selectingLayer'
 
