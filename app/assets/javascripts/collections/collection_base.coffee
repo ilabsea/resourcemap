@@ -204,6 +204,8 @@ onCollections ->
       out.join ''
 
 
+    findFieldByCode: (code) => (field for field in @fields() when field.code == code)[0]
+
     findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 
     clearFieldValues: =>
