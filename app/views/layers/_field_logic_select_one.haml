@@ -7,6 +7,7 @@
         = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select', enable: :editing), style: 'color:black;height:30px; background-color:white'
       %div
         %span.smalltext skip form to
+
         %select{"data-bind" => 'foreach: $root.layerList(), value: field_id, selectedOptions: field_id, enable: editing', style: 'color:black;max-width:135px;height:30px;background-color:white'}
           /ko if: $index() == 0
           %option{value: ""} (no value)

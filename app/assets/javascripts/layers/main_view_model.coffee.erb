@@ -12,6 +12,7 @@ onLayers ->
       @currentField = ko.observable()
       @default_select = '(no value)'
 
+
       @defaultLayer = ko.observable(new Layer)
       @defaultLayer().name('Default layer')
       @defaultLayer().ord(0)
@@ -644,9 +645,10 @@ onLayers ->
       @isAddNewValidation(false)
 
     to_field_name: (field) =>
+      console.log 'field '+field
       if @currentLayer()
         for l in @layers()
-          f = $.map(l.fields(), (x) -> x if x.id() == parseInt(field()[0]))
+          f = $.map(l.fields(), (x) -> x if x.code() == field)
           if(f.length > 0)
             return f[0].name()
       return ""

@@ -185,6 +185,18 @@ class LayersController < ApplicationController
             }
           else
             field[:config][:field_logics] = []
+              field_logic['value'] = field_logic['value'].to_i
+              if field_logic['field_id']
+                field_logic['field_id'].each { |field_id|
+                  if field_id == ""
+                    field_logic['field_id'] = nil
+                  else
+                    field_logic['field_id'] = field_id
+                  end
+                }
+              end         
+            }    
+
           end
           field[:config][:range] = fix_field_config_range(field_idx,field) if field[:is_enable_range]
         else

@@ -45,6 +45,7 @@
             //ko
             %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}
               %option{"data-bind" => "text: name, option: name, value: id"}
+
   .rightbuttons
     %button.fdelete{ ko(click: '$root.removeSelectedFieldLogic') }
   %button.white{ko(click: '$root.updateFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.save')
@@ -70,7 +71,8 @@
         %label{ko(text: 'label')}
       //ko
     %span.smalltext= t('views.layers.form.field.is_select_then_skip_form_to')
-    %label{ko(text: '$root.to_field_name(field_id)')}
+    / %label{ko(text: :field_code)}
+    %label{ko(text: '$root.to_field_name(field_code)')}
     %br
     %button.farrow{ko(click: '$root.editFieldLogic'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
   .rightbuttons
@@ -123,6 +125,7 @@
             //ko
             %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}
               %option{"data-bind" => "text: name, option: name, value: id"}
+
   .rightbuttons
     %button.fdelete{ ko(click: '$root.removeFieldLogic') }
   %button.white{ko(click: '$root.saveFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.save')
