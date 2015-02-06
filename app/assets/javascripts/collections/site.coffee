@@ -66,6 +66,8 @@ onCollections ->
         @updatedAt(data.updated_at)
       @collection.fetchLocation()
 
+    findFieldByCode: (code) => (field for field in @fields() when field.code == code)[0]
+
     findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 
     updateProperty: (esCode, value) =>

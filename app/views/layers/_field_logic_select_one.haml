@@ -7,12 +7,12 @@
         = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select', enable: :editing), style: 'color:black;height:30px; background-color:white'
       %div
         %span.smalltext skip form to
-        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id, selectedOptions: field_id, enable: editing', style: 'color:black;max-width:135px;height:30px;background-color:white'}
+        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code, selectedOptions: field_id, enable: editing', style: 'color:black;max-width:135px;height:30px;background-color:white'}
           /ko if: $index() == 0
           %option{value: ""} (no value)
           //ko
           %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}        
-            %option{"data-bind" => "text: name, option: name, value: id"}
+            %option{"data-bind" => "text: name, option: name, value: code"}
 
       .rightbuttons
         %button.fdelete{ ko(click: '$root.removeFieldLogic'), title: 'Remove logic' }
@@ -34,12 +34,12 @@
         
       %div
         %span.smalltext skip form to
-        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id, selectedOptions: field_id', style: 'max-width:135px;height:30px;background-color:white'}
+        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code, selectedOptions: field_id', style: 'max-width:135px;height:30px;background-color:white'}
           /ko if: $index() == 0
           %option{value: ""} (no value)
           //ko
           %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}        
-            %option{"data-bind" => "text: name, option: name, value: id"}
+            %option{"data-bind" => "text: name, option: name, value: code"}
       
       %button.white{ko(click: '$root.saveFieldLogic', enable: '$root.fieldLogicValid'), type: :button, title: 'Save'}= t('views.layers.form.field.save')
       %button.white{ko(click: '$root.cancelFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.cancel')

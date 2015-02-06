@@ -141,7 +141,7 @@ class LayersController < ApplicationController
                     field_logic['field_id'] = field_id
                   end
                 }
-              end
+              end         
             }    
           end
 

@@ -1,12 +1,12 @@
 onLayers ->
   class @MainViewModel
-    constructor: (collectionId, layers, is_visible_name, is_visible_location, is_pending = false) ->
+    constructor: (collectionId, layers, is_visible_name, is_visible_location, is_pending = false, allLayers = null) ->
       @collectionId = collectionId
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x, is_pending))
       @currentLayer = ko.observable()
       @currentField = ko.observable()
       @default_select = '(no value)'
-      @allLayers = null
+      @allLayers = allLayers
 
       @isVisibleName = ko.observable is_visible_name ? true
       @isVisibleLocation = ko.observable is_visible_location ? true
@@ -313,9 +313,10 @@ onLayers ->
         @isAddNew(false)
 
     to_field_name: (field) =>
+      console.log 'field '+field
       if @currentLayer()
         for l in @layers()
-          f = $.map(l.fields(), (x) -> x if x.id() == parseInt(field()[0]))
+          f = $.map(l.fields(), (x) -> x if x.code() == field)
           if(f.length > 0)
             return f[0].name()
       return ""

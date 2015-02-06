@@ -1,6 +1,7 @@
 onLayers ->
   class @Layer
     constructor: (data, isPending = false) ->
+      console.log 'layer'
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @public = ko.observable data?.public
@@ -15,6 +16,7 @@ onLayers ->
       @nameError = ko.computed => if @hasName() then null else "the layer's Name is missing"
       @importError = ko.observable()
       @fieldsError = ko.computed =>
+        # console.log 'computed'
         @importError(null)
         @validate()
         # return "the layer must have at least one field" if @fields().length == 0
@@ -48,7 +50,8 @@ onLayers ->
       @error = ko.computed => @nameError() || @fieldsError() || @importError()
       @valid = ko.computed => !@error()
 
-    validate: => 
+    validate: =>
+      console.log 'thyda'
       return "the layer must have at least one field" if @fields().length == 0
 
       codes = []
@@ -71,6 +74,8 @@ onLayers ->
             return "a field with code '#{field.code()}' already exists in the layer named #{layer.name()}"  if codes.indexOf(field.code()) >= 0
 
         #####
+        console.log 'all layers'
+        console.log window.model.allLayers
         if window.model.allLayers
           for layer in window.model.allLayers
             for field in layer.fields()
