@@ -10,8 +10,6 @@ onLayers -> if $('#adjust-layers').length > 0
       $.get "/collections/#{collectionId}.json", {}, (collection) ->
         isVisibleName = collection.is_visible_name
         isVisibleLocation = collection.is_visible_location
-        allLayers = $.map(layers, (x) -> new Layer(x))
-        window.model = new MainViewModel(collectionId, pendingLayers, isVisibleName, isVisibleLocation, true, allLayers)
-        # window.model.allLayers = $.map(layers, (x) -> new Layer(x))
+        window.model = new MainViewModel(collectionId, pendingLayers, isVisibleName, isVisibleLocation, true, layers)
         ko.applyBindings window.model
         $('.hidden-until-loaded').show()
