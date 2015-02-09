@@ -12,7 +12,6 @@ onLayers ->
       @currentField = ko.observable()
       @default_select = '(no value)'
 
-
       @defaultLayer = ko.observable(new Layer)
       @defaultLayer().name('Default layer')
       @defaultLayer().ord(0)
@@ -23,6 +22,7 @@ onLayers ->
       @layers.unshift @defaultLayer() unless layers
 
       @allLayers = null
+
 
       @isVisibleName = ko.observable is_visible_name ? true
       @isVisibleLocation = ko.observable is_visible_location ? true
@@ -92,7 +92,7 @@ onLayers ->
 
       @layerList = ko.computed =>
         if @currentLayer()
-          if @currentLayer().id()
+          if @currentLayer().id() || @currentLayer().isPending()
             @layers()
           else
             @layers().filter (layer) => typeof layer.id() isnt 'undefined'
@@ -116,6 +116,7 @@ onLayers ->
             return true
           return false
         return false
+
 
       @isShowingCopyForm = ko.observable(false)
       @originalLayer = null
@@ -195,6 +196,25 @@ onLayers ->
             @currentField().impl().addDependentField(f)
             return
 
+    validateImportedLayers: (importedLayers, allLayers)=>
+      
+      for importLayer in importedLayers
+        flag = false
+        for importedField in importLayer.fields()
+          for layer in allLayers
+            for field in layer.fields()
+              if field.name() == importedField.name()
+                importLayer.importError("a field with name '#{field.name()}' already exists in the layer named #{layer.name()}")
+                flag = true
+                break
+              if field.code() == importedField.code()
+                importLayer.importError("a field with code '#{field.code()}' already exists in the layer named #{layer.name()}")
+                flag = true
+                break
+
+          if flag = true
+            break
+
     newLayer: =>
       layer = new Layer ord: (@layers().length + 1)
       @layers.push(layer)
@@ -251,6 +271,13 @@ onLayers ->
       @editingDefaultLayer(true)
       @currentLayer(null)
 
+    saveAllLayers: (layers)=>
+      for layer in @layers()
+        json = {layer: layer.toJSON()}
+        $.post "/collections/#{@collectionId}/layers.json", json
+
+      window.location.href = "/collections/#{@collectionId}/layers"
+
     saveDefaultLayer: =>
       json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
       json._method = 'put'
@@ -264,9 +291,9 @@ onLayers ->
       @editingDefaultLayer(false)
       @currentLayer(null)
 
-    saveLayer: =>
+    saveLayer: (layer)=>
       @savingLayer(true)
-      # unless @currentLayer().ord()
+      @currentLayer(layer)
       json = {layer: @currentLayer().toJSON()}
       if @currentLayer().id()
         json._method = 'put'
@@ -645,10 +672,9 @@ onLayers ->
       @isAddNewValidation(false)
 
     to_field_name: (field) =>
-      console.log 'field '+field
       if @currentLayer()
         for l in @layers()
-          f = $.map(l.fields(), (x) -> x if x.code() == field)
+          f = $.map(l.fields(), (x) -> x if x.code() == field())
           if(f.length > 0)
             return f[0].name()
       return ""

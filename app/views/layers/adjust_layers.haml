@@ -137,7 +137,13 @@
         /ko if: !$root.savingLayer()
         %button.farrow{ko(click: '$root.editLayer'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
         //ko
+        /ko if: !valid()
+        %span{ko(text: "'Error: ' + importError()"), style: 'color:red;margin-left:20px; font-size:12px;'}
+        //ko        
     //ko
     %br/
     //ko
+    /ko ifnot: $root.currentLayer()
+    %button.white{ko(click: '$root.saveAllLayers', enable: :validateAllLayers), type: :button, title: 'Save all layers'} Save all layers
     #{link_to 'View all layers', collection_layers_path(collection), :class => 'button grey'}
+    //ko
