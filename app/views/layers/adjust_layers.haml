@@ -138,7 +138,7 @@
         %button.farrow{ko(click: '$root.editLayer'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
         //ko
         /ko if: !valid()
-        %span{ko(text: "'Error: ' + importError()"), style: 'color:red;margin-left:20px; font-size:12px;'}
+        %span{ko(text: "'Error: ' + error()"), style: 'color:red;margin-left:20px; font-size:12px;'}
         //ko        
     //ko
     %br/
