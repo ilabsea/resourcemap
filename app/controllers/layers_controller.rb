@@ -91,10 +91,6 @@ class LayersController < ApplicationController
     render json: all_new_layers
   end
 
-  def import_json
-    
-  end
-
   private
 
   # The options come as a hash insted of a list, so we convert the hash to a list

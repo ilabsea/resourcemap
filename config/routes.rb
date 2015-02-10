@@ -37,7 +37,6 @@ ResourceMap::Application.routes.draw do
         post :upload_layers
         get :adjust_layers
         get :pending_layers
-        get :import_json
       end
     end
     resources :fields
