@@ -84,6 +84,7 @@ class LayersController < ApplicationController
     path = File.join('public/upload', 'tmp_layers.json')
     raw_layers = File.read(path, :encoding => 'utf-8')
     all_layers = JSON.parse raw_layers
+    File.delete(path)
     all_new_layers = []
     all_layers.each do |l|
       result = layer.decode_raw_layer l
