@@ -119,14 +119,16 @@
         .rightbuttons
           /ko if: id
           %span Saved
+          %button.fdelete{ko(click: '$root.deleteLayer'), title: t('views.layers.remove_layer') }
           //ko
+
           /ko ifnot: id
           %span.pending Pending
-          //ko
           / ko if: !$root.savingLayer() && !$root.currentLayer()
           - if current_user_snapshot.at_present? && collection_admin?
             %button.fdelete{ko(click: '$root.deletePendingLayer'), title: t('views.layers.remove_layer') }
           / /ko
+          //ko
 
       .middlebuttons
         /ko foreach: fields
