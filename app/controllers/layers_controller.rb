@@ -75,6 +75,9 @@ class LayersController < ApplicationController
   end
 
   def adjust_layers
+    show_collection_breadcrumb
+    add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.layers'), collection_layers_path(collection)    
   end
 
   def pending_layers
