@@ -50,7 +50,7 @@ onLayers ->
       @fieldCustomValidationValid = ko.computed =>
         $.trim(@newFieldValidation().condition_type()).length > 0 && $.trim(@newFieldValidation().field_id()).length > 0
 
-      @fieldSelectManyLogicValid = ko.computed =>
+      @fieldSelectManyLogicValid = ko.computed =>  
         true
 
       @attributeValid = ko.computed =>
