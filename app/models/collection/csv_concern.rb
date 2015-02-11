@@ -21,24 +21,7 @@ module Collection::CsvConcern
     hierarchy_fields = {}
     CSV.generate do |csv|
       header = ['resmap-id', 'name', 'lat', 'long']
-      fields.each do |field| 
-        if field.kind == "select_many"
-          field.config["options"].each do |option|
-             header << option["label"]
-          end
-        elsif field.kind == "hierarchy"
-          hierarchy_fields[field.id.to_s] = field.transform()
-          hierarchy_fields[field.id.to_s]["depth"] = field.get_longest_depth()
-          level = 0
-          while level < hierarchy_fields[field.id.to_s]["depth"]
-            header << field.code + level.to_s
-            level = level + 1
-          end
-        else
-          header << field.code
-        end
-      end
-
+      fields.each { |field| header << field.code }
 
       header << 'last updated'
       csv << header
@@ -50,29 +33,6 @@ module Collection::CsvConcern
         fields.each do |field|
           if field.kind == 'yes_no'
             row << (Field.yes?(source['properties'][field.code]) ? 'yes' : 'no')
-          elsif field.kind == "select_many"
-            field.config["options"].each do |option|
-              if source['properties'][field.code] and source['properties'][field.code].include? option["code"]
-                row << "Yes"
-              else
-                row << "No"
-              end
-            end
-          elsif field.kind == "hierarchy"
-            field.config["hierarchy"] = hierarchy_fields[field.id.to_s]["hierarchy"]
-            level = 0
-            arr_level = []
-            if source['properties'][field.code]
-              item = field.find_hierarchy_by_name source['properties'][field.code]
-              while item
-                arr_level.insert(0, item[:name])
-                item = field.find_hierarchy_by_id item[:parent_id]
-              end
-            end
-            while level < hierarchy_fields[field.id.to_s]["depth"]
-              row << arr_level[level] || ""
-              level = level + 1
-            end
           else
             row << Array(source['properties'][field.code]).join(", ")
           end

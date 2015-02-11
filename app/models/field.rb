@@ -351,11 +351,7 @@ class Field < ActiveRecord::Base
   end
 
   def add_option_to_options(options, option)
-    if option["parent_id"] and option["level"]
-      options << { id: option['id'], name: option['name'], parent_id: option['parent_id'], level: option['level']}
-    else
-      options << { id: option['id'], name: option['name']}
-    end
+    options << { id: option['id'], name: option['name']}
     if option['sub']
       option['sub'].each do |sub_option|
         add_option_to_options(options, sub_option)
