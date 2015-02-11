@@ -135,21 +135,14 @@ class Activity < ActiveRecord::Base
         field_kinds = {}
 
         collection.fields.each do |field|
-          if field.kind == "select_many"
-            field.config["options"].each do |option|
-              colunm_header << option["label"]
-            end
-          else
-            colunm_header << field.name
-          end
           column_keys[field.id] = field.name
           field_kinds[field.id.to_s] = field.kind
         end
       
         # add column properties to csv column header
-        # column_keys.each do |key, value|
-        #   colunm_header << value
-        # end
+        column_keys.each do |key, value|
+          colunm_header << value
+        end
 
         colunm_header << "Action"
         csv << colunm_header  
@@ -181,33 +174,10 @@ class Activity < ActiveRecord::Base
               activity.updated_at               
             ]            
             properties_row.each do |col_key, col_value|
-              if field_kinds[col_key]
-                if field_kinds[col_key] == 'photo' and not col_value.empty?
-                  col_value = "http://" + Settings.host + "/photo_field/" + col_value
-                  row << col_value
-                elsif field_kinds[col_key] == 'select_many'
-                  f = Field.find col_key
-                  if col_value.class == Array
-                    f.config["options"].each do |option|
-                      if col_value and col_value.include? option["id"]
-                        row << "Yes"
-                      else
-                        row << "No"
-                      end
-                    end
-                  elsif col_value.class == String
-                    f.config["options"].each do |option|
-                      if col_value and col_value.to_s == option["id"].to_s
-                        row << "Yes"
-                      else
-                        row << "No"
-                      end
-                    end
-                  end
-                else
-                  row << col_value
-                end
+              if field_kinds[col_key] == 'photo' and not col_value.empty?
+                col_value = "http://" + Settings.host + "/photo_field/" + col_value
               end
+              row << col_value
             end
              
             row << activity.action
