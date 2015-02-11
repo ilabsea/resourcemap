@@ -155,14 +155,12 @@ class Activity < ActiveRecord::Base
           column_keys[field.id] = field.name
           field_kinds[field.id.to_s] = field.kind
         end
-<<<<<<< HEAD
-=======
       
         # add column properties to csv column header
         column_keys.each do |key, value|
           colunm_header << value
         end
->>>>>>> fix on import site with new field type
+
 
         colunm_header << "Action"
         csv << colunm_header  
