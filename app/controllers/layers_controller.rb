@@ -67,8 +67,7 @@ class LayersController < ApplicationController
   end
 
   def upload_layers
-    directory = "public/upload"
-    path = File.join(directory, 'tmp_layers.json')
+    path = File.join('public', 'tmp_layers.json')
     File.open(path, "wb") { |f| f.write(params[:file].read) }
     flash[:notice] = "File uploaded"      
     redirect_to :action => "adjust_layers"
@@ -81,7 +80,7 @@ class LayersController < ApplicationController
   end
 
   def pending_layers
-    path = File.join('public/upload', 'tmp_layers.json')
+    path = File.join('public', 'tmp_layers.json')
     raw_layers = File.read(path, :encoding => 'utf-8')
     all_layers = JSON.parse raw_layers
     File.delete(path)
