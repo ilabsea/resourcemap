@@ -3,14 +3,20 @@
 
   class Activity
     constructor: (data) ->
-      console.log data?.description
       @id = ko.observable data?.id
       @collection = ko.observable data?.collection
       @user = ko.observable data?.user
       @description = ko.observable data?.description
+      @log = ko.observable data?.log
       @createdAt = ko.observable data?.created_at
       @expanded = ko.observable false
       @canBeExpanded = ko.computed => @description().length > DESCRIPTION_LENGTH
+
+      @displayedLog = ko.computed =>
+        if !@canBeExpanded() || @expanded()
+          @log()
+        else
+          "#{@log().substring(0, DESCRIPTION_LENGTH)}..."
 
       @displayedDescription = ko.computed =>
         if !@canBeExpanded() || @expanded()
