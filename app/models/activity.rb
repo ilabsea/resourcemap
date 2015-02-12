@@ -18,10 +18,15 @@ class Activity < ActiveRecord::Base
   serialize :data, MarshalZipSerializable
 
   validates_inclusion_of :item_type, :in => ItemTypesAndActions.keys
-  # before_save :set_description
+  
 
-  def set_description
-    self.description = description
+  def self.migrate_columns_to_log
+    Activity.transaction do
+      Activity.find_each(batch_size: 100) do |activity|
+        activity.log = activity.description
+        activity.save
+      end
+    end
   end
   
   def self.search_collection options 
