@@ -11,6 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+
 ActiveRecord::Schema.define(:version => 20180228025955) do
 
   create_table "activities", :force => true do |t|
@@ -24,7 +25,7 @@ ActiveRecord::Schema.define(:version => 20180228025955) do
     t.datetime "updated_at",                          :null => false
     t.string   "item_type"
     t.string   "action"
-    t.text     "description"
+    t.text     "log"
   end
 
   create_table "canned_queries", :force => true do |t|
