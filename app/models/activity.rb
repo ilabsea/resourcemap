@@ -35,7 +35,11 @@ class Activity < ActiveRecord::Base
   serialize :data, MarshalZipSerializable
 
   validates_inclusion_of :item_type, :in => ItemTypesAndActions.keys
-  
+  before_save :set_log_by_reference_column_value
+
+  def set_log_by_reference_column_value
+    self.log = self.description
+  end
 
   def self.migrate_columns_to_log
     Activity.transaction do
