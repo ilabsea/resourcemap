@@ -51,6 +51,7 @@ class ActivitiesController < ApplicationController
             collection: activity.collection.name,
             user: activity.user.display_name,
             description: activity.description,
+            log: activity.log,
             created_at: activity.created_at
           }
         end

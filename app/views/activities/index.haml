@@ -70,7 +70,8 @@
           %td{ko(text: :collection), style: 'min-width:120px'}
           %td{ko(text: :user)}
           %td
-            %span{ko(text: :displayedDescription), style: 'display:inline'}
+            / %span{ko(text: :displayedDescription), style: 'display:inline'}
+            %span{ko(text: :displayedLog), style: 'display:inline'}
             <!-- ko if: !expanded() && canBeExpanded() -->
             %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'}= t('views.activities.index.show_more')
             <!-- /ko -->
