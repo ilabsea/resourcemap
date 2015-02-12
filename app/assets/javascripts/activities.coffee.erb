@@ -3,6 +3,7 @@
 
   class Activity
     constructor: (data) ->
+      console.log data?.description
       @id = ko.observable data?.id
       @collection = ko.observable data?.collection
       @user = ko.observable data?.user

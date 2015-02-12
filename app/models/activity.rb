@@ -35,7 +35,11 @@ class Activity < ActiveRecord::Base
   serialize :data, MarshalZipSerializable
 
   validates_inclusion_of :item_type, :in => ItemTypesAndActions.keys
-  
+  # before_save :set_description
+
+  def set_description
+    self.description = description
+  end
   
   def self.search_collection options 
      activities = Activity.order('id desc' ).includes(:site, :user, :collection, :field)
