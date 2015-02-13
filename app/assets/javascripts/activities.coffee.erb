@@ -72,7 +72,6 @@
       else if @selectedKinds().length < @kindsCount
         q.kinds = @selectedKinds()
 
-      q
 
     refreshActivities: =>
       @activities([])
@@ -80,17 +79,19 @@
 
     checkAllCollectionIds: =>
       ids = $.map($('.collection_id'), (x) -> x.value)
-      @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
-
-    uncheckAllCollectionIds: =>
-      @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
+      if ($("#check_all_collections")[0].checked)
+        @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
+      else
+        @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
+      $("#check_all_collections")[0].checked = true
 
     checkAllKinds: =>
       kinds = <%= Activity::Kinds.to_json %>
-      @selectedKinds(kinds) if @selectedKinds().length != @kindsCount
-
-    uncheckAllKinds: =>
-      @selectedKinds([]) if @selectedKinds().length != 0
+      if ($("#check_all_events")[0].checked)
+        @selectedKinds(kinds) if @selectedKinds().length != @kindsCount
+      else
+        @selectedKinds([]) if @selectedKinds().length != 0
+      $("#check_all_events")[0].checked = true
 
     viewAsRSS: =>
       q = @setQueryParams({})
