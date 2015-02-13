@@ -23,11 +23,11 @@ class Activity < ActiveRecord::Base
   before_save :set_collection_name
 
   def set_collection_name
-    self.collection_name = self.collection.name
+    self.collection_name = self.collection.name unless self.collection.nil?
   end
 
   def set_user_email
-    self.user_email = self.user.email
+    self.user_email = self.user.email unless self.collection.nil?
   end
 
   def set_log_by_reference_column_value
