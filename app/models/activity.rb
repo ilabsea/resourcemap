@@ -44,7 +44,7 @@ class Activity < ActiveRecord::Base
   end
 
   def set_user_email
-    self.user_email = self.user.email unless self.collection.nil?
+    self.user_email = self.user.email unless self.user.nil?
   end
 
   def set_log_by_reference_column_value
