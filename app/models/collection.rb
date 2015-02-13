@@ -20,7 +20,7 @@ class Collection < ActiveRecord::Base
   has_many :reminders, dependent: :destroy
   has_many :share_channels, dependent: :destroy
   has_many :channels, :through => :share_channels
-  has_many :activities, dependent: :destroy
+  has_many :activities
   has_many :snapshots, dependent: :destroy
   has_many :user_snapshots, :through => :snapshots
   has_many :site_histories, dependent: :destroy
@@ -171,7 +171,6 @@ class Collection < ActiveRecord::Base
 
   def delete_sites_and_activities
     ActiveRecord::Base.transaction do
-      Activity.where(collection_id: id).delete_all
       Site.where(collection_id: id).delete_all
       recreate_index
     end
