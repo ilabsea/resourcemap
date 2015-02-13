@@ -37,8 +37,6 @@ class ActivitiesController < ApplicationController
 
         if params[:collection_ids]
           acts = acts.where(collection_id: params[:collection_ids])
-        else
-          acts = acts.where(collection_id: current_user.memberships.pluck(:collection_id))
         end
 
         if params[:kinds]
@@ -48,7 +46,7 @@ class ActivitiesController < ApplicationController
         activities_json = acts.map do |activity|
           {
             id: activity.id,
-            collection: activity.collection.name,
+            collection: activity.collection_name,
             user: activity.user_email,
             description: activity.description,
             log: activity.log,
