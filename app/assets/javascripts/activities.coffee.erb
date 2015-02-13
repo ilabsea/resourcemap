@@ -40,6 +40,7 @@
 
       @selectedCollectionIds.subscribe => @refreshActivities()
       @selectedKinds.subscribe => @refreshActivities()
+      # deletedCollections
 
     pushActivities: (activities) =>
       if activities.length == 25
