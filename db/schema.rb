@@ -11,8 +11,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+<<<<<<< HEAD
 
 ActiveRecord::Schema.define(:version => 20150213022614) do
+=======
+ActiveRecord::Schema.define(:version => 20150213023627) do
+>>>>>>> store user and collection as the text in activity
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -26,7 +30,7 @@ ActiveRecord::Schema.define(:version => 20150213022614) do
     t.string   "item_type"
     t.string   "action"
     t.text     "log"
-    t.string   "username"
+    t.string   "user_email"
     t.string   "collection_name"
   end
 

@@ -36,6 +36,16 @@ class Activity < ActiveRecord::Base
 
   validates_inclusion_of :item_type, :in => ItemTypesAndActions.keys
   before_save :set_log_by_reference_column_value
+  before_save :set_user_email
+  before_save :set_collection_name
+
+  def set_collection_name
+    self.collection_name = self.collection.name
+  end
+
+  def set_user_email
+    self.user_email = self.user.email
+  end
 
   def set_log_by_reference_column_value
     self.log = self.description
