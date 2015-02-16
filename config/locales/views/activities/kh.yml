@@ -26,9 +26,10 @@ kh:
         loading: "កំពុងផ្ទុក"
       table:
         collection_was_created: "ទិន្នន័យ %{name} បានបង្កើត"
-        layer_was_created: "ស្រទាប់ %{name} បានបង្កើតជាមួយសំណួរ %{field}"
-        site_was_created: "ទិន្នន័យ %{name} បានបង្កើត"
-        site_was_deleted: "ទិន្នន័យ %{name} បានលុប"
+        collection_was_deleted: "ទិន្នន័យ %{name} បានលុប"
+        layer_was_created: "ស្រទាប់ %{name} បានបង្កើតជាមួយហ្វៀល %{field}"
+        site_was_created: "ទីតាំង %{name} បានបង្កើត"
+        site_was_deleted: "ទីតាំង %{name} បានលុប"
         layer_was_deleted: "ស្រទាប់ %{name} បានលុប"
         import_wizard: "បញ្ចូលទិន្នន័យ តាមរបៀបងាយ: %{sites_text}"
         import_csv: "បញ្ចូលទិន្នន័យ តាម CSV: %{sites_text}"

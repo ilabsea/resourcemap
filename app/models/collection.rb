@@ -392,4 +392,8 @@ class Collection < ActiveRecord::Base
     end
   end
 
+  def create_deleted_activity(user)
+    Activity.create! item_type: 'collection', action: 'deleted', collection_id: nil, collection_name: name, layer_id: nil, user_id: user.id, 'data' => {'name' => name}
+  end  
+
 end

@@ -40,15 +40,15 @@ class Activity < ActiveRecord::Base
   before_save :set_collection_name
 
   def set_collection_name
-    self.collection_name = self.collection.name unless self.collection.nil?
+    self.collection_name = collection.name unless collection.nil?
   end
 
   def set_user_email
-    self.user_email = self.user.email unless self.user.nil?
+    self.user_email = user.email unless user.nil?
   end
 
   def set_log_by_reference_column_value
-    self.log = self.description
+    self.log = description
   end
 
   def self.migrate_columns_to_log
@@ -241,6 +241,8 @@ class Activity < ActiveRecord::Base
     case [item_type, action]
     when ['collection', 'created']
       I18n.t('views.activities.table.collection_was_created', name: data['name'])
+    when ['collection', 'deleted']
+      I18n.t('views.activities.table.collection_was_deleted', name: data['name'])      
     when 'collection_imported'
       I18n.t('views.activities.table.import_wizard', sites_text: sites_were_imported_text)
     when ['collection', 'csv_imported']
