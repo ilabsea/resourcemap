@@ -169,6 +169,12 @@ class Collection < ActiveRecord::Base
     layer ? layer['o'].to_i + 1 : 1
   end
 
+  def update_activities
+    ActiveRecord::Base.transaction do
+      Activity.where(collection_id: id).update_all(:collection_id => nil)
+    end
+  end
+
   def delete_sites_and_activities
     ActiveRecord::Base.transaction do
       Site.where(collection_id: id).delete_all

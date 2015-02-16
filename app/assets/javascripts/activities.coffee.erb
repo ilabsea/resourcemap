@@ -34,13 +34,14 @@
       @pushActivities activities
       @selectedCollectionIds = ko.observableArray $.map($('.collection_id'), (x) -> x.value)
       @selectedKinds = ko.observableArray <%= Activity::Kinds.to_json %>
-
+      @deletedCollections = ko.observable(true)
+      
       @collectionsCount = $('.collection_id').length
       @kindsCount = <%= Activity::Kinds.length %>
 
       @selectedCollectionIds.subscribe => @refreshActivities()
       @selectedKinds.subscribe => @refreshActivities()
-      # deletedCollections
+      @deletedCollections.subscribe => @refreshActivities()
 
     pushActivities: (activities) =>
       if activities.length == 25
@@ -71,6 +72,9 @@
         q.kinds = [0]
       else if @selectedKinds().length < @kindsCount
         q.kinds = @selectedKinds()
+
+      # if @deletedCollections()
+      q.deletedCollections = @deletedCollections()
 
       q
 

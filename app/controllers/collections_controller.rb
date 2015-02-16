@@ -112,6 +112,7 @@ class CollectionsController < ApplicationController
       collection.delete_sites_and_activities
       redirect_to collection_path(collection), notice: I18n.t('views.collections.form.sites_deleted', name: collection.name)
     else
+      collection.update_activities
       collection.destroy
       redirect_to collections_path, notice: I18n.t('views.collections.form.collection_deleted', name: collection.name)
     end
