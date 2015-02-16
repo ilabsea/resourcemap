@@ -21,7 +21,7 @@
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
             %legend= t('views.activities.index.collections')
-            %div{style: 'height:80px;overflow:auto'}
+            %div{style: 'height:90px;overflow:auto'}
               %table
                 - collections.sort_by(&:name).each do |collection|
                   %tr
@@ -34,7 +34,7 @@
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
             %legend= t('views.activities.index.events')
-            %div{style: 'height:80px;overflow:auto'}
+            %div{style: 'height:90px;overflow:auto'}
               %table
                 %tr
                   %td
@@ -57,7 +57,9 @@
                     %input{ko(checked: 'selectedKinds'), value: 'site,deleted', type: 'checkbox', checked: 'checked'}= t('views.activities.index.site_deleted')
                   %td
                     %input{ko(checked: 'selectedKinds'), value: 'layer,deleted', type: 'checkbox', checked: 'checked'}= t('views.activities.index.layer_deleted')
-
+                %tr
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'collection,deleted', type: 'checkbox', checked: 'checked'} Collection deleted
     %br
     .tablewrapp
       %table.GralTable
