@@ -30,6 +30,7 @@ class ActivitiesController < ApplicationController
 
         if params[:collection_ids]
           acts = acts.where(collection_id: params[:collection_ids])
+          p acts
         end
 
         if params[:kinds]

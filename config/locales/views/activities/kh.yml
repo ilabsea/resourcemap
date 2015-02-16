@@ -26,6 +26,7 @@ kh:
         loading: "កំពុងផ្ទុក"
       table:
         collection_was_created: "ទិន្នន័យ %{name} បានបង្កើត"
+        collection_was_deleted: "ទិន្នន័យ %{name} បានលុប"
         layer_was_created: "ស្រទាប់ %{name} បានបង្កើតជាមួយហ្វៀល %{field}"
         site_was_created: "ទីតាំង %{name} បានបង្កើត"
         site_was_deleted: "ទីតាំង %{name} បានលុប"

@@ -114,6 +114,7 @@ class CollectionsController < ApplicationController
     else
       collection.update_activities
       collection.destroy
+      collection.create_deleted_activity(current_user)
       redirect_to collections_path, notice: I18n.t('views.collections.form.collection_deleted', name: collection.name)
     end
   end
