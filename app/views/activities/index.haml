@@ -13,6 +13,11 @@
 
     %table{width: '100%'}
       %tr
+        %td
+          %input#check_all_collections{ko(click: 'checkAllCollectionIds'), type: 'checkbox', checked: 'checked'}= t('views.activities.index.check_all')
+        %td
+          %input#check_all_events{ko(click: 'checkAllKinds'), type: 'checkbox', checked: 'checked'}= t('views.activities.index.check_all')
+      %tr
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
             %legend= t('views.activities.index.collections')
@@ -52,16 +57,8 @@
                     %input{ko(checked: 'selectedKinds'), value: 'site,deleted', type: 'checkbox', checked: 'checked'}= t('views.activities.index.site_deleted')
                   %td
                     %input{ko(checked: 'selectedKinds'), value: 'layer,deleted', type: 'checkbox', checked: 'checked'}= t('views.activities.index.layer_deleted')
-      %tr
-        %td
-          %span{ko(click: 'checkAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'}= t('views.activities.index.check_all')
-          |
-          %span{ko(click: 'uncheckAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer'}= t('views.activities.index.uncheck_all')
-        %td
-          %span{ko(click: 'checkAllKinds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'}= t('views.activities.index.check_all')
-          |
-          %span{ko(click: 'uncheckAllKinds'), style: 'text-decoration:underline;cursor:pointer'}= t('views.activities.index.uncheck_all')
 
+    %br
     .tablewrapp
       %table.GralTable
         %tr
