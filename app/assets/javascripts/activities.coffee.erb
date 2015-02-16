@@ -84,6 +84,7 @@
 
     checkAllCollectionIds: =>
       ids = $.map($('.collection_id'), (x) -> x.value)
+      @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
       if ($("#check_all_collections")[0].checked)
         @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
       else
@@ -92,6 +93,7 @@
 
     checkAllKinds: =>
       kinds = <%= Activity::Kinds.to_json %>
+      @selectedKinds(kinds) if @selectedKinds().length != @kindsCount
       if ($("#check_all_events")[0].checked)
         @selectedKinds(kinds) if @selectedKinds().length != @kindsCount
       else
