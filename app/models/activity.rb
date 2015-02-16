@@ -3,7 +3,7 @@ require "csv"
 
 class Activity < ActiveRecord::Base
   ItemTypesAndActions = {
-    'collection' => %w(created imported csv_imported),
+    'collection' => %w(created imported csv_imported deleted),
     'layer' => %w(created changed deleted),
     'site' => %w(created changed deleted)
   }
