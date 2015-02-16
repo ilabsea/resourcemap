@@ -86,8 +86,10 @@
       ids = $.map($('.collection_id'), (x) -> x.value)
       @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
       if ($("#check_all_collections")[0].checked)
+        @deletedCollections(true)
         @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
       else
+        @deletedCollections(false)
         @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
       $("#check_all_collections")[0].checked = true
 
