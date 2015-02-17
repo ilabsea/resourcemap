@@ -34,9 +34,9 @@ class ActivitiesController < ApplicationController
         acts = Activity.order('id desc').includes(:collection, :site, :user)
         acts = acts.limit(25)
         acts = acts.where('id < ?', params[:before_id]) if params[:before_id]
-
-        if params[:deletedCollections] == "true"
-          if params[:collection_ids]
+        
+        if params[:collection_ids]
+          if params[:deletedCollections] == "true"
             params[:collection_ids].push(nil)
           end
         end
@@ -45,13 +45,16 @@ class ActivitiesController < ApplicationController
           acts = acts.where("collection_id IS NOT NULL")
         end
 
+        if params[:deletedCollections] == "null"
+          acts = []
+        end
+
         if params[:collection_ids]
-          acts = acts.where(collection_id: params[:collection_ids])
-          p acts
+          acts = acts.where(collection_id: params[:collection_ids]) if acts.length > 0
         end
 
         if params[:kinds]
-          acts = acts.where("CONCAT(item_type, ',', action) IN (?)", params[:kinds])
+          acts = acts.where("CONCAT(item_type, ',', action) IN (?)", params[:kinds]) if acts.length > 0
         end
 
         activities_json = acts.map do |activity|

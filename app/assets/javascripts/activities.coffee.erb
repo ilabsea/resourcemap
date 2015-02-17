@@ -42,6 +42,7 @@
       @selectedCollectionIds.subscribe => @refreshActivities()
       @selectedKinds.subscribe => @refreshActivities()
       @deletedCollections.subscribe => @refreshActivities()
+      @checked = ko.observable(true)
 
     pushActivities: (activities) =>
       if activities.length == 25
@@ -49,12 +50,15 @@
       else
         @hasMore false
 
-      @activities.push new Activity(activity) for activity in activities
+      if activities.length > 0
+        @activities.push new Activity(activity) for activity in activities
+      else
+        @activities([])
 
     loadMore: =>
+      return unless @checked()
       @loading(true)
       @hasMore(true)
-
       q = @setQueryParams({})
       q.before_id = @activities()[@activities().length - 1].id() if @activities().length > 0
 
@@ -72,7 +76,6 @@
         q.kinds = [0]
       else if @selectedKinds().length < @kindsCount
         q.kinds = @selectedKinds()
-      # if @deletedCollections()
       q.deletedCollections = @deletedCollections()
 
       q
@@ -81,6 +84,7 @@
     refreshActivities: =>
       @activities([])
       @loadMore()
+      @checked(true)
 
     checkAllCollectionIds: =>
       ids = $.map($('.collection_id'), (x) -> x.value)
@@ -88,10 +92,19 @@
       if ($("#check_all_collections")[0].checked)
         @deletedCollections(true)
         @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
+        q = @setQueryParams({})
+        $.get "/activity.json", q, (activities) =>
+          @activities([])
+          @pushActivities(activities)
+          @loading(false)
+          @checked(true)     
       else
-        @deletedCollections(false)
-        @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
+        @checked(false)
+        @deletedCollections(null)
+        @selectedCollectionIds([])
+
       $("#check_all_collections")[0].checked = true
+
 
     checkAllKinds: =>
       kinds = <%= Activity::Kinds.to_json %>
