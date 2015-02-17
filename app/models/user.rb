@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
   before_create :reset_authentication_token
   before_save :ensure_authentication_token
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
-  has_many :memberships
+  has_many :memberships, :dependent => :destroy
   has_many :channels
   has_many :collections, through: :memberships, order: 'collections.name ASC'
   has_one :user_snapshot
