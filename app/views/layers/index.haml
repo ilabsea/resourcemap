@@ -24,12 +24,18 @@
       = render '/current_snapshot_message'
 
     .box.w60
+      /ko if: $root.layers().length > 0 
       = link_to 'Export all layers as JSON', api_export_layers_path(collection, format: :json), :class => 'icon fimport black'
+      //ko
+      /ko if: $root.layers().length == 0
+      %div.icon.fexport.black{style: 'line-height:21px', onclick: 'alert("You have no layers to export.")'} Export all layers as JSON
+      //ko     
       %span.right
         %form#import_layer_form{action: upload_layers_collection_layers_path(collection), method: :post, enctype: 'multipart/form-data'}
-          %div.icon.fexport.black Import layers
+          %div.icon.fexport.black{style: 'line-height:21px'} Import layers
           %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
           %input.layer_upload{type: :file, name: :file, id: :layer_upload}
+
     %br
 
     /ko if: $root.editingDefaultLayer
