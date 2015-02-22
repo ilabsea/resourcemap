@@ -29,6 +29,7 @@ en:
         identifier: "Identifier"
         email: "Email"
         phone: "Phone"
+        location: "Location"
       form:
         remove_field: "Remove field"
         move_field_up: "Move field up"

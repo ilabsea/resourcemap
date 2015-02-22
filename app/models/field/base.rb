@@ -11,7 +11,8 @@ module Field::Base
    { name: 'date', css_class: 'ldate', small_css_class: 'sdate' },
    { name: 'site', css_class: 'lsite', small_css_class: 'ssite' },
    { name: 'user', css_class: 'luser', small_css_class: 'suser' },
-   { name: 'photo', css_class: 'lbutton lphoto', small_css_class: 'sphoto' }]
+   { name: 'photo', css_class: 'lbutton lphoto', small_css_class: 'sphoto' },
+   { name: 'location', css_class: 'llocation', small_css_class: 'slocation'}]
 
   BaseKinds.each do |base_kind|
     class_eval %Q(def #{base_kind[:name]}?; kind == '#{base_kind[:name]}'; end)

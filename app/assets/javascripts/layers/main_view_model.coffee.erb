@@ -249,11 +249,9 @@ onLayers ->
       @moveFieldDown @currentLayer().fields()[field.ord() - 2]
 
     newField: (kind) =>
-      # @fieldLogic(new FieldLogic())
       @currentField(new Field(@currentLayer(), kind: kind, ord: @currentLayer().fields().length + 1))
       @currentLayer().fields.push(@currentField())
       @currentField().hasFocus(true)
-      # @currentField().field_logic(@currentField())
 
     selectField: (field) =>
       @currentField(field)
