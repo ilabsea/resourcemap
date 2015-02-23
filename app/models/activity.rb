@@ -316,7 +316,7 @@ class Activity < ActiveRecord::Base
   def layer_changed_text
     only_name_changed, changes = layer_changes_text
     if only_name_changed
-      I18n.t('views.activities.table.layer_changed', name: data['name'], new_name: data['changes']['name'][1])
+      I18n.t('views.activities.table.layer_was_renamed', name: data['name'], new_name: data['changes']['name'][1])
     else
       I18n.t('views.activities.table.layer_changed', name: data['name'], changes: changes)
     end
