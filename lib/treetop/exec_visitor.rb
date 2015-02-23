@@ -178,6 +178,21 @@ class ExecVisitor < Visitor
       field.config["options"].each do |op|
         return op["id"] if (op["code"] == value || op["label"] == value)
       end
+    when "select_many"
+      many_value = value.split(' ')
+      result = []
+      many_value.each do |v|
+        field.config["options"].each do |op|
+          if (op["code"] == v || op["label"] == v)
+            result.push(op["id"])
+          end
+        end
+      end
+      if result.length > 0
+        return result
+      else
+        nil
+      end
     else
       return value
     end
