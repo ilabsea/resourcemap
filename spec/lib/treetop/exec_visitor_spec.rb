@@ -114,15 +114,16 @@ describe ExecVisitor, "Process update command" do
   before(:all) do
     @visitor = ExecVisitor.new
   end
-
+  let!(:options) { [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}] }
   before(:each) do
     @parser = CommandParser.new
     @collection = Collection.make
     @user = User.make(:phone_number => '85512345678')
-    @collection.memberships.create(:user => @user, :admin => false)
+    @collection.memberships.create(:user => @user, :admin => true)
     @layer = @collection.layers.make(:name => "default")
     @f1 = @layer.numeric_fields.make(:id => 22, :code => "ambulances", :name => "Ambulance", :ord => 1)
     @f2 = @layer.numeric_fields.make(:id => 23, :code => "doctors", :name => "Doctor", :ord => 1)
+    @f3 = @layer.select_many_fields.make(:id => 24, code: 'many', config: {'options' => options})
     @site = @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"22"=>5, "23"=>2}, :id_with_prefix => "AB1")
     @site.user = @user
     @collection.layer_memberships.create(:user => @user, :layer_id => @layer.id, :read => true, :write => true)
@@ -184,6 +185,14 @@ describe ExecVisitor, "Process update command" do
     site = Site.find_by_id_with_prefix('AB1')
     site.properties[@f1.es_code].to_i.should == 15
     site.properties[@f2.es_code].to_i.should == 20
+  end
+
+  it "should update field many to [1,2]" do
+    @node = @parser.parse("dyrm u AB1 many=one two").command
+    @node.sender = @user    
+    @visitor.visit_update_command(@node).should == ExecVisitor::MSG[:update_successfully]
+    site = Site.find_by_id_with_prefix('AB1')
+    site.properties[@f3.es_code].should == [1,2]
   end
 
   it 'should return cannot find site id when trying to update a site that does not exist' do
