@@ -416,7 +416,11 @@ class Activity < ActiveRecord::Base
     lat = changes['lat'][idx]
     lng = changes['lng'][idx]
     if lat
-      "(#{((lat) * 1e6).round / 1e6.to_f}, #{((lng) * 1e6).round / 1e6.to_f})"
+      result = "(#{((lat) * 1e6).round / 1e6.to_f}"
+      if lng
+        result = result+", #{((lng) * 1e6).round / 1e6.to_f})"
+      end
+      result
     else
       I18n.t('views.activities.table.nothing')
     end
