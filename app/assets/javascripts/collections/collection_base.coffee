@@ -80,7 +80,6 @@ onCollections ->
           
         for site in sites
           site = @findSiteById(site.collection.id, threshold.collectionId) if threshold.isAllSite() == "false"
-          this.assignFalseForYesNo(site) if site?
           
           alertSite = this.operateWithCondition(threshold.conditions(), site, threshold.isAllCondition()) if site?
           if alertSite? && alertSites.indexOf(alertSite) == -1
@@ -107,7 +106,8 @@ onCollections ->
           compareField = condition.value()
           
         field = site?.properties()[condition.field()]
-        if field is undefined
+        kind = condition.kind()
+        if field is undefined && kind is "yes_no"
           field = false
           
         switch operator
@@ -145,7 +145,7 @@ onCollections ->
           return null if b == false && parseInt(key) == conditions.length-1
 
       return site
-      
+
     assignFalseForYesNo: (site) =>
       for layer in site.collection.layers()
         for field in layer.fields

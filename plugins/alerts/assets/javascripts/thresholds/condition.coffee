@@ -9,6 +9,7 @@ onThresholds ->
       @op = ko.observable if data?.op then Operator.findByCode(data?.op) else ''
       @selectedOperator = ko.observable(@op().code)
       @value = ko.observable data?.value
+      @kind = ko.observable data?.kind
       @valueType = ko.observable ValueType.findByCode data?.type ? 'value'
       @selectedValueType = ko.observable(@valueType().label)
 
