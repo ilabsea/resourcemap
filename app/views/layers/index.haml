@@ -67,7 +67,7 @@
       = link_to 'Export all layers as JSON', api_export_layers_path(collection, format: :json), :class => 'icon fimport black'
       %span.right
         %form#import_layer_form{action: upload_layers_collection_layers_path(collection), method: :post, enctype: 'multipart/form-data'}
-          %button.icon.fexport.black Import layers
+          %div.icon.fexport.black Import layers
           %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
           %input.layer_upload{type: :file, name: :file, id: :layer_upload}
     %br
