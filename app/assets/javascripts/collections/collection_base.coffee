@@ -107,6 +107,9 @@ onCollections ->
           compareField = condition.value()
           
         field = site?.properties()[condition.field()]
+        if field is undefined
+          field = false
+          
         switch operator
           when "eq"
             if field is compareField
