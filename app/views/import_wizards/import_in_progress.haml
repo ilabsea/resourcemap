@@ -5,6 +5,8 @@
   window.kinds = #{Field::kinds}
 
 = render '/tabs'
+:javascript
+  $(".tabs li:nth-last-child(6)").addClass("active")
 
 .tabsline
   %h2= t('views.import_wizards.title')
