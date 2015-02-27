@@ -51,6 +51,37 @@ class Activity < ActiveRecord::Base
     self.log = description
   end
 
+  def self.filter user, options=nil
+    #index with default options
+    current_user = user
+    # debugger
+    acts = Activity.order('id desc').includes(:collection, :site, :user)
+    result = []
+    unless options
+      acts_with_collection = acts.where(collection_id: current_user.memberships.pluck(:collection_id))
+      acts_with_deleted_collection = acts.where(collection_id: nil, user_id: current_user.id)
+      result = acts_with_collection + acts_with_deleted_collection
+    end
+
+
+    #filter
+    if options
+      if options[:collection_ids]
+        acts_with_collection = acts.where(collection_id: options[:collection_ids])
+        result = acts_with_collection
+      end
+
+      if options[:deleted_collection] == "true"
+        acts_with_deleted_collection = acts.where(collection_id: nil, user_id: current_user.id)
+        # p acts_with_delete_collection
+        result = result + acts_with_deleted_collection
+      end      
+    end
+
+    # result.uniq
+    result
+  end
+
   def self.migrate_columns_to_log
     Activity.transaction do
       Activity.find_each(batch_size: 100) do |activity|

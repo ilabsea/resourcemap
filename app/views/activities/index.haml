@@ -28,9 +28,11 @@
                     %td
                       %input.collection_id{ko(checked: 'selectedCollectionIds'), type: 'checkbox', checked: 'checked', value: collection.id}= collection.name
 
-                / %tr
-                /   %td
-                /     %input{ko(checked: 'deletedCollections'), value: 'collected,deleted', type: 'checkbox', checked: 'checked'} Deleted collections                      
+                %tr
+                  %td
+                    / %input{ko(checked: 'deletedCollections'), value: 'collected,deleted', type: 'checkbox', checked: 'checked'} Deleted collections                      
+                    %input.collection_id{ko(checked: 'selectedCollectionIds'), type: 'checkbox', checked: 'checked', value: "null"} Deleted collections                      
+
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
             %legend= t('views.activities.index.events')
