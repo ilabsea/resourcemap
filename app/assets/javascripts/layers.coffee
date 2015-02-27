@@ -14,7 +14,7 @@ onLayers -> if $('#layers-main').length > 0
     $('#import_layer_form').submit()
 
   $.get "/collections/#{collectionId}/layers.json", {}, (layers) =>
-  	$.get "/collections/#{collectionId}.json", {}, (collection) ->
+  	$.get "/collections/#{collectionId}.json", {}, (collection) =>
 	    isVisibleName = collection.is_visible_name
 	    isVisibleLocation = collection.is_visible_location
 	    window.model = new MainViewModel(collectionId, layers, isVisibleName, isVisibleLocation)
