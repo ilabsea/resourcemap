@@ -74,7 +74,6 @@ class LayersController < ApplicationController
 
   def create
     layer = layers.new params[:layer]
-    layer.ord = layers.length unless layer.ord 
     layer.user = current_user
     layer.save!
     current_user.layer_count += 1
