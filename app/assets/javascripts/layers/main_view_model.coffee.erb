@@ -43,9 +43,11 @@ onLayers ->
           0
 
       @savingLayer = ko.observable(false)
+      @savingAllLayer = ko.observable(false)
       @savedAllLayers = ko.observable(false)
       @savedAllLayers.subscribe =>
         if @savedAllLayers()
+          @savingAllLayer(false)
           window.location.href = "/collections/#{@collectionId}/layers"
       @selectLogicLayers = ko.computed =>
         if @currentLayer()
@@ -128,7 +130,11 @@ onLayers ->
 
     saveAllLayers: (layers)=>
       index  = 0
+      order = @allLayers.length
+      @savingAllLayer(true)
       for layer in @layers()
+        order++
+        layer.ord(order)
         json = {layer: layer.toJSON()}
         $.post "/collections/#{@collectionId}/layers.json", json, (result) =>
           index++
