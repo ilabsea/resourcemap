@@ -89,8 +89,13 @@ onLayers ->
       @selectedCollectionCustomAggregator = ko.observable()
 
       @savingLayer = ko.observable(false)
-
       @layerList = ko.computed =>
+
+      @savedAllLayers = ko.observable(false)
+      @savedAllLayers.subscribe =>
+        if @savedAllLayers()
+          window.location.href = "/collections/#{@collectionId}/layers"
+      @selectLogicLayers = ko.computed =>
         if @currentLayer()
           if @currentLayer().id() || @currentLayer().isPending()
             @layers()
@@ -272,11 +277,13 @@ onLayers ->
       @currentLayer(null)
 
     saveAllLayers: (layers)=>
+      index  = 0
       for layer in @layers()
         json = {layer: layer.toJSON()}
-        $.post "/collections/#{@collectionId}/layers.json", json
-
-      window.location.href = "/collections/#{@collectionId}/layers"
+        $.post "/collections/#{@collectionId}/layers.json", json, (result) =>
+          index++
+          if index == @layers().length
+            @savedAllLayers(true)
 
     saveDefaultLayer: =>
       json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
