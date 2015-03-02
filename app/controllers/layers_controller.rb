@@ -81,16 +81,19 @@ class LayersController < ApplicationController
 
   def pending_layers
     path = File.join('public', 'tmp_layers.json')
-    raw_layers = File.read(path, :encoding => 'utf-8')
-    all_layers = JSON.parse raw_layers
-    File.delete(path)
     all_new_layers = []
-    all_layers.each do |l|
-      result = layer.decode_raw_layer l
-      new_layer = layers.new result
-      new_layer.user = current_user
-      all_new_layers.push(new_layer.as_json(include: :fields.as_json(:except => [:id]), :except => [:id, :ord]))
+    if File.exist?(path)
+      raw_layers = File.read(path, :encoding => 'utf-8')
+      all_layers = JSON.parse raw_layers
+      File.delete(path)
+      all_layers.each do |l|
+        result = layer.decode_raw_layer l
+        new_layer = layers.new result
+        new_layer.user = current_user
+        all_new_layers.push(new_layer.as_json(include: :fields.as_json(:except => [:id]), :except => [:id, :ord]))
+      end
     end
+
     render json: all_new_layers
   end
 
