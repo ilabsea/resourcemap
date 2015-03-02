@@ -155,7 +155,7 @@ kh:
         member: "សមាជិក"
         site: "ទីតាំង"
         layer: "ស្រទាប់"
-        default_permissions_for_all_layers: "ទំរង់ដើមនៃការអនញ្ញាតិសំរាប់ស្រទាប់ទាំងអស់ុ"
+        default_permissions_for_all_layers: "ទំរង់ដើមនៃការអនញ្ញាតិសំរាប់ស្រទាប់ទាំងអស់"
         add_custom_permissions_for_site: "បន្ថែមការអនុញ្ញាតិអោយទីតាំង"
         remove_this_member: "លុបសមាជិកនេះចោល"
         remove_member_prompt: "តើអ្នកពិតជាចង់លុបសមាជិកនេះចេញពីទិន្នន័យេនះមែនទេ?"

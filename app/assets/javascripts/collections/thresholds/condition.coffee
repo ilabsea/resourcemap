@@ -9,6 +9,7 @@ onCollections ->
       @op = ko.observable Operator.findByCode data?.op
       @value = ko.observable data?.value
       @valueType = ko.observable ValueType.findByCode data?.type ? 'value'
+      @kind = ko.observable data?.kind
       # @valueUI = ko.computed
       #   read: => @field()?.format? @value()
       #   write: (value) => @value value
@@ -31,3 +32,4 @@ onCollections ->
       value: @field()?.encode @value()
       type: @valueType().code()
       compare_field: @compareField()?.esCode()
+      kind: @kind()
