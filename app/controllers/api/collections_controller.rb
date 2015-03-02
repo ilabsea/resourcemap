@@ -42,7 +42,7 @@ class Api::CollectionsController < ApplicationController
     end
   end
   
-  def export_layers    
+  def export_layers   
     respond_to do |format|
       format.json {send_data layers.to_json(include: :fields.as_json(:except => [:id]), :except => [:id, :ord, :collection_id]), filename: "#{collection.name}_layers.json"}
     end
