@@ -249,7 +249,6 @@ onLayers ->
       @moveFieldDown @currentLayer().fields()[field.ord() - 2]
 
     newField: (kind) =>
-      console.log  "kind", kind
       @currentField(new Field(@currentLayer(), kind: kind, ord: @currentLayer().fields().length + 1))
       @currentLayer().fields.push(@currentField())
       @currentField().hasFocus(true)
@@ -463,16 +462,18 @@ onLayers ->
 
       });
 
+    startUploadLocation: =>
+      @currentField().impl().uploadingLocation(true)
+    
+    locationUploaded: (location) =>
+      @currentField().impl().setLocation(location)
+
     change: =>
       alert 'test'
 
     findField: (id) =>
-      console.log @layers()
       for layer in @layers()
         for field in layer.fields()
-          console.log 'field'
-          console.log field.id()
           if field.id() == parseInt(id)
-            console.log field
             return field
 

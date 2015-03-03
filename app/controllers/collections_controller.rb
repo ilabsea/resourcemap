@@ -233,6 +233,14 @@ class CollectionsController < ApplicationController
     render layout: false
   end
 
+  def decode_location_csv
+    csv_string = File.read(params[:file].path, :encoding => 'utf-8')
+    p csv_string
+    @locations = collection.decode_location_csv(csv_string)
+    # @hierarchy_errors = CollectionsController.generate_error_description_list(@hierarchy)
+    render layout: false
+  end
+
   def self.generate_error_description_list(hierarchy_csv)
     hierarchy_errors = []
     hierarchy_csv.each do |item|

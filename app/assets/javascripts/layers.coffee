@@ -10,6 +10,10 @@ onLayers -> if $('#layers-main').length > 0
     $('.hierarchy_form').submit()
     window.model.startUploadHierarchy()
 
+  $('.location_upload').live 'change', ->
+    $('.location_form').submit()
+    window.model.startUploadLocation()
+
   $('#layer_upload').live 'change', ->
     $('#import_layer_form').submit()
 

@@ -131,6 +131,21 @@ module Collection::CsvConcern
 
   end
 
+  def decode_location_csv(string)
+    #not yet validate
+    csv = CSV.parse(string)
+    locations = []
+    csv.each do |item|
+      location = Hash.new
+      location[:code] = item[0]
+      location[:name] = item[1]
+      location[:latitude] = item[2]
+      location[:longitude] = item[3]
+      locations.push location
+    end
+    return locations
+  end
+
   def validate_format(csv)
     i = 0
     items = {}

@@ -1,0 +1,2 @@
+:javascript
+  #{@locations.any? do |m| m[:error] end ? "parent.window.model.errorUploadingLocation('#{j @locations_errors}');" : "parent.window.model.locationUploaded(#{@locations.to_json});" }
