@@ -283,6 +283,7 @@ class CollectionsController < ApplicationController
 
   def decode_location_csv
     csv_string = File.read(params[:file].path, :encoding => 'utf-8')
+
     @locations = collection.decode_location_csv(csv_string)
     @locations_errors = CollectionsController.generate_error_description_location(@locations)
     render layout: false

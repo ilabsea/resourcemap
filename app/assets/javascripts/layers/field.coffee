@@ -6,13 +6,13 @@ onLayers ->
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
-      
+
       @is_enable_field_logic = ko.observable data?.is_enable_field_logic ? false
       @is_enable_range = data?.is_enable_range
       @config = data?.config
       @field_logics_attributes = data?.field_logics_attributes
       @metadata = data?.metadata
-      @is_mandatory = data?.is_mandatory      
+      @is_mandatory = data?.is_mandatory  
 
       @kind_titleize = ko.computed =>
         (@kind().split(/_/).map (word) -> word[0].toUpperCase() + word[1..-1].toLowerCase()).join ' '
@@ -58,6 +58,8 @@ onLayers ->
       @selecting = v
 
     buttonClass: =>
+      if @kind() == 'location'
+        return 'llocation'
       FIELD_TYPES[@kind()].css_class
 
     iconClass: =>
@@ -285,4 +287,19 @@ onLayers ->
   class @Field_user extends @FieldImpl
 
   class @Field_photo extends @FieldImpl
+
+  class @Field_location extends @FieldImpl
+    constructor: (field) ->
+      super(field)
+      @maximumSearchLength = ko.observable()
+      @places = ko.observable()
+      @uploadingLocation = ko.observable(false)
+      @locations = ko.observableArray()
+    
+    setLocation: (locations) =>
+      @locations($.map(locations, (x) -> new Location(x)))
+      @uploadingLocation(false)
+      
+
+
 

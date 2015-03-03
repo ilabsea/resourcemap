@@ -67,6 +67,5 @@ class Ability
     can :update_location, Membership do |user_membership|
       user_membership.can_update?("location")
     end
-
   end
 end

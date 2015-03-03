@@ -790,6 +790,7 @@ onLayers ->
 
     startUploadLocation: =>
       @currentField().impl().uploadingLocation(true)
+<<<<<<< HEAD
 
     locationUploaded: (location) =>
       @currentField().impl().setLocation(location)
@@ -857,6 +858,20 @@ onLayers ->
               if !status
                 error["status_failed"] = true
                 error["detail"] = window.t('javascripts.layers.fields.errors.field_logic_value_upsupport_select_many', {codeList: codeList.join(','), errors: errors.join(',')})
+=======
+    
+    locationUploaded: (location) =>
+      @currentField().impl().setLocation(location)
+
+    change: =>
+      alert 'test'
+
+    findField: (id) =>
+      for layer in @layers()
+        for field in layer.fields()
+          if field.id() == parseInt(id)
+            return field
+>>>>>>> add ui for location field on layer
 
         )
       )
