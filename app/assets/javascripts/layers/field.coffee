@@ -293,7 +293,10 @@ onLayers ->
       super(field)
       @maximumSearchLength = ko.observable(field?.config?.maximumSearchLength)
       @uploadingLocation = ko.observable(false)
-      @locations = ko.observableArray($.map(field?.config?.locations, (x) -> new Location(x)))
+      @locations = if field?.config?.locations
+                    ko.observableArray($.map(field?.config?.locations, (x) -> new Location(x)))
+                   else
+                    ko.observableArray()
     
     setLocation: (locations) =>
       @locations($.map(locations, (x) -> new Location(x)))
