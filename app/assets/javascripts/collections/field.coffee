@@ -64,6 +64,13 @@ onCollections ->
 
         @hierarchy = @options
 
+      if @kind == 'location'
+        @locations = if data.config?.locations?
+                      $.map data.config.locations, (x) => new Location x
+                     else
+                      []
+        
+
       if @kind == 'hierarchy'
         @hierarchy = data.config?.hierarchy
 
