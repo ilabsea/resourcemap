@@ -82,14 +82,11 @@
       @loadMore()
 
     checkAllCollectionIds: =>
-      console.log 'asfasd'
       ids = $.map($('.collection_id'), (x) -> x.value)
       @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
       if ($("#check_all_collections")[0].checked)
-        console.log 'checked'
         @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
       else
-        console.log 'unchecked'
         @selectedCollectionIds([])
        $("#check_all_collections")[0].checked = true
     uncheckAllCollectionIds: =>

@@ -14,6 +14,8 @@ onCollections ->
           else
             @lat(latLng?.lat); @lng(latLng?.lng)
         owner: @
+        
+      @position.subscribe => window.model.getDistances(@position().k, @position().C)
 
       @safe_lat = ko.computed => @safe_six_decimals_string_coordinate @lat()
       @safe_lng = ko.computed => @safe_six_decimals_string_coordinate @lng()

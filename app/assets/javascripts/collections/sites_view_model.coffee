@@ -21,6 +21,22 @@ onCollections ->
     @editingSiteLocation: ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
+    @calculateDistance: (fromLat, fromLng, toLat, toLng) => 
+      fromLatlng = new google.maps.LatLng(fromLat, fromLng)
+      toLatlng = new google.maps.LatLng(toLat, toLng)
+      distance = google.maps.geometry.spherical.computeDistanceBetween(fromLatlng, toLatlng);
+      return distance
+
+    @getDistances: (fromLat, fromLng) => 
+      for field in window.model.currentCollection().fields()
+        if field.kind == 'location'
+          resultLocations = []
+          for location in field.locations
+            distance = @calculateDistance(fromLat, fromLng, location.latitude, location.longitude)
+            if distance < parseFloat(field.maximumSearchLength)
+              resultLocations.push(location)
+          field.resultLocations(resultLocations)
+
     @createSite: ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
@@ -31,6 +47,8 @@ onCollections ->
           for esCode, value of window.model.newSiteProperties
             field = @currentCollection().findFieldByEsCode esCode
             field.setValueFromSite(value) if field
+
+        @getDistances(pos.lat(), pos.lng())
 
         @unselectSite()
         @editingSite site
