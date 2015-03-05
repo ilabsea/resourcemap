@@ -151,6 +151,8 @@ en:
           enable_dependency_hierarchy: "Enable dependency hierarchy"
           this_field_will_be_rendering_as_the_dependancy_hierarchy_select: "This field will be rendering as the dependancy hierarchy select"
           this_field_is_required: "This field is required !"
+          maximum_search_length: "Maximum search length(meter)"
+          import_places: "Import places"
       defaults:
         default_layer: "Default layer"
         name: "Name"
