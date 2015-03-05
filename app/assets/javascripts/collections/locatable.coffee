@@ -14,6 +14,8 @@ onCollections ->
           else
             @lat(latLng?.lat); @lng(latLng?.lng)
         owner: @
+        
+      @position.subscribe => window.model.getDistances(@position().k, @position().C)
 
       @position.subscribe => @getLocationFieldOption()
 

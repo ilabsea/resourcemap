@@ -302,6 +302,7 @@ onCollections ->
           @editingLocation(true)
           @startEditLocationInMap()
 
+    
     startEditLocationInMap: =>
       @originalLocation = @position()
 

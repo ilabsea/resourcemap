@@ -48,6 +48,7 @@ onCollections ->
           result.splice(20, result.length)
           field.resultLocations(result)
 
+
     @createSite: ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
