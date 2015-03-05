@@ -156,9 +156,9 @@
 
   /ko if: kind() == 'location'
   %hr/
-  %label Maximum search length
-  = ko_text_field_tag 'impl().maximumSearchLength'
-  %label Import places
+  %label{ko(css: {error: 'impl().maximumSearchLengthError'})}= t('views.layers.form.field.maximum_search_length')
+  = ko_text_field_tag 'impl().maximumSearchLength', css: {error: 'impl().maximumSearchLengthError'}, html: { id: 'field_maximumSearchLength'}
+  %label{ko(css: {error: 'impl().locationError'})}= t('views.layers.form.field.import_places') 
   %form.location_form{action: collection_decode_location_csv_path(collection), method: :post, enctype: 'multipart/form-data', target: 'location_iframe', style: 'margin-top:6px;margin-bottom:10px'}
     %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
     %input.location_upload{type: :file, name: :file, id: :location_upload}

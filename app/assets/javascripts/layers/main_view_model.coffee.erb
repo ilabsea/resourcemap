@@ -249,8 +249,6 @@ onLayers ->
       @moveFieldDown @currentLayer().fields()[field.ord() - 2]
 
     newField: (kind) =>
-      console.log FIELD_TYPES
-      console.log kind
       @currentField(new Field(@currentLayer(), kind: kind, ord: @currentLayer().fields().length + 1))
       @currentLayer().fields.push(@currentField())
       @currentField().hasFocus(true)

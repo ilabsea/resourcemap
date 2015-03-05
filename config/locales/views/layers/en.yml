@@ -82,6 +82,8 @@ en:
           add_skip_logic: "Add skip logic"
           enable_skip_logic_for_this_field: "Enable skip logic for this field"
           number_of_digits_precision: "Number of digits precision"
+          maximum_search_length: "Maximum search length(meter)"
+          import_places: "Import places"
       defaults:
         default_layer: "Default layer"
         name: "Name"

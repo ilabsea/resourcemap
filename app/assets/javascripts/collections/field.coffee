@@ -69,6 +69,12 @@ onCollections ->
                       $.map data.config.locations, (x) => new Location x
                      else
                       []
+        @resultLocations = if data.config?.locations?
+                            ko.observableArray $.map data.config.locations, (x) => new Location x
+                           else
+                            ko.observableArray []
+
+        @maximumSearchLength = data.config?.maximumSearchLength
         
 
       if @kind == 'hierarchy'
@@ -188,7 +194,7 @@ onCollections ->
       value = '' unless value
 
       @value(value)
-    
+
     removeFocusStyle: =>
       $('div').removeClass('focus')
       $('input').removeClass('focus')
