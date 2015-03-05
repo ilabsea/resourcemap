@@ -289,7 +289,7 @@ Collection.prototype.validateData = function(collectionId){
                 if(msg != ""){
                   Collection.prototype.showErrorMessage(msg);
                   $('div').removeClass('invalid_field');
-                  Collection.setFieldStyleFailed(field["code"]);                    
+                  Collection.setFieldStyleFailed(fi
                   return false;
                 }
               }

@@ -153,6 +153,7 @@ en:
           this_field_is_required: "This field is required !"
           maximum_search_length: "Maximum search length(meter)"
           import_places: "Import places"
+          number_of_digits_precision: "Number of digits precision"
       defaults:
         default_layer: "Default layer"
         name: "Name"

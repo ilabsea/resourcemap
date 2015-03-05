@@ -154,6 +154,7 @@ kh:
           enable_skip_logic_for_this_field: "បើកអោយដំណើរការសំរាប់រំលងហ្វៀល"
           maximum_search_length: "ចម្ងាយស្វែងរកអតិបរមា ( ម៉ែត្រ )"
           import_places: "នាំចូល កន្លែង"
+          number_of_digits_precision: "ចំនួនខ្ទង់ទសភាគ"
       defaults:
         default_layer: "ស្រទាប់លំនាំដើម"
         name: "ឈ្មោះ"

@@ -74,7 +74,6 @@ ActiveRecord::Schema.define(:version => 20150213023627) do
     t.integer  "sites_count"                                              :default => 0
     t.boolean  "is_visible_name",                                    :default => true
     t.boolean  "is_visible_location",                                :default => true
-
   end
 
   create_table "field_histories", :force => true do |t|
@@ -103,6 +102,7 @@ ActiveRecord::Schema.define(:version => 20150213023627) do
     t.boolean  "is_criteria",                                       :default => false
     t.boolean  "readonly_custom_widgeted",                          :default => false
     t.text     "metadata"
+
   end
 
   add_index "field_histories", ["field_id"], :name => "index_field_histories_on_field_id"
@@ -257,11 +257,11 @@ ActiveRecord::Schema.define(:version => 20150213023627) do
     t.string   "to"
     t.string   "subject"
     t.string   "body"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
-    t.text     "reply"
+    t.datetime "created_at",                                           :null => false
+    t.datetime "updated_at",                                           :null => false
+    t.text     "reply",         :limit => 16777215
     t.integer  "collection_id"
-    t.boolean  "is_send",       :default => false
+    t.boolean  "is_send",                           :default => false
   end
 
   create_table "prefixes", :force => true do |t|
@@ -272,15 +272,15 @@ ActiveRecord::Schema.define(:version => 20150213023627) do
 
   create_table "reminders", :force => true do |t|
     t.string   "name"
-    t.text     "reminder_message"
+    t.text     "reminder_message", :limit => 16777215
     t.integer  "repeat_id"
     t.integer  "collection_id"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
     t.boolean  "is_all_site"
-    t.text     "schedule"
+    t.text     "schedule",         :limit => 16777215
     t.datetime "next_run"
-    t.text     "sites"
+    t.text     "sites",            :limit => 16777215
     t.boolean  "status"
     t.string   "time_zone"
   end
@@ -291,9 +291,9 @@ ActiveRecord::Schema.define(:version => 20150213023627) do
   create_table "repeats", :force => true do |t|
     t.string   "name"
     t.integer  "order"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-    t.text     "rule"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+    t.text     "rule",       :limit => 16777215
   end
 
   create_table "report_cachings", :force => true do |t|
@@ -404,10 +404,10 @@ ActiveRecord::Schema.define(:version => 20150213023627) do
   create_table "sites_permissions", :force => true do |t|
     t.integer  "membership_id"
     t.string   "type"
-    t.boolean  "all_sites",     :default => true
-    t.text     "some_sites"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.boolean  "all_sites",                         :default => true
+    t.text     "some_sites",    :limit => 16777215
+    t.datetime "created_at",                                          :null => false
+    t.datetime "updated_at",                                          :null => false
   end
 
   create_table "snapshots", :force => true do |t|
@@ -421,17 +421,17 @@ ActiveRecord::Schema.define(:version => 20150213023627) do
   create_table "thresholds", :force => true do |t|
     t.integer  "ord"
     t.string   "color"
-    t.text     "conditions"
+    t.text     "conditions",           :limit => 16777215
     t.integer  "collection_id"
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
     t.string   "name"
     t.boolean  "is_all_site"
-    t.text     "sites"
+    t.text     "sites",                :limit => 16777215
     t.boolean  "is_all_condition"
     t.boolean  "is_notify"
-    t.text     "phone_notification"
-    t.text     "email_notification"
+    t.text     "phone_notification",   :limit => 16777215
+    t.text     "email_notification",   :limit => 16777215
     t.string   "message_notification"
   end
 

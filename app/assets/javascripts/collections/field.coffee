@@ -18,7 +18,6 @@ onCollections ->
       @writeable = @originalWriteable = data?.writeable
       
       @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
-
       @value = ko.observable()
       
       @value.subscribe => @setFieldFocus()
@@ -35,6 +34,7 @@ onCollections ->
          @value(@valueUIFrom(value))
 
       if @kind == 'numeric'
+        @digitsPrecision = data?.config?.digits_precision
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
         @is_mandatory = if @range then true else data.is_mandatory
@@ -259,6 +259,14 @@ onCollections ->
         window.model.initDatePicker(optionsDatePicker)
         window.model.initAutocomplete()
         $('textarea').autogrow()
+
+    validateRangeAndDigitsPrecision: =>
+      @validateRange()
+      @validateDigitsPrecision()
+
+    validateDigitsPrecision: =>
+      if @digitsPrecision
+        @value(parseInt(@value() * Math.pow(10, parseInt(@digitsPrecision))) / Math.pow(10, parseInt(@digitsPrecision)))
 
     validateRange: =>
       if @range

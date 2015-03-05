@@ -109,6 +109,7 @@ onLayers ->
   class @Field_numeric extends @FieldImpl
     constructor: (field) ->
       @allowsDecimals = ko.observable field?.config?.allows_decimals == 'true'
+      @digitsPrecision = ko.observable field?.config?.digits_precision
       @is_enable_range = ko.observable field?.is_enable_range ? false
       @minimum = ko.observable field?.config?.range?.minimum
       @maximum = ko.observable field?.config?.range?.maximum
@@ -129,7 +130,7 @@ onLayers ->
 
     toJSON: (json) =>
       json.is_enable_range = @is_enable_range()
-      json.config = {allows_decimals: @allowsDecimals(), range: {minimum: @minimum(), maximum: @maximum()}, field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}    
+      json.config = {digits_precision: @digitsPrecision(), allows_decimals: @allowsDecimals(), range: {minimum: @minimum(), maximum: @maximum()}, field_logics: $.map(@field_logics(), (x) ->  x.toJSON())}    
       return json
 
     saveFieldLogic: (field_logic) =>
