@@ -6,6 +6,7 @@ onLayers ->
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
+      @maximumSearchLength = ko.observable(data?.config?.maximumSearchLength)
 
       @is_enable_field_logic = ko.observable data?.is_enable_field_logic ? false
       @is_enable_range = data?.is_enable_range
@@ -39,6 +40,7 @@ onLayers ->
     hasName: => $.trim(@name()).length > 0
 
     hasCode: => $.trim(@code()).length > 0
+
 
     selectingLayerClick: =>
       @switchMoveToLayerElements true
@@ -266,7 +268,7 @@ onLayers ->
         if @hierarchy() && @hierarchy().length > 0
           null
         else
-          "the field #{@field.fieldErrorDescription()} is missing the Hierarchy"
+          "the field #{@field.fieldErrorDescription()} is missing the Hierarchy 111"
 
     setHierarchy: (hierarchy) =>
       @hierarchy(hierarchy)
@@ -297,7 +299,17 @@ onLayers ->
                     ko.observableArray($.map(field?.config?.locations, (x) -> new Location(x)))
                    else
                     ko.observableArray()
-    
+      @maximumSearchLengthError = ko.computed => 
+        if @maximumSearchLength() && @maximumSearchLength().length >0 
+          null 
+        else 
+          "the field #{@field.fieldErrorDescription()} is missing a maximum search length"
+      @error = ko.computed =>
+        if @locations() && @locations().length > 0
+          null
+        else
+          "the field #{@field.fieldErrorDescription()} is missing the location file"
+
     setLocation: (locations) =>
       @locations($.map(locations, (x) -> new Location(x)))
       @uploadingLocation(false)

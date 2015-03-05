@@ -81,6 +81,8 @@ kh:
           is_select_then_skip_form_to: "ត្រូវបានជ្រើសរើស រំលងទៅកាន់"
           add_skip_logic: "បន្ថែមរបៀបកំណត់ការរំលង"
           enable_skip_logic_for_this_field: "បើកអោយដំណើរការសំរាប់រំលងហ្វៀល"
+          maximum_search_length: "ចម្ងាយស្វែងរកអតិបរមា ( ម៉ែត្រ )"
+          import_places: "នាំចូល កន្លែង"
       defaults:
         default_layer: "ស្រទាប់លំនាំដើម"
         name: "ឈ្មោះ"
