@@ -20,7 +20,6 @@ onCollections ->
       # extra element so the user always sees SITES_PER_PAGE elements.
       $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1, _alert: window.model.showingAlert() if window.model.showingAlert()}, (data) =>
         @sitesPage += 1
-        window.model.setThresholds() if @hasMoreSites()
         if data.length == SITES_PER_PAGE + 1
           data.pop()
         else
@@ -29,7 +28,6 @@ onCollections ->
           @addSite @createSite(site)
         @loadingSites false
         window.model.refreshTimeago()
-        window.model.setThresholds()
 
     @reloadSites: ->
       @loadingSites true

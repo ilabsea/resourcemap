@@ -15,8 +15,8 @@ class Ability
     can [:read, :sites_by_term, :search, :sites_info, :alerted_collections, :register_gateways], Collection, :memberships => { :user_id => user.id }
     can [:read, :sites_by_term, :search, :sites_info, :alerted_collections, :register_gateways], Collection, :public => true
 
-    can [:search, :index], Site, :collection => {:public => true}
-    can [:search, :index], Site, :collection => {:memberships => { :user_id => user.id }}
+    can [:search, :index, :search_alert_site], Site, :collection => {:public => true}
+    can [:search, :index, :search_alert_site], Site, :collection => {:memberships => { :user_id => user.id }}
 
     if !user.is_guest
       can [:new, :create], Collection
