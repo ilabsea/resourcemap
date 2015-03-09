@@ -16,7 +16,7 @@ onCollections ->
           window.t('javascripts.collections.viewing', {mapSitesCount: @mapSitesCount(), sitesText: sitesText})
 
       @sitesChangedListeners = []
-
+      @allSites = ko.observable()
       @reloadMapSitesAutomatically = true
       @clusters = {}
       @siteIds = {}
@@ -143,6 +143,7 @@ onCollections ->
       query = @generateQueryParams(bounds, collection_ids, zoom)
       queryAlertedSites = @generateQueryParams(bounds, collection_ids, zoom)
 
+
       @mapRequestNumber += 1
       currentMapRequestNumber = @mapRequestNumber
 
@@ -196,7 +197,6 @@ onCollections ->
         @toggleLegend(false)
       else
         @toggleLegend(true)
-
     
     @getAlertedSites: (query) =>
       window.model.loadingLegend(true)
@@ -239,6 +239,19 @@ onCollections ->
           return true
 
       return isContainInMap
+
+    @setAlertedSites: (sites) =>
+      @clearAlertedSites()
+      for site in sites
+        # window.model.map.getBounds().contains()
+        # # if window.model.map.getBounds().contains(site)
+        #   console.log site.name
+        collection = window.model.findCollectionById(site.collection_id)
+        collection.alertedSites.push(new Site(collection, site))
+      
+      @drawLegend()
+      @showLegend()
+
     
     @clearAlertedSites: =>
       for collection in window.model.collections()
@@ -315,8 +328,13 @@ onCollections ->
         else
           return site if b == true            
           return null if b == false && parseInt(key) == conditions.length-1
+      return site
 
-      return site    
+    @getAlertedSites: (query) =>
+      query._alert = true
+      $.get "/sites/search_alert_site.json", query, (json) =>
+         @setAlertedSites(json)
+
 
     @generateQueryParams: (bounds, collection_ids, zoom) ->
       ne = bounds.getNorthEast()

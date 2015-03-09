@@ -8,6 +8,7 @@ onCollections ->
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
       @selectedQuery = ko.observable()
+
       @getAlertConditions()
       @currentSnapshot = ko.computed =>
         @currentCollection()?.currentSnapshot
@@ -170,6 +171,7 @@ onCollections ->
       $('#createSite').addClass('disabled')
       window.model.enableCreateSite()
 
+
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 
     @openShareUrlDialog:  ->
@@ -244,44 +246,19 @@ onCollections ->
       $('#sites_whitout_location_alert').show()
 
     @createCollection: -> window.location = "/collections/new"
-
     @getAlertConditions: ->
       if @currentCollection()
         $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>
           thresholds = @currentCollection().fetchThresholds(data)
           @currentCollection().thresholds(thresholds)
           window.model.selectedQuery(@setSelectedQuery()) if @filters().length > 0
+
       else
-        $.get "/plugin/alerts/thresholds.json", (data) =>
+        $.get "/plugin/alerts/thresholds.json", (data) =>   
           for collection in @collections()
-            if collection.checked() == true && collection.sites().length > 0
+            if collection.checked() == true
               thresholds = collection.fetchThresholds(data)
-              collection.thresholds(collection.findSitesByThresholds(thresholds))
-              thresholds = []
-          @showLegendState()
-
-    @showLegendState: ->
-      if @currentCollection()
-        for threshold in @currentCollection().thresholds()
-          if threshold.alertedSitesNum() > 0
-            @showingLegend(true)
-            break
-          else
-            @showingLegend(false)
-      else
-        for collection in @collections()
-          if collection.checked() == true && collection.showLegend()
-              @showingLegend(true)
-              break
-            else
-              @showingLegend(false)
-
-    @toggleAlertLegend: ->
-      if @showingLegend() == true
-        if @alert_legend() == true
-          @alert_legend(false)
-        else
-          @alert_legend(true)
+              collection.thresholds(thresholds)
 
     @hideDatePicker: ->
       $("input").datepicker "hide"

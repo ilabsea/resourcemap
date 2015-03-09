@@ -32,7 +32,6 @@ onCollections ->
       @loadCurrentSnapshotMessage()
       @loadAllSites()
       @loading = ko.observable(false)
-      @loadSites() unless window.currentUserIsGuest
 
     loadSites: =>
       @loading(true)
@@ -151,7 +150,6 @@ onCollections ->
         for field in layer.fields
           if field.kind is "yes_no" && !site.properties()[field.esCode]
             site.properties()[field.esCode] = false;
-
 
     loadCurrentSnapshotMessage: =>
       @viewingCurrentSnapshotMessage = ko.observable()
