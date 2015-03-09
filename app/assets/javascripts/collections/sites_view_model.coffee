@@ -170,6 +170,7 @@ onCollections ->
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
       @editingSite().fillPhotos(@currentCollection())
+      @editingSite().roundNumericDecimalNumber(@currentCollection)
 
       if @editingSite().id()
         @editingSite().update_site(@editingSite().toJSON(), callback, callbackError)

@@ -10,6 +10,12 @@
       %input{ko(checked: 'impl().allowsDecimals'), type: 'checkbox', style: 'float:left;'}
       %div{style: 'width:200px; float:left; margin-top: 1px; color: #555555;'}= t('views.layers.form.field.allow_decimal_numbers')
   %br/
+  /ko if: impl().allowsDecimals
+  %div
+    %br
+    %label= t('views.layers.form.field.number_of_digits_precision')
+    = ko_text_field_tag "impl().digitsPrecision", html: { id: 'digits_precision'}
+  //ko
   //ko
 
   %hr/
