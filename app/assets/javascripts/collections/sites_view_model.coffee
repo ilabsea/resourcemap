@@ -24,7 +24,7 @@ onCollections ->
     @calculateDistance: (fromLat, fromLng, toLat, toLng) => 
       fromLatlng = new google.maps.LatLng(fromLat, fromLng)
       toLatlng = new google.maps.LatLng(toLat, toLng)
-      distance = google.maps.geometry.spherical.computeDistanceBetween(fromLatlng, toLatlng);
+      distance = google.maps.geometry.spherical.computeDistanceBetween(fromLatlng, toLatlng)
       return distance
 
     @getDistances: (fromLat, fromLng) => 
