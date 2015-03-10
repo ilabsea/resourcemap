@@ -180,9 +180,21 @@ onCollections ->
 
     @setAlertedSites: (sites) =>
       @clearAlertedSites()
+      bounds = window.model.map.getBounds()
       for site in sites
-        collection = window.model.findCollectionById(site.collection_id)
-        collection.alertedSites.push(new Site(collection, site))
+        latlng = new google.maps.LatLng(site.lat_analyzed,site.lng_analyzed)
+        isContainInMap = false
+        if bounds.contains latlng
+          isContainInMap = true
+
+        if isContainInMap == false
+          for clusterId,cluster of window.model.clusters
+            if bounds.contains(cluster.position) && cluster.bounds.contains(latlng)
+              isContainInMap = true
+              break
+        if isContainInMap == true
+          collection = window.model.findCollectionById(site.collection_id)
+          collection.alertedSites.push(new Site(collection, site))
       @drawLegend()
       @showLegend()
     
