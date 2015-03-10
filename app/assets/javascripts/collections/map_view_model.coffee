@@ -244,22 +244,27 @@ onCollections ->
       bounds = window.model.map.getBounds()
       for site in sites
         latlng = new google.maps.LatLng(site.lat_analyzed,site.lng_analyzed)
-        isContainInMap = false
-        if bounds.contains latlng
-          isContainInMap = true
-
-        if isContainInMap == false
-          for clusterId,cluster of window.model.clusters
-            if bounds.contains(cluster.position) && cluster.bounds.contains(latlng)
-              isContainInMap = true
-              break
-        if isContainInMap == true
+        isMapContainedSite = @isMapContainedSite(site, latlng, bounds)
+        if isMapContainedSite == true
           collection = window.model.findCollectionById(site.collection_id)
           collection.alertedSites.push(new Site(collection, site))
       @drawLegend()
       @showLegend()
+      window.model.loadingLegend(false)
 
     
+    @isMapContainedSite: (site, latlng, bounds) =>
+      isContainInMap = false
+      for siteId, marker of window.model.markers
+        if bounds.contains(marker.getPosition()) && parseInt(siteId) == parseInt(site.id)
+          return true
+
+      for clusterId,cluster of window.model.clusters
+        if bounds.contains(cluster.position) && cluster.bounds.contains(latlng)
+          return true
+
+      return isContainInMap
+
     @clearAlertedSites: =>
       for collection in window.model.collections()
         collection.alertedSites([])
@@ -338,6 +343,7 @@ onCollections ->
       return site
 
     @getAlertedSites: (query) =>
+      window.model.loadingLegend(true)
       query._alert = true
       $.get "/sites/search_alert_site.json", query, (json) =>
          @setAlertedSites(json)
