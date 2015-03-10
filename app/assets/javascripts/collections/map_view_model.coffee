@@ -14,7 +14,7 @@ onCollections ->
           window.t('javascripts.collections.viewing', {mapSitesCount: @mapSitesCount(), sitesText: sitesText})
 
       @sitesChangedListeners = []
-      @allSites = ko.observable()
+
       @reloadMapSitesAutomatically = true
       @clusters = {}
       @siteIds = {}
@@ -121,7 +121,7 @@ onCollections ->
 
       zoom = @map.getZoom()
       query = @generateQueryParams(bounds, collection_ids, zoom)
-      queryAlertedSites = @generateQueryParams(bounds, collection_ids, 21)
+      queryAlertedSites = @generateQueryParams(bounds, collection_ids, zoom)
 
       @mapRequestNumber += 1
       currentMapRequestNumber = @mapRequestNumber
@@ -181,12 +181,8 @@ onCollections ->
     @setAlertedSites: (sites) =>
       @clearAlertedSites()
       for site in sites
-        # window.model.map.getBounds().contains()
-        # # if window.model.map.getBounds().contains(site)
-        #   console.log site.name
         collection = window.model.findCollectionById(site.collection_id)
         collection.alertedSites.push(new Site(collection, site))
-      
       @drawLegend()
       @showLegend()
     
