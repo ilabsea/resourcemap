@@ -408,6 +408,8 @@ onCollections ->
       @originalName = @name()
       @originalPosition = @position()
 
+      @getLocationFieldOption()
+
       @inEditMode(true)
       @startEditLocationInMap() if @collection.isVisibleLocation
       window.model.initDatePicker()

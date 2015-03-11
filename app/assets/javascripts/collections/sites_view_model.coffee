@@ -114,7 +114,7 @@ onCollections ->
           @goBackToTable = true unless @showingMap()
           @showMap =>
             site.copyPropertiesToCollection(site.collection)
-
+            
             if @selectedSite() && @selectedSite().id() == site.id()
               @unselectSite()
 
@@ -122,7 +122,7 @@ onCollections ->
             if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
               site.fetchFields()
             else if site.collection.sitesPermission.canNone(site)
-              site.layers([])
+              site.layers([]) 
 
             @selectSite(site)
             @editingSite(site)
