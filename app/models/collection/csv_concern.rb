@@ -156,11 +156,57 @@ module Collection::CsvConcern
     items.each do |item|
       locations.push item[1]
     end
-
+    
     locations
-
+    
     rescue Exception => ex
       return [{error: ex.message}]
+  end
+
+  def validate_format_location(csv)
+    i = 0
+    items = {}
+    csv.each do |row|
+      item = {}
+      if row[0] == 'Code'
+        next
+      else
+        i = i+1
+        item[:order] = i
+
+        if row.length != 4
+          item[:error] = "Wrong format."
+          item[:error_description] = "Invalid column number"
+        else
+
+          #Check unique name
+          name = row[1].strip
+          if items.any?{|item| item.second[:name] == name}
+            item[:error] = "Invalid name."
+            item[:error_description] = "location name should be unique"
+            error = true
+          end
+          
+          #Check unique id
+          code = row[0].strip
+          if items.any?{|item| item.second[:code] == code}
+            item[:error] = "Invalid code."
+            item[:error_description] = "location code should be unique"
+            error = true
+          end
+
+          if !error
+            item[:code] = code
+            item[:name] = name
+            item[:latitude] = row[2].strip
+            item[:longitude] = row[3].strip
+          end
+        end
+
+        items[item[:order]] = item
+      end
+    end
+    items
   end
 
   def validate_format_location(csv)

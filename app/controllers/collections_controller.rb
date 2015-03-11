@@ -293,7 +293,6 @@ class CollectionsController < ApplicationController
     locations_errors = []
     locations_csv.each do |item|
       message = ""
-
       if item[:error]
         message << "Error: #{item[:error]}"
         message << " " + item[:error_description] if item[:error_description]
@@ -309,6 +308,8 @@ class CollectionsController < ApplicationController
     hierarchy_errors = []
     hierarchy_csv.each do |item|
       message = ""
+      p "item hierarchy : "
+      p item
 
       if item[:error]
         message << "Error: #{item[:error]}"
