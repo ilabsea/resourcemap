@@ -189,8 +189,14 @@ onCollections ->
           collection = window.model.findCollectionById(site.collection_id)
           collection.alertedSites.push(new Site(collection, site))
 
+      isMapContainedSite = false
       if window.model.selectedSite()?.alert?()
-        window.model.currentCollection().alertedSites.push(window.model.selectedSite())
+        for site in window.model.currentCollection().alertedSites()
+          if parseInt(site.id()) == parseInt(window.model.selectedSite().id())
+            isMapContainedSite = true
+            break
+        if isMapContainedSite == false
+          window.model.currentCollection().alertedSites.push(window.model.selectedSite())
       
       @drawLegend()
       @showLegend()
