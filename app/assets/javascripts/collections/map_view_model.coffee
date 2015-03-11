@@ -255,6 +255,12 @@ onCollections ->
     
     @isMapContainedSite: (site, latlng, bounds) =>
       isContainInMap = false
+      
+      if parseInt(window.model.showSite()?.id()) == parseInt(site.id)
+          return true
+      if parseInt(window.model.newOrEditSite()?.id()) == parseInt(site.id)
+          return true
+
       for siteId, marker of window.model.markers
         if bounds.contains(marker.getPosition()) && parseInt(siteId) == parseInt(site.id)
           return true
