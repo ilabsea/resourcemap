@@ -7,7 +7,7 @@ onCollections ->
       @selectedHierarchy = ko.observable()
       @loadingSite = ko.observable(false)
       @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
-      @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
+      @showSite = ko.computed =>  if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       window.markers = @markers = {}
       
     @loadBreadCrumb: ->
@@ -27,8 +27,13 @@ onCollections ->
       distance = google.maps.geometry.spherical.computeDistanceBetween(fromLatlng, toLatlng)
       return distance
 
-    @getDistances: (fromLat, fromLng) => 
-      for field in window.model.currentCollection().fields()
+    @getLocations: (fromLat, fromLng) =>
+      if window.model.selectedSite()
+        fields = window.model.selectedSite().fields() 
+      else if window.model.currentCollection()
+        fields = window.model.currentCollection().fields()
+
+      for field in fields
         if field.kind == 'location'
           resultLocations = []
           for location in field.locations
@@ -36,7 +41,6 @@ onCollections ->
             if distance < parseFloat(field.maximumSearchLength)
               resultLocations.push(location)
           field.resultLocations(resultLocations)
-
     @createSite: ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
@@ -48,11 +52,10 @@ onCollections ->
             field = @currentCollection().findFieldByEsCode esCode
             field.setValueFromSite(value) if field
 
-        @getDistances(pos.lat(), pos.lng())
-
         @unselectSite()
         @editingSite site
         @editingSite().startEditLocationInMap() if @currentCollection().isVisibleLocation
+        @getLocations(pos.lat(), pos.lng())
         window.model.initDatePicker()
         window.model.initAutocomplete()
         $('textarea').autogrow()
@@ -70,14 +73,14 @@ onCollections ->
           @showMap =>
 
             site.copyPropertiesToCollection(site.collection)
-
+            
             if @selectedSite() && @selectedSite().id() == site.id()
               @unselectSite()
 
             if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
               site.fetchFields()
             else if site.collection.sitesPermission.canNone(site)
-              site.layers([])
+              site.layers([]) 
 
             @selectSite(site)
             @editingSite(site)
