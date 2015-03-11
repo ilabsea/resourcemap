@@ -188,6 +188,10 @@ onCollections ->
         if isMapContainedSite == true
           collection = window.model.findCollectionById(site.collection_id)
           collection.alertedSites.push(new Site(collection, site))
+
+      if window.model.selectedSite()?.alert?()
+        window.model.currentCollection().alertedSites.push(new Site(window.model.currentCollection(), window.model.selectedSite()))
+      
       @drawLegend()
       @showLegend()
       window.model.loadingLegend(false)
@@ -195,11 +199,6 @@ onCollections ->
     @isMapContainedSite: (site, latlng, bounds) =>
       isContainInMap = false
       
-      if parseInt(window.model.showSite()?.id()) == parseInt(site.id)
-          return true
-      if parseInt(window.model.newOrEditSite()?.id()) == parseInt(site.id)
-          return true
-
       for siteId, marker of window.model.markers
         if bounds.contains(marker.getPosition()) && parseInt(siteId) == parseInt(site.id)
           return true
