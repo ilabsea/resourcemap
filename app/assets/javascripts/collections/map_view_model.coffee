@@ -190,7 +190,7 @@ onCollections ->
           collection.alertedSites.push(new Site(collection, site))
 
       if window.model.selectedSite()?.alert?()
-        window.model.currentCollection().alertedSites.push(new Site(window.model.currentCollection(), window.model.selectedSite()))
+        window.model.currentCollection().alertedSites.push(window.model.selectedSite())
       
       @drawLegend()
       @showLegend()
