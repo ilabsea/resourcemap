@@ -250,14 +250,14 @@ onCollections ->
           collection.alertedSites.push(new Site(collection, site))
 
       isMapContainedSite = false
-      if window.model.selectedSite()?.alert?()
+      if window.model.selectedSite()?.alert() == true
         for site in window.model.currentCollection().alertedSites()
           if parseInt(site.id()) == parseInt(window.model.selectedSite().id())
             isMapContainedSite = true
             break
         if isMapContainedSite == false
           window.model.currentCollection().alertedSites.push(window.model.selectedSite())
-      
+
       @drawLegend()
       @showLegend()
       window.model.loadingLegend(false)
@@ -357,7 +357,7 @@ onCollections ->
       window.model.loadingLegend(true)
       query._alert = true
       $.get "/sites/search_alert_site.json", query, (json) =>
-         @setAlertedSites(json)
+        @setAlertedSites(json)
 
 
     @generateQueryParams: (bounds, collection_ids, zoom) ->
