@@ -59,6 +59,7 @@ en:
           there_was: "There was"
           an_error: "an error"
           processing_the_hierarchy_file: "processing the hierarchy file"
+          processing_the_location_file: "processing the location file"
           uploading: "Uploading, please wait..."
           advanced: "Advanced"
           attributes: "Attributes"

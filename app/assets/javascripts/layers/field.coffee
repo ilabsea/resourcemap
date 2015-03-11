@@ -295,6 +295,7 @@ onLayers ->
       super(field)
       @maximumSearchLength = ko.observable(field?.config?.maximumSearchLength)
       @uploadingLocation = ko.observable(false)
+      @errorUploadingLocation = ko.observable(false)
       @locations = if field?.config?.locations
                     ko.observableArray($.map(field?.config?.locations, (x) -> new Location(x)))
                    else
@@ -313,6 +314,7 @@ onLayers ->
     setLocation: (locations) =>
       @locations($.map(locations, (x) -> new Location(x)))
       @uploadingLocation(false)
+      @errorUploadingLocation(false)
 
     toJSON: (json)=>
       json.config = {locations: $.map(@locations(), (x) ->  x.toJSON()), maximumSearchLength: @maximumSearchLength()}

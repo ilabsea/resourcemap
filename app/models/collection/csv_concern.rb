@@ -95,7 +95,6 @@ module Collection::CsvConcern
     # And validate it's content
     items = validate_format(csv)
 
-
     # Add to parents
     items.each do |order, item|
       if item[:parent].present? && !item[:error].present?
@@ -132,18 +131,65 @@ module Collection::CsvConcern
   end
 
   def decode_location_csv(string)
-    #not yet validate
     csv = CSV.parse(string)
+
+    items = validate_format_location(csv)
+
     locations = []
-    csv.each do |item|
-      location = Hash.new
-      location[:code] = item[0]
-      location[:name] = item[1]
-      location[:latitude] = item[2]
-      location[:longitude] = item[3]
-      locations.push location
+    items.each do |item|
+      locations.push item[1]
     end
-    return locations
+    
+    locations
+    
+    rescue Exception => ex
+      return [{error: ex.message}]
+  end
+
+  def validate_format_location(csv)
+    i = 0
+    items = {}
+    csv.each do |row|
+      item = {}
+      if row[0] == 'Code'
+        next
+      else
+        i = i+1
+        item[:order] = i
+
+        if row.length != 4
+          item[:error] = "Wrong format."
+          item[:error_description] = "Invalid column number"
+        else
+
+          #Check unique name
+          name = row[1].strip
+          if items.any?{|item| item.second[:name] == name}
+            item[:error] = "Invalid name."
+            item[:error_description] = "location name should be unique"
+            error = true
+          end
+          
+          #Check unique id
+          code = row[0].strip
+          if items.any?{|item| item.second[:code] == code}
+            item[:error] = "Invalid code."
+            item[:error_description] = "location code should be unique"
+            error = true
+          end
+
+          if !error
+            item[:code] = code
+            item[:name] = name
+            item[:latitude] = row[2].strip
+            item[:longitude] = row[3].strip
+          end
+        end
+
+        items[item[:order]] = item
+      end
+    end
+    items
   end
 
   def validate_format(csv)
