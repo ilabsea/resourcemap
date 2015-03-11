@@ -46,6 +46,7 @@ onCollections ->
       # but not in the tree. So we use that one instead of the one from the server,
       # and set its collection to ourself.
       if window.model.selectedSite()?.id() == site.id()
+        window.model.selectedSite(site)
         site = window.model.selectedSite()
       else
         site = window.model.siteIds[site.id()] if window.model.siteIds[site.id()]
