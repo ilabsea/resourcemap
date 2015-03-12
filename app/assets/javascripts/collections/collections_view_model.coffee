@@ -16,11 +16,11 @@ onCollections ->
     
     @goToRoot: ->
       @queryParams = $.url().param()
-      @showingAlert(false)
-      @cancelFilterAlertedSites()
       @exitSite() if @editingSite()
       @unselectSite() if @selectedSite()
       @currentCollection(null)
+      @showingAlert(false)
+      @cancelFilterAlertedSites()
       @search('')
       @lastSearch(null)
       @filters([])
@@ -48,6 +48,8 @@ onCollections ->
       alert 'delete'
 
     @enterCollection: (collection) ->
+      if @showingAlert()
+        return if !collection.checked()      
       @queryParams = $.url().param()
 
       # collection may be a collection object (in most of the cases)
