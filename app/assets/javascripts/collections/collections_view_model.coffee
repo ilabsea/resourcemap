@@ -16,11 +16,11 @@ onCollections ->
     
     @goToRoot: ->
       @queryParams = $.url().param()
-      @currentCollection(null)
       @showingAlert(false)
       @cancelFilterAlertedSites()
       @exitSite() if @editingSite()
       @unselectSite() if @selectedSite()
+      @currentCollection(null)
       @search('')
       @lastSearch(null)
       @filters([])
