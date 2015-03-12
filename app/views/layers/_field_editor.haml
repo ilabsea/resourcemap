@@ -178,7 +178,7 @@
   //ko
   /ko if: !impl().uploadingLocation() && impl().locations().length > 0 && !impl().errorUploadingLocation()
   .hierarchy-container
-    %ul{ko(foreach: 'impl().locations'), style: "list-style-type:none; margin-left:-30px"}
+    %ul{ko(foreach: 'impl().locations'), style: "list-style-type:none; margin-left:-30px; font-size: 12px"}
       %li
         %span{ko(text: :code)}
         %span ,
