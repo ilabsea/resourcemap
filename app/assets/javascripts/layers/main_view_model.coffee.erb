@@ -309,8 +309,7 @@ onLayers ->
       @savingLayer(true)
       @currentLayer(layer)
       if !@currentLayer().ord()
-        order = @layers().length + 1
-        @currentLayer().ord(order)
+        @currentLayer().ord(@layers.length + 1)
 
       json = {layer: @currentLayer().toJSON()}
       if @currentLayer().id()
@@ -503,6 +502,7 @@ onLayers ->
       return match
 
     deletePendingLayer: (layer) =>
+      @countAllImportedLayer(@countAllImportedLayer() - 1)
       @layers.remove(layer)
 
 
