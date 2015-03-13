@@ -90,7 +90,6 @@ class @SiteCustomPermission
     none_rights_all = (not sitePermissions.none?) || sitePermissions.none.all_sites
     return [] if can_write_all and can_read_all
 
-    console.log(none_rights_all)
     permissions = []
 
     unless none_rights_all
