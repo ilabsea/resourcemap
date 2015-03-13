@@ -162,8 +162,7 @@ onLayers ->
       @savingLayer(true)
       @currentLayer(layer)
       if !@currentLayer().ord()
-        order = @layers().length + 1
-        @currentLayer().ord(order)
+        @currentLayer().ord(@layers.length + 1)
 
       json = {layer: @currentLayer().toJSON()}
 
@@ -225,6 +224,7 @@ onLayers ->
         $.status.showError("This layer is being used with #{layer.threshold_ids.length} alert(s), you are not allowed to delete", 2000)
 
     deletePendingLayer: (layer) =>
+      @countAllImportedLayer(@countAllImportedLayer() - 1)
       @layers.remove(layer)
 
     selectingLayer: =>
