@@ -6,6 +6,7 @@ onLayers ->
       @currentLayer = ko.observable()
       @currentField = ko.observable()
       @default_select = '(no value)'
+      @countAllImportedLayer = ko.observable() 
       
       if allLayers
         @allLayers = $.map(allLayers, (x) -> new Layer(x))
@@ -46,9 +47,10 @@ onLayers ->
       @savingAllLayer = ko.observable(false)
       @savedAllLayers = ko.observable(false)
       @savedAllLayers.subscribe =>
-        if @savedAllLayers()
+        if @savedAllLayers() 
           @savingAllLayer(false)
           window.location.href = "/collections/#{@collectionId}/layers"
+
       @selectLogicLayers = ko.computed =>
         if @currentLayer()
           if @currentLayer().id() || @currentLayer().isPending()
@@ -79,6 +81,7 @@ onLayers ->
 
 
     validateImportedLayers: (importedLayers, allLayers)=>
+      @countAllImportedLayer(importedLayers.length)
       
       for importLayer in importedLayers
         flag = false
@@ -155,6 +158,7 @@ onLayers ->
       @currentLayer(null)
 
     saveLayer: (layer)=>
+      @countAllImportedLayer(@countAllImportedLayer() - 1)
       @savingLayer(true)
       @currentLayer(layer)
       if !@currentLayer().ord()
@@ -228,6 +232,7 @@ onLayers ->
 
     isFirstLayer: (layer) => layer.ord() == 1
     isLastLayer: (layer) => layer.ord() == @layers().length
+    isSavedAllLayer: => @countAllImportedLayer() == 0 
 
     moveLayerDown: (layer) =>
       nextLayer = @layers()[layer.ord()]
