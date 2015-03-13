@@ -3,6 +3,7 @@ onLayers ->
     constructor: (collectionId, layers, is_visible_name, is_visible_location, is_pending = false, allLayers = null) ->
       @collectionId = collectionId
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x, is_pending))
+      # set_order()
       @currentLayer = ko.observable()
       @currentField = ko.observable()
       @default_select = '(no value)'
@@ -82,8 +83,12 @@ onLayers ->
 
     validateImportedLayers: (importedLayers, allLayers)=>
       @countAllImportedLayer(importedLayers.length)
-      
+      l = allLayers.length
       for importLayer in importedLayers
+        #set order for imported layers
+        l = l + 1
+        importLayer.ord(l)
+  
         flag = false
         for importedField in importLayer.fields()
           for layer in allLayers
@@ -133,11 +138,8 @@ onLayers ->
 
     saveAllLayers: (layers)=>
       index  = 0
-      order = @allLayers.length
       @savingAllLayer(true)
       for layer in @layers()
-        order++
-        layer.ord(order)
         json = {layer: layer.toJSON()}
         $.post "/collections/#{@collectionId}/layers.json", json, (result) =>
           index++
@@ -161,8 +163,6 @@ onLayers ->
       @countAllImportedLayer(@countAllImportedLayer() - 1)
       @savingLayer(true)
       @currentLayer(layer)
-      if !@currentLayer().ord()
-        @currentLayer().ord(@layers.length + 1)
 
       json = {layer: @currentLayer().toJSON()}
 
