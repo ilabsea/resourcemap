@@ -23,7 +23,6 @@ onLayers ->
 
       @allLayers = null
 
-
       @isVisibleName = ko.observable is_visible_name ? true
       @isVisibleLocation = ko.observable is_visible_location ? true
       @editingDefaultLayer = ko.observable(false)
@@ -93,9 +92,10 @@ onLayers ->
       @savingAllLayer = ko.observable(false)
       @savedAllLayers = ko.observable(false)
       @savedAllLayers.subscribe =>
-        if @savedAllLayers()
+        if @savedAllLayers() 
           @savingAllLayer(false)
           window.location.href = "/collections/#{@collectionId}/layers"
+
       @selectLogicLayers = ko.computed =>
         if @currentLayer()
           if @currentLayer().id() || @currentLayer().isPending()
@@ -203,6 +203,7 @@ onLayers ->
             return
 
     validateImportedLayers: (importedLayers, allLayers)=>
+      @countAllImportedLayer(importedLayers.length)
       
       for importLayer in importedLayers
         flag = false
@@ -304,6 +305,7 @@ onLayers ->
       @currentLayer(null)
 
     saveLayer: (layer)=>
+      @countAllImportedLayer(@countAllImportedLayer() - 1)
       @savingLayer(true)
       @currentLayer(layer)
       if !@currentLayer().ord()
@@ -509,6 +511,7 @@ onLayers ->
 
     isFirstLayer: (layer) => layer.ord() == 1
     isLastLayer: (layer) => layer.ord() == @layers().length
+    isSavedAllLayer: => @countAllImportedLayer() == 0 
 
     moveLayerDown: (layer) =>
       nextLayer = @layers()[layer.ord()]
@@ -794,7 +797,6 @@ onLayers ->
 
     startUploadLocation: =>
       @currentField().impl().uploadingLocation(true)
-<<<<<<< HEAD
 
     locationUploaded: (location) =>
       @currentField().impl().setLocation(location)
@@ -862,37 +864,6 @@ onLayers ->
               if !status
                 error["status_failed"] = true
                 error["detail"] = window.t('javascripts.layers.fields.errors.field_logic_value_upsupport_select_many', {codeList: codeList.join(','), errors: errors.join(',')})
-=======
-    
-    locationUploaded: (location) =>
-      @currentField().impl().setLocation(location)
-
-    errorUploadingLocation: (locations_errors) =>
-      @currentField().impl().uploadingLocation(false)
-      @currentField().impl().errorUploadingLocation(true)
-
-      $('.error_description_bubble').CreateBubblePopup({
-        selectable: true,
-        position : 'top',
-        innerHtml: locations_errors,
-        innerHtmlStyle: {
-            color:'#000000',
-            'background-color' :'white'
-            },
-        themeName:  'bubble',
-        themePath:  '<%= InsteddRails.url %>/theme/images/'
-
-      });
-
-    change: =>
-      alert 'test'
-
-    findField: (id) =>
-      for layer in @layers()
-        for field in layer.fields()
-          if field.id() == parseInt(id)
-            return field
->>>>>>> add ui for location field on layer
 
         )
       )

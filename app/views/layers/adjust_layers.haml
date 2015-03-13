@@ -147,7 +147,7 @@
     //ko
     /ko ifnot: $root.currentLayer()
     /ko ifnot: $root.savingAllLayer()
-    %button.white{ko(click: '$root.saveAllLayers', enable: :validateAllLayers), type: :button, title: 'Save all layers'} Save all layers
+    %button.white{ko(click: '$root.saveAllLayers', enable: :validateAllLayers, css: {disabled: '$root.isSavedAllLayer()'}), type: :button, title: 'Save all layers'} Save all layers
     #{link_to 'View all layers', collection_layers_path(collection), :class => 'button grey'}
     //ko
     //ko
