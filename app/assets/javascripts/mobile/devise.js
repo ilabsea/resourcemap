@@ -1,5 +1,6 @@
 function prepareFlushMessage(id){
-	var content = $(id).html();	if(content.trim() != ""){
+	var content = $(id).html();	
+  if(content.trim() != ""){
 		parent = $(id).children()[0];
 		if(parent){
 			text = parent.children[0].innerHTML;
