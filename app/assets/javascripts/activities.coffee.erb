@@ -41,6 +41,8 @@
       @selectedKinds.subscribe => @refreshActivities()
 
     pushActivities: (activities) =>
+      if activities.length == 0
+        return @activities([])
       if activities.length == 25
         activities = activities.slice(0, activities.length - 1)
       else
@@ -65,11 +67,6 @@
       else if @selectedCollectionIds().length < @collectionsCount
         q.collection_ids = @selectedCollectionIds()
 
-      # for key, c_id in @selectedCollectionIds()
-      #   if c_id == ""
-      #     q.collection_ids[key] = null
-
-
       if @selectedKinds().length == 0
         q.kinds = [0]
       else if @selectedKinds().length < @kindsCount
@@ -82,14 +79,11 @@
       @loadMore()
 
     checkAllCollectionIds: =>
-      console.log 'asfasd'
       ids = $.map($('.collection_id'), (x) -> x.value)
       @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
       if ($("#check_all_collections")[0].checked)
-        console.log 'checked'
         @selectedCollectionIds(ids) if @selectedCollectionIds().length != @collectionsCount
       else
-        console.log 'unchecked'
         @selectedCollectionIds([])
        $("#check_all_collections")[0].checked = true
     uncheckAllCollectionIds: =>
