@@ -19,10 +19,7 @@ class ImportWizard::ExistingFieldSpecs < ImportWizard::BaseFieldSpecs
           if value
             value.split(',').each do |v|
               option = v.strip
-
-
               option = existing_field.apply_format_and_validate(option, true, site.collection, site).first
-
               site.properties_will_change!
               site.properties[existing_field.es_code] << option
             end
