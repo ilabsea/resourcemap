@@ -58,7 +58,7 @@ onCollections ->
       id = (site for site in window.model.currentCollection().allSites() when site.name is value)[0]?.id
       id
     
-    fetchThresholds: (data) =>
+    fetchThresholds: (data) =>  
       thresholds = []
       for threshold in data
         if threshold.collection_id == this.id

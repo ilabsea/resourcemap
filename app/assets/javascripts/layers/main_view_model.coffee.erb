@@ -468,12 +468,8 @@ onLayers ->
       alert 'test'
 
     findField: (id) =>
-      console.log @layers()
       for layer in @layers()
         for field in layer.fields()
-          console.log 'field'
-          console.log field.id()
           if field.id() == parseInt(id)
-            console.log field
             return field
 
