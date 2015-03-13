@@ -306,6 +306,10 @@ onLayers ->
     saveLayer: (layer)=>
       @savingLayer(true)
       @currentLayer(layer)
+      if !@currentLayer().ord()
+        order = @layers().length + 1
+        @currentLayer().ord(order)
+
       json = {layer: @currentLayer().toJSON()}
       if @currentLayer().id()
         json._method = 'put'
