@@ -60,7 +60,6 @@ class ActivitiesController < ApplicationController
             id: activity.id,
             collection: activity.collection_name,
             user: activity.user_email,
-            description: activity.description,
             log: activity.log,
             created_at: activity.created_at
           }
