@@ -9,19 +9,14 @@
       @description = ko.observable data?.description
       @createdAt = ko.observable data?.created_at
       @expanded = ko.observable false
-      @canBeExpanded = ko.computed => @description().length > DESCRIPTION_LENGTH
       @log = ko.observable(data?.log)
+      @canBeExpanded = ko.computed => @log().length > DESCRIPTION_LENGTH
+      
       @displayedLog = ko.computed =>
         if !@canBeExpanded() || @expanded()
           @log()
         else
           "#{@log().substring(0, DESCRIPTION_LENGTH)}..."
-      
-      @displayedDescription = ko.computed =>
-        if !@canBeExpanded() || @expanded()
-          @description()
-        else
-          "#{@description().substring(0, DESCRIPTION_LENGTH)}..."
 
     expand: => @expanded(true)
 
