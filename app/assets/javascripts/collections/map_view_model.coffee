@@ -260,6 +260,10 @@ onCollections ->
 
         switch operator
           when "eq","eqi"
+            if kind == 'text'
+              field = field.toLowerCase()
+              compareField = compareField.toLowerCase()
+            
             if field is compareField
               b = true
             else
