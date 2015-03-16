@@ -11,3 +11,4 @@ namespace :threshold do
     Threshold.migrate_message_notification
   end
 end
+
