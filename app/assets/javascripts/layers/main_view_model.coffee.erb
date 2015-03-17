@@ -298,10 +298,19 @@ onLayers ->
       @savingAllLayer(true)
       for layer in @layers()
         json = {layer: layer.toJSON()}
-        $.post "/collections/#{@collectionId}/layers.json", json, (result) =>
-          index++
-          if index == @layers().length
-            @savedAllLayers(true)
+        if layer.id()
+          json._method = 'put'
+          $.post "/collections/#{@collectionId}/layers/#{layer.id()}.json", json, (result) =>
+            index = @saveAllLayersCallback(index)
+        else
+          $.post "/collections/#{@collectionId}/layers.json", json, (result) =>
+            index = @saveAllLayersCallback(index)
+
+    saveAllLayersCallback: (index) =>
+      index++
+      if index == @layers().length
+        @savedAllLayers(true)
+      index
 
     saveDefaultLayer: =>
       json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
