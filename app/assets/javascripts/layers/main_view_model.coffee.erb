@@ -114,7 +114,7 @@ onLayers ->
       @editingDefaultLayer(false)
 
     editLayer: (layer) =>
-      @layers.remove(@currentLayer()) if @currentLayer() && not @currentLayer().id() #remove the new created layer that haven't savaed
+      @clearUnsavedLayer()
       @originalFields = $.map(layer.fields(), (x) -> new Field(layer, x.toJSON()))
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
@@ -130,11 +130,23 @@ onLayers ->
       @currentLayer(null)
       @currentField(null)
 
+    clearUnsavedLayer: =>
+      if @currentLayer()
+        if not @currentLayer().id() && @currentLayer().isPending() == false
+          @layers.remove(@currentLayer())
+        else
+          for field in @currentLayer().fields()
+            unless field.id()
+              @currentLayer().fields.remove(field) 
+              return
+              
     editDefaultLayer: =>
+      @clearUnsavedLayer()
       @tmpVisibleName = @isVisibleName()
       @tmpVisibleLocation = @isVisibleLocation()
       @editingDefaultLayer(true)
       @currentLayer(null)
+      @currentField(null)
 
     saveAllLayers: (layers)=>
       index  = 0
