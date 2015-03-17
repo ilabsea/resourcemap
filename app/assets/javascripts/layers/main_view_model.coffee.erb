@@ -265,7 +265,6 @@ onLayers ->
         @currentField(layer.fields()[0]) if layer.fields().length > 0
         layer.hasFocus(true)
 
-
     cancelLayer: =>
       if @currentLayer().id()
         @currentLayer().name(@originalLayer.name)
@@ -276,11 +275,23 @@ onLayers ->
       @currentLayer(null)
       @currentField(null)
 
+    clearUnsavedLayer: =>
+      if @currentLayer()
+        if not @currentLayer().id() && @currentLayer().isPending() == false
+          @layers.remove(@currentLayer())
+        else
+          for field in @currentLayer().fields()
+            unless field.id()
+              @currentLayer().fields.remove(field) 
+              return
+              
     editDefaultLayer: =>
+      @clearUnsavedLayer()
       @tmpVisibleName = @isVisibleName()
       @tmpVisibleLocation = @isVisibleLocation()
       @editingDefaultLayer(true)
       @currentLayer(null)
+      @currentField(null)
 
     saveAllLayers: (layers)=>
       index  = 0
