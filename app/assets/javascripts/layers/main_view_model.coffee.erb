@@ -523,6 +523,13 @@ onLayers ->
     deletePendingLayer: (layer) =>
       @countAllImportedLayer(@countAllImportedLayer() - 1)
       @layers.remove(layer)
+      @resetLayerOrder()
+
+    resetLayerOrder: =>
+      ord = @allLayers.length
+      for layer in @layers()
+        ord = ord + 1
+        layer.ord(ord)
 
 
     selectingLayer: =>
