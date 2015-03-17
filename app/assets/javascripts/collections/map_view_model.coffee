@@ -315,6 +315,7 @@ onCollections ->
           compareField = condition.value()
           
         field = site?.properties()[condition.field()]
+        
         kind = condition.kind()
         if field is undefined && kind is "yes_no"
           field = false
