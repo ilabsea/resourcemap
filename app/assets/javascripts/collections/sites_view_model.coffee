@@ -132,6 +132,7 @@ onCollections ->
             @processSkipLogic()
 
           $('a#previewimg').fancybox()
+          $('#name').focus()
 
     @reinitialFields: ->
       @allFieldLogics([])

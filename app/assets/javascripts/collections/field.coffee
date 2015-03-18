@@ -200,7 +200,7 @@ onCollections ->
 
     removeFocusStyle: =>
       $('div').removeClass('focus')
-      $('input').removeClass('focus')
+      $('input:not(#name)').removeClass('focus')
       $('select').removeClass('focus')
       $('select').blur()
       $('input').blur()
