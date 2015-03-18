@@ -38,6 +38,7 @@ onCollections ->
         window.model.initDatePicker()
         window.model.initAutocomplete()
         $('textarea').autogrow()
+        $('#name').focus()
 
     @editSite: (site) ->
       initialized = @initMap()
@@ -67,6 +68,7 @@ onCollections ->
             @loadBreadCrumb()
 
           $('a#previewimg').fancybox()
+          $('#name').focus()
 
     @editSiteFromId: (siteId, collectionId) ->
       site = @siteIds[siteId]
