@@ -151,14 +151,12 @@ onLayers ->
                             if field.config.field_logics.length == 1
                               if x.label() == 'Yes'
                                 field_logic_no = new FieldLogic
-                                field_logic_no.id(0)
                                 field_logic_no.value(0)
                                 field_logic_no.label('No')
 
                                 return [field_logic_no, new FieldLogic(x)]
                               if x.label() == 'No'
                                 field_logic_yes = new FieldLogic
-                                field_logic_yes.id(1)
                                 field_logic_yes.value(1)
                                 field_logic_yes.label('Yes')
 
@@ -169,12 +167,10 @@ onLayers ->
                           ))
                      else
                         field_logic_yes = new FieldLogic
-                        field_logic_yes.id(1)
                         field_logic_yes.value(1)
                         field_logic_yes.label("Yes")
 
                         field_logic_no = new FieldLogic
-                        field_logic_no.id(0)
                         field_logic_no.value(0)     
                         field_logic_no.label("No")
 
