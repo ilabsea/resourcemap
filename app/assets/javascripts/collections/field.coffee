@@ -37,7 +37,6 @@ onCollections ->
       if @kind == 'numeric'
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
-        @is_mandatory = if @range then true else data.is_mandatory
         @field_logics = if data.config?.field_logics?
                           $.map data.config.field_logics, (x) => new FieldLogic x
                         else
