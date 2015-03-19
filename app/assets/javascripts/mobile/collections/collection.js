@@ -270,7 +270,8 @@ Collection.prototype.validateData = function(collectionId){
                     return false;                  
                   }
                 }
-                  if(range){
+                if(range){
+                  if(value != "" || value != null){
                     msg = Collection.prototype.validateRange(value, range);
                     if(msg != ""){
                       Collection.prototype.showErrorMessage(msg);
@@ -278,6 +279,7 @@ Collection.prototype.validateData = function(collectionId){
                       Collection.setFieldStyleFailed(field["code"]);                    
                       return false;
                     }
+                  }
                 }
                 state =  Collection.valiateMandatoryText(field);
                 break;
