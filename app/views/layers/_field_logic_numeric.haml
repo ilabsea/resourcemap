@@ -16,7 +16,7 @@
         %input{ko(value: :value, enable: :editing), style: 'width:45px;text-align:center;color:black;'}
         //ko
         %span.smalltext skip form to
-        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code, selectedOptions: field_id, enable: editing', style: 'color:black;max-width:135px;background-color:white'}
+        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code, enable: editing', style: 'color:black;max-width:135px;background-color:white'}
           /ko if: $index() == 0
           %option{value: ""} (no value)
           //ko
@@ -51,7 +51,7 @@
         %input{ko(value: :value), style: 'width:45px;text-align:center'}
         //ko
         %span.smalltext skip form to
-        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code, selectedOptions: field_id', style: 'max-width:135px;background-color:white'}
+        %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code', style: 'max-width:135px;background-color:white'}
           /ko if: $index() == 0
           %option{value: ""} (no value)
           //ko

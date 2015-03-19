@@ -39,7 +39,7 @@
           //ko
           %br
           %span.smalltext= t('views.layers.form.field.skip_form_to')
-          %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code, selectedOptions: field_id', style: 'max-width:135px;height:30px'}
+          %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code', style: 'max-width:135px;height:30px'}
             /ko if: $index() == 0
             %option{value: ""}= t('views.layers.form.field.no_value')
             //ko
@@ -118,7 +118,7 @@
           //ko
           %br
           %span.smalltext= t('views.layers.form.field.skip_form_to')
-          %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code, selectedOptions: field_id', style: 'max-width:135px;height:30px'}
+          %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code', style: 'max-width:135px;height:30px'}
             /ko if: $index() == 0
             %option{value: ""}= t('views.layers.form.field.no_value')
             //ko
