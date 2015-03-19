@@ -271,7 +271,7 @@ Collection.prototype.validateData = function(collectionId){
                   }
                 }
                 if(range){
-                  if(value != "" || value != null){
+                  if(value != ""){
                     msg = Collection.prototype.validateRange(value, range);
                     if(msg != ""){
                       Collection.prototype.showErrorMessage(msg);
