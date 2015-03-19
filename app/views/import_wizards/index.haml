@@ -44,7 +44,11 @@
 
     %form#upload_form{action: upload_csv_collection_import_wizard_path(collection), method: :post, enctype: 'multipart/form-data'}
       %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
-      .icon.fexport.black= t('views.import_wizards.upload_a_csv')
-      %input#upload{type: :file, name: :file}
+      - if collection_admin?
+        .icon.fexport.black= t('views.import_wizards.upload_a_csv')
+        %input#upload{type: :file, name: :file}
+      - else
+        .icon.fexport.black.disabled= t('views.import_wizards.upload_a_csv')
+        %input#upload{type: :file, name: :file, disabled: :disabled}
   - else
     = render '/current_snapshot_message'
