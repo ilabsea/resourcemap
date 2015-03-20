@@ -186,13 +186,10 @@ class LayersController < ApplicationController
             field[:config][:field_logics] = []
               field_logic['value'] = field_logic['value'].to_i
               if field_logic['field_id']
-                field_logic['field_id'].each { |field_id|
-                  if field_id == ""
-                    field_logic['field_id'] = nil
-                  else
-                    field_logic['field_id'] = field_id
-                  end
-                }
+                
+                if field_logic['field_id'] == ""
+                  field_logic['field_id'] = nil
+                end
               end         
             }    
 

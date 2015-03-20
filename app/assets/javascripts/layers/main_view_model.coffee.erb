@@ -706,7 +706,7 @@ onLayers ->
       if @currentField().kind() == 'select_one'
         if @currentField().config?.field_logics?[field_logic.id()]?
           @currentField().config.field_logics[field_logic.id()].value = field_logic.value()
-          @currentField().config.field_logics[field_logic.id()].field_code = field_logic.field_code()
+          @currentField().config.field_logics[field_logic.id()].field_id = field_logic.field_id()
         else
           @currentField().impl().saveFieldLogic(field_logic)
         @isAddNew(false)
@@ -729,20 +729,20 @@ onLayers ->
         field.editing(true)
         @newFieldLogic(new FieldLogic)
         @newFieldLogic().id(field.id())
-        @newFieldLogic().field_code(field.field_code())
+        @newFieldLogic().field_id(field.field_id())
         @newFieldLogic().value(field.value())
         @newFieldLogic().condition_type(field.condition_type())
       if @currentField().kind() == 'select_many'      
         for f in @currentField().impl().selected_field_logics()
           if f.editing() == true
             f.selected_options(@currentFieldLogic.selected_options())
-            f.field_code(@currentFieldLogic.field_code())
+            f.field_id(@currentFieldLogic.field_id())
             f.condition_type(@currentFieldLogic.condition_type())
             f.editing(false)
         @currentFieldLogic = new FieldLogic
         for op in field.selected_options()
           @currentFieldLogic.selected_options.push(op)
-        @currentFieldLogic.field_code(field.field_code())
+        @currentFieldLogic.field_id(field.field_id())
         @currentFieldLogic.condition_type(field.condition_type())
         field.editing(true)
         @currentField().impl().field_logics([])
@@ -755,7 +755,7 @@ onLayers ->
         field_logic = @newFieldLogic()
         if field_logic.id()?
           field.value(field_logic.value())
-          field.field_code(field_logic.field_code())
+          field.field_id(field_logic.field_id())
           field.condition_type(field_logic.condition_type())
         else
           @isAddNew(false)
@@ -764,7 +764,7 @@ onLayers ->
         for f in @currentField().impl().selected_field_logics()
           if f.editing() == true
             f.selected_options(@currentFieldLogic.selected_options())
-            f.field_code(@currentFieldLogic.field_code())
+            f.field_id(@currentFieldLogic.field_id())
             f.condition_type(@currentFieldLogic.condition_type())
             f.editing(false)
         @currentFieldLogic = null   

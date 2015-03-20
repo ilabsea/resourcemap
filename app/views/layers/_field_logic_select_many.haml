@@ -45,7 +45,6 @@
             //ko
             %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}
               %option{"data-bind" => "text: name, option: name, value: id"}
-
   .rightbuttons
     %button.fdelete{ ko(click: '$root.removeSelectedFieldLogic') }
   %button.white{ko(click: '$root.updateFieldLogic'), type: :button, title: 'Save'}= t('views.layers.form.field.save')

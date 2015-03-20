@@ -8,7 +8,6 @@
       %div
         %span.smalltext skip form to
 
-
         %select{"data-bind" => 'foreach: $root.layerList(), value: field_id, selectedOptions: field_id, enable: editing', style: 'color:black;max-width:135px;height:30px;background-color:white'}
           /ko if: $index() == 0
           %option{value: ""} (no value)
@@ -36,6 +35,7 @@
 
       %div
         %span.smalltext skip form to
+
         %select{"data-bind" => 'foreach: $root.layerList(), value: field_id, selectedOptions: field_id', style: 'max-width:135px;height:30px;background-color:white'}
           /ko if: $index() == 0
           %option{value: ""} (no value)

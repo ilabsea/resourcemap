@@ -110,10 +110,10 @@ onCollections ->
         if @field_logics
           for field_logic in @field_logics
             b = false
-            if field_logic.field_code?
+            if field_logic.field_id?
               if @kind == 'yes_no' || @kind == 'select_one'
                 if value == field_logic.value
-                  @setFocusStyleByField(field_logic.field_code)
+                  @setFocusStyleByField(field_logic.field_id)
                   return
               if @kind == 'numeric'
                 if field_logic.condition_type == 'empty'
@@ -122,19 +122,19 @@ onCollections ->
                     return
                 if field_logic.condition_type == '<'
                   if parseInt(value) < field_logic.value
-                    @setFocusStyleByField(field_logic.field_code)
+                    @setFocusStyleByField(field_logic.field_id)
                     return
                 if field_logic.condition_type == '<='
                   if parseInt(value) <= field_logic.value
-                    @setFocusStyleByField(field_logic.field_code)  
+                    @setFocusStyleByField(field_logic.field_id)  
                     return         
                 if field_logic.condition_type == '='
                   if parseInt(value) == field_logic.value
-                    @setFocusStyleByField(field_logic.field_code)  
+                    @setFocusStyleByField(field_logic.field_id)  
                     return        
                 if field_logic.condition_type == '>'
                   if parseInt(value) > field_logic.value
-                    @setFocusStyleByField(field_logic.field_code)
+                    @setFocusStyleByField(field_logic.field_id)
                     return            
                 if field_logic.condition_type == '>='
                   if parseInt(value) >= field_logic.value
@@ -147,7 +147,7 @@ onCollections ->
                     for field_logic_value in field_logic.selected_options
                       if field_value == parseInt(field_logic_value.value)
                         b = true
-                        @setFocusStyleByField(field_logic.field_code)
+                        @setFocusStyleByField(field_logic.field_id)
                         return
 
                 if field_logic.condition_type == 'all'
@@ -156,16 +156,16 @@ onCollections ->
                     for field_logic_value in field_logic.selected_options
                       if field_value == parseInt(field_logic_value.value)                        
                         b = true
-                        field_code = field_logic.field_code
+                        field_id = field_logic.field_id
                         tmp.push field_value
                       else
                         b = false
                   if tmp.length == field_logic.selected_options.length
-                    @setFocusStyleByField(field_code)
+                    @setFocusStyleByField(field_id)
                     return
 
-    setFocusStyleByField: (field_code) =>
-      field = window.model.newOrEditSite().findFieldByCode(field_code)
+    setFocusStyleByField: (field_id) =>
+      field = window.model.newOrEditSite().findFieldByEsCode(field_id)
       @removeFocusStyle()
       if field.kind == "select_one"
         $('#select-one-input-'+field.code).focus()  
