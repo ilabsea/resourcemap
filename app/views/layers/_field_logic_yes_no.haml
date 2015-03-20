@@ -9,11 +9,11 @@
       
       %span.smalltext{style: 'padding-left:10px'}skip form to
 
-    %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_code', style: 'max-width:250px'}
+    %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id', style: 'max-width:250px'}
       /ko if: $index() == 0
       %option{value: ""} (no value)
       //ko
       %optgroup{"data-bind" => "attr: {label: name}, foreach: fields", style: ''}        
-        %option{"data-bind" => "text: name, option: name, value: code"}
+        %option{"data-bind" => "text: name, option: name, value: id"}
   //ko
   //ko
