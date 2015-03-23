@@ -227,6 +227,7 @@ onLayers ->
             break
 
     newLayer: =>
+      @cancelDefaultLayer()
       layer = new Layer ord: (@layers().length + 1)
       @layers.push(layer)
       @currentLayer(layer)
@@ -313,6 +314,8 @@ onLayers ->
       index
 
     saveDefaultLayer: =>
+      @tmpVisibleName = @isVisibleName()
+      @tmpVisibleLocation = @isVisibleLocation()
       json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
       json._method = 'put'
       $.post "/collections/#{@collectionId}.json", json
