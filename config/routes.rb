@@ -149,6 +149,9 @@ ResourceMap::Application.routes.draw do
         resources :layer_memberships, only: [:create,:index,:update,:show]
         resources :site_permissions, only: [:create,:index,:update,:show]
       end
+      namespace :admin do
+        resources :collections
+      end
     end
   end
 
