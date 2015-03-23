@@ -261,6 +261,9 @@ ResourceMap::Application.routes.draw do
       get 'collections/:collection_id/sites/:id/histories' => 'sites#histories', as: :histories
       get 'activity' => 'activities#index', as: :activity
       resources :tokens, :only => [:index, :destroy]
+      namespace :admin do
+        resources :collections
+      end
     end
 
   end
