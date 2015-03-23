@@ -12,12 +12,18 @@ module Api::V1::Admin
       query_collection = build_params params
       # query_collection = object_ar.limit(params[:limit]).offset(params[:offset])
       query_collection[:records].each do |c|
+        last_activity = c.activities.last
+        if last_activity
+          last_activity_text = last_activity.created_at.strftime("%A, %B %d, %Y at %l%p")
+        else
+          last_activity_text = "No activity"
+        end
         collections.push({
           :id => c.id,
           :name => c.name,
           :description => c.description,
           :created_at => c.created_at.strftime("%A, %B %d, %Y at %l%p"),
-          :updated_at => c.updated_at.strftime("%A, %B %d, %Y at %l%p"),
+          :updated_at => last_activity_text,
           :total_member => c.memberships.size,
           :total_site => c.sites.size         
         })
@@ -26,13 +32,19 @@ module Api::V1::Admin
     end
 
     def show
-      c = Collection.find(params[:id])    
+      c = Collection.find(params[:id]) 
+      last_activity = c.activities.last
+      if last_activity
+        last_activity_text = last_activity.created_at.strftime("%A, %B %d, %Y at %l%p")
+      else
+        last_activity_text = "No activity"
+      end   
       record = {
         :id => c.id,
         :name => c.name,
         :description => c.description,
         :created_at => c.created_at.strftime("%A, %B %d, %Y at %l%p"),
-        :updated_at => c.updated_at.strftime("%A, %B %d, %Y at %l%p"),
+        :updated_at => last_activity_text,
         :list_member => list_member(c),
         :total_site => c.sites.size         
       }
@@ -68,8 +80,6 @@ module Api::V1::Admin
           object = object.order("name #{params[:sortType]}")
         when "created_at"
           object = object.order("created_at #{params[:sortType]}")
-        when "updated_at"
-          object = object.order("updated_at #{params[:sortType]}")
         end
       end
 
@@ -81,18 +91,53 @@ module Api::V1::Admin
 
       unless (params[:sortColumn].nil? || params[:sortColumn].empty?)
         case  params[:sortColumn]
-        when "record"
+        when "updated_at"
           conditions = []
           unless (params[:name].nil? || params[:name].empty?)
-            conditions.push("name LIKE '%#{params[:name]}%'")
+            conditions.push("c.name LIKE '%#{params[:name]}%'")
           end
 
           unless (params[:from].nil? || params[:from].empty?)
-            conditions.push("created_at > ?", DateTime.parse(params[:from]))
+            conditions.push("c.created_at > '#{DateTime.parse(params[:from]).strftime("%Y-%m-%d %H-%M-%S")}'")
           end
 
           unless (params[:to].nil? || params[:to].empty?)
-            conditions.push("created_at < ?", DateTime.parse(params[:to]))
+            conditions.push("c.created_at < '#{DateTime.parse(params[:to]).strftime("%Y-%m-%d %H-%M-%S")}'")
+          end
+
+          unless (params[:user].nil? || params[:user].empty?)
+            users = User.where("email Like '%#{params[:user]}%'").select("id")
+            user_ids = []
+            users.each do |u|
+              user_ids.push(u.id)
+            end
+            conditions.push("id in (select collection_id from memberships where user_id in ('#{user_ids.join(',')}'))")
+          end
+
+          unless conditions.empty?
+            sql = "select id,(select s.id from activities as s where s.collection_id = c.id order by s.created_at DESC limit 1) as numSite from collections as c where #{conditions.join(' and ')} ORDER BY numSite #{params[:sortType]} LIMIT #{params[:limit]} OFFSET #{params[:offset]} "
+          else
+            sql = "select id,(select s.id from activities as s where s.collection_id = c.id order by s.created_at DESC limit 1) as numSite from collections as c ORDER BY numSite #{params[:sortType]} LIMIT #{params[:limit]} OFFSET #{params[:offset]}"
+          end
+          objects = ActiveRecord::Base.connection.execute(sql)
+          collections = []
+          objects.each do |o|
+            c = Collection.find_by_id o[0]
+            collections.push c
+          end
+          object = collections
+        when "record"
+          conditions = []
+          unless (params[:name].nil? || params[:name].empty?)
+            conditions.push("c.name LIKE '%#{params[:name]}%'")
+          end
+
+          unless (params[:from].nil? || params[:from].empty?)
+            conditions.push("c.created_at > '#{DateTime.parse(params[:from]).strftime("%Y-%m-%d %H-%M-%S")}'")
+          end
+
+          unless (params[:to].nil? || params[:to].empty?)
+            conditions.push("c.created_at < '#{DateTime.parse(params[:to]).strftime("%Y-%m-%d %H-%M-%S")}'")
           end
 
           unless (params[:user].nil? || params[:user].empty?)
@@ -119,15 +164,15 @@ module Api::V1::Admin
         when "member"
           conditions = []
           unless (params[:name].nil? || params[:name].empty?)
-            conditions.push("name LIKE '%#{params[:name]}%'")
+            conditions.push("c.name LIKE '%#{params[:name]}%'")
           end
 
           unless (params[:from].nil? || params[:from].empty?)
-            conditions.push("created_at > ?", DateTime.parse(params[:from]))
+            conditions.push("c.created_at > '#{DateTime.parse(params[:from]).strftime("%Y-%m-%d %H-%M-%S")}'")
           end
 
           unless (params[:to].nil? || params[:to].empty?)
-            conditions.push("created_at < ?", DateTime.parse(params[:to]))
+            conditions.push("c.created_at < '#{DateTime.parse(params[:to]).strftime("%Y-%m-%d %H-%M-%S")}'")
           end
 
           unless (params[:user].nil? || params[:user].empty?)
@@ -154,7 +199,7 @@ module Api::V1::Admin
         end
       end
 
-      if (params[:sortColumn] != "member" and params[:sortColumn] != "record")
+      if (params[:sortColumn] != "member" and params[:sortColumn] != "record" and params[:sortColumn] != "updated_at")
         records = object.limit(params[:limit]).offset(params[:offset])
       else
         records = object
