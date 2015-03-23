@@ -6,7 +6,6 @@ onLayers ->
       @name = ko.observable data?.name
       @code = ko.observable data?.code
       @kind = ko.observable data?.kind
-      @maximumSearchLength = ko.observable(data?.config?.maximumSearchLength)
 
       @is_enable_field_logic = ko.observable data?.is_enable_field_logic ? false
       @is_enable_range = data?.is_enable_range
@@ -33,9 +32,8 @@ onLayers ->
         if !@hasCode() then return "the field #{@fieldErrorDescription()} is missing a Code"
         if (@code() in ['lat', 'long', 'name', 'resmap-id', 'last updated']) then return "the field #{@fieldErrorDescription()} code is reserved"
         null
-        
       @error = ko.computed => @nameError() || @codeError() || @impl().error()
-      @valid = ko.computed => !@error()
+      @valid = ko.computed => !@error() 
 
     hasName: => $.trim(@name()).length > 0
 
@@ -84,6 +82,7 @@ onLayers ->
   class @FieldImpl
     constructor: (field) ->
       @field = field
+      @maximumSearchLengthError = -> null
       @error = -> null
 
     toJSON: (json) =>
@@ -269,7 +268,7 @@ onLayers ->
         if @hierarchy() && @hierarchy().length > 0
           null
         else
-          "the field #{@field.fieldErrorDescription()} is missing the Hierarchy 111"
+          "the field #{@field.fieldErrorDescription()} is missing the Hierarchy"
 
     setHierarchy: (hierarchy) =>
       @hierarchy(hierarchy)
@@ -296,6 +295,7 @@ onLayers ->
       super(field)
       @maximumSearchLength = ko.observable(field?.config?.maximumSearchLength)
       @uploadingLocation = ko.observable(false)
+      @errorUploadingLocation = ko.observable(false)
       @locations = if field?.config?.locations
                     ko.observableArray($.map(field?.config?.locations, (x) -> new Location(x)))
                    else
@@ -305,18 +305,18 @@ onLayers ->
           null 
         else 
           "the field #{@field.fieldErrorDescription()} is missing a maximum search length"
-      @error = ko.computed =>
+      @missingFileLocationError = ko.computed =>
         if @locations() && @locations().length > 0
           null
         else
           "the field #{@field.fieldErrorDescription()} is missing the location file"
+      @error = ko.computed =>
+        @missingFileLocationError() || @maximumSearchLengthError()
 
     setLocation: (locations) =>
       @locations($.map(locations, (x) -> new Location(x)))
       @uploadingLocation(false)
+      @errorUploadingLocation(false)
 
     toJSON: (json)=>
       json.config = {locations: $.map(@locations(), (x) ->  x.toJSON()), maximumSearchLength: @maximumSearchLength()}
-
-
-

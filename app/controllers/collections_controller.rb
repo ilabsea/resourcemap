@@ -235,17 +235,31 @@ class CollectionsController < ApplicationController
 
   def decode_location_csv
     csv_string = File.read(params[:file].path, :encoding => 'utf-8')
-    p csv_string
     @locations = collection.decode_location_csv(csv_string)
-    # @hierarchy_errors = CollectionsController.generate_error_description_list(@hierarchy)
+    @locations_errors = CollectionsController.generate_error_description_location(@locations)
     render layout: false
+  end
+
+  def self.generate_error_description_location(locations_csv)
+    locations_errors = []
+    locations_csv.each do |item|
+      message = ""
+
+      if item[:error]
+        message << "Error: #{item[:error]}"
+        message << " " + item[:error_description] if item[:error_description]
+        message << " in line #{item[:order]}." if item[:order]
+      end
+
+      locations_errors << message if !message.blank?
+    end
+    locations_errors.join("<br/>").to_s
   end
 
   def self.generate_error_description_list(hierarchy_csv)
     hierarchy_errors = []
     hierarchy_csv.each do |item|
       message = ""
-
       if item[:error]
         message << "Error: #{item[:error]}"
         message << " " + item[:error_description] if item[:error_description]

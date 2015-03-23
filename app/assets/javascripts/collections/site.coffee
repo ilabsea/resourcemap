@@ -361,6 +361,8 @@ onCollections ->
         field.editing(false)
         field.originalValue = field.value()
 
+      @getLocationFieldOption()
+
       @inEditMode(true)
       @startEditLocationInMap() if @collection.isVisibleLocation
       window.model.initDatePicker()
@@ -458,7 +460,8 @@ onCollections ->
         for layer in @layers()
           for field in layer.fields
             fields.push(field)
-        @fields(fields)
+        @fields(fields) 
+        @getLocationFieldOption(@lat(), @lng())
 
         @copyPropertiesToFields()
         $('a#previewimg').fancybox()

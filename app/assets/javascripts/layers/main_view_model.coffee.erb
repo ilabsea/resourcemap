@@ -468,6 +468,23 @@ onLayers ->
     locationUploaded: (location) =>
       @currentField().impl().setLocation(location)
 
+    errorUploadingLocation: (locations_errors) =>
+      @currentField().impl().uploadingLocation(false)
+      @currentField().impl().errorUploadingLocation(true)
+
+      $('.error_description_bubble').CreateBubblePopup({
+        selectable: true,
+        position : 'top',
+        innerHtml: locations_errors,
+        innerHtmlStyle: {
+            color:'#000000',
+            'background-color' :'white'
+            },
+        themeName:  'bubble',
+        themePath:  '<%= InsteddRails.url %>/theme/images/'
+
+      });
+
     change: =>
       alert 'test'
 

@@ -212,6 +212,8 @@ onCollections ->
         if value then window.t('javascripts.collections.fields.yes') else window.t('javascripts.collections.fields.no')
       else if @kind == 'select_one'
         if value then @labelFor(value) else ''
+      else if @kind == 'location'
+        if value then @labelForLocation(value) else ''
       else if @kind == 'select_many'
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
       else if @kind == 'hierarchy'
@@ -383,6 +385,12 @@ onCollections ->
       for option in @optionsUI
         if option.id == id
           return option.label
+      null
+
+    labelForLocation: (code) =>
+      for option in @resultLocations()
+        if option.code == code
+          return option.name
       null
 
     # In the table view, use a fixed size width for each property column,
