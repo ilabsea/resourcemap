@@ -107,6 +107,7 @@ onLayers ->
 
 
     newLayer: =>
+      @cancelDefaultLayer()
       layer = new Layer ord: (@layers().length + 1)
       @layers.push(layer)
       @currentLayer(layer)
@@ -115,6 +116,7 @@ onLayers ->
 
     editLayer: (layer) =>
       @clearUnsavedLayer()
+      @cancelDefaultLayer()
       @originalFields = $.map(layer.fields(), (x) -> new Field(layer, x.toJSON()))
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
@@ -168,6 +170,8 @@ onLayers ->
       index
 
     saveDefaultLayer: =>
+      @tmpVisibleName = @isVisibleName()
+      @tmpVisibleLocation = @isVisibleLocation()
       json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
       json._method = 'put'
       $.post "/collections/#{@collectionId}.json", json
