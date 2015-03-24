@@ -1,6 +1,6 @@
 module Collection::CsvConcern
   extend ActiveSupport::Concern
-
+  # include Rails.application.routes.url_helpers
   def csv_template
     CSV.generate do |csv|
       csv << sample_csv_header
@@ -33,6 +33,8 @@ module Collection::CsvConcern
         fields.each do |field|
           if field.kind == 'yes_no'
             row << (Field.yes?(source['properties'][field.code]) ? 'yes' : 'no')
+          elsif field.kind == 'photo'
+            row << "#{Settings.host}/photo_field/#{source['properties'][field.code]}"
           else
             row << Array(source['properties'][field.code]).join(", ")
           end
