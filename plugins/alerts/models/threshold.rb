@@ -46,7 +46,11 @@ class Threshold < ActiveRecord::Base
     Threshold.transaction do
       Threshold.find_each(batch_size: 100) do |threshold|
         threshold.conditions.each do |condition|
-          field = Field.find(condition[:field])
+          begin
+            field = Field.find(condition[:field])
+          rescue ActiveRecord::RecordNotFound => e
+            field = nil
+          end    
           condition[:kind] = field.kind if field
         end
         threshold.save
