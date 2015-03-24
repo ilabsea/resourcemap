@@ -304,7 +304,7 @@ class Activity < ActiveRecord::Base
 
   def site_changes_text
     fields = collection.fields.index_by(&:es_code) if collection
-    if fields.length > 0
+    if fields
       text_changes = []
       only_name_changed = false
       
