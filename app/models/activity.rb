@@ -322,45 +322,47 @@ class Activity < ActiveRecord::Base
   end
 
   def site_changes_text
-    fields = collection.fields.index_by(&:es_code)
-    text_changes = []
-    only_name_changed = false
-    
-    if (change = data['changes']['name'])
-      text_changes << I18n.t('views.activities.table.name_changed', from: change[0], to: change[1])
-      only_name_changed = true
-    end
-
-    if data['changes']['lat'] && data['changes']['lng']
-      text_changes << I18n.t('views.activities.table.location_changed', from: format_location(data['changes'], :from), to: format_location(data['changes'], :to))
+    fields = collection.fields.index_by(&:es_code) if collection
+    if fields.length > 0
+      text_changes = []
       only_name_changed = false
-    end
-    
-    if data['changes']['properties']
-      properties = data['changes']['properties']
       
-      properties[0].each do |key, old_value|
-        new_value = properties[1][key]
-        if new_value != old_value
-          field = fields[key]
-          code = field.try(:code)
-          text_changes << I18n.t('views.activities.table.code_changed',code: code, from: format_value(field, old_value), to: format_value(field, new_value))
-        end
+      if (change = data['changes']['name'])
+        text_changes << I18n.t('views.activities.table.name_changed', from: change[0], to: change[1])
+        only_name_changed = true
       end
 
-      properties[1].each do |key, new_value|
-        if !properties[0].has_key? key
-          field = fields[key]
-          code = field.try(:code)
-          to_new_value = new_value.nil? ? I18n.t('views.activities.table.nothing') : format_value(field, new_value)
-          text_changes << I18n.t('views.activities.table.code_changed',code: code, from: I18n.t('views.activities.table.nothing'), to: to_new_value)
+      if data['changes']['lat'] && data['changes']['lng']
+        text_changes << I18n.t('views.activities.table.location_changed', from: format_location(data['changes'], :from), to: format_location(data['changes'], :to))
+        only_name_changed = false
+      end
+      
+      if data['changes']['properties']
+        properties = data['changes']['properties']
+        
+        properties[0].each do |key, old_value|
+          new_value = properties[1][key]
+          if new_value != old_value
+            field = fields[key]
+            code = field.try(:code)
+            text_changes << I18n.t('views.activities.table.code_changed',code: code, from: format_value(field, old_value), to: format_value(field, new_value))
+          end
         end
+
+        properties[1].each do |key, new_value|
+          if !properties[0].has_key? key
+            field = fields[key]
+            code = field.try(:code)
+            to_new_value = new_value.nil? ? I18n.t('views.activities.table.nothing') : format_value(field, new_value)
+            text_changes << I18n.t('views.activities.table.code_changed',code: code, from: I18n.t('views.activities.table.nothing'), to: to_new_value)
+          end
+        end
+
+        only_name_changed = false
       end
 
-      only_name_changed = false
+      [only_name_changed, text_changes.join(', ')]
     end
-
-    [only_name_changed, text_changes.join(', ')]
   end
 
   def layer_changed_text
