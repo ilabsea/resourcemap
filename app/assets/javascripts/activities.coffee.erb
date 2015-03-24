@@ -10,7 +10,8 @@
       @createdAt = ko.observable data?.created_at
       @expanded = ko.observable false
       @log = ko.observable(data?.log)
-      @canBeExpanded = ko.computed => @log().length > DESCRIPTION_LENGTH
+      @canBeExpanded = ko.computed => 
+        @log().length > DESCRIPTION_LENGTH if @log() != null
       
       @displayedLog = ko.computed =>
         if !@canBeExpanded() || @expanded()
@@ -43,7 +44,9 @@
       else
         @hasMore false
 
-      @activities.push new Activity(activity) for activity in activities
+      for activity in activities
+        act = new Activity(activity)
+        @activities.push act if act.log() != null && act.log() != ""
 
     loadMore: =>
       @loading(true)

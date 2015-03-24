@@ -70,6 +70,7 @@
           %th= t('views.activities.index.activity')
           %th= t('views.activities.index.time')
         <!-- ko foreach: activities -->
+        <!-- ko if: log -->
         %tr{style: 'height:32px'}
           %td{ko(text: :collection), style: 'min-width:120px'}
           %td{ko(text: :user)}
@@ -80,6 +81,7 @@
             %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'}= t('views.activities.index.show_more')
             <!-- /ko -->
           %td.timeago{ko(attr: {title: :createdAt}, text: :createdAt), style: 'min-width:150px'}
+        <!-- /ko -->
         <!-- /ko -->
         <!-- ko if: hasMore() && !loading() -->
         %tr{style: 'height:32px'}
