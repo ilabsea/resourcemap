@@ -27,6 +27,14 @@ module Api::JsonHelper
       obj[:long] = source['location']['lon']
     end
 
+    source['properties'].each do |key, property|
+      field = Field.find_by_code(key)
+      if field.kind == 'photo'
+        source['properties'][key] = "#{root_url}/photo_field/#{property}"
+        break
+      end
+    end
+    
     obj[:properties] = source['properties']
 
     obj
