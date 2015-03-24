@@ -33,6 +33,13 @@ module Api::JsonHelper
     end
 
     obj[:uuid] = source['uuid']
+    source['properties'].each do |key, property|
+      field = Field.find_by_code(key)
+      if field.kind == 'photo'
+        source['properties'][key] = "#{root_url}/photo_field/#{property}"
+        break
+      end
+    end
     obj[:properties] = source['properties']
 
     obj
