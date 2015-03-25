@@ -15,182 +15,182 @@
   #thresholds-main.hidden-until-loaded{ ko(css: { ready: :isReady }) }
     - if collection_admin? 
       %h2= t('views.plugins.alerts.title')
-    <!-- ko foreach :thresholds -->
-    <!-- ko if: $data != $root.currentThreshold() -->
-    .box.grey.w60
-      .toptitle
-        .ord-buttons
-          %input{ ko(value: :ord) }
-          %button.up{ ko(click: '$root.moveThresholdUp'), title: t('views.plugins.alerts.move_up') }
-          %button.down{ ko(click: '$root.moveThresholdDown'), title: t('views.plugins.alerts.move_down') }
-        %span
+      <!-- ko foreach :thresholds -->
+      <!-- ko if: $data != $root.currentThreshold() -->
+      .box.grey.w60
+        .toptitle
+          .ord-buttons
+            %input{ ko(value: :ord) }
+            %button.up{ ko(click: '$root.moveThresholdUp'), title: t('views.plugins.alerts.move_up') }
+            %button.down{ ko(click: '$root.moveThresholdDown'), title: t('views.plugins.alerts.move_down') }
+          %span
 
-          %span{ ko(text: :propertyName) }
-          &rarr;
-          = t('views.plugins.alerts.in')
-          <!-- ko if: isAllSite() == "true" -->
-          = t('views.plugins.alerts.all_sites')
-          <!-- /ko -->
-          <!-- ko if: !(isAllSite() == "true") -->
-          <!-- ko foreach: alertSites -->
-          %span{ ko(text: :name) }
-          <!-- /ko -->
-          <!-- /ko -->
-
-          -# list all conditions
-          <!-- ko foreach :conditions -->
-          <!-- ko if: $parent.isFirstCondition($data) -->
-          = t('views.plugins.alerts.when')
-          <!-- /ko -->
-          <!-- ko if: !$parent.isFirstCondition($data) -->
-          <!-- ko if: $parent.isAllCondition() == "true" -->
-          = t('views.plugins.alerts.and')
-          <!-- /ko -->
-          <!-- ko if: !($parent.isAllCondition() == "true") -->
-          = t('views.plugins.alerts.or')
-          <!-- /ko -->
-          <!-- /ko -->
-          %span{ ko(text: 'field().name()') }
-          %span{ ko(text: 'op().label()') }
-          %span{ ko(text: 'formattedValue') }
-
-          <!-- ko if: valueType().label() == 'a percentage of' -->
-          = t('views.plugins.alerts.of')
-          %span{ ko(text: 'compareField().name()') }
-          <!-- /ko -->
-
-          <!-- /ko -->
-          = t('views.plugins.alerts.change_icon_to')
-          %br
-          .alert-icon
-            %img{"data-bind" => "attr: { src:iconUrl }" }
-          -# %span.stat{"data-bind" => "style: { backgroundColor:icon }" }
-          %br
-          %br
-          %br
-      .rightbuttons
-        %button.fdelete{ ko(click: '$root.deleteThreshold') }
-
-      %button.farrow{ ko(click: '$root.editThreshold') }= t('views.plugins.alerts.edit')
-    <!-- /ko -->
-
-    -# Form editor
-    <!-- ko if: $data == $root.currentThreshold() -->
-    .box.w90
-      .rightbuttons
-        -#%button.fdelete{ ko(visible: '!isNewRecord') }
-      %h1.header_text= t('views.plugins.alerts.form.properties')
-      .middlebuttons
-        %label{ko(css: {error: 'propertyNameError'})}= t('views.plugins.alerts.form.name')
-        %br
-        %input{ko(value: :propertyName),type: :text, style: 'width:240px'}
-        %br
-        = t('views.plugins.alerts.form.apply_this_alert_to')
-        %br
-        %input{"data-bind" => "checked: isAllSite", :value => "true", :name => "site", :type => "radio"}
-        %label= t('views.plugins.alerts.form.all_sites')
-        %input{"data-bind" => "checked: isAllSite", :value => "false", :name => "site", :type => "radio"}
-        %label= t('views.plugins.alerts.form.some_sites')
-        %br
-        .middlebuttons{ko(visible: 'isAllSite() == "false"' )}
-          %input.sites{ko(autocompleteTagField: 'alertSites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
-      %br
-      %h1.header_text= t('views.plugins.alerts.conditions')
-      .middlebuttons
-        %input{"data-bind" => "checked: isAllCondition", :value => "true", :name => "condition", :type => "radio"}
-        %label= t('views.plugins.alerts.form.all_of_following_conditions')
-        %input{"data-bind" => "checked: isAllCondition", :value => "false", :name => "condition", :type => "radio"}
-        %label= t('views.plugins.alerts.form.any_of_the_following_conditions')
-        %br
-        <!-- ko foreach :conditions -->
-        %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
-
-        /      ko template: {name: field().kind() + '-field-template', afterRender: $root.initDatePicker}
-        /      /ko
-        
-        %button.premove{ ko(click: '$parent.removeCondition') }
-        %br
-        <!--/ko -->
-      %button.fadd{ko(click: :addNewCondition) }
-        = t('views.plugins.alerts.form.add_another_condition')
-      %hr
-      %br
-      .alert-icon
-        %img{"data-bind" => "attr: { src:iconUrl }" }
-      .color-palette
-        %label= t('views.plugins.alerts.form.change_site_display_on_map')
-        %br
-        %button.forange.fsize{ ko( click: "setIcon.bind($data, '#ff6f21')") }
-        %button.fyellow.fsize{ ko( click: "setIcon.bind($data, '#ffc01f')") }
-        %button.fgreen.fsize{ ko( click: "setIcon.bind($data, '#128e4e')") }
-        %button.fcyan.fsize{ ko( click: "setIcon.bind($data, '#5ec8bd')") }
-        %button.fred.fsize{ ko( click: "setIcon.bind($data, '#b01c21')") }
-        %button.fblue.fsize{ ko( click: "setIcon.bind($data, '#3875d7')") }
-      %br
-      %hr
-      %br
-      %h1.header_text= t('views.plugins.alerts.form.notifications')
-
-      %input{"data-bind" => "checked: isNotify", :value => "false", :name => "notification", :type => "radio"}
-      %label= t('views.plugins.alerts.form.do_not_send_notifications')
-      %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"}
-      %label= t('views.plugins.alerts.form.notify_these_people')
-      %br
-      .middlebuttons{ko(visible: 'isNotify() == "true"' ), :style => "height: 360px;"}
-        .middlebuttons.w30{:style => "float: left;"}
-          = t('views.plugins.alerts.form.send_emails_to')
-          %p.list-box
-            - collection.fields.find_all_by_kind('user').each  do |field|
-              %input{ko(checked: 'usersEmail'), value: field.es_code, type: "checkbox"}= field.name
-              %br
-            - collection.fields.find_all_by_kind('email').each do |field|
-              %input{ko(checked: 'fieldsEmail'), value: field.es_code, type: "checkbox"}= field.name
-              %br
-            %br
-            - collection.users.each do |user|
-              %input{ko(checked: 'membersEmail'), value: user.id, type: "checkbox"}= user.email
-              %br
-        .middlebuttons.w30{:style => "float: left;"}
-          = t('views.plugins.alerts.form.send_text_messages_to')
-          %p.list-box
-            - collection.fields.find_all_by_kind('user').each  do |field|
-              %input{ko(checked: 'usersPhone'), value: field.es_code, type: "checkbox"}= field.name
-              %br
-            - collection.fields.find_all_by_kind('phone').each do |field|
-              %input{ko(checked: 'fieldsPhone'), value: field.es_code, type: "checkbox"}= field.name
-              %br
-            %br
-            - collection.users.each do |user|
-              %input{ko(checked: 'membersPhone'), value: user.id, type: "checkbox"}= user.email
-              %br
-        .clear
-        %label{ko(css: {error: 'notificationMessageError'})}= t('views.plugins.alerts.form.message')
-        %br/
-        %label.smalltext
-          = t('views.plugins.alerts.form.use_the_following_expression')
-          .template_text
-            [
-            %span{ko(click: 'addSiteNameToMessageNotification')} Site Name
-            ]
-            <!-- ko foreach: $root.fields -->
-            [
-            %span{ ko(text: :code, click: '$parent.addFieldNameToMessageNotification') }
-            ]
+            %span{ ko(text: :propertyName) }
+            &rarr;
+            = t('views.plugins.alerts.in')
+            <!-- ko if: isAllSite() == "true" -->
+            = t('views.plugins.alerts.all_sites')
             <!-- /ko -->
-        %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: t('views.plugins.alerts.form.message_template'), maxlength: 140, rows: 4 }
-        .clear
-      %hr/
+            <!-- ko if: !(isAllSite() == "true") -->
+            <!-- ko foreach: alertSites -->
+            %span{ ko(text: :name) }
+            <!-- /ko -->
+            <!-- /ko -->
 
-      .bottom-actions
-        %button.white{ ko(click: '$root.saveThreshold', enable: :valid) }= t('views.plugins.alerts.form.save')
-        %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' }= t('views.plugins.alerts.form.cancel')
-        <!-- ko if: !valid() -->
-        %span{ ko(text: 'error()'), style: 'color:red;margin-left:20px' }= t('views.plugins.alerts.form.cannot_save')
-        <!-- /ko -->
-    <!-- /ko -->
+            -# list all conditions
+            <!-- ko foreach :conditions -->
+            <!-- ko if: $parent.isFirstCondition($data) -->
+            = t('views.plugins.alerts.when')
+            <!-- /ko -->
+            <!-- ko if: !$parent.isFirstCondition($data) -->
+            <!-- ko if: $parent.isAllCondition() == "true" -->
+            = t('views.plugins.alerts.and')
+            <!-- /ko -->
+            <!-- ko if: !($parent.isAllCondition() == "true") -->
+            = t('views.plugins.alerts.or')
+            <!-- /ko -->
+            <!-- /ko -->
+            %span{ ko(text: 'field().name()') }
+            %span{ ko(text: 'op().label()') }
+            %span{ ko(text: 'formattedValue') }
 
-    %br/
-    <!-- /ko -->
+            <!-- ko if: valueType().label() == 'a percentage of' -->
+            = t('views.plugins.alerts.of')
+            %span{ ko(text: 'compareField().name()') }
+            <!-- /ko -->
+
+            <!-- /ko -->
+            = t('views.plugins.alerts.change_icon_to')
+            %br
+            .alert-icon
+              %img{"data-bind" => "attr: { src:iconUrl }" }
+            -# %span.stat{"data-bind" => "style: { backgroundColor:icon }" }
+            %br
+            %br
+            %br
+        .rightbuttons
+          %button.fdelete{ ko(click: '$root.deleteThreshold') }
+
+        %button.farrow{ ko(click: '$root.editThreshold') }= t('views.plugins.alerts.edit')
+      <!-- /ko -->
+
+      -# Form editor
+      <!-- ko if: $data == $root.currentThreshold() -->
+      .box.w90
+        .rightbuttons
+          -#%button.fdelete{ ko(visible: '!isNewRecord') }
+        %h1.header_text= t('views.plugins.alerts.form.properties')
+        .middlebuttons
+          %label{ko(css: {error: 'propertyNameError'})}= t('views.plugins.alerts.form.name')
+          %br
+          %input{ko(value: :propertyName),type: :text, style: 'width:240px'}
+          %br
+          = t('views.plugins.alerts.form.apply_this_alert_to')
+          %br
+          %input{"data-bind" => "checked: isAllSite", :value => "true", :name => "site", :type => "radio"}
+          %label= t('views.plugins.alerts.form.all_sites')
+          %input{"data-bind" => "checked: isAllSite", :value => "false", :name => "site", :type => "radio"}
+          %label= t('views.plugins.alerts.form.some_sites')
+          %br
+          .middlebuttons{ko(visible: 'isAllSite() == "false"' )}
+            %input.sites{ko(autocompleteTagField: 'alertSites',objectType: "Site", valueUpdate: :afterkeydown), proxy: collection_sites_path(collection), valueField: 'id', displayField: 'name', type: :text}
+        %br
+        %h1.header_text= t('views.plugins.alerts.conditions')
+        .middlebuttons
+          %input{"data-bind" => "checked: isAllCondition", :value => "true", :name => "condition", :type => "radio"}
+          %label= t('views.plugins.alerts.form.all_of_following_conditions')
+          %input{"data-bind" => "checked: isAllCondition", :value => "false", :name => "condition", :type => "radio"}
+          %label= t('views.plugins.alerts.form.any_of_the_following_conditions')
+          %br
+          <!-- ko foreach :conditions -->
+          %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
+
+          /      ko template: {name: field().kind() + '-field-template', afterRender: $root.initDatePicker}
+          /      /ko
+          
+          %button.premove{ ko(click: '$parent.removeCondition') }
+          %br
+          <!--/ko -->
+        %button.fadd{ko(click: :addNewCondition) }
+          = t('views.plugins.alerts.form.add_another_condition')
+        %hr
+        %br
+        .alert-icon
+          %img{"data-bind" => "attr: { src:iconUrl }" }
+        .color-palette
+          %label= t('views.plugins.alerts.form.change_site_display_on_map')
+          %br
+          %button.forange.fsize{ ko( click: "setIcon.bind($data, '#ff6f21')") }
+          %button.fyellow.fsize{ ko( click: "setIcon.bind($data, '#ffc01f')") }
+          %button.fgreen.fsize{ ko( click: "setIcon.bind($data, '#128e4e')") }
+          %button.fcyan.fsize{ ko( click: "setIcon.bind($data, '#5ec8bd')") }
+          %button.fred.fsize{ ko( click: "setIcon.bind($data, '#b01c21')") }
+          %button.fblue.fsize{ ko( click: "setIcon.bind($data, '#3875d7')") }
+        %br
+        %hr
+        %br
+        %h1.header_text= t('views.plugins.alerts.form.notifications')
+
+        %input{"data-bind" => "checked: isNotify", :value => "false", :name => "notification", :type => "radio"}
+        %label= t('views.plugins.alerts.form.do_not_send_notifications')
+        %input{"data-bind" => "checked: isNotify", :value => "true", :name => "notification", :type => "radio"}
+        %label= t('views.plugins.alerts.form.notify_these_people')
+        %br
+        .middlebuttons{ko(visible: 'isNotify() == "true"' ), :style => "height: 360px;"}
+          .middlebuttons.w30{:style => "float: left;"}
+            = t('views.plugins.alerts.form.send_emails_to')
+            %p.list-box
+              - collection.fields.find_all_by_kind('user').each  do |field|
+                %input{ko(checked: 'usersEmail'), value: field.es_code, type: "checkbox"}= field.name
+                %br
+              - collection.fields.find_all_by_kind('email').each do |field|
+                %input{ko(checked: 'fieldsEmail'), value: field.es_code, type: "checkbox"}= field.name
+                %br
+              %br
+              - collection.users.each do |user|
+                %input{ko(checked: 'membersEmail'), value: user.id, type: "checkbox"}= user.email
+                %br
+          .middlebuttons.w30{:style => "float: left;"}
+            = t('views.plugins.alerts.form.send_text_messages_to')
+            %p.list-box
+              - collection.fields.find_all_by_kind('user').each  do |field|
+                %input{ko(checked: 'usersPhone'), value: field.es_code, type: "checkbox"}= field.name
+                %br
+              - collection.fields.find_all_by_kind('phone').each do |field|
+                %input{ko(checked: 'fieldsPhone'), value: field.es_code, type: "checkbox"}= field.name
+                %br
+              %br
+              - collection.users.each do |user|
+                %input{ko(checked: 'membersPhone'), value: user.id, type: "checkbox"}= user.email
+                %br
+          .clear
+          %label{ko(css: {error: 'notificationMessageError'})}= t('views.plugins.alerts.form.message')
+          %br/
+          %label.smalltext
+            = t('views.plugins.alerts.form.use_the_following_expression')
+            .template_text
+              [
+              %span{ko(click: 'addSiteNameToMessageNotification')} Site Name
+              ]
+              <!-- ko foreach: $root.fields -->
+              [
+              %span{ ko(text: :code, click: '$parent.addFieldNameToMessageNotification') }
+              ]
+              <!-- /ko -->
+          %textarea.ux-wajbar.w60{ko(value: :messageNotification, valueUpdate: :afterkeydown), placeholder: t('views.plugins.alerts.form.message_template'), maxlength: 140, rows: 4 }
+          .clear
+        %hr/
+
+        .bottom-actions
+          %button.white{ ko(click: '$root.saveThreshold', enable: :valid) }= t('views.plugins.alerts.form.save')
+          %a.tgrey{ ko(click: '$root.cancelThreshold'), href: 'javascript:void(0)' }= t('views.plugins.alerts.form.cancel')
+          <!-- ko if: !valid() -->
+          %span{ ko(text: 'error()'), style: 'color:red;margin-left:20px' }= t('views.plugins.alerts.form.cannot_save')
+          <!-- /ko -->
+      <!-- /ko -->
+
+      %br/
+      <!-- /ko -->
 
     - if collection_admin? 
       <!-- ko if: fields().length == 0 -->
