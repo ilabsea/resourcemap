@@ -9,6 +9,8 @@ class Site < ActiveRecord::Base
 
   belongs_to :collection
   validates_presence_of :name, :if => Proc.new {collection.is_visible_name}
+  validates :lat , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90}, :if => Proc.new {collection.is_visible_location}
+  validates :lng, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180}, :if => Proc.new {collection.is_visible_location}
 
   serialize :properties, Hash
   validate :valid_properties
