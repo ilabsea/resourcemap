@@ -106,19 +106,14 @@ describe SitesController do
   it "should validate format for user field" do
     post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: user.email
     validate_site_property_value(site, director, user.email)
-<<<<<<< HEAD
     post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com" 
     json = JSON.parse response.body
     json["error_message"].should eq("Non-existent user email address in field #{director.code}")
-=======
-    expect { post :update_property, site_id: site.id, format: 'json', es_code: director.es_code, value: "inexisting@email.com" }.to raise_error(RuntimeError, "Non-existent user email address in #{director.code} field")
->>>>>>> applied error message change for field with kind=email
   end
 
   it "should validate format for email field" do
     post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "valid@email.com"
     validate_site_property_value(site, email_field, "valid@email.com")
-<<<<<<< HEAD
     post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "v3@@e.mail.c.om"
     json = JSON.parse response.body
     json["error_message"].should eq("Invalid email address in field #{email_field.code}")
@@ -178,9 +173,6 @@ describe SitesController do
     delete :destroy, id: site.id, collection_id: collection.id
 
     Site.find_by_id(site.id).should be_nil
-=======
-    expect {  post :update_property, site_id: site.id, format: 'json', es_code: email_field.es_code, value: "v3@@e.mail.c.om"}.to raise_error(RuntimeError, "Invalid email address in #{email_field.code} field")
->>>>>>> applied error message change for field with kind=email
   end
 
   def validate_site_property_value(site, property, value)
