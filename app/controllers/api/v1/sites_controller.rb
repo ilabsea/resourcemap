@@ -119,9 +119,9 @@ module Api::V1
       parameters = params[:site]
 
       result = new_record ? {} : site.filter_site_by_id(params[:id])
-
       fields = collection.fields.index_by &:es_code
       site_properties = parameters.delete("properties") || {}
+
       files = parameters.delete("files") || {}
       
       decoded_properties = new_record ? {} : result.properties
