@@ -18,10 +18,8 @@ describe Api::V1::SitesController do
   
   let!(:site1) { collection.sites.make }
   let!(:site2) { collection.sites.make }
-<<<<<<< HEAD
+
   let!(:collection1) { user.create_collection(Collection.make_unsaved) }
-=======
->>>>>>> add validation unique device_id and external_id
 
   before(:each) { sign_in user }
   describe "GET sites" do
@@ -56,7 +54,7 @@ describe Api::V1::SitesController do
 
     before(:each) do
       site1.device_id = 'dv1'
-<<<<<<< HEAD
+
       site1.external_id = '1'
       site1.save
 
@@ -75,14 +73,9 @@ describe Api::V1::SitesController do
       json["lng"].should eq("104.765625")
       json["collection_id"].should eq(collection1.id)
       json["properties"].should eq({})
-=======
-      site1.external_id = 1
-      site1.save
+      site1.external_id = '1'
 
-	  site2.device_id = 'dv1'
-	  site2.external_id = 2
-	  site2.save      
->>>>>>> add validation unique device_id and external_id
+      site1.save
     end
     
     it "should save site in the collection" do
@@ -107,19 +100,12 @@ describe Api::V1::SitesController do
 	      json["lat"].should eq("12.618897")
 	      json["lng"].should eq("104.765625")
 	      json["device_id"].should eq("dv1")
-<<<<<<< HEAD
+
 	      json["external_id"].should eq("3")
 	      json["collection_id"].should eq(collection.id)
 	      json["properties"].should eq({"#{text.id}"=> 'test1', "#{numeric.id}"=> 10})
 	    end
 	  end
-=======
-	      json["external_id"].should eq(3)
-	      json["collection_id"].should eq(collection.id)
-	      json["properties"].should eq({"#{text.id}"=> 'test1', "#{numeric.id}"=> 10})
-	    end
-	end
->>>>>>> add validation unique device_id and external_id
     
     context 'when external_id valid' do
 	    it "should save site in the collection" do
@@ -131,19 +117,11 @@ describe Api::V1::SitesController do
 	      json["lat"].should eq("12.618897")
 	      json["lng"].should eq("104.765625")
 	      json["device_id"].should eq("dv1")
-<<<<<<< HEAD
 	      json["external_id"].should eq("3")
 	      json["collection_id"].should eq(collection.id)
 	      json["properties"].should eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
 	    end
 	  end
-=======
-	      json["external_id"].should eq(3)
-	      json["collection_id"].should eq(collection.id)
-	      json["properties"].should eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
-	    end
-	end
->>>>>>> add validation unique device_id and external_id
 
     context 'when device_id valid' do
 	    it "should save site in the collection" do
@@ -155,7 +133,6 @@ describe Api::V1::SitesController do
 	      json["lat"].should eq("12.618897")
 	      json["lng"].should eq("104.765625")
 	      json["device_id"].should eq("dv2")
-<<<<<<< HEAD
 	      json["external_id"].should eq("1")
 	      json["collection_id"].should eq(collection.id)
 	      json["properties"].should eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
@@ -191,22 +168,6 @@ describe Api::V1::SitesController do
       response.should be_success
       collection.sites[0].name.should eq("Thyda")
     end
-=======
-	      json["external_id"].should eq(1)
-	      json["collection_id"].should eq(collection.id)
-	      json["properties"].should eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
-	    end
-	end
-
-    context 'when external_id invalid' do
-	    it "should not save site in the collection" do
-		  post :create, collection_id: collection.id, site: { name: 'Bonjour', lat: 12.618897, lng: 104.765625, device_id: 'dv1', external_id: 1, properties: {"#{text.id}"=> 'test2', "#{numeric.id}"=> 20}}
-
-	      response.response_code.should == 422
-	    end
-	end
-
->>>>>>> add validation unique device_id and external_id
   end
 
 end

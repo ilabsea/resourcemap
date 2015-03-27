@@ -80,6 +80,7 @@ module Api::V1
       site.user = current_user
       site_aggregator = SiteAggregator.new(site)
       site = collection.sites.build sanitized_site_params(true).merge(user: current_user)
+      p 'create'
       if site.save
         current_user.site_count += 1
         current_user.update_successful_outcome_status
@@ -161,6 +162,7 @@ module Api::V1
     def sanitized_site_params new_record
       parameters = params[:site]
       result = new_record ? {} : site.filter_site_by_id(params[:id])
+      p new_record
       fields = collection.fields.index_by &:es_code
       site_properties = parameters.delete("properties") || {}
 
@@ -195,6 +197,5 @@ module Api::V1
       end
       return site
     end
-
   end
 end

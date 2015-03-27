@@ -47,7 +47,7 @@ class Site < ActiveRecord::Base
   validate :valid_properties
   after_validation :standardize_properties
   before_validation :assign_default_values, :on => :create
-  validates_uniqueness_of :external_id, :scope => :device_id, :if => Proc.new {device_id}
+  # validates_uniqueness_of :external_id, :scope => [collection.user_id, :device_id], :if => Proc.new {device_id}
 
   attr_accessor :from_import_wizard
 
@@ -309,5 +309,4 @@ class Site < ActiveRecord::Base
       p s.save(validate: false)
     end
   end
-
 end
