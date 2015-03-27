@@ -25,8 +25,10 @@ module Api::V1
 
     def update
       site.attributes = sanitized_site_params(false).merge(user: current_user)
+      p 'update'
       if site.valid?
         site.save!
+        p 'save'
         if params[:photosToRemove]
           Site::UploadUtils.purgePhotos(params[:photosToRemove])
         end
@@ -38,6 +40,7 @@ module Api::V1
 
     def create
       site = collection.sites.build sanitized_site_params(true).merge(user: current_user)
+      p 'create'
       if site.save
         current_user.site_count += 1
         current_user.update_successful_outcome_status
@@ -119,6 +122,7 @@ module Api::V1
       parameters = params[:site]
 
       result = new_record ? {} : site.filter_site_by_id(params[:id])
+      p new_record
       fields = collection.fields.index_by &:es_code
       site_properties = parameters.delete("properties") || {}
 
@@ -133,6 +137,18 @@ module Api::V1
 
       parameters["properties"] = decoded_properties
       parameters
+    end
+
+    def validate_site
+      if params[:site][:device_id]
+        site = collection.is_site_exist?(params[:site][:device_id], params[:site][:external_id])
+        if site
+          result = site
+        else
+          # p 'create'
+          result = {}
+        end
+      end   
     end
   end
 end

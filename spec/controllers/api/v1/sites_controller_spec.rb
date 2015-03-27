@@ -52,11 +52,11 @@ describe Api::V1::SitesController do
 
     before(:each) do
       site1.device_id = 'dv1'
-      site1.external_id = 1
+      site1.external_id = '1'
       site1.save
 
 	  site2.device_id = 'dv1'
-	  site2.external_id = 2
+	  site2.external_id = '2'
 	  site2.save      
     end
     
@@ -86,7 +86,7 @@ describe Api::V1::SitesController do
 	      json["collection_id"].should eq(collection.id)
 	      json["properties"].should eq({"#{text.id}"=> 'test1', "#{numeric.id}"=> 10})
 	    end
-	end
+	  end
     
     context 'when external_id valid' do
 	    it "should save site in the collection" do
@@ -102,7 +102,7 @@ describe Api::V1::SitesController do
 	      json["collection_id"].should eq(collection.id)
 	      json["properties"].should eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
 	    end
-	end
+	  end
 
     context 'when device_id valid' do
 	    it "should save site in the collection" do
@@ -118,15 +118,20 @@ describe Api::V1::SitesController do
 	      json["collection_id"].should eq(collection.id)
 	      json["properties"].should eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
 	    end
-	end
+	  end
 
-    context 'when external_id invalid' do
-	    it "should not save site in the collection" do
-		  post :create, collection_id: collection.id, site: { name: 'Bonjour', lat: 12.618897, lng: 104.765625, device_id: 'dv1', external_id: 1, properties: {"#{text.id}"=> 'test2', "#{numeric.id}"=> 20}}
-
-	      response.response_code.should == 422
-	    end
-	end
+    context 'when external_id is already exist' do
+  	  it "should update site in the collection" do
+        # collection.sites.each{|s|
+        #   p s.name
+        # }
+  		  post :create, collection_id: collection.id, site: { name: 'Thyda', lat: 12.618897, lng: 104.765625, device_id: 'dv1', external_id: '1', properties: {"#{text.id}"=> 'test2', "#{numeric.id}"=> 20}}
+        # collection.sites.each{|s|
+        #   p s.name
+        # }
+  	    response.should be_success
+  	  end
+  	end
 
   end
 

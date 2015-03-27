@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150327033051) do
+ActiveRecord::Schema.define(:version => 20150327090504) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -259,7 +259,7 @@ ActiveRecord::Schema.define(:version => 20150327033051) do
     t.string   "id_with_prefix"
     t.string   "uuid"
     t.string   "device_id"
-    t.integer  "external_id"
+    t.string   "external_id"
   end
 
   create_table "sites_permissions", :force => true do |t|

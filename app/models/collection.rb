@@ -43,6 +43,32 @@ class Collection < ActiveRecord::Base
     user_snapshots.where(user_id: user.id).first.try(:snapshot)
   end
 
+  def is_site_exist? device_id, external_id
+
+    flag = nil
+    result = nil
+    if device_id
+      flag = false
+      sites.each do |site|
+        if site.device_id == device_id
+          if site.external_id.to_s == external_id.to_s
+            #update
+            result = site
+            flag = true
+            break
+          else
+            #create
+            flag = false
+          end
+        else
+          #create
+          flag = false
+        end
+      end
+    end
+    return result
+  end
+
   def writable_fields_for(user)
     membership = user.membership_in self
     return [] unless membership
