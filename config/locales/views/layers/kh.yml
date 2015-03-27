@@ -29,7 +29,7 @@ kh:
         identifier: "អត្តសញ្ញាណ"
         email: "អ៊ុីមែល"
         phone: "លេខទូរស័ព្ធ"
-        location: "ទីតាំង"
+        location: "កន្លែង នៅក្បែរ"
       form:
         remove_field: "លុបហ្វៀល"
         move_field_up: "រំកិលហ្វៀលឡើង"
