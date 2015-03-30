@@ -8,7 +8,6 @@ module ApplicationHelper
   def leave_collection_permission?
     flag = false
     if !collection_admin? || collection.get_number_of_admin_membership > 1
-      p collection.get_number_of_admin_membership
       flag = true
     end
     flag
