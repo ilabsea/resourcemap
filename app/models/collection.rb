@@ -44,7 +44,6 @@ class Collection < ActiveRecord::Base
   end
 
   def is_site_exist? device_id, external_id
-
     flag = nil
     result = nil
     if device_id

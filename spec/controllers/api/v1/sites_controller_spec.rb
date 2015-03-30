@@ -18,6 +18,7 @@ describe Api::V1::SitesController do
   
   let!(:site1) { collection.sites.make }
   let!(:site2) { collection.sites.make }
+  let!(:collection1) { user.create_collection(Collection.make_unsaved) }
 
   before(:each) { sign_in user }
   describe "GET sites" do
@@ -55,9 +56,21 @@ describe Api::V1::SitesController do
       site1.external_id = '1'
       site1.save
 
-	  site2.device_id = 'dv1'
-	  site2.external_id = '2'
-	  site2.save      
+  	  site2.device_id = 'dv1'
+  	  site2.external_id = '2'
+  	  site2.save      
+    end
+
+    it "should save site in the collection1" do
+      post :create, collection_id: collection1.id, site: { name: 'Hello', device_id: 'dv1', external_id: '1', lat: 12.618897, lng: 104.765625, properties: {}}
+      
+      response.should be_success
+      json = JSON.parse response.body
+      json["name"].should eq("Hello")
+      json["lat"].should eq("12.618897")
+      json["lng"].should eq("104.765625")
+      json["collection_id"].should eq(collection1.id)
+      json["properties"].should eq({})
     end
     
     it "should save site in the collection" do
@@ -122,17 +135,33 @@ describe Api::V1::SitesController do
 
     context 'when external_id is already exist' do
   	  it "should update site in the collection" do
-        # collection.sites.each{|s|
-        #   p s.name
-        # }
   		  post :create, collection_id: collection.id, site: { name: 'Thyda', lat: 12.618897, lng: 104.765625, device_id: 'dv1', external_id: '1', properties: {"#{text.id}"=> 'test2', "#{numeric.id}"=> 20}}
-        # collection.sites.each{|s|
-        #   p s.name
-        # }
+        
   	    response.should be_success
+        collection.sites.count.should eq(2)
+        collection.sites[0].name.should eq("Thyda")
   	  end
   	end
 
+  end
+
+  describe "Update sites" do
+    before(:each) do
+      site1.device_id = 'dv1'
+      site1.external_id = '1'
+      site1.save
+
+      site2.device_id = 'dv1'
+      site2.external_id = '2'
+      site2.save      
+    end
+
+    it "should update site" do
+      put :update, collection_id: collection.id, id: site1.id, site: {name: 'Thyda', lat: 12.618897, lng: 104.765625, device_id: 'dv1', external_id: '2', properties: {"#{text.id}"=> 'test2', "#{numeric.id}"=> 40}}
+
+      response.should be_success
+      collection.sites[0].name.should eq("Thyda")
+    end
   end
 
 end

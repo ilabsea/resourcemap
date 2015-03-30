@@ -176,4 +176,30 @@ describe Collection do
       end
     end
   end
+
+  describe "#is site exist?" do
+    before(:each) do
+      site1 = collection.sites.make device_id: 'dv1', external_id: '1',properties: {}
+      site2 = collection.sites.make device_id: 'dv1', external_id: '2',properties: {}
+    end
+    it "should return true when the site is not exist yet" do
+      site3 = Site.new name: "Site3", collection_id: collection.id, device_id: 'dv1', external_id: '3', properties: {}
+      collection.is_site_exist?(site3.device_id, site3.external_id).should be_false
+    end 
+
+    it "should return false when the site is already exist" do
+      site4 = Site.new name: "Site4", collection_id: collection.id, device_id: 'dv1', external_id: '1', properties: {}
+      collection.is_site_exist?(site4.device_id, site4.external_id).should be_true
+    end
+    it "should return false when the device_id is not exist yet" do
+      site5 = Site.new name: "Site5", collection_id: collection.id, device_id: 'dv2', external_id: '1', properties: {}
+      collection.is_site_exist?(site5.device_id, site5.external_id).should be_false
+    end
+
+    it "should return false without device_id" do
+      site6 = Site.new name: "Site6", collection_id: collection.id, properties: {}
+      collection.is_site_exist?(site6.device_id, site6.external_id).should be_false
+    end
+  end
+
 end
