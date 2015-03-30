@@ -41,11 +41,15 @@ onCollections ->
             if distance < parseFloat(field.maximumSearchLength)
               resultLocations.push(location)
           field.resultLocations(resultLocations)
+
     @createSite: ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
-        pos = @originalSiteLocation = @map.getCenter()
-        site = new Site(@currentCollection(), lat: pos.lat(), lng: pos.lng())
+        if !@currentPosition.lat
+          @handleNoGeolocation()
+
+        pos = @originalSiteLocation = @currentPosition
+        site = new Site(@currentCollection(), lat: pos.lat, lng: pos.lng)
         site.copyPropertiesToCollection(@currentCollection())
         if window.model.newSiteProperties
           for esCode, value of window.model.newSiteProperties
@@ -55,7 +59,7 @@ onCollections ->
         @unselectSite()
         @editingSite site
         @editingSite().startEditLocationInMap() if @currentCollection().isVisibleLocation
-        @getLocations(pos.lat(), pos.lng())
+        @getLocations(pos.lat, pos.lng)
         window.model.initDatePicker()
         window.model.initAutocomplete()
         $('textarea').autogrow()
