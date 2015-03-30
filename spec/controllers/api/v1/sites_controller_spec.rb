@@ -18,6 +18,7 @@ describe Api::V1::SitesController do
   
   let!(:site1) { collection.sites.make }
   let!(:site2) { collection.sites.make }
+  let!(:collection1) { user.create_collection(Collection.make_unsaved) }
 
   let!(:collection1) { user.create_collection(Collection.make_unsaved) }
 

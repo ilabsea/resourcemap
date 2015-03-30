@@ -75,6 +75,7 @@ module Api::V1
 
     def create
 
+
       site = build_site
       create_state = site.id ? false : true #to create or update
       site.user = current_user
@@ -162,14 +163,13 @@ module Api::V1
     def sanitized_site_params new_record
       parameters = params[:site]
       result = new_record ? {} : site.filter_site_by_id(params[:id])
-      p new_record
+
       fields = collection.fields.index_by &:es_code
       site_properties = parameters.delete("properties") || {}
 
       files = parameters.delete("files") || {}
       
       decoded_properties = new_record ? {} : result.properties
-
       site_properties.each_pair do |es_code, value|
         value = [ value, files[value] ] if fields[es_code].kind_of? Field::PhotoField
         #parse date from formate %m%d%Y to %d%m%Y for the phone_gap data old version
@@ -197,5 +197,6 @@ module Api::V1
       end
       return site
     end
+
   end
 end
