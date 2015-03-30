@@ -166,26 +166,26 @@ module Collection::CsvConcern
 
           #Check unique name
           name = row[1].strip
-          if items.any?{|item| item.second[:name] == name}
-            item[:error] = "Invalid name."
-            item[:error_description] = "location name should be unique"
-            error = true
-          end
+          # if items.any?{|item| item.second[:name] == name}
+          #   item[:error] = "Invalid name."
+          #   item[:error_description] = "location name should be unique"
+          #   error = true
+          # end
           
           #Check unique id
           code = row[0].strip
-          if items.any?{|item| item.second[:code] == code}
-            item[:error] = "Invalid code."
-            item[:error_description] = "location code should be unique"
-            error = true
-          end
+          # if items.any?{|item| item.second[:code] == code}
+          #   item[:error] = "Invalid code."
+          #   item[:error_description] = "location code should be unique"
+          #   error = true
+          # end
 
-          if !error
+          # if !error
             item[:code] = code
             item[:name] = name
             item[:latitude] = row[2].strip
             item[:longitude] = row[3].strip
-          end
+          # end
         end
 
         items[item[:order]] = item

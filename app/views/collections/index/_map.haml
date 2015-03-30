@@ -118,7 +118,7 @@
         <!-- ko if: !inEditMode() -->
         %span= t('views.collections.index.new_site')
         <!-- /ko -->
-      .tablescroll{ko(event: { mouseover: '$root.hideDatePicker'})}
+      .tablescroll
         %table
           %tbody
             %tr
@@ -173,7 +173,7 @@
         %button.pback{ko(click: '$root.exitSite'), type: 'button'}
         %span
         %span{ko(text: :name)}
-      .tablescroll{ko(event: { mouseover: '$root.hideDatePicker'})}
+      .tablescroll
         %table{style: 'width:100%'}
           %tbody
             %tr
