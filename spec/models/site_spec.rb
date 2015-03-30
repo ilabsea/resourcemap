@@ -73,28 +73,4 @@ describe Site do
     site.save!
   end
 
-  describe ".is site exist?" do
-    before(:each) do
-      site1 = collection.sites.make device_id: 'dv1', external_id: '1',properties: { room.id.to_s => '10', desk.id.to_s => 'desk1' }
-      site2 = collection.sites.make device_id: 'dv1', external_id: '2',properties: { room.id.to_s => '20', desk.id.to_s => 'desk2' }
-    end
-    it "should return true when the site is not exist yet" do
-      site3 = Site.new name: "Site3", collection_id: collection.id, device_id: 'dv1', external_id: '3', properties: { room.id.to_s => '30', desk.id.to_s => 'desk3' }
-      collection.is_site_exist?(site3.device_id, site3.external_id).should be_false
-    end 
-
-    it "should return false when the site is already exist" do
-      site4 = Site.new name: "Site4", collection_id: collection.id, device_id: 'dv1', external_id: '1', properties: { room.id.to_s => '40', desk.id.to_s => 'desk4' }
-      collection.is_site_exist?(site4.device_id, site4.external_id).should be_true
-    end
-    it "should return false when the device_id is not exist yet" do
-      site5 = Site.new name: "Site5", collection_id: collection.id, device_id: 'dv2', external_id: '1', properties: { room.id.to_s => '50', desk.id.to_s => 'desk5' }
-      Collection.is_site_exist?(site5.device_id, site5.external_id).should be_false
-    end
-
-    it "should return false without device_id" do
-      site6 = Site.new name: "Site6", collection_id: collection.id, properties: { room.id.to_s => '60', desk.id.to_s => 'desk6' }
-      Collection.is_site_exist?(site6.device_id, site6.external_id).should be_false
-    end
-  end
 end

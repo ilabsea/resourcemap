@@ -25,10 +25,8 @@ module Api::V1
 
     def update
       site.attributes = sanitized_site_params(false).merge(user: current_user)
-      p 'update'
       if site.valid?
         site.save!
-        p 'save'
         if params[:photosToRemove]
           Site::UploadUtils.purgePhotos(params[:photosToRemove])
         end
@@ -39,13 +37,14 @@ module Api::V1
     end
 
     def create
-      site = collection.sites.build sanitized_site_params(true).merge(user: current_user)
-      p 'create'
+      site = build_site
+      create_state = site.id ? false : true #to create or update
       if site.save
-        current_user.site_count += 1
-        current_user.update_successful_outcome_status
-        current_user.save!(:validate => false)
-
+        if create_state
+          current_user.site_count += 1
+          current_user.update_successful_outcome_status
+          current_user.save!(:validate => false)
+        end
         render json: site, status: :created
       else
         render json: site.errors.messages, status: :unprocessable_entity
@@ -122,14 +121,13 @@ module Api::V1
       parameters = params[:site]
 
       result = new_record ? {} : site.filter_site_by_id(params[:id])
-      p new_record
+
       fields = collection.fields.index_by &:es_code
       site_properties = parameters.delete("properties") || {}
 
       files = parameters.delete("files") || {}
       
       decoded_properties = new_record ? {} : result.properties
-
       site_properties.each_pair do |es_code, value|
         value = [ value, files[value] ] if fields[es_code].kind_of? Field::PhotoField
         decoded_properties[es_code] = fields[es_code].decode_from_ui(value) if fields[es_code]
@@ -139,16 +137,16 @@ module Api::V1
       parameters
     end
 
-    def validate_site
-      if params[:site][:device_id]
-        site = collection.is_site_exist?(params[:site][:device_id], params[:site][:external_id])
-        if site
-          result = site
-        else
-          # p 'create'
-          result = {}
-        end
-      end   
+    def build_site
+      site = collection.is_site_exist? params[:site][:device_id], params[:site][:external_id] if params[:site][:device_id]
+      if site
+        params[:id] = site.id
+        site.attributes = sanitized_site_params(false).merge(user: current_user)
+      else
+        site = collection.sites.build sanitized_site_params(true).merge(user: current_user)
+      end
+      return site
     end
+
   end
 end

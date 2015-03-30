@@ -87,6 +87,14 @@ class Site < ActiveRecord::Base
     builder = Site.find site_id
   end
 
+  # def self.check_site_with_external_id device_id, external_id
+  #   p device_id
+  #   p external_id
+  #   p collection.sites
+  #   test = collection.is_site_exist?(device_id, external_id)
+  #   p test       
+  # end
+
   private
 
   def standardize_properties
