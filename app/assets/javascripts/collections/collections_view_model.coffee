@@ -192,16 +192,3 @@ onCollections ->
           @alert_legend(false)
         else
           @alert_legend(true)
-
-    @hideDatePicker: ->
-      $("input").datepicker hide
-      # $refine = $('input.hasDatepicker')
-      # console.log $refine
-      # refineOffset = $refine.offset()
-      # $('#ui-datepicker-div').offset(top: refineOffset.top + $refine.outerHeight(), left: refineOffset.left)
-
-
-
-
-
-
