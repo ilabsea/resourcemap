@@ -387,3 +387,7 @@ textarea.text{
   padding-right: 10px;
   float: right;
 }
+
+.w25{
+  width: 230px !important;
+}

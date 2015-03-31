@@ -20,13 +20,13 @@
       %label{ko(text: :label)}
 - else
   - if single_editing_mode
-    %ul.superblyTagItems{ko(foreach: :value)}
+    %ul.superblyTagItems{ko(foreach: :value),style: 'padding-bottom: 10px;'}
       %li.superblyTagItem{ko(click: '$parent.removeOption')}
         %span{ko(text: '$parent.labelFor($data)')}
         %a x
     .superblyTagfieldClearer
     %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:220px'}
-    %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:40px;margin-top:2px'}
+    %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:5px;margin-top:2px'}
       %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
         %a{ko(text: :label, click: '$parent.selectOption')}
     %button{ko(click: :save), style: 'float:right'}= t('views.collections.index.update_options')
