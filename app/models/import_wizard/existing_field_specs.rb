@@ -16,15 +16,14 @@ class ImportWizard::ExistingFieldSpecs < ImportWizard::BaseFieldSpecs
           site.properties[existing_field.es_code] = existing_field.apply_format_and_validate value, true, site.collection
         when 'select_many'
           site.properties[existing_field.es_code] = []
+          if value
+            value.split(',').each do |v|
+              option = v.strip
+              option = existing_field.apply_format_and_validate(option, true, site.collection, site).first
 
-          value.split(',').each do |v|
-            option = v.strip
-
-
-            option = existing_field.apply_format_and_validate(option, true, site.collection, site).first
-
-            site.properties_will_change!
-            site.properties[existing_field.es_code] << option
+              site.properties_will_change!
+              site.properties[existing_field.es_code] << option
+            end
           end
         else
           site.properties_will_change!

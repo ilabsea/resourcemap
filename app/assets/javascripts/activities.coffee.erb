@@ -9,19 +9,14 @@
       @description = ko.observable data?.description
       @createdAt = ko.observable data?.created_at
       @expanded = ko.observable false
-      @canBeExpanded = ko.computed => @description().length > DESCRIPTION_LENGTH
       @log = ko.observable(data?.log)
+      @canBeExpanded = ko.computed => @log().length > DESCRIPTION_LENGTH
+      
       @displayedLog = ko.computed =>
         if !@canBeExpanded() || @expanded()
           @log()
         else
           "#{@log().substring(0, DESCRIPTION_LENGTH)}..."
-      
-      @displayedDescription = ko.computed =>
-        if !@canBeExpanded() || @expanded()
-          @description()
-        else
-          "#{@description().substring(0, DESCRIPTION_LENGTH)}..."
 
     expand: => @expanded(true)
 
@@ -41,6 +36,8 @@
       @selectedKinds.subscribe => @refreshActivities()
 
     pushActivities: (activities) =>
+      if activities.length == 0
+        return @activities([])
       if activities.length == 25
         activities = activities.slice(0, activities.length - 1)
       else
@@ -65,11 +62,6 @@
       else if @selectedCollectionIds().length < @collectionsCount
         q.collection_ids = @selectedCollectionIds()
 
-      # for key, c_id in @selectedCollectionIds()
-      #   if c_id == ""
-      #     q.collection_ids[key] = null
-
-
       if @selectedKinds().length == 0
         q.kinds = [0]
       else if @selectedKinds().length < @kindsCount
@@ -89,15 +81,15 @@
       else
         @selectedCollectionIds([])
        $("#check_all_collections")[0].checked = true
-    uncheckAllCollectionIds: =>
-      @selectedCollectionIds([]) if @selectedCollectionIds().length != 0
 
     checkAllKinds: =>
       kinds = <%= Activity::Kinds.to_json %>
       @selectedKinds(kinds) if @selectedKinds().length != @kindsCount
-
-    uncheckAllKinds: =>
-      @selectedKinds([]) if @selectedKinds().length != 0
+      if ($("#check_all_events")[0].checked)
+        @selectedKinds(kinds) if @selectedKinds().length != @kindsCount
+      else
+        @selectedKinds([]) if @selectedKinds().length != 0
+      $("#check_all_events")[0].checked = true
 
     viewAsRSS: =>
       q = @setQueryParams({})

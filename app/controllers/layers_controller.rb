@@ -67,9 +67,17 @@ class LayersController < ApplicationController
 
   def upload_layers
     path = File.join('public', 'tmp_layers.json')
-    File.open(path, "wb") { |f| f.write(params[:file].read) }
-    flash[:notice] = "File uploaded"      
-    redirect_to :action => "adjust_layers"
+    content = params[:file].read
+    File.open(path, "wb") { |f| f.write(content) }
+    begin
+      layers = JSON.parse content
+      flash[:notice] = "File uploaded"
+      redirect_to :action => "adjust_layers"
+    rescue Exception => e
+      flash[:alert] = "Invalid file content"
+      redirect_to :action => "index"
+    end
+
   end
 
   def adjust_layers
@@ -92,7 +100,6 @@ class LayersController < ApplicationController
         all_new_layers.push(new_layer.as_json(include: :fields.as_json(:except => [:id]), :except => [:id, :ord]))
       end
     end
-
     render json: all_new_layers
   end
 
@@ -126,13 +133,10 @@ class LayersController < ApplicationController
               field_logic['id'] = field_logic['id'].to_i
               field_logic['value'] = field_logic['value'].to_i
               if field_logic['field_id']
-                field_logic['field_id'].each { |field_id|
-                  if field_id == ""
-                    field_logic['field_id'] = nil
-                  else
-                    field_logic['field_id'] = field_id
-                  end
-                }
+                
+                if field_logic['field_id'] == ""
+                  field_logic['field_id'] = nil
+                end
               end         
             }    
           end

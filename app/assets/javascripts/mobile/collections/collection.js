@@ -271,15 +271,19 @@ Collection.prototype.validateData = function(collectionId){
                     return false;                  
                   }
                 }
+
                 if(range){
-                  msg = Collection.prototype.validateRange(value, range);
-                  if(msg != ""){
-                    Collection.prototype.showErrorMessage(msg);
-                    $('div').removeClass('invalid_field');
-                    Collection.setFieldStyleFailed(field["code"]);                    
-                    return false;
+                  if(value != ""){
+                    msg = Collection.prototype.validateRange(value, range);
+                    if(msg != ""){
+                      Collection.prototype.showErrorMessage(msg);
+                      $('div').removeClass('invalid_field');
+                      Collection.setFieldStyleFailed(field["code"]);                    
+                      return false;
+                    }
                   }
                 }
+                
                 if(digitsPrecision){
                   console.log("Action");
                   value = parseInt(value * Math.pow(10, parseInt(digitsPrecision))) / Math.pow(10, parseInt(digitsPrecision))

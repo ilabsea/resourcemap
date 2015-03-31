@@ -3,9 +3,11 @@ onLayers ->
     constructor: (collectionId, layers, is_visible_name, is_visible_location, is_pending = false, allLayers = null) ->
       @collectionId = collectionId
       @layers = ko.observableArray $.map(layers, (x) -> new Layer(x, is_pending))
+      # set_order()
       @currentLayer = ko.observable()
       @currentField = ko.observable()
       @default_select = '(no value)'
+      @countAllImportedLayer = ko.observable() 
       
       if allLayers
         @allLayers = $.map(allLayers, (x) -> new Layer(x))
@@ -23,7 +25,7 @@ onLayers ->
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
       @fieldLogicValid = ko.computed =>
-        ($.trim(@newFieldLogic().value()).length > 0 || $.trim(@newFieldLogic().condition_type()).length > 0) && $.trim(@newFieldLogic().field_code()).length > 0
+        ($.trim(@newFieldLogic().value()).length > 0 || $.trim(@newFieldLogic().condition_type()).length > 0) && $.trim(@newFieldLogic().field_id()).length > 0
 
       @fieldSelectManyLogicValid = ko.computed =>    
         true
@@ -46,9 +48,10 @@ onLayers ->
       @savingAllLayer = ko.observable(false)
       @savedAllLayers = ko.observable(false)
       @savedAllLayers.subscribe =>
-        if @savedAllLayers()
+        if @savedAllLayers() 
           @savingAllLayer(false)
           window.location.href = "/collections/#{@collectionId}/layers"
+
       @selectLogicLayers = ko.computed =>
         if @currentLayer()
           if @currentLayer().id() || @currentLayer().isPending()
@@ -79,8 +82,13 @@ onLayers ->
 
 
     validateImportedLayers: (importedLayers, allLayers)=>
-      
+      @countAllImportedLayer(importedLayers.length)
+      l = allLayers.length
       for importLayer in importedLayers
+        #set order for imported layers
+        l = l + 1
+        importLayer.ord(l)
+  
         flag = false
         for importedField in importLayer.fields()
           for layer in allLayers
@@ -99,6 +107,7 @@ onLayers ->
 
 
     newLayer: =>
+      @cancelDefaultLayer()
       layer = new Layer ord: (@layers().length + 1)
       @layers.push(layer)
       @currentLayer(layer)
@@ -106,7 +115,8 @@ onLayers ->
       @editingDefaultLayer(false)
 
     editLayer: (layer) =>
-      @layers.remove(@currentLayer()) if @currentLayer() && not @currentLayer().id() #remove the new created layer that haven't savaed
+      @clearUnsavedLayer()
+      @cancelDefaultLayer()
       @originalFields = $.map(layer.fields(), (x) -> new Field(layer, x.toJSON()))
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
@@ -122,26 +132,46 @@ onLayers ->
       @currentLayer(null)
       @currentField(null)
 
+    clearUnsavedLayer: =>
+      if @currentLayer()
+        if not @currentLayer().id() && @currentLayer().isPending() == false
+          @layers.remove(@currentLayer())
+        else
+          for field in @currentLayer().fields()
+            unless field.id()
+              @currentLayer().fields.remove(field) 
+              return
+              
     editDefaultLayer: =>
+      @clearUnsavedLayer()
       @tmpVisibleName = @isVisibleName()
       @tmpVisibleLocation = @isVisibleLocation()
       @editingDefaultLayer(true)
       @currentLayer(null)
+      @currentField(null)
 
     saveAllLayers: (layers)=>
       index  = 0
-      order = @allLayers.length
       @savingAllLayer(true)
       for layer in @layers()
-        order++
-        layer.ord(order)
         json = {layer: layer.toJSON()}
-        $.post "/collections/#{@collectionId}/layers.json", json, (result) =>
-          index++
-          if index == @layers().length
-            @savedAllLayers(true)
+        if layer.id()
+          json._method = 'put'
+          $.post "/collections/#{@collectionId}/layers/#{layer.id()}.json", json, (result) =>
+            index = @saveAllLayersCallback(index)
+        else
+          $.post "/collections/#{@collectionId}/layers.json", json, (result) =>
+            index = @saveAllLayersCallback(index)
+
+    saveAllLayersCallback: (index) =>
+      index++
+      if index == @layers().length
+        @savedAllLayers(true)
+      index
 
     saveDefaultLayer: =>
+      @tmpVisibleName = @isVisibleName()
+      @tmpVisibleLocation = @isVisibleLocation()
       json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
       json._method = 'put'
       $.post "/collections/#{@collectionId}.json", json
@@ -155,8 +185,10 @@ onLayers ->
       @currentLayer(null)
 
     saveLayer: (layer)=>
+      @countAllImportedLayer(@countAllImportedLayer() - 1)
       @savingLayer(true)
       @currentLayer(layer)
+
       json = {layer: @currentLayer().toJSON()}
 
       if @currentLayer().id()
@@ -217,13 +249,22 @@ onLayers ->
         $.status.showError("This layer is being used with #{layer.threshold_ids.length} alert(s), you are not allowed to delete", 2000)
 
     deletePendingLayer: (layer) =>
+      @countAllImportedLayer(@countAllImportedLayer() - 1)
       @layers.remove(layer)
+      @resetLayerOrder()
+
+    resetLayerOrder: =>
+      ord = @allLayers.length
+      for layer in @layers()
+        ord = ord + 1
+        layer.ord(ord)
 
     selectingLayer: =>
       alert 'selectingLayer'
 
     isFirstLayer: (layer) => layer.ord() == 1
     isLastLayer: (layer) => layer.ord() == @layers().length
+    isSavedAllLayer: => @countAllImportedLayer() == 0 
 
     moveLayerDown: (layer) =>
       nextLayer = @layers()[layer.ord()]
@@ -461,6 +502,7 @@ onLayers ->
         themePath:  '<%= InsteddRails.url %>/theme/images/'
 
       });
+
 
     startUploadLocation: =>
       @currentField().impl().uploadingLocation(true)

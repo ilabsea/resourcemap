@@ -63,6 +63,7 @@ onCollections ->
         window.model.initDatePicker()
         window.model.initAutocomplete()
         $('textarea').autogrow()
+        $('#name').focus()
 
     @editSite: (site) ->
       initialized = @initMap()
@@ -92,6 +93,7 @@ onCollections ->
             @loadBreadCrumb()
 
           $('a#previewimg').fancybox()
+          $('#name').focus()
 
     @editSiteFromId: (siteId, collectionId) ->
       site = @siteIds[siteId]
@@ -171,6 +173,7 @@ onCollections ->
 
         $('a#previewimg').fancybox()
         window.model.updateSitesInfo()
+        @reloadMapSites()
 
       callbackError = () =>
         @hideProgress()
@@ -191,6 +194,7 @@ onCollections ->
       field.exitEditing() for field in @currentCollection().fields()
       if @editingSite()?.inEditMode()
         @editingSite().exitEditMode()
+        @exitSite() if @selectedSite()
       else
         if @editingSite()
           # Unselect site if it's not on the tree

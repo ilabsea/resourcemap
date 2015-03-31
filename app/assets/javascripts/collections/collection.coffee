@@ -14,6 +14,7 @@ onCollections ->
       @title = ko.observable()
       @thresholds = ko.observableArray()
       @refineFields = ko.observableArray()
+      @alertedSites = ko.observableArray()
       @checked = ko.observable if window.currentUserIsGuest then false else true
       @fieldsInitialized = false
       @groupByOptions = ko.computed =>

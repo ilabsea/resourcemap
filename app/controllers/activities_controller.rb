@@ -22,12 +22,16 @@ class ActivitiesController < ApplicationController
           params[:collection_ids].each_with_index do |c_id, key|
             if c_id == 'null'
               params[:collection_ids][key] = nil
+              break
             end
           end
-          p params[:collection_ids]  
-          acts = acts.where(collection_id: params[:collection_ids], :user_id => current_user.id)
+
+          acts = acts.where("collection_id in (?) or user_id = ?", params[:collection_ids], current_user.id)
+          acts = acts.where(collection_id: params[:collection_ids])
+
         else
-          acts = acts.where(collection_id: current_user.memberships.pluck(:collection_id))
+          acts = acts.where("collection_id IN (?) or user_id = ?", current_user.memberships.pluck(:collection_id), current_user.id)
+
         end
 
         if params[:kinds]
@@ -39,7 +43,6 @@ class ActivitiesController < ApplicationController
             id: activity.id,
             collection: activity.collection_name,
             user: activity.user_email,
-            description: activity.description,
             log: activity.log,
             created_at: activity.created_at
           }

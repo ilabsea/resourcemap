@@ -93,6 +93,7 @@ ResourceMap::Application.routes.draw do
   resources :sites do
     get 'root_sites'
     get 'search', :on => :collection
+    get 'search_alert_site', :on => :collection
 
     post 'update_property'
   end
