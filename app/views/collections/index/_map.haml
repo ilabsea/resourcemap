@@ -241,6 +241,7 @@
                       <!-- /ko -->
                       
                       <!-- ko if: hasValue() && !error() -->
+                      
                       <!-- ko if: writeable -->
                       <!-- ko if: kind != 'photo' -->
                       %span.arrow{ko(text: :valueUI, visible: '!editing()'), style: 'cursor:pointer'}
@@ -255,13 +256,6 @@
                       %span.edit &nbsp;
                       <!-- /ko -->
 
-                      <!-- ko if: kind == 'site' && !editing() && !error() -->
-                      %span.arrow
-                        %button.farrow.right{ko(click: 'function(data, event) { $root.editSiteFromId(value(),$root.currentCollection().id) }'), type: "button"}
-                      <!-- ko if: !editing() -->
-                      %span.edit &nbsp;
-                      <!-- /ko -->
-                      <!-- /ko -->
                       <!-- /ko -->
 
                       <!-- ko if: !hasValue() &&  !error() -->
