@@ -410,3 +410,69 @@ textarea.text{
     vertical-align: middle;
 }
 
+.light-box{
+  padding: 10px 10px 10px 30px !important;
+  margin: 5px !important;
+  background: none repeat scroll 0 0 #f2f2f2;
+  border-radius: 5px;
+
+}
+
+.container-box{
+  border-radius:5px;
+  margin: 10px 5px !important;
+  background: none repeat scroll 0 0 #f2f2f2;
+}
+.container-box > .header{
+  background: none repeat scroll 0 0 #a6e082;
+  border: 1px solid #7ec452;
+  padding: 0px !important;
+  height: 30px;
+  border-radius: 5px;
+
+  vertical-align: middle;
+  line-height: 25px;
+}
+
+.container-box > .header > .title{
+  line-height: 30px;
+  text-align: center;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: normal;
+  font-family: Arial;
+}
+
+.ftitle{
+  font-weight: bold;
+  color: black;
+}
+
+.fcode{
+  font-size: 10px;
+  color: grey;
+  text-align: right;
+}
+
+.fvalue{
+  margin-top: 5px;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px ;
+}
+
+.arrow{
+  background: url("/assets/arrow.png");
+  background-position: left center;
+  background-repeat: no-repeat;
+  padding-left: 20px;
+}
+
+.edit{
+  background: url("/assets/edit.png");
+  background-position: right;
+  background-repeat: no-repeat;
+  padding-right: 10px;
+  float: right;
+}
