@@ -20,7 +20,7 @@
       %label{ko(text: :label)}
 - else
   - if single_editing_mode
-    %ul.superblyTagItems{ko(foreach: :value)}
+    %ul.superblyTagItems{ko(foreach: :value),style: 'padding-bottom: 10px;'}
       %li.superblyTagItem{ko(click: '$parent.removeOption')}
         %span{ko(text: '$parent.labelFor($data)')}
         %a x
