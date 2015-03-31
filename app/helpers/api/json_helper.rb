@@ -36,7 +36,7 @@ module Api::JsonHelper
     source['properties'].each do |key, property|
       field = Field.find_by_code(key)
       if field.kind == 'photo'
-        source['properties'][key] = "#{root_url}/photo_field/#{property}"
+        source['properties'][key] = "#{Settings.host}/photo_field/#{property}"
         break
       end
     end
