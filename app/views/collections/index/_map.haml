@@ -178,86 +178,122 @@
           %tbody
             %tr
               %td
-                /ko if: collection.isVisibleName
-                %div{style: 'margin-bottom:14px'}
-                  %label= t('views.collections.index.name')
-                  - if current_user.is_guest
-                    %span.value{ko(text: :name, visible: '!editingName()')}
-                  -else
-                    %span.value{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
-                  <!-- ko if: editingName() -->
-                  = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
-                  <!-- /ko -->
-                //ko
-                /ko if: collection.isVisibleLocation
-                %div{style: 'margin-bottom:14px'}
-                  %label= t('views.collections.index.location')
-                  <!-- ko if: !hasLocation() -->
-                  - if current_user.is_guest
-                    %span.value{style: 'color:grey;'}
-                      = t('views.collections.index.no_value')
-                  - else
-                    %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
-                  <!-- /ko -->
-                  <!-- ko if: hasLocation() && !editingLocation() -->
-                  - if current_user.is_guest
-                    %span.value{ko(text: :locationText, visible: '!editingLocation()')}
-                  - else
-                    %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
-                  <!-- /ko -->
-                  <!-- ko if: editingLocation() -->
-                  = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search'}
-                  <!-- /ko -->
-                //ko
-                - if Settings.mobile_id?
+                /ko if: collection.isVisibleName || collection.isVisibleLocation
+                .light-box
+                  /ko if: collection.isVisibleName
                   %div{style: 'margin-bottom:14px'}
-                    %label= t('views.collections.index.id_with_prefix')
-                    %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
-  
-                <!-- ko foreach: layers -->
-                / col = collection
-                %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
-                  %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
-                <!-- ko if: expanded() -->
-                <!-- ko foreach: fields -->
-                %div{style: 'margin-bottom:14px'}
-                  %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
-                  %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
-                  <!-- ko if: kind == 'photo' && hasValue() && !editing() -->
-                  %a{ko(attr: {href: "photoPath + value()"}), id: "previewimg"}
-                    %img{ko(attr: {src: "photoPath + value()"}), width: "60px", style: "vertical-align: middle; border: 2px solid #BBB;"}
-                  <!-- /ko -->
-                  <!-- ko if: hasValue() && !error() -->
-                  <!-- ko if: writeable -->
-                  <!-- ko if: kind != 'photo' -->
-                  %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer'}
-                  <!-- /ko -->
-                  <!-- /ko -->
-                  <!-- ko if: !writeable -->
-                  %span.value{ko(text: :valueUI)}
-                  <!-- /ko -->
-                  <!-- ko if: kind == 'site' && !editing() && !error() -->
-                  %button.farrow.right{ko(click: 'function(data, event) { $root.editSiteFromId(value(),$root.currentCollection().id) }'), type: "button"}
-                  <!-- /ko -->
-                  <!-- /ko -->
-                  <!-- ko if: !hasValue() &&  !error() -->
-                  <!-- ko if: writeable -->
-                  <!-- ko if: kind != 'photo' -->
-                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
-                  <!-- /ko -->
-                  <!-- /ko -->
-                  <!-- ko if: !writeable -->
-                  %span.value{style: 'color:grey'}= t('views.collections.index.no_value')
-                  <!-- /ko -->
-                  <!-- /ko -->
-                  <!-- ko if: editing() || error() -->
-                  - Field::kinds.each do |kind|
-                    <!-- ko if: kind == '#{kind}' -->
-                    = render partial: field_edit_view(kind), locals: { single_editing_mode: true, mobile: false }
+                    %label= t('views.collections.index.name')
+                    - if current_user.is_guest
+                      %span.value{ko(text: :name, visible: '!editingName()')}
+                    -else
+                      %span.value{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
+                    <!-- ko if: editingName() -->
+                    = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                     <!-- /ko -->
+                  //ko
+                  /ko if: collection.isVisibleLocation
+                  %div{style: 'margin-bottom:14px'}
+                    %label= t('views.collections.index.location')
+                    <!-- ko if: !hasLocation() -->
+                    - if current_user.is_guest
+                      %span.value{style: 'color:grey;'}
+                        = t('views.collections.index.no_value')
+                    - else
+                      %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
+                    <!-- /ko -->
+                    <!-- ko if: hasLocation() && !editingLocation() -->
+                    - if current_user.is_guest
+                      %span.value{ko(text: :locationText, visible: '!editingLocation()')}
+                    - else
+                      %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
+                    <!-- /ko -->
+                    <!-- ko if: editingLocation() -->
+                    = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search'}
+                    <!-- /ko -->
+                  //ko
+                  - if Settings.mobile_id?
+                    %div{style: 'margin-bottom:14px'}
+                      %label= t('views.collections.index.id_with_prefix')
+                      %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
+                //ko
+                <!-- ko foreach: layers -->
+                .container-box
+                  / col = collection
+                  %div.header
+                    %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'})}
+                      %span &nbsp;
+                    %div.title{ko(text: :name, click: :toggleExpand), style: 'cursor:pointer'}
+                  <!-- ko if: expanded() -->
+                  <!-- ko foreach: fields -->
+                  %div{style: 'padding: 10px 10px 10px 30px;'}
+                    / %div{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
+                    %div.ftitleko{ko(text: :name, css: { error: :error })}
+                    %div.fcode{ko(text: :code)}
+                    %div.fvalue
+
+                      <!-- ko if: kind == 'photo' && hasValue() && !editing() -->
+                      %span
+                        %a{ko(attr: {href: "photoPath + value()"}), id: "previewimg"}
+                          %img{ko(attr: {src: "photoPath + value()"}), width: "100px", style: "vertical-align: middle; border: 2px solid #BBB;"}
+                      <!-- ko if: !editing() -->
+                      %span.edit{ko(click: 'edit')} &nbsp;
+                      <!-- /ko -->
+                      <!-- /ko -->
+                      
+                      <!-- ko if: hasValue() && !error() -->
+                      <!-- ko if: writeable -->
+                      <!-- ko if: kind != 'photo' -->
+                      %span.arrow{ko(text: :valueUI, visible: '!editing()'), style: 'cursor:pointer'}
+                      <!-- ko if: !editing() -->
+                      %span.edit{ko(click: 'edit')} &nbsp;
+                      <!-- /ko -->
+                      <!-- /ko -->
+                      <!-- /ko -->
+
+                      <!-- ko if: !writeable -->
+                      %span.arrow{ko(text: :valueUI)}
+                      %span.edit &nbsp;
+                      <!-- /ko -->
+
+                      <!-- ko if: kind == 'site' && !editing() && !error() -->
+                      %span.arrow
+                        %button.farrow.right{ko(click: 'function(data, event) { $root.editSiteFromId(value(),$root.currentCollection().id) }'), type: "button"}
+                      <!-- ko if: !editing() -->
+                      %span.edit &nbsp;
+                      <!-- /ko -->
+                      <!-- /ko -->
+                      <!-- /ko -->
+
+                      <!-- ko if: !hasValue() &&  !error() -->
+                      <!-- ko if: writeable -->
+                      <!-- ko if: kind != 'photo' -->
+                      %span.arrow{ko(visible: '!editing()'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
+                      <!-- ko if: !editing() -->
+                      %span.edit{ko(click: 'edit')} &nbsp;
+                      <!-- /ko -->
+                      <!-- /ko -->
+                      <!-- /ko -->
+
+                      <!-- ko if: !writeable -->
+                      %span.arrow{style: 'color:grey'}= t('views.collections.index.no_value')
+                      %span.edit &nbsp;
+                      <!-- /ko -->
+                      <!-- /ko -->
+                      <!-- ko if: editing() || error() -->
+                      - Field::kinds.each do |kind|
+                        <!-- ko if: kind == '#{kind}' -->
+                        = render partial: field_edit_view(kind), locals: { single_editing_mode: true, mobile: false }
+                        <!-- /ko -->
+                      <!-- /ko -->
+                      
+                    / %div.ftitle Date:
+                    / %div.fcode date
+                    / %div.fvalue
+                    /   %span.arrow test
+                    /   %span.edit &nbsp;
+                    
                   <!-- /ko -->
-                <!-- /ko -->
-                <!-- /ko -->
+                  <!-- /ko -->
                 <!-- /ko -->
       <!-- ko if: !$root.currentSnapshot() -->
       .tablebottom
