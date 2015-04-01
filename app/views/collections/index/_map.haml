@@ -124,20 +124,21 @@
             %tr
               %td
                 /ko if: collection.isVisibleName || collection.isVisibleLocation
-                .light-box
+                .light-box{style: 'padding-bottom:10px !important'}
                   /ko if: collection.isVisibleName
                   %div
                     = label_tag :name, t('views.collections.index.name')
                     = text_field_tag :name, '', placeholder: 'Enter new site name', class: 'w25', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true), :autofocus => true
-                    .clear
+                    
                   //ko
                   /ko if: collection.isVisibleLocation
                   %div
                     %label= t('views.collections.index.location')
                     = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search w25', placeholder: t('views.collections.index.search_or_drug_the_pin')}
-                    .clear
+                    
                   //ko
                 //ko
+
                 <!-- ko foreach: layers -->
                 .container-box
                   %div.header{style: 'margin-bottom:10px'}
@@ -149,10 +150,12 @@
                   %div{style: 'padding: 0px 10px 0px 30px;'}
                     
                     %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
-                    <!-- ko if: is_mandatory -->
-                    %label *
-                    <!-- /ko -->
-                    %div.ftitle{ko(attr: {:for => :esCode}, text: "name")}
+                    
+                    %div.ftitle
+                      %span{ko(attr: {:for => :esCode}, text: "name")}
+                      <!-- ko if: is_mandatory -->
+                      %span{style: 'color: red; font-size:18px'} *
+                      <!-- /ko -->                    
                     <!-- ko if: !writeable -->
                     %div.fvalue{ko(text: :valueUI)}
                     <!-- /ko -->
@@ -163,6 +166,7 @@
                       <!-- /ko -->
                     <!-- /ko -->
                   <!-- /ko -->
+                  %br
                   <!-- /ko -->
                 <!-- /ko -->
       .tablebottom
@@ -231,10 +235,11 @@
                     %div.title{ko(text: :name, click: :toggleExpand), style: 'cursor:pointer'}
                   <!-- ko if: expanded() -->
                   <!-- ko foreach: fields -->
-                  %div{style: 'padding: 10px 10px 10px 30px;'}
+                  %div{style: 'padding: 10px 10px 10px 30px;over-flow:hidden; margin-left:0px'}
                     %div{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
-                    %div.ftitleko{ko(text: :name, css: { error: :error })}
-                    %div.fcode{ko(text: :code)}
+                    %div.ftitle{ko(text: :name, css: { error: :error })}
+                    %div.fcode
+                      %span{ko(text: :code)}
                     %div.fvalue
 
                       <!-- ko if: kind == 'photo' -->
@@ -296,6 +301,7 @@
                     /   %span.edit &nbsp;
                     
                   <!-- /ko -->
+                  %br
                   <!-- /ko -->
                 <!-- /ko -->
       <!-- ko if: !$root.currentSnapshot() -->

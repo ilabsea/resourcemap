@@ -26,7 +26,7 @@
         %a x
     .superblyTagfieldClearer
     %input.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:220px'}
-    %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:5px;margin-top:2px'}
+    %ul.taglist{ko(foreach: :remainingOptions), style: 'margin-right:5px;margin-top:2px; width: 220px'}
       %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
         %a{ko(text: :label, click: '$parent.selectOption')}
     %button{ko(click: :save), style: 'float:right'}= t('views.collections.index.update_options')
@@ -39,7 +39,7 @@
         %span{ko(text: '$parent.labelFor($data)')}
         %a x
     <!-- ko if: !expanded() -->
-    %button{ko(click: :expand), style: 'cursor:pointer', id: "Add more"}= t('views.collections.index.add_more')
+    %button{ko(click: :expand), style: 'cursor:pointer; display: block', id: "Add more"}= t('views.collections.index.add_more')
     <!-- /ko -->
     .superblyTagfieldClearer
       <!-- ko if: expanded() -->
