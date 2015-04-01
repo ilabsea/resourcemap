@@ -322,7 +322,7 @@ textarea.text{
 }
 
 .light-box{
-  padding: 10px 10px 10px 30px !important;
+  padding: 10px 10px 0px 30px !important;
   margin: 5px !important;
   background: none repeat scroll 0 0 #f2f2f2;
   border-radius: 5px;
@@ -355,7 +355,7 @@ textarea.text{
   font-family: Arial;
 }
 
-.ftitle{
+.fb-title{
   font-weight: bold;
   color: black;
 }
@@ -367,10 +367,10 @@ textarea.text{
 }
 
 .fvalue{
-  margin-top: 5px;
   background-color: white;
   border-radius: 5px;
   padding: 5px ;
+  position: relative;
 }
 
 .arrow{
@@ -390,4 +390,27 @@ textarea.text{
 
 .w25{
   width: 230px !important;
+}
+
+.light-box div{
+  display: inline-block;
+  margin-bottom: 5px;
+  padding-bottom: 3px;
+}
+
+.light-box label{
+  line-height: 21px;
+}
+
+.ftitle{
+  color: black;
+  line-height: 21px;
+}
+
+.w17{
+  width: 170px !important;
+}
+
+.container-box div{
+  padding-bottom: 3px;
 }

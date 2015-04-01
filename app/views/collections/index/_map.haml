@@ -123,41 +123,47 @@
           %tbody
             %tr
               %td
-                /ko if: collection.isVisibleName
-                %div
-                  = label_tag :name, t('views.collections.index.name')
-                  = text_field_tag :name, '', placeholder: 'Enter new site name', class: 'w20 right', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true), :autofocus => true
-                  .clear
-                //ko
-                /ko if: collection.isVisibleLocation
-                %div
-                  %label= t('views.collections.index.location')
-                  = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: t('views.collections.index.search_or_drug_the_pin')}
-                  .clear
+                /ko if: collection.isVisibleName || collection.isVisibleLocation
+                .light-box
+                  /ko if: collection.isVisibleName
+                  %div
+                    = label_tag :name, t('views.collections.index.name')
+                    = text_field_tag :name, '', placeholder: 'Enter new site name', class: 'w25', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true), :autofocus => true
+                    .clear
+                  //ko
+                  /ko if: collection.isVisibleLocation
+                  %div
+                    %label= t('views.collections.index.location')
+                    = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search w25', placeholder: t('views.collections.index.search_or_drug_the_pin')}
+                    .clear
+                  //ko
                 //ko
                 <!-- ko foreach: layers -->
-                %div
-                  %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
-                  %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
-                <!-- ko if: expanded() -->
-                <!-- ko foreach: fields -->
-                %div
-                  %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
-                  <!-- ko if: is_mandatory -->
-                  %label *
-                  <!-- /ko -->
-                  = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
-                  <!-- ko if: !writeable -->
-                  %span.value{ko(text: :valueUI)}
-                  <!-- /ko -->
-                  <!-- ko if: writeable -->
-                  - Field::kinds.each do |kind|
-                    <!-- ko if: kind == '#{kind}' -->
-                    = render partial: field_edit_view(kind), locals: { single_editing_mode: false, mobile: false }
+                .container-box
+                  %div.header{style: 'margin-bottom:10px'}
+                    %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'})}
+                      %span &nbsp;
+                    %div.title{ko(text: :name, click: :toggleExpand), style: 'cursor:pointer'}
+                  <!-- ko if: expanded() -->
+                  <!-- ko foreach: fields -->
+                  %div{style: 'padding: 0px 10px 0px 30px;'}
+                    
+                    %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
+                    <!-- ko if: is_mandatory -->
+                    %label *
+                    <!-- /ko -->
+                    %div.ftitle{ko(attr: {:for => :esCode}, text: "name")}
+                    <!-- ko if: !writeable -->
+                    %div.fvalue{ko(text: :valueUI)}
+                    <!-- /ko -->
+                    <!-- ko if: writeable -->
+                    - Field::kinds.each do |kind|
+                      <!-- ko if: kind == '#{kind}' -->
+                      = render partial: field_edit_view(kind), locals: { single_editing_mode: false, mobile: false }
+                      <!-- /ko -->
                     <!-- /ko -->
                   <!-- /ko -->
-                <!-- /ko -->
-                <!-- /ko -->
+                  <!-- /ko -->
                 <!-- /ko -->
       .tablebottom
         .right{style: 'margin-right:3px;margin-top:-5px;'}
@@ -208,7 +214,7 @@
                       %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
                     <!-- /ko -->
                     <!-- ko if: editingLocation() -->
-                    = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search'}
+                    = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search w17'}
                     <!-- /ko -->
                   //ko
                   - if Settings.mobile_id?
@@ -226,17 +232,20 @@
                   <!-- ko if: expanded() -->
                   <!-- ko foreach: fields -->
                   %div{style: 'padding: 10px 10px 10px 30px;'}
-                    / %div{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
+                    %div{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                     %div.ftitleko{ko(text: :name, css: { error: :error })}
                     %div.fcode{ko(text: :code)}
                     %div.fvalue
 
-                      <!-- ko if: kind == 'photo' && hasValue() && !editing() -->
+                      <!-- ko if: kind == 'photo' -->
+                      <!-- ko if: hasValue() && !editing() -->
                       %span
                         %a{ko(attr: {href: "photoPath + value()"}), id: "previewimg"}
                           %img{ko(attr: {src: "photoPath + value()"}), width: "100px", style: "vertical-align: middle; border: 2px solid #BBB;"}
-                      <!-- ko if: !editing() -->
-                      %span.edit{ko(click: 'edit')} &nbsp;
+                      <!-- /ko -->
+
+                      <!-- ko ifnot: hasValue() -->
+                      %img{src: "/assets/image.png"}
                       <!-- /ko -->
                       <!-- /ko -->
                       
