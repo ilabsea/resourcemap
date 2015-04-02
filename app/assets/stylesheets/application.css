@@ -385,9 +385,11 @@ textarea.text{
   background-color: white;
   border-radius: 5px;
   padding: 0px;
-  height: 22px;
-  line-height: 22px;
+  line-height: 20px;
   vertical-align: middle;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .arrow{
