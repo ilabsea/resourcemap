@@ -30,4 +30,17 @@ describe MembershipsController do
       end
     end
   end
+
+  describe "create" do
+    it "should create with owner false" do
+      user_2.memberships.create! :collection_id => collection.id
+      user_2.memberships[0].should_not be_owner
+    end
+
+    it "should create with owner true" do
+      collection1 = user.create_collection(Collection.make_unsaved)
+      collection1.memberships.first.should be_owner
+    end    
+  end
+
 end

@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
 
   def create_collection(collection)
     return false unless collection.save
-    memberships.create! collection_id: collection.id, admin: true
+    memberships.create! collection_id: collection.id, admin: true, owner: true
     collection.register_gateways_under_user_owner(self)
     collection
   end
