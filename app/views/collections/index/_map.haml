@@ -248,14 +248,13 @@
 
                       <!-- ko if: kind == 'photo' -->
                       <!-- ko if: hasValue() && !editing() -->
-                      %span
+                      
+                      %div
                         %a{ko(attr: {href: "photoPath + value()"}), id: "previewimg"}
-                          %img{ko(attr: {src: "photoPath + value()"}), width: "100px", style: "vertical-align: middle; border: 2px solid #BBB;"}
+                          %img{ko(attr: {src: "photoPath + value()"}), width: "100px;", style: "vertical-align: middle; border: 2px solid #BBB;"}
+                      .clear
                       <!-- /ko -->
 
-                      <!-- ko ifnot: hasValue() -->
-                      %img{src: "/assets/image.png"}
-                      <!-- /ko -->
                       <!-- /ko -->
                       
                       <!-- ko if: hasValue() && !error() -->
@@ -298,11 +297,6 @@
                         <!-- /ko -->
                       <!-- /ko -->
                       
-                    / %div.ftitle Date:
-                    / %div.fcode date
-                    / %div.fvalue
-                    /   %span.arrow test
-                    /   %span.edit &nbsp;
                     
                   <!-- /ko -->
                   %br
