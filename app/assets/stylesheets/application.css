@@ -322,7 +322,7 @@ textarea.text{
 }
 
 .light-box{
-  padding: 10px 10px 0px 30px !important;
+  padding: 10px 10px 1px 30px !important;
   margin: 5px !important;
   background: none repeat scroll 0 0 #f2f2f2;
   border-radius: 5px;
@@ -412,9 +412,7 @@ textarea.text{
 }
 
 .light-box div{
-  display: inline-block;
   margin-bottom: 5px;
-  padding-bottom: 3px;
 }
 
 .ftitle{

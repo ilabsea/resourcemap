@@ -213,7 +213,7 @@
                     <!-- /ko -->
                     <!-- ko if: hasLocation() && !editingLocation() -->
                     - if current_user.is_guest
-                      %span.value{ko(text: :locationText, visible: '!editingLocation()')}
+                      %div.value{ko(text: :locationText, visible: '!editingLocation()')}
                     - else
                       %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
                     <!-- /ko -->
