@@ -142,7 +142,7 @@
                 <!-- ko foreach: layers -->
                 .container-box
                   %div.header{style: 'margin-bottom:10px'}
-                    %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'})}
+                    %div.coldiv{ko(click: :toggleExpand, css: {coldiv: '!expanded()', expdiv: 'expanded()'})}
                       %span &nbsp;
                     %div.title{ko(text: :name, click: :toggleExpand), style: 'cursor:pointer'}
                   <!-- ko if: expanded() -->
@@ -230,12 +230,12 @@
                 .container-box
                   / col = collection
                   %div.header
-                    %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'})}
+                    %div.coldiv{ko(click: :toggleExpand, css: {coldiv: '!expanded()', expdiv: 'expanded()'})}
                       %span &nbsp;
                     %div.title{ko(text: :name, click: :toggleExpand), style: 'cursor:pointer'}
                   <!-- ko if: expanded() -->
                   <!-- ko foreach: fields -->
-                  %div{style: 'padding: 10px 10px 10px 30px;over-flow:hidden; margin-left:0px'}
+                  %div{style: 'padding: 0px 10px 0px 30px;over-flow:hidden; margin-left:0px'}
                     %div{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
                     %div.ftitle{ko(text: :name, css: { error: :error })}
                     %div.fcode
