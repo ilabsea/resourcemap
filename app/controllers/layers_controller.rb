@@ -113,6 +113,9 @@ class LayersController < ApplicationController
 
 
         if field[:config]
+          if field[:config][:locations]
+            field[:config][:locations] = field[:config][:locations].values
+          end          
           if field[:config][:options]
             field[:config][:options] = field[:config][:options].values
             field[:config][:options].each { |option| option['id'] = option['id'].to_i }
