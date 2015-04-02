@@ -392,7 +392,7 @@ select.error , input[type="file"].error{
 
 
 textarea.text{
-  height: 18px;
+  height: 22px;
 }
 
 .pending{
@@ -473,8 +473,10 @@ textarea.text{
 .fvalue{
   background-color: white;
   border-radius: 5px;
-  padding: 5px ;
-  position: relative;
+  padding: 0px;
+  height: 22px;
+  line-height: 22px;
+  vertical-align: middle;
 }
 
 .arrow{
@@ -493,7 +495,9 @@ textarea.text{
 }
 
 .w25{
-  width: 230px !important;
+  width: 240px !important;
+  padding: 0px !important;
+  margin: 0px !important;
 }
 
 .light-box div{
@@ -502,19 +506,11 @@ textarea.text{
   padding-bottom: 3px;
 }
 
-.light-box label{
-  line-height: 21px;
-}
-
 .ftitle{
   color: black;
-  line-height: 21px;
+  padding-top: 8px;
 }
 
 .w17{
   width: 170px !important;
-}
-
-.container-box div{
-  padding-bottom: 3px;
 }
