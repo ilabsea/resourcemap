@@ -58,8 +58,6 @@ onLayers ->
       @selecting = v
 
     buttonClass: =>
-      # if @kind() == 'location'
-      #   return 'llocation'
       FIELD_TYPES[@kind()].css_class
 
     iconClass: =>

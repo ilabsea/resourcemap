@@ -40,6 +40,12 @@ class Api::CollectionsController < ApplicationController
     end
   end
 
+  def download_location_csv
+    field = fields.find(params[:field])
+    location_csv = collection.location_csv(field.config["locations"]) if field.config["locations"]
+    send_data location_csv, type: 'text/csv', filename: "#{field.name}_locations.csv"
+  end
+
   def sample_csv
     respond_to do |format|
       format.csv { collection_sample_csv(collection) }
