@@ -35,12 +35,18 @@ onCollections ->
 
       for field in fields
         if field.kind == 'location'
-          resultLocations = []
+          result = []
+
           for location in field.locations
             distance = @calculateDistance(fromLat, fromLng, location.latitude, location.longitude)
             if distance < parseFloat(field.maximumSearchLength)
-              resultLocations.push(location)
-          field.resultLocations(resultLocations)
+              location.distance = distance
+              result.push(location)
+          result.sort (a, b) => 
+            return parseFloat(a.distance) - parseFloat(b.distance)
+
+          result.splice(20, result.length)
+          field.resultLocations(result)
 
     @createSite: ->
       @goBackToTable = true unless @showingMap()
