@@ -46,7 +46,7 @@
       %li{style: 'line-height:20px'}
         = link_to t('views.account.create_account'), new_user_registration_path, class: 'fedit', style: 'padding-top:0px !important'
       %li{style: 'line-height:20px'}
-        = link_to t('views.account.login'), new_user_session_path, class: 'fuser', style: 'padding-top:0px !important'
+        = link_to t('views.account.login'), new_user_session_path(:_desktop => 1), class: 'fuser', style: 'padding-top:0px !important'
     %li{style: "padding: 4px 5px;line-height:20px", id: "locale-switcher"}
       %div{style: "padding-top:0px;"}
         = show_language_options
