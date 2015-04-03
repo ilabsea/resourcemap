@@ -51,6 +51,14 @@ module Collection::CsvConcern
     end
   end
 
+  def location_csv(locations)
+    CSV.generate do |csv|
+      locations.each do |location|
+        csv << [location["code"], location["name"], location["latitude"], location["longitude"]]
+      end
+    end      
+  end
+
   def sample_csv(user = nil)
     fields = self.fields.all
 

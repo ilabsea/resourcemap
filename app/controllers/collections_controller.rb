@@ -288,7 +288,7 @@ class CollectionsController < ApplicationController
     @locations_errors = CollectionsController.generate_error_description_location(@locations)
     render layout: false
   end
-
+  
   def self.generate_error_description_location(locations_csv)
     locations_errors = []
     locations_csv.each do |item|
