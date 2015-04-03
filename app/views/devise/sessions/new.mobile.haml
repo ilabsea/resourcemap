@@ -6,7 +6,8 @@
     = f.label :password, t('views.devise.sessions.password')
     = f.password_field :password
   %p= f.submit t('views.devise.sessions.login'), "data-theme" => 'b'
-  
 
-  %a{"data-role" => "footer", "data-theme" => "f", "data-position" => "fixed", 'align' => 'center', href: "/users/sign_up", "style" => "padding-bottom:20px;"} 
-  = t("Create account for Resource Map")
+  %br
+
+  = render "/mobile/collections/footer"
+
