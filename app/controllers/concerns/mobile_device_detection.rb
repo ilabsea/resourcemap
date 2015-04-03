@@ -6,7 +6,11 @@ module Concerns::MobileDeviceDetection
   end
 
   def mobile_device?  
-    (from_mobile_browser? || session[:mobile_param] = 1) && params[:_desktop] != "true"
+    if params[:_desktop] == "1"
+      return false
+    else
+      from_mobile_browser? || session[:mobile_param] == "1" 
+    end
   end
 
   def from_mobile_browser?
@@ -14,15 +18,15 @@ module Concerns::MobileDeviceDetection
   end
 
   def prepare_for_mobile
-    if params[:mobile]
-      session[:mobile_param] = params[:mobile] 
-      session[:desktop_param] = nil
-    end
-
-    if params[:_desktop]
-      session[:desktop_param] = params[:_desktop]
-      session[:mobile_param] = nil
-    end
+    session[:mobile_param] = params[:mobile] if params[:mobile]
+    # if params[:mobile]
+    #   session[:mobile_param] = params[:mobile]
+    #   session[:desktop_param] = 0
+    # end
+    # if params[:_desktop]
+    #   session[:desktop_param] = params[:_desktop]
+    #   session[:mobile_param] = 0
+    # end
     request.format = :mobile if mobile_device?
   end
 end
