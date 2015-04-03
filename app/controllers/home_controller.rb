@@ -13,7 +13,7 @@ class HomeController < ApplicationController
       if mobile_device?
         redirect_to new_user_session_path(:mobile=>1)
       else
-        redirect_to new_user_session_path(:_desktop=> true)
+        redirect_to new_user_session_path(:_desktop=> 1)
       end
     end
   end
