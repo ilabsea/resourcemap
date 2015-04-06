@@ -5,7 +5,7 @@ class RegistrationsController < Devise::RegistrationsController
   helper_method :get_public_key
   helper_method :get_private_key
 
-  before_filter :prepare_for_mobile
+  # before_filter :prepare_for_mobile
 
   def new
     super
