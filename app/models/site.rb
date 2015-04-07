@@ -325,7 +325,7 @@ class Site < ActiveRecord::Base
         if (lng >= -180) && (lng <= 180)
           valid = true
         else
-          errors.add(:lat, "longitude must be in the range of -180 to 180")
+          errors.add(:lng, "longitude must be in the range of -180 to 180")
           return false
         end
       end
