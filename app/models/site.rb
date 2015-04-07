@@ -9,14 +9,11 @@ class Site < ActiveRecord::Base
 
   belongs_to :collection
   validates_presence_of :name, :if => Proc.new {collection.is_visible_name}
-  validates :lat , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90}, :if => Proc.new {collection.is_visible_location}
-  validates :lng, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180}, :if => Proc.new {collection.is_visible_location}
 
   serialize :properties, Hash
   validate :valid_properties
   after_validation :standardize_properties
   before_validation :assign_default_values, :on => :create
-  # validates_uniqueness_of :external_id, :scope => [collection.user_id, :device_id], :if => Proc.new {device_id}
 
   attr_accessor :from_import_wizard
 
@@ -86,14 +83,8 @@ class Site < ActiveRecord::Base
   def filter_site_by_id site_id
     builder = Site.find site_id
   end
+  
 
-  # def self.check_site_with_external_id device_id, external_id
-  #   p device_id
-  #   p external_id
-  #   p collection.sites
-  #   test = collection.is_site_exist?(device_id, external_id)
-  #   p test       
-  # end
 
   private
 
@@ -122,6 +113,7 @@ class Site < ActiveRecord::Base
   end
 
   def valid_properties
+    return unless valid_lat_lng
     fields = collection.fields.index_by(&:es_code)
     fields_mandatory = collection.fields.find_all_by_is_mandatory(true)
     properties.each do |es_code, value|
@@ -144,6 +136,27 @@ class Site < ActiveRecord::Base
       errors.add(:properties, {f.id.to_s => "#{f.code} is required."})
     end
   end
+  def valid_lat_lng
+    valid = true
+    if collection.is_visible_location
+      
+      if lat
+        if (lat >= -90) && (lat <= 90)
+          valid = true
+        else
+          return false
+        end
+      end
 
+      if lng
+        if (lng >= -180) && (lng <= 180)
+          valid = true
+        else
+          return false
+        end
+      end
 
+    end
+    return valid
+  end  
 end

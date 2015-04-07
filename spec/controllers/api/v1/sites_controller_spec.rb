@@ -95,7 +95,7 @@ describe Api::V1::SitesController do
 	      json["lat"].should eq("12.618897")
 	      json["lng"].should eq("104.765625")
 	      json["device_id"].should eq("dv1")
-	      json["external_id"].should eq(3)
+	      json["external_id"].should eq("3")
 	      json["collection_id"].should eq(collection.id)
 	      json["properties"].should eq({"#{text.id}"=> 'test1', "#{numeric.id}"=> 10})
 	    end
@@ -111,7 +111,7 @@ describe Api::V1::SitesController do
 	      json["lat"].should eq("12.618897")
 	      json["lng"].should eq("104.765625")
 	      json["device_id"].should eq("dv1")
-	      json["external_id"].should eq(3)
+	      json["external_id"].should eq("3")
 	      json["collection_id"].should eq(collection.id)
 	      json["properties"].should eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
 	    end
@@ -127,7 +127,7 @@ describe Api::V1::SitesController do
 	      json["lat"].should eq("12.618897")
 	      json["lng"].should eq("104.765625")
 	      json["device_id"].should eq("dv2")
-	      json["external_id"].should eq(1)
+	      json["external_id"].should eq("1")
 	      json["collection_id"].should eq(collection.id)
 	      json["properties"].should eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
 	    end
