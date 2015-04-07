@@ -101,7 +101,10 @@ describe Api::V1::SitesController do
 	      json["lat"].should eq("12.618897")
 	      json["lng"].should eq("104.765625")
 	      json["device_id"].should eq("dv1")
+<<<<<<< HEAD
 
+=======
+>>>>>>> fix sms error with lat lng validate min max
 	      json["external_id"].should eq("3")
 	      json["collection_id"].should eq(collection.id)
 	      json["properties"].should eq({"#{text.id}"=> 'test1', "#{numeric.id}"=> 10})

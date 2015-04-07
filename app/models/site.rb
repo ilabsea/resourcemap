@@ -40,14 +40,11 @@ class Site < ActiveRecord::Base
   belongs_to :user
   belongs_to :collection
   validates_presence_of :name, :if => Proc.new {collection.is_visible_name}
-  validates :lat , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90}, :if => Proc.new {collection.is_visible_location}
-  validates :lng, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180}, :if => Proc.new {collection.is_visible_location}
 
   serialize :properties, Hash
   validate :valid_properties
   after_validation :standardize_properties
   before_validation :assign_default_values, :on => :create
-  # validates_uniqueness_of :external_id, :scope => [collection.user_id, :device_id], :if => Proc.new {device_id}
 
   attr_accessor :from_import_wizard
 
@@ -157,7 +154,7 @@ class Site < ActiveRecord::Base
   def filter_site_by_id site_id
     builder = Site.find site_id
   end
-
+  
   def validate_and_process_parameters(site_params, user)
     user_membership = user.membership_in(collection)
 
@@ -285,7 +282,19 @@ class Site < ActiveRecord::Base
 
     return valid
   end
+  def valid_lat_lng
+    valid = true
+    if collection.is_visible_location
+      
+      if lat
+        if (lat >= -90) && (lat <= 90)
+          valid = true
+        else
+          return false
+        end
+      end
 
+<<<<<<< HEAD
   def self.migrate_photo_field_to_full_url
     Site.all.each do |s|
       s.collection.fields.where(:kind => 'photo').each do |f|
@@ -309,4 +318,17 @@ class Site < ActiveRecord::Base
       p s.save(validate: false)
     end
   end
+=======
+      if lng
+        if (lng >= -180) && (lng <= 180)
+          valid = true
+        else
+          return false
+        end
+      end
+
+    end
+    return valid
+  end  
+>>>>>>> fix sms error with lat lng validate min max
 end
