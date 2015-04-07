@@ -282,6 +282,7 @@ class Site < ActiveRecord::Base
 
     return valid
   end
+
   def valid_lat_lng
     valid = true
     if collection.is_visible_location
@@ -290,6 +291,7 @@ class Site < ActiveRecord::Base
         if (lat >= -90) && (lat <= 90)
           valid = true
         else
+          errors.add(:lat, "latitude must be in the range of -90 to 90")
           return false
         end
       end
@@ -323,6 +325,7 @@ class Site < ActiveRecord::Base
         if (lng >= -180) && (lng <= 180)
           valid = true
         else
+          errors.add(:lat, "longitude must be in the range of -180 to 180")
           return false
         end
       end
