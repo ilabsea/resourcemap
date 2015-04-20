@@ -29,6 +29,8 @@ onCollections ->
       @checked = collection.checked
       @showingCollectionAlert = collection.showingCollectionAlert
       @fieldsForTableView = collection.fieldsForTableView
+      @isVisibleName = collection.isVisibleName
+      @isVisibleLocation = collection.isVisibleLocation
       @allSites(collection.allSites())
 
 
