@@ -25,6 +25,8 @@ onCollections ->
       @sitesPermission = collection.sitesPermission
       @thresholds = collection.thresholds
       @showingCollectionAlert = collection.showingCollectionAlert
+      @isVisibleName = collection.isVisibleName
+      @isVisibleLocation = collection.isVisibleLocation
       @allSites(collection.allSites())
 
 
