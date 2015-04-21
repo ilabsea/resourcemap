@@ -387,9 +387,7 @@ textarea.text{
   padding: 0px;
   line-height: 20px;
   vertical-align: middle;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  display: inline-block;
 }
 
 .arrow{
@@ -397,6 +395,7 @@ textarea.text{
   background-position: left center;
   background-repeat: no-repeat;
   padding-left: 20px;
+  float: left;
 }
 
 .edit{
