@@ -147,6 +147,11 @@ ResourceMap::Application.routes.draw do
         resources :sites, only: [:create,:index,:update,:show] do
           get :visible_layers_for, on: :member
         end
+        resources :memberships, only: [:index] do
+          collection do
+            get 'search'
+          end
+        end
         resources :fields, only: [:create,:index,:update,:show] 
         resources :layer_memberships, only: [:create,:index,:update,:show]
         resources :site_permissions, only: [:create,:index,:update,:show]
