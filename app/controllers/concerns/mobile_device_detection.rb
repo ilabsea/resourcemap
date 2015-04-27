@@ -6,7 +6,7 @@ module Concerns::MobileDeviceDetection
   end
 
   def mobile_device?  
-    if params[:_desktop] == "1"
+    if params[:_desktop] == "1" || params[:_desktop] == "true"
       return false
     else
       from_mobile_browser? || session[:mobile_param] == "1" 
