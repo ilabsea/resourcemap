@@ -145,6 +145,23 @@ class Api::CollectionsController < ApplicationController
     return Date.new(array_date[2].to_i, array_date[0].to_i, array_date[1].to_i)
   end
 
+  def sites_by_term
+    search = new_search
+
+    search.full_text_search params[:term] if params[:term]
+    search.alerted_search params[:_alert] if params[:_alert] 
+    search.select_fields(['id', 'name', 'properties'])
+    search.apply_queries
+
+    results = search.results.map{ |item| item["fields"]}
+
+    results.each do |item|
+      item[:value] = item["name"]
+    end
+
+    render json: results
+  end
+
   private
 
   def perform_search(*options)

@@ -144,6 +144,7 @@ ResourceMap::Application.routes.draw do
     # v1
     namespace :v1 do
       resources :collections do
+        get :sites_by_term
         resources :sites, only: [:create,:index,:update,:show] do
           get :visible_layers_for, on: :member
         end
