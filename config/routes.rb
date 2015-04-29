@@ -174,8 +174,9 @@ ResourceMap::Application.routes.draw do
     # match 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', :via => :put
     # put 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', as: :collections
     resources :tokens, :only => [:index, :destroy]
-    resources :collections do
-      member do
+    resources :collections do  
+      get 'sites_by_term'    
+      member do 
         put 'update_sites'
         get 'get_fields'
         get 'get_sites_conflict'
