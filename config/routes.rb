@@ -120,7 +120,8 @@ ResourceMap::Application.routes.draw do
     # match 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', :via => :put
     # put 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', as: :collections
     resources :tokens, :only => [:index, :destroy]
-    resources :collections do      
+    resources :collections do  
+      get 'sites_by_term'    
       member do 
         put 'update_sites'
         get 'get_fields'
@@ -144,7 +145,6 @@ ResourceMap::Application.routes.draw do
     # v1
     namespace :v1 do
       resources :collections do
-        get :sites_by_term
         resources :sites, only: [:create,:index,:update,:show] do
           get :visible_layers_for, on: :member
         end
