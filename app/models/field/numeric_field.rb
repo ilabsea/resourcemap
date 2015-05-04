@@ -35,6 +35,7 @@ class Field::NumericField < Field
 
 	def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
 		check_presence_of_value(value)
+    valid_format?(value)
     standadrize(value)
 	end
 
@@ -53,6 +54,15 @@ class Field::NumericField < Field
     else
       raise not_allow_decimals_message unless value.integer?
       Integer(value)
+    end
+  end
+
+  def valid_format?(value)
+    if allow_decimals?
+      raise allows_decimals_message unless value.real?
+    else
+      raise not_allow_decimals_message if !value.integer? && value.real?
+      raise invalid_field_message unless value.integer?
     end
   end
 
