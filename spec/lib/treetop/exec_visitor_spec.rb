@@ -208,7 +208,7 @@ describe ExecVisitor, "Process add command" do
     @visitor = ExecVisitor.new
     @parser = CommandParser.new
   end
-  let!(:options) { [{'id' => 1, 'code' => 'one', 'label' => 'One'}, {'id' => 2, 'code' => 'two', 'label' => 'Two'}] }
+  let!(:options) { [{'id' => 1, 'code' => '1', 'label' => 'One'}, {'id' => 2, 'code' => '2', 'label' => 'Two'}] }
   before(:each) do
     @collection = Collection.make
     @user = User.make(:phone_number => '85512345679')
@@ -258,7 +258,7 @@ describe ExecVisitor, "Process add command" do
   end
 
   it 'should add 1 new site with select many field when select many code exist' do
-    @node = @parser.parse("dyrm a #{@collection.id} lat=12.11,lng=75.11,name=sms_site,doctors=10,many=one two").command
+    @node = @parser.parse("dyrm a #{@collection.id} lat=12.11,lng=75.11,name=sms_site,doctors=10,many=2&1").command
     @node.sender = @user
     sites = Collection.find(@collection.id).sites
     expect{@visitor.visit_add_command(@node)}.to change{
