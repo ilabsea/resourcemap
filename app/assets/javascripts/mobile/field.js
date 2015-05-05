@@ -63,6 +63,9 @@ Field.prototype.getField = function() {
     case "hierarchy":
       return this.getHierarchyField();
       break;
+    case "site":
+      return this.getSiteField();
+      break;
     default:
       return this.getTextField();
   }
@@ -104,15 +107,23 @@ Field.prototype.getHierarchyField = function() {
 
 };
 
-
-
+Field.prototype.getSiteField = function() {  
+  return '<div class="ui-corner-all ui-controlgroup ui-controlgroup-vertical" style="margin-left:10px">'+
+      '<div class="ui-controlgroup-controls">'+
+        '<label>' + this.label + '</label>'+
+        '<div id="div_wrapper_' + this.code + '" class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield ui-body-c">'+
+          '<input value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="ui-input-text ui-body-c" data-type="search">'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+};
 
 Field.prototype.getTextField = function() {  
   return '<div class="ui-corner-all ui-controlgroup ui-controlgroup-vertical" style="margin-left:10px">'+
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.label + '</label>'+
         '<div id="div_wrapper_' + this.code + '" class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="text" datatype="text">'+
+          '<input value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="ui-input-text ui-body-c" type="text" datatype="text">'+
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+

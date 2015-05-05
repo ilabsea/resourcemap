@@ -572,6 +572,7 @@ Collection.prototype.addLayerForm = function(schema){
     form = form + '<div id="wrapper_layer_' + schema["layers"][i]["id"] + '"><h5>' + schema["layers"][i]["name"] + '</h5>';
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j];
+      console.log("field : ", field);
       myField = new Field(field);
       form = form + myField.getField();
       writeable = schema["layers"][i]["fields"][j].writeable;
