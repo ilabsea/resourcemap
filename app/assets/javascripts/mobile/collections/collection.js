@@ -245,7 +245,7 @@ Collection.prototype.validateData = function(collectionId){
   }
   for(var k=0; k< window.collectionSchema.length; k++){
     if(window.collectionSchema[k]["id"] == collectionId){
-      schema = window.collectionSchema[k]["id"] 
+      schema = window.collectionSchema[k];
       for(i=0; i<schema["layers"].length;i++){
         for(j=0; j<schema["layers"][i]["fields"].length; j++){
           var field = schema["layers"][i]["fields"][j];
@@ -930,7 +930,7 @@ Collection.assignSite = function(site){
   }
   var currentSchemaData = jQuery.extend(true, {}, focusSchema);
   $("#title").html(currentSchemaData["name"]);
-  var rule = SitesPermission.allRule(window.currentCollectionId, window.currentSiteId);
+  rule = SitesPermission.allRule(window.currentCollectionId, window.currentSiteId);
   $("#fields").show();
   if(rule.canRead || rule.canWrite){
     Collection.visibleLayer(window.currentCollectionId, window.currentSiteId, function(visible_layers){
