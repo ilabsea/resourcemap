@@ -70,8 +70,7 @@
         %label{ko(text: 'label')}
       //ko
     %span.smalltext= t('views.layers.form.field.is_select_then_skip_form_to')
-    / %label{ko(text: :field_code)}
-    %label{ko(text: '$root.to_field_name(field_code)')}
+    %label{ko(text: '$root.to_field_name(field_id)')}
     %br
     %button.farrow{ko(click: '$root.editFieldLogic'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
   .rightbuttons

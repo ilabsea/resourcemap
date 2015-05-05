@@ -401,7 +401,7 @@ onLayers ->
     to_field_name: (field) =>
       if @currentLayer()
         for l in @layers()
-          f = $.map(l.fields(), (x) -> x if x.code() == field())
+          f = $.map(l.fields(), (x) -> x if x.id() == parseInt(field()))
           if(f.length > 0)
             return f[0].name()
       return ""
