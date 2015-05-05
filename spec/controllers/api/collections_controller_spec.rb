@@ -158,11 +158,11 @@ describe Api::CollectionsController do
     it "should return CSV" do
       csv =  CSV.parse response.body
       csv.length.should eq(3)
-      csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, yes_no.code, select_one.code, 'One', 'Two', 'hierarchy0', 'hierarchy1', site_ref.code, date.code, director.code, 'last updated'])
+      csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, yes_no.code, select_one.code, 'select_many', 'hierarchy', site_ref.code, date.code, director.code, 'last updated'])
+      
+      csv.include?([site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "Bro", "", "", "", site2.updated_at.strftime("%a, %d %B %Y %T %z")]).should eq(true)
 
-      csv.include?([site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "No", "No", "Dad", "Bro", "", "", "", site2.updated_at.strftime("%a, %d %B %Y %T %z")]).should eq(true)
-
-      csv.include?([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, "yes", "one", "Yes", "Yes", "Dad", nil, site2.id.to_s, "10/24/2012", user.email, site.updated_at.strftime("%a, %d %B %Y %T %z")]).should eq(true)
+      csv.include?([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, "yes", "one", "one, two", "Dad", site2.id.to_s, "10/24/2012", user.email, site.updated_at.strftime("%a, %d %B %Y %T %z")]).should eq(true)
     end
   end
 
