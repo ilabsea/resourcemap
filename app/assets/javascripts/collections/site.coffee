@@ -49,8 +49,11 @@ onCollections ->
 
     hasInputMendatoryProperties: =>
       for field in @fields()
-        if field.is_mandatory and !field.value()
-          return false
+        if field.is_mandatory
+          if field.kind == 'yes_no' && field.value() != null
+            return true
+          if !field.value()
+            return false
       return true
 
     propertyValue: (field) =>
