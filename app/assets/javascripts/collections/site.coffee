@@ -76,6 +76,7 @@ onCollections ->
       for field in @fields()
         if field.error() == true
           return false
+
       return true
 
     propertyValue: (field) =>
