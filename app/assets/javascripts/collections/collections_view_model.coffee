@@ -74,6 +74,7 @@ onCollections ->
       @filters([])
       @selectedQuery(null)
       @queryParams = $.url().param()
+      @filters([])
       @exitSite() if @editingSite()
       @exitSite() if @selectedSite()
       @unselectSite() if @selectedSite()
@@ -259,7 +260,6 @@ onCollections ->
           for collection in @collections()
             if collection.checked() == true
               thresholds = collection.fetchThresholds(data)
-<<<<<<< HEAD
               collection.thresholds(thresholds)
 
     @hideDatePicker: ->
@@ -270,10 +270,6 @@ onCollections ->
       for q in @currentCollection().queries()
         if query.id == q.id
           return q
-=======
-              collection.thresholds(collection.findSitesByThresholds(thresholds))
-              thresholds = []
-          @showLegendState()
 
     @showLegendState: ->
       if @currentCollection()
@@ -297,4 +293,3 @@ onCollections ->
           @alert_legend(false)
         else
           @alert_legend(true)
->>>>>>> not hide datepicker after scroll
