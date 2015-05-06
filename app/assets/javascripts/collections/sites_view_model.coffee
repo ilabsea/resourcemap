@@ -37,31 +37,17 @@ onCollections ->
         fields = window.model.currentCollection().fields()
       for field in fields
         if field.kind == 'location'
-<<<<<<< HEAD
+
           result = [{name: window.t('javascripts.collections.fields.no_value'), code: ''}]
           for location in field.locations
             distance = @calculateDistance(fromLat, fromLng, location.latitude, location.longitude)
             if distance < parseFloat(field.maximumSearchLength)
               result.push(location)
           result.sort (a, b) =>
-=======
-          result = []
-
-          for location in field.locations
-            distance = @calculateDistance(fromLat, fromLng, location.latitude, location.longitude)
-            if distance < parseFloat(field.maximumSearchLength)
-              location.distance = distance
-              result.push(location)
-          result.sort (a, b) => 
->>>>>>> mobile desktop view
             return parseFloat(a.distance) - parseFloat(b.distance)
 
           result.splice(20, result.length)
           field.resultLocations(result)
-<<<<<<< HEAD
-
-=======
->>>>>>> mobile desktop view
 
     @createSite: ->
       @goBackToTable = true unless @showingMap()

@@ -194,6 +194,9 @@ onCollections ->
 
       @value(value)
 
+    setDefaultValueToYesNoField: =>
+      @value(false)
+
     removeFocusStyle: =>
       $('div').removeClass('focus')
       $('input:not(#name)').removeClass('focus')
