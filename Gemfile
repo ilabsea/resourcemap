@@ -48,7 +48,7 @@ group :test, :development do
   gem 'machinist', '1.0.6'
   gem 'capistrano', '~> 2.15'
   gem 'rvm'
-  gem 'rvm-capistrano', '1.2.2', require: false
+  gem 'rvm-capistrano', '1.2.2'
   gem 'jasminerice'
   gem 'guard-jasmine'
   gem 'pry'
