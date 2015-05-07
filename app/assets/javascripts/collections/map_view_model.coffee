@@ -509,6 +509,14 @@ onCollections ->
       dataClusterIds = {}
       editing = window.model.editingSiteLocation()
 
+      # Determine which clusters need to be removed from the map
+      toRemove = []
+      for clusterId, cluster of @clusters
+        toRemove.push clusterId unless dataClusterIds[clusterId]
+
+      # And remove them
+      @deleteCluster clusterId for clusterId in toRemove
+
       # Add clusters if they are not already on the map
       for cluster in clusters
         dataClusterIds[cluster.id] = cluster.id
@@ -518,14 +526,6 @@ onCollections ->
         else
           currentCluster = @createCluster(cluster)
         currentCluster.setInactive() if editing
-
-      # Determine which clusters need to be removed from the map
-      toRemove = []
-      for clusterId, cluster of @clusters
-        toRemove.push clusterId unless dataClusterIds[clusterId]
-
-      # And remove them
-      @deleteCluster clusterId for clusterId in toRemove
 
     @setAllMarkersInactive: ->
       editingSiteId = @editingSite()?.id()?.toString()
