@@ -61,6 +61,12 @@ onCollections ->
           for esCode, value of window.model.newSiteProperties
             field = @currentCollection().findFieldByEsCode esCode
             field.setValueFromSite(value) if field
+        
+        #set default value to field yes_no as false
+        if site
+          for field in site.fields()
+            if field.kind == 'yes_no'
+              field.setDefaultValueToYesNoField()
 
         @unselectSite()
         @editingSite site

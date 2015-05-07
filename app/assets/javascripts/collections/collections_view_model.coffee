@@ -16,6 +16,7 @@ onCollections ->
     
     @goToRoot: ->
       @queryParams = $.url().param()
+      @filters([])
       @exitSite() if @editingSite()
       @exitSite() if @selectedSite()
       @unselectSite() if @selectedSite()
@@ -24,7 +25,6 @@ onCollections ->
       @cancelFilterAlertedSites()
       @search('')
       @lastSearch(null)
-      @filters([])
       @sort(null)
       @sortDirection(null)
       @groupBy(@defaultGroupBy)

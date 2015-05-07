@@ -16,7 +16,7 @@ class Api::SitesController < ApplicationController
     @result = search.api_results[0]
 
     respond_to do |format|
-      format.rss
+      format.rss { render :show, layout: false }
       format.json { render json: site_item_json(@result) }
     end
   end

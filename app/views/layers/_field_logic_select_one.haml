@@ -1,7 +1,7 @@
 %ul{style: 'padding:0px; list-style:none'}
   /ko foreach: impl().field_logics
   %li{style: 'padding-bottom:20px'}
-    %div.box.grey.w25{style: 'padding-bottom:10px'}
+    %div.box.grey.w25{style: 'padding:10px !important'}
       %div{style: 'padding-bottom:5px'}
         %span.smalltext.left{style: 'padding-right:18px;padding-top:10px'} if input is
         = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select', enable: :editing), style: 'color:black;height:30px; background-color:white'
@@ -27,7 +27,7 @@
   //ko
   /ko if: $root.isAddNew
   %li{ko(with: '$root.newFieldLogic()')}
-    %div.box.grey.w25{style: 'padding-bottom:10px'}
+    %div.box.grey.w25{style: 'padding:10px !important'}
       %div{style: 'padding-bottom:5px'}
         %span.smalltext.left{style: 'padding-right:18px;padding-top:10px'} if input is
         = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select'), style: 'height:30px;background-color:white'
