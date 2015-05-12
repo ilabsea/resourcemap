@@ -30,6 +30,72 @@ Collection.prototype.pushingPendingSites = function(){
 
 }
 
+Collection.prototype.getSiteName = function(value){
+  for(var a=0; a<window.sites.length; a++){
+    if(window.sites[a]['id'] == value){
+      return window.sites[a]['name'];
+    }
+  }
+  return "";
+}
+
+Collection.prototype.filterSite = function(fieldId){
+  Collection.prototype.clearSiteId(fieldId);
+  value = $('#'+fieldId).val();
+  if(value == ""){
+    $('#filterSiteList_'+fieldId).empty();
+    return;
+  }
+  collectionId = window.currentCollectionId;
+  $.ajax({
+      url: '/collections/' + collectionId + '/sites_by_term.json',
+      type: 'GET',
+      success: function(sites){
+        Collection.prototype.buildSiteList(sites, fieldId);
+      },error: function(data){
+        
+      },
+      data: {term: value}
+  }); 
+}
+
+Collection.prototype.clearSiteId = function(fieldId){
+  $('#site_'+fieldId).val(null);
+}
+
+Collection.prototype.validFieldSite = function(fieldId){
+  siteVal = $('#site_'+fieldId).val();
+  if(siteVal == ''){
+    $('#'+fieldId).val(null);
+  }
+}
+
+Collection.prototype.buildSiteList = function(sites, fieldId){
+  siteList = $('#filterSiteList_'+fieldId);
+  siteList.empty();
+  for(i=0; i<sites.length; i++){
+    if(i == 0){
+      li = '<li onclick="Collection.prototype.selectSite('+sites[i]["id"] +',\''+ sites[i]["name"] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+    }else if(i == sites.length - 1){
+      li = '<li onclick="Collection.prototype.selectSite('+sites[i]["id"] +',\''+ sites[i]["name"] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
+    }else{
+      li = '<li onclick="Collection.prototype.selectSite('+sites[i]["id"] +',\''+ sites[i]["name"] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
+    }
+    siteEle = li +  '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+            '<span>'+sites[i]["name"]+'</span>'+
+      '</div>'+
+    '</li>';
+    
+    siteList.append(siteEle);
+  }
+}
+
+Collection.prototype.selectSite = function(siteId, siteName, fieldId){
+  $('#'+fieldId).val(siteName);
+  $('#site_'+fieldId).val(siteId);
+  $('#filterSiteList_'+fieldId).empty();
+}
+
 Collection.prototype.fetchFields = function() {
   var fields = [];
   var layers = this.layers();
@@ -572,7 +638,6 @@ Collection.prototype.addLayerForm = function(schema){
     form = form + '<div id="wrapper_layer_' + schema["layers"][i]["id"] + '"><h5>' + schema["layers"][i]["name"] + '</h5>';
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j];
-      console.log("field : ", field);
       myField = new Field(field);
       form = form + myField.getField();
       writeable = schema["layers"][i]["fields"][j].writeable;
@@ -678,6 +743,7 @@ Collection.prototype.showListSites = function(collectionId, isFromCollectionList
       url: "/mobile/collections/" + collectionId + "/sites.json",
       success: function(sites) {
         $("#listSitesView").html("");
+        window.sites = sites;
         for(var i=0; i< sites.length; i++){
           classListName = Collection.prototype.addClassToSiteList(sites, i);
           item = Collection.prototype.getListSiteTemplate(collectionId, sites[i], classListName)
