@@ -59,6 +59,60 @@ Collection.prototype.filterSite = function(fieldId){
   }); 
 }
 
+Collection.prototype.filterUser = function(fieldId){
+  $('#user_'+fieldId).val(null);
+  value = $('#'+fieldId).val();
+  if(value == ""){
+    $('#filterUserList_'+fieldId).empty();
+    return;
+  }
+  collectionId = window.currentCollectionId;
+  $.ajax({
+      url: '/collections/' + collectionId + '/memberships/search.json',
+      type: 'GET',
+      success: function(users){
+        Collection.prototype.buildUserList(users, fieldId);
+      },error: function(data){
+        
+      },
+      data: {term: value}
+  }); 
+}
+
+Collection.prototype.buildUserList = function(users, fieldId){
+  userList = $('#filterUserList_'+fieldId);
+  userList.empty();
+  for(i=0; i<users.length; i++){
+    if(i == 0){
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+    }else if(i == sites.length - 1){
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
+    }else{
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
+    }
+    userEle = li +  '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+            '<span>'+users[i]+'</span>'+
+      '</div>'+
+    '</li>';
+    
+    userList.append(userEle);
+  }
+}
+
+Collection.prototype.validFieldUser = function(fieldId){
+  userVal = $('#user_'+fieldId).val();
+  if(userVal == ''){
+    $('#'+fieldId).val('');
+  }
+}
+
+Collection.prototype.selectUser = function(userEmail, fieldId){
+  $('#'+fieldId).val(userEmail);
+  $('#user_'+fieldId).val(userEmail);
+  $('#filterUserList_'+fieldId).empty();
+}
+
+
 Collection.prototype.clearSiteId = function(fieldId){
   $('#site_'+fieldId).val(null);
 }
