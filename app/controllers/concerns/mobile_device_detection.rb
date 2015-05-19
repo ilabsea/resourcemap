@@ -9,6 +9,7 @@ module Concerns::MobileDeviceDetection
     if params[:_desktop] == "1" || params[:_desktop] == "true"
       return false
     else
+      session[:desktop_param] = false
       from_mobile_browser? || session[:mobile_param] == "1" 
     end
   end

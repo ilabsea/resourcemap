@@ -15,6 +15,7 @@ class RegistrationsController < Devise::RegistrationsController
     validate = validate_captcha(RecaptchaSetting.private_key, params["recaptcha_challenge_field"], params["recaptcha_response_field"])
     if validate.body.start_with? "true"
       flash.delete :recaptcha_error
+      session[:desktop_param] = true
       super
     else
       flash.delete :recaptcha_error
