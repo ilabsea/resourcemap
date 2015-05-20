@@ -163,8 +163,12 @@ class Mobile::SitesController < SitesController
 
   def fix_value_on_yesNo_properties(properties)
     properties.each do |key,value|
-      if value == "on" #fix value for yes_no field
-        properties[key] = true
+      if Field.find_by_id(key.to_i) and Field.find_by_id(key.to_i).kind == "yes_no"
+        if value == "true" || value == "on" #fix value for yes_no field
+          properties[key] = true
+        else
+          properties[key] = false
+        end
         break
       end
     end

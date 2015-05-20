@@ -414,6 +414,7 @@ Collection.prototype.validateData = function(collectionId){
               state =  Collection.valiateMandatoryText(field);
               break;
             case "yes_no":
+              Collection.setYesNoFieldValue(field);   
               break;
             case "select_one":
               state =  Collection.valiateMandatorySelectOne(field);
@@ -450,6 +451,15 @@ Collection.prototype.validateData = function(collectionId){
   }
 
   return true;
+}
+
+Collection.setYesNoFieldValue = function(field){
+  if($( "#"+field["code"]+":checked").length == 1){
+    value = true;
+  }else{
+    value = false;
+  }
+  $("#hidden_"+field["code"]).val(value);
 }
 
 Collection.setFocusOnFieldFromSelectMany = function(fieldId){
