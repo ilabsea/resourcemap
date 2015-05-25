@@ -37,9 +37,9 @@
           %label= t('views.mobile.collections.location')
         %div{"data-role" => "controlgroup", style: "margin-left:10px"}
           %label= t('views.mobile.collections.lat')
-          %input#lat{:name => "lat", placeholder: "Enter your location's lat"}
+          %input#lat{:name => "lat", placeholder: "Enter your location's lat", onchange: 'Collection.prototype.buildLocation()'}
           %label= t('views.mobile.collections.lng')
-          %input#lng{:name => "lng", placeholder: "Enter your location's lng"}
+          %input#lng{:name => "lng", placeholder: "Enter your location's lng", onchange: 'Collection.prototype.buildLocation()'}
         .clear
       %div{"id" => "fields", "data-role" => "content", "style" => "padding-left:0px; padding-right:0px"}
     %button{onclick: 'Collection.prototype.saveSite()', "data-theme" => "b"}= t('views.mobile.collections.save_site')

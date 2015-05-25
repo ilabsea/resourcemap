@@ -29,7 +29,7 @@ function Field (field) {
     }
   }
 };
- 
+
 Field.prototype.getField = function() {
   switch(this.kind)
   {
@@ -69,6 +69,9 @@ Field.prototype.getField = function() {
     case "user":
       return this.getUserField();
       break;
+    case "location":
+      return this.getLocationField();
+      break;
     default:
       return this.getTextField();
   }
@@ -78,7 +81,6 @@ Field.prototype.completeFieldRequirement = function() {
   switch(this.kind)
   {
     case "yes_no":
-      // $("#" + this.code).checkboxradio("refresh");
       break;
     case "hierarchy":
       $("#" + this.code).selectmenu();
@@ -86,11 +88,24 @@ Field.prototype.completeFieldRequirement = function() {
     case "select_one":
       $("#" + this.code).selectmenu();
       break;
+    case "location":
+      $("#" + this.code).selectmenu();
+      break;      
     case "select_many":
-      // $("input[type='checkbox']").prop("checked",true).checkboxradio("refresh");
       break;
   }
-}
+};
+
+Field.prototype.getLocationField = function(){
+
+  return  '<div class="ui-select" style="margin-left:10px;">' +
+              '<label>' + this.label + '</label>'+
+                  '<select name="properties['+this.id+']" id="'+this.code+'"  datatype="location" >' +
+                    '<option value="" > (no value) </option>' +
+                  '</select>' +
+          '</div>';
+};
+
 Field.prototype.getHierarchyField = function() { 
 
   list = "";
