@@ -92,7 +92,7 @@ onThresholds -
       @messageNotification(@messageNotification() + ' [Site Name]')
 
     addFieldNameToMessageNotification:(field) =>
-      @messageNotification(@messageNotification() + ' [' + field.name() + ']')
+      @messageNotification(@messageNotification() + ' [' + field.code() + ']')
     
     # will removed it as soon as possible 
     # we changed color code but on ES not change so we need this method 
