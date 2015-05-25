@@ -121,9 +121,6 @@ onThresholds -
 
     addFieldNameToMessageNotification:(field) =>
       @messageNotification(@messageNotification() + ' [' + field.code() + ']')
-
-    # will removed it as soon as possible
-    # we changed color code but on ES not change so we need this method
     alertMarker: (color_code) ->
       switch color_code
         when '#b30b0b'
