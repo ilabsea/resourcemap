@@ -121,6 +121,7 @@ onThresholds -
 
     addFieldNameToMessageNotification:(field) =>
       @messageNotification(@messageNotification() + ' [' + field.code() + ']')
+      
     alertMarker: (color_code) ->
       switch color_code
         when '#b30b0b'
