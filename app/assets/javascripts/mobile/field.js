@@ -18,6 +18,8 @@ function Field (field) {
     }
   }else if(this.kind == 'numeric'){
     this.range = field["config"]["range"];
+  }else if(this.kind == 'location'){
+    this.config = field['config'];
   }
 
   if(field["is_enable_field_logic"] == true){
@@ -97,9 +99,9 @@ Field.prototype.completeFieldRequirement = function() {
 };
 
 Field.prototype.getLocationField = function(){
-
   return  '<div class="ui-select" style="margin-left:10px;">' +
               '<label>' + this.label + '</label>'+
+                  '<input type="hidden" value="' + this.value +'"  id="hidden_'+this.code+'">'+
                   '<select name="properties['+this.id+']" id="'+this.code+'"  datatype="location" >' +
                     '<option value="" > (no value) </option>' +
                   '</select>' +

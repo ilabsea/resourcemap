@@ -6,12 +6,10 @@
 //= require mobile/collections/sites_permission
 
 function Collection (collection) {
-  console.log('Collection');
   this.id = collection != null ? collection.id : void 0;
   this.name = collection != null ? collection.name : void 0;
   this.layers = collection != null ? collection.layers : void 0;
   this.fields = [];
-  console.log(this.layers);
 };
 
 Collection.prototype.pushingPendingSites = function(){
@@ -32,7 +30,7 @@ Collection.prototype.pushingPendingSites = function(){
 }
 
 Collection.prototype.buildLocation = function(){
-  currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
+  var currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
   currentLat = $('#lat').val();
   currentLng = $('#lng').val();
 
@@ -40,7 +38,6 @@ Collection.prototype.buildLocation = function(){
     for(j=0; j<currentCollectionSchema["layers"][i]["fields"].length; j++){
       field = currentCollectionSchema["layers"][i]["fields"][j];
       if(field["kind"] == "location"){
-        console.log(field);
         nearByPlaces = [];
         $('#'+field["code"]).empty();
         for(k=0; k<field["config"]["locations"].length; k++){
@@ -54,28 +51,23 @@ Collection.prototype.buildLocation = function(){
 
         nearByPlaces.sort(function(a, b){return a["distance"]-b["distance"]});
         nearByPlaces.splice(20, nearByPlaces.length);
+        fieldValue = $('#hidden_'+field['code']).val();
         options = '<option value=""> (no value) </option>';
         for(l=0; l< nearByPlaces.length; l++){
-          // if(nearByPlaces['code'] == field['value']){
-          //   console.log('equal');
-          //   console.log(field['value']);
-          //   console.log(nearByPlaces['code']);
-          //   options = options + '<option value="'+nearByPlaces[l]["code"]+'" selected="selected">'+nearByPlaces[l]["name"]+'</option>';
-          // }else{
+          if(nearByPlaces[l]['code'] == fieldValue){
+            options = options + '<option value="'+nearByPlaces[l]["code"]+'" selected="selected">'+nearByPlaces[l]["name"]+'</option>';
+          }else{
             options = options + '<option value="'+nearByPlaces[l]["code"]+'">'+nearByPlaces[l]["name"]+'</option>';
-          // }
+          }
         }
-
+        
+        
         $('#'+field["code"]).append(options);
-        if(field['value']){
-          $('#'+field["code"]).val(field['value']);
-        }else{
-          $('#'+field["code"]).val("");
-        }
         $('#'+field["code"]).selectmenu('refresh');        
       }
     }
   }  
+  
 };
 
 Collection.calculateDistance = function(fromLat, fromLng, toLat, toLng){
@@ -206,7 +198,6 @@ Collection.prototype.selectSite = function(siteId, siteName, fieldId){
 }
 
 Collection.prototype.fetchFields = function() {
-  console.log('fetchFields');
   var fields = [];
   var layers = this.layers();
   for (var i = 0; i < layers.length; i++) {
