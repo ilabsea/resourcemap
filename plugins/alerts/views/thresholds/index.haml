@@ -111,10 +111,10 @@
           /      ko template: {name: field().kind() + '-field-template', afterRender: $root.initDatePicker}
           /      /ko
           <!-- /ko -->
-          
+
           <!-- ko if: field().kind() == 'hierarchy' -->
           <!-- ko with: field() -->
-          /      ko template: {name: kind() + '-field-template', afterRender: $root.initDatePicker}
+          /      ko template: {name: kind() + '-field-template', afterRender: $root.initDatePicker, with: fieldHierarchyItems()}
           /      /ko
           <!-- /ko -->
           <!-- /ko -->

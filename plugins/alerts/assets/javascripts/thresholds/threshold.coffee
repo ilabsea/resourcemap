@@ -48,7 +48,6 @@ onThresholds -
     addNewCondition: =>
       condition = new Condition()
       @conditions.push condition
-      condition
 
     removeCondition: (condition) =>
       @conditions.remove condition

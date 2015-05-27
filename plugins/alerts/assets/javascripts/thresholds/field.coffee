@@ -15,13 +15,6 @@ onThresholds ->
 
       if @kind() == 'hierarchy'
         @buildFieldHierarchyItems()
-        
-
-    buildFieldHierarchyItems: ->
-      @value = ko.observable()
-      @hierarchy = @config.hierarchy
-      @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@, x))
-      @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: window.t('javascripts.collections.fields.no_value')})
 
     format: (value) ->
       @impl.format value
@@ -34,6 +27,12 @@ onThresholds ->
 
     valid: (value) ->
       @impl.valid value
+
+    buildFieldHierarchyItems: ->
+      @value = ko.observable()
+      @hierarchy = @config.hierarchy
+      @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@, x))
+      @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: window.t('javascripts.collections.fields.no_value')})   
 
   class @FieldImpl
     constructor: (field) ->
@@ -72,10 +71,6 @@ onThresholds ->
         true
       else
         false
-
-  class @Field_hierarchy extends @FieldImpl
-    constructor: (field) ->
-      super(field)
       
   class @FieldSelectOne extends @FieldImpl
     format: (value) ->
@@ -96,6 +91,12 @@ onThresholds ->
 
     valid: (value) ->
       !!value
+
+  class @Field_hierarchy extends @FieldImpl
+    valid: (value) ->
+      @field.value()
+
+    encode: (value) -> @field.value()
 
   class @Field_email extends @FieldText
 

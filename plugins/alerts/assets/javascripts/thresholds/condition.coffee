@@ -7,6 +7,7 @@ onThresholds ->
       @field = ko.observable window.model.findField data?.field
       @compareField = ko.observable window.model.findField data?.compare_field ? data?.field # assign data.field only when data.compare_field doesn't exist to prevent error on view
       @op = ko.observable Operator.findByCode data?.op
+      @kind = ko.observable data?.kind
       @value = ko.observable data?.value
       @valueType = ko.observable ValueType.findByCode data?.type ? 'value'
       @valueUI = ko.computed

@@ -17,8 +17,10 @@ class Field::HierarchyField < Field
 	end
 
   def decode(hierarchy_name)
-    if hierarchy_code = find_hierarchy_id_by_name(hierarchy_name)
+    if hierarchy_code = find_hierarchy_id_by_name(hierarchy_name) 
       hierarchy_code
+    elsif hierarchy_name #hierarchy_name is hierarchy_id
+      hierarchy_name
     else
       raise invalid_field_message()
     end
@@ -91,7 +93,17 @@ class Field::HierarchyField < Field
       return @options_by_name[value]
     end
 
-    option = hierarchy_options.find { |opt| opt[:name] == value }
+    option = hierarchy_options.find { |opt| opt[:id] == value }
+    option[:id] if option
+  end
+
+  def find_hierarchy_id_by_name(value)
+    if @cache_for_read
+      @options_by_name ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:name]] = opt[:id] }
+      return @options_by_name[value]
+    end
+
+    option = hierarchy_options.find { |opt| opt[:id] == value }
     option[:id] if option
   end
 
