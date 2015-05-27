@@ -6,7 +6,7 @@ onThresholds -> if $('#thresholds-main').length > 0
   match = window.location.toString().match(/\/collections\/(\d+)\/thresholds/)
   collectionId = parseInt(match[1])
 
-  supportedKinds = ['text', 'numeric', 'yes_no', 'select_one', 'date', 'email', 'phone']
+  supportedKinds = ['text', 'numeric', 'yes_no', 'select_one', 'date', 'email', 'phone', 'select_many', 'hierarchy']
 
   window.model = new MainViewModel(collectionId)
   ko.applyBindings window.model
