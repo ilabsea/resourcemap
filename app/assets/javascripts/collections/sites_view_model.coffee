@@ -28,7 +28,6 @@ onCollections ->
       return distance
 
     @getLocations: (fromLat, fromLng) =>
-      console.log 'getLocations'
       if window.model.selectedSite()
         fields = window.model.selectedSite().fields()
         fromLat = window.model.selectedSite().lat()
