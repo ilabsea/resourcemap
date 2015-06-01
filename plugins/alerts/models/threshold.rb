@@ -42,7 +42,7 @@ class Threshold < ActiveRecord::Base
     Threshold.where(:collection_id => Collection.public_collections)
   end
 
-  def self.add_condition_field_kind
+  def self.add_condition_field_kind   
     Threshold.transaction do
       Threshold.find_each(batch_size: 100) do |threshold|
         threshold.conditions.each do |condition|

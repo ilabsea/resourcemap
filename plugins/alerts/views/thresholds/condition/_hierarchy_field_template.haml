@@ -1,4 +1,4 @@
-`%script{type: "text/html", id: "hierarchy-field-template"}
+%script{type: "text/html", id: "hierarchy-field-template"}
   <!-- ko foreach: fieldHierarchyItems -->
   .hierarchy{ko(css: {active: 'selected()'})}
     %a{ko(style: {marginLeft: "'' + (level * 20) + 'px'"}), href: 'javascript:void(0)'}
