@@ -14,7 +14,7 @@ module Site::IndexUtils
       properties: site.properties,
       created_at: site.created_at.strftime(DateFormat),
       updated_at: site.updated_at.strftime(DateFormat),
-      icon: site.collection.icon,
+      icon: site.collection.icon
     }
 
     if site.lat? && site.lng?

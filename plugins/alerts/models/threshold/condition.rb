@@ -12,7 +12,12 @@ class Threshold::Condition
     end
   end
 
-  def evaluate(value)
+  def evaluate(field, value)
+    if field[:kind] == "hierarchy"
+      @value = field.descendants_of_in_hierarchy(value, false)
+    end
+    p '@value : ', @value
+    p 'value : ', value
     return false if value.nil? || @value.nil?
     send @operator, value, @value
   end

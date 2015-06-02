@@ -93,15 +93,21 @@ onThresholds ->
       !!value
 
   class @Field_hierarchy extends @FieldImpl
+    getOperators: =>
+      [Operator.UNDER]
+
     valid: (value) ->
       @field.value()
 
-    encode: (value) -> @field.value()
+    encode: (value) -> 
+      @field.value()
 
   class @Field_email extends @FieldText
 
   class @Field_phone extends @FieldText
 
   class @Field_select_many extends @FieldSelectOne
+    encode: (value) -> 
+      [value]
 
   class @Field_select_one extends @FieldSelectOne

@@ -24,8 +24,7 @@ class Threshold < ActiveRecord::Base
       field = fields[hash[:field]]
       if field
         value = properties[hash[:field]] || field.strongly_type(value)
-
-        true if condition(hash, properties).evaluate(value)
+        true if condition(hash, properties).evaluate(field, value)
       end
     end
   end
