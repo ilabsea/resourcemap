@@ -279,19 +279,24 @@ onCollections ->
 
         switch operator
           when "eq","eqi"
-            if kind == 'text'
+            if kind == 'text' && typeof field != 'undefined'
               field = field.toLowerCase()
               compareField = compareField.toLowerCase()
+
+            else if kind == 'select_many' && typeof field != 'undefined'
+              field = field.toString()
+              compareField = compareField.toString()
             
             if field is compareField
               b = true
             else
               b = false
+
           when "gt"
             if field > compareField
               b = true
             else
-              b = false   
+              b = false 
           when "lt"
             if field < compareField
               b = true
@@ -301,7 +306,8 @@ onCollections ->
             if typeof field != 'undefined' && field.toLowerCase().indexOf(compareField.toLowerCase()) != -1
               b = true
             else
-              b = false                   
+              b = false  
+            break        
           else
             null
         if isAllCondition == "true"
