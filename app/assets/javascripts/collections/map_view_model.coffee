@@ -307,7 +307,12 @@ onCollections ->
               b = true
             else
               b = false  
-            break        
+            break  
+          when "under"
+            if typeof field != 'undefined'
+              b = true
+            else
+              b = false
           else
             null
         if isAllCondition == "true"
