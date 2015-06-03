@@ -26,6 +26,16 @@ onThresholds ->
         @valueType ValueType.VALUE
         @value null
 
+
+      if typeof @kind() == 'function' && @kind()() == 'hierarchy'
+        @buildFieldHierarchy()
+
+    buildFieldHierarchy: =>
+      @field().value(@value())
+      @hierarchy = @field().config.hierarchy
+      @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@field(), x))
+      @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: window.t('javascripts.collections.fields.no_value')})   
+
     toJSON: =>
       field: @field().esCode()
       op: @op().code()

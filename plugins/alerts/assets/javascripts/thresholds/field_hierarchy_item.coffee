@@ -1,7 +1,7 @@
 onThresholds ->
 
   # Used when selecting a hierarchy field value
-  class @FieldHierarchyItem
+  class @FieldHierarchyItem 
     constructor: (field, data, parent = null, level = 0) ->
       @field = field
       @parent = parent
@@ -10,7 +10,8 @@ onThresholds ->
       @name = data.name
       @level = level
       @expanded = ko.observable(false)
-      @selected = ko.computed => @field.value() == @id
+      @selected = ko.computed => parseInt(@field.value()) == parseInt(@id)
+
       @fieldHierarchyItems =  if data.sub?
                                 $.map data.sub, (x) => new FieldHierarchyItem(@field, x, @, level + 1)
                               else
