@@ -1,10 +1,8 @@
 onThresholds ->
 
   # Used when selecting a hierarchy field value
-  class @FieldHierarchyItem 
+  class @FieldHierarchyItem
     constructor: (field, data, parent = null, level = 0) ->
-      # field.fieldHierarchyItemsMap[data.id] = data.name
-
       @field = field
       @parent = parent
 

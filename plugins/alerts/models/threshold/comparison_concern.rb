@@ -31,6 +31,6 @@ module Threshold::ComparisonConcern
   end
 
   def under(a, b)
-    
+    true if b.index a
   end
 end

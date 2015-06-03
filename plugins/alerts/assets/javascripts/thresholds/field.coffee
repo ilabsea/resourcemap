@@ -28,7 +28,7 @@ onThresholds ->
     valid: (value) ->
       @impl.valid value
 
-    buildFieldHierarchyItems: ->
+    buildFieldHierarchyItems: () ->
       @value = ko.observable()
       @hierarchy = @config.hierarchy
       @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@, x))
@@ -99,7 +99,7 @@ onThresholds ->
     valid: (value) ->
       @field.value()
 
-    encode: (value) -> 
+    encode: (value) ->
       @field.value()
 
   class @Field_email extends @FieldText

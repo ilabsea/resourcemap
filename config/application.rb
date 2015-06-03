@@ -73,5 +73,6 @@ module ResourceMap
 
     config.version_name = `hg log -r . --template '{latesttag}'` rescue "Development"
     config.revision = File.read('REVISION').strip rescue "Development"
+    
   end
 end

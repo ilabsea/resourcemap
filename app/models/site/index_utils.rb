@@ -4,6 +4,7 @@ module Site::IndexUtils
   DateFormat = "%Y%m%dT%H%M%S.%L%z"
 
   def store(site, site_id, index, options = {})
+
     hash = {
       id: site_id,
       name: site.name,
@@ -29,7 +30,6 @@ module Site::IndexUtils
     if result['error']
       raise "Can't store site in index: #{result['error']}"
     end
-
     index.refresh unless options[:refresh] == false
   end
 
