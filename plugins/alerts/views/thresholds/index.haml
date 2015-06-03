@@ -113,9 +113,12 @@
           <!-- /ko -->
 
           <!-- ko if: field().kind() == 'hierarchy' -->
+          %span{ ko(text: 'field().operators()[0].label') }
           <!-- ko with: field() -->
-          /      ko template: {name: kind() + '-field-template', afterRender: $root.initDatePicker, with: fieldHierarchyItems()}
-          /      /ko
+          .hierarchy-container.w25{:style => "display: inline-table;height:auto; font-size: 12px"}
+            /      ko template: {name: kind() + '-field-template', afterRender: $root.initDatePicker, with: fieldHierarchyItems()}
+            /      /ko
+
           <!-- /ko -->
           <!-- /ko -->
           
