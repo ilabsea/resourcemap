@@ -68,6 +68,12 @@ onCollections ->
             if field.kind == 'yes_no'
               field.setDefaultValueToYesNoField()
 
+        #update @currentCollection().allSite()
+        fields = @currentCollection().fields()
+        for field in fields 
+          if field.kind == 'site'
+            @loadSiteByTerm(@showingAlert())
+
         @unselectSite()
         @editingSite site
         @editingSite().startEditLocationInMap() if @currentCollection().isVisibleLocation
@@ -78,6 +84,12 @@ onCollections ->
         $('#name').focus()
 
     @editSite: (site) ->
+      #update @currentCollection().allSite()
+      fields = @currentCollection().fields()
+      for field in fields 
+        if field.kind == 'site'
+          @loadSiteByTerm(@showingAlert())
+
       initialized = @initMap()
       site.collection.panToPosition(true) unless initialized
 

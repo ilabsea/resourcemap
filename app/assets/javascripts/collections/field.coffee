@@ -31,7 +31,7 @@ onCollections ->
       @valueUI =  ko.computed
        read: =>  @valueUIFor(@value())
        write: (value) =>
-         @value(@valueUIFrom(value))
+        @value(@valueUIFrom(value))
 
       if @kind == 'numeric'
         @digitsPrecision = data?.config?.digits_precision
