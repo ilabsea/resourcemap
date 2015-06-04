@@ -307,7 +307,6 @@ onCollections ->
               b = true
             else
               b = false  
-            break  
           when "under"
             if typeof field != 'undefined'
               b = true
