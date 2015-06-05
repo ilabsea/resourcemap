@@ -114,7 +114,7 @@ class ExecVisitor < Visitor
         field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
         site.properties[field.es_code] = to_supported_value(field, p.values[1])
       else
-        site[code] = p.value
+        site[code] = p.values[1]
       end
     end
     if site.valid?
