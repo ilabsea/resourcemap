@@ -109,8 +109,11 @@ class ExecVisitor < Visitor
   def update_properties(site, user, props)
     site.user = user
     props.each do |p|
-      field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
-      site.properties[field.es_code] = to_supported_value(field, p.values[1])
+      code = p[:code]
+      if code != "name"
+        field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
+        site.properties[field.es_code] = to_supported_value(field, p.values[1])
+      end
     end
     if site.valid?
       site.save!
