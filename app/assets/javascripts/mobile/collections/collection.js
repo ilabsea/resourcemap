@@ -26,8 +26,55 @@ Collection.prototype.pushingPendingSites = function(){
     }
     window.localStorage.setItem("offlineSites", JSON.stringify([]));
   }
-  // Collection.prototype.goHome();
 
+}
+
+Collection.prototype.buildLocation = function(){
+  var currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
+  currentLat = $('#lat').val();
+  currentLng = $('#lng').val();
+
+  for(i=0; i<currentCollectionSchema["layers"].length;i++){
+    for(j=0; j<currentCollectionSchema["layers"][i]["fields"].length; j++){
+      field = currentCollectionSchema["layers"][i]["fields"][j];
+      if(field["kind"] == "location"){
+        nearByPlaces = [];
+        $('#'+field["code"]).empty();
+        for(k=0; k<field["config"]["locations"].length; k++){
+          fieldLocation = field["config"]["locations"][k]
+          distance = Collection.calculateDistance(currentLat, currentLng, fieldLocation["latitude"], fieldLocation["longitude"]);
+          if(distance < parseFloat(field["config"]["maximumSearchLength"])){
+            fieldLocation["distance"] = distance;
+            nearByPlaces.push(fieldLocation);
+          }
+        }
+
+        nearByPlaces.sort(function(a, b){return a["distance"]-b["distance"]});
+        nearByPlaces.splice(20, nearByPlaces.length);
+        fieldValue = $('#hidden_'+field['code']).val();
+        options = '<option value=""> (no value) </option>';
+        for(l=0; l< nearByPlaces.length; l++){
+          if(nearByPlaces[l]['code'] == fieldValue){
+            options = options + '<option value="'+nearByPlaces[l]["code"]+'" selected="selected">'+nearByPlaces[l]["name"]+'</option>';
+          }else{
+            options = options + '<option value="'+nearByPlaces[l]["code"]+'">'+nearByPlaces[l]["name"]+'</option>';
+          }
+        }
+        
+        
+        $('#'+field["code"]).append(options);
+        $('#'+field["code"]).selectmenu('refresh');        
+      }
+    }
+  }  
+  
+};
+
+Collection.calculateDistance = function(fromLat, fromLng, toLat, toLng){
+  fromLatlng = new google.maps.LatLng(fromLat, fromLng);
+  toLatlng = new google.maps.LatLng(toLat, toLng);
+  distance = google.maps.geometry.spherical.computeDistanceBetween(fromLatlng, toLatlng);
+  return distance;
 }
 
 Collection.prototype.getSiteName = function(value){
@@ -58,6 +105,60 @@ Collection.prototype.filterSite = function(fieldId){
       data: {term: value}
   }); 
 }
+
+Collection.prototype.filterUser = function(fieldId){
+  $('#user_'+fieldId).val(null);
+  value = $('#'+fieldId).val();
+  if(value == ""){
+    $('#filterUserList_'+fieldId).empty();
+    return;
+  }
+  collectionId = window.currentCollectionId;
+  $.ajax({
+      url: '/collections/' + collectionId + '/memberships/search.json',
+      type: 'GET',
+      success: function(users){
+        Collection.prototype.buildUserList(users, fieldId);
+      },error: function(data){
+        
+      },
+      data: {term: value}
+  }); 
+}
+
+Collection.prototype.buildUserList = function(users, fieldId){
+  userList = $('#filterUserList_'+fieldId);
+  userList.empty();
+  for(i=0; i<users.length; i++){
+    if(i == 0){
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+    }else if(i == sites.length - 1){
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
+    }else{
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
+    }
+    userEle = li +  '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+            '<span>'+users[i]+'</span>'+
+      '</div>'+
+    '</li>';
+    
+    userList.append(userEle);
+  }
+}
+
+Collection.prototype.validFieldUser = function(fieldId){
+  userVal = $('#user_'+fieldId).val();
+  if(userVal == ''){
+    $('#'+fieldId).val('');
+  }
+}
+
+Collection.prototype.selectUser = function(userEmail, fieldId){
+  $('#'+fieldId).val(userEmail);
+  $('#user_'+fieldId).val(userEmail);
+  $('#filterUserList_'+fieldId).empty();
+}
+
 
 Collection.prototype.clearSiteId = function(fieldId){
   $('#site_'+fieldId).val(null);
@@ -360,6 +461,7 @@ Collection.prototype.validateData = function(collectionId){
               state =  Collection.valiateMandatoryText(field);
               break;
             case "yes_no":
+              Collection.setYesNoFieldValue(field);   
               break;
             case "select_one":
               state =  Collection.valiateMandatorySelectOne(field);
@@ -396,6 +498,15 @@ Collection.prototype.validateData = function(collectionId){
   }
 
   return true;
+}
+
+Collection.setYesNoFieldValue = function(field){
+  if($( "#"+field["code"]+":checked").length == 1){
+    value = true;
+  }else{
+    value = false;
+  }
+  $("#hidden_"+field["code"]).val(value);
 }
 
 Collection.setFocusOnFieldFromSelectMany = function(fieldId){
@@ -881,6 +992,7 @@ Collection.prototype.getFieldLogicByFieldId = function(fieldId){
 Collection.prototype.showPosition = function(position){
   $("#lat").val(position.coords.latitude);
   $("#lng").val(position.coords.longitude);
+  Collection.prototype.buildLocation();
 }
 
 Collection.prototype.goHome = function(){
@@ -918,6 +1030,7 @@ Collection.showMainSitePage = function(){
   Collection.hidePages();
   $("#lat").val(Collection.mapContainer.currentLat);
   $("#lng").val(Collection.mapContainer.currentLng);
+  Collection.prototype.buildLocation();
   $("#mobile-sites-main").show();
 }
 
@@ -1081,6 +1194,7 @@ Collection.prototype.showSiteOnline = function(collectionId, siteId){
       Collection.hidePages();
       Collection.hideWhileOffline();
       Collection.assignSite(site);
+      Collection.prototype.buildLocation();
       $("#mobile-sites-main").show();
       $.mobile.saving('hide');
     }

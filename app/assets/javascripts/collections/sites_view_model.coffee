@@ -29,7 +29,9 @@ onCollections ->
 
     @getLocations: (fromLat, fromLng) =>
       if window.model.selectedSite()
-        fields = window.model.selectedSite().fields() 
+        fields = window.model.selectedSite().fields()
+        fromLat = window.model.selectedSite().lat()
+        fromLng = window.model.selectedSite().lng()
       else if window.model.currentCollection()
         fields = window.model.currentCollection().fields()
 
@@ -113,6 +115,7 @@ onCollections ->
 
             @selectSite(site)
             @editingSite(site)
+            @getLocations(site.lat(), site.lng())
             @currentCollection(site.collection)
             @loadBreadCrumb()
 
