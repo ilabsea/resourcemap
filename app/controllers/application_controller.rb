@@ -40,6 +40,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_locale
   before_filter :store_location
   before_filter :set_request_header
+  
 
   def store_location
     return unless request.get? 
@@ -54,8 +55,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-
-
   def set_locale
     cookies.signed[:locale] = params[:locale]  || cookies.signed[:locale] || I18n.default_locale
     I18n.locale = cookies.signed[:locale]
@@ -67,11 +66,14 @@ class ApplicationController < ActionController::Base
   end
 
   def setup_guest_user
-    u = User.new is_guest: true 
+    u = User.new 
+    u.is_guest = true 
     # Empty membership for the current collection
     # This is used in SitesPermissionController.index
     # TODO: Manage permissions passing current_ability to client
-    u.memberships = [Membership.new(collection_id: collection.id)]
+    membership = Membership.new
+    membership.collection_id = collection.id
+    u.memberships = [membership]
     @guest_user = u
   end
 

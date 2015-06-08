@@ -97,7 +97,7 @@ ResourceMap::Application.routes.draw do
     post 'try'
   end
 
-  match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/")
+  match 'terms_and_conditions' => redirect("http://instedd.org/terms-of-service/"), :via => :get
 
   namespace :api do
     get 'collections/:id' => 'collections#show',as: :collection
@@ -183,7 +183,7 @@ ResourceMap::Application.routes.draw do
     cache "images/favicon.ico"
     network "*"
   end
-  match "/application.manifest" => offline 
+  match "/application.manifest" => offline, :via => :get
 
   # TODO: deprecate later
   match 'collections/:collection_id/fred_api/v1/facilities/:id' => 'fred_api#show_facility', :via => :get

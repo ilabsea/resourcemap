@@ -41,7 +41,7 @@ class CollectionsController < ApplicationController
 
       respond_to do |format|
         format.html
-        format.json { render json:  collections}
+        format.json { render json:  collections, :root => false}
       end
     end
   end
@@ -183,7 +183,7 @@ class CollectionsController < ApplicationController
       item[:value] = item["name"]
     end
 
-    render json: results
+    render json: results, :root => false
   end
 
   def search
@@ -221,7 +221,7 @@ class CollectionsController < ApplicationController
 
       obj
     end
-    render json: results
+    render json: results, :root => false
   end
 
   def decode_hierarchy_csv

@@ -34,7 +34,12 @@ class UserSnapshot < ActiveRecord::Base
 
   def self.for(user, collection)
     user_snapshot = UserSnapshot.where(user_id: user.id, collection_id: collection.id).first
-    user_snapshot ||= UserSnapshot.new user: user, collection: collection
+    # user_snapshot ||= UserSnapshot.new user: user, collection: collection
+    unless user_snapshot
+      user_snapshot = UserSnapshot.new
+      user_snapshot.user = user
+      user_snapshot.collection = collection
+    end
     user_snapshot
   end
 end

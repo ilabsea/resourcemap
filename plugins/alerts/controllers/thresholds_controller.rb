@@ -11,7 +11,7 @@ class ThresholdsController < ApplicationController
           add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
           add_breadcrumb I18n.t('views.plugins.alerts.thresholds'), collection_thresholds_path(collection)
         end
-        format.json { render json: thresholds }
+        format.json { render json: thresholds, :root => false }
       end
     else
       if current_user
@@ -21,7 +21,7 @@ class ThresholdsController < ApplicationController
       end
 
       respond_to do |format|
-        format.json { render json: thresholds }
+        format.json { render json: thresholds, :root => false }
       end
     end
   end

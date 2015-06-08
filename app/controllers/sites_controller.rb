@@ -15,7 +15,7 @@ class SitesController < ApplicationController
     search.offset params[:offset]
     search.limit params[:limit]
 
-    render json: search.ui_results.map { |x| x['_source'] }
+    render json: search.ui_results.map { |x| x['_source'] }, :root => false
   end
 
   def show
@@ -95,14 +95,14 @@ class SitesController < ApplicationController
     search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
 
     search.apply_queries
-    render json: search.results
+    render json: search.results, :root => false
   end
 
   def destroy
     site.user = current_user
     Site::UploadUtils.purgeUploadedPhotos(site)
     site.destroy
-    render json: site
+    render json: site, :root => false
   end
 
   def visible_layers_for
@@ -151,7 +151,7 @@ class SitesController < ApplicationController
     else
       layers = site.collection.visible_layers_for(current_user)
     end
-    render json: layers
+    render json: layers, :root => false
   end
 
   private

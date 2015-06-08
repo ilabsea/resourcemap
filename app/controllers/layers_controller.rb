@@ -14,7 +14,7 @@ class LayersController < ApplicationController
         json = layers.includes(:fields).all.as_json(include: :fields).each { |layer|
           layer['threshold_ids'] = Layer.find(layer['id']).get_associated_threshold_ids
         }
-        format.json { render json:  json}
+        format.json { render json:  json, :root => false}
       else
         format.json {
           render json: layers

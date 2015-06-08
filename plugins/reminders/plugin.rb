@@ -14,6 +14,6 @@ class Reminders::Plugin < Plugin
       end
 		end
 
-    match 'get_time_zone' => "reminders#get_time_zone"
+    match 'get_time_zone' => "reminders#get_time_zone", :via => :get
 	}
 end

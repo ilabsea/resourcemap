@@ -1,2 +1,2 @@
 rvm_trust_rvmrcs_flag=1
-rvm use 1.9.3@resource_map --create
+rvm use 2.1.2@resource_map_v4 --create
