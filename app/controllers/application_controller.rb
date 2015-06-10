@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   include Concerns::MobileDeviceDetection
 
+
   expose(:collection)
   expose(:current_user_snapshot) { UserSnapshot.for current_user, collection }
   expose(:collection_memberships){ collection.memberships.includes(:user) }

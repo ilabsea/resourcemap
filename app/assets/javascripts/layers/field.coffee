@@ -22,10 +22,9 @@ onLayers ->
       @isNew = ko.computed =>  !@id()?
 
       @fieldErrorDescription = ko.computed => if @hasName() then "'#{@name()}'" else "number #{@layer().fields().indexOf(@) + 1}"
-
       # Tried doing "@impl = ko.computed" but updates were triggering too often
-      @impl = ko.observable eval("new Field_#{@kind()}(_this)")
-      @kind.subscribe => @impl eval("new Field_#{@kind()}(_this)")
+      @impl = ko.observable eval("new Field_#{@kind()}(this)")
+      @kind.subscribe => @impl eval("new Field_#{@kind()}(this)")
 
       @nameError = ko.computed => if @hasName() then null else "the field #{@fieldErrorDescription()} is missing a Name"
       @codeError = ko.computed =>

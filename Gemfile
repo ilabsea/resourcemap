@@ -44,7 +44,7 @@ gem "breadcrumbs_on_rails"
 # gem "elasticsearch"
 # gem "elasticsearch-ruby"
 gem "resque", :require => "resque/server"
-gem 'resque-scheduler', '~> 3.0.0'
+gem 'resque-scheduler', '2.5.5', :require => 'resque_scheduler'
 gem "nuntium_api", "~> 0.13", :require => "nuntium"
 gem 'ice_cube'
 gem 'knockoutjs-rails'
@@ -75,7 +75,7 @@ gem 'activerecord-deprecated_finders'
 
 group :test do
   gem 'shoulda-matchers'
-  gem 'ci_reporter'
+  gem 'ci_reporter', :git => 'git://github.com/nicksieger/ci_reporter.git'
   gem 'selenium-webdriver'
   gem 'nokogiri'
   gem 'capybara'
@@ -94,6 +94,8 @@ group :test, :development do
   gem 'jasminerice', '~> 0.1.0', :git => 'https://github.com/bradphelan/jasminerice'
   gem 'guard-jasmine'
   # gem 'pry'
+  # gem 'pry-byebug'
+  gem 'byebug'
   # gem 'pry-debugger', '~>0.2.2'
 end
 
