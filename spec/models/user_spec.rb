@@ -19,6 +19,15 @@ describe User do
     user.memberships.first.should be_admin
   end
 
+  it "creates a collection with owner true" do
+    user = User.make
+    collection = Collection.make_unsaved
+    user.create_collection(collection).should eq(collection)
+    user.collections.should eq([collection])
+    user.memberships.first.should be_admin
+    user.memberships.first.should be_owner
+  end
+
   it "fails to create a collection if invalid" do
     user = User.make
     collection = Collection.make_unsaved

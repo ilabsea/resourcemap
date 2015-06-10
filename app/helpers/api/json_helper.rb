@@ -1,7 +1,10 @@
 module Api::JsonHelper
   def collection_json(collection, results)
     obj = {}
+    obj[:id] = collection.id
     obj[:name] = collection.name
+    obj[:is_visible_location] = collection.is_visible_location
+    obj[:is_visible_name] = collection.is_visible_name
     obj[:previousPage] = url_for(params.merge page: results.previous_page, only_path: false) if results.previous_page
     obj[:nextPage] = url_for(params.merge page: results.next_page, only_path: false) if results.next_page
     obj[:count] = results.total
@@ -24,6 +27,14 @@ module Api::JsonHelper
       obj[:long] = source['location']['lon']
     end
 
+    source['properties'].each do |key, property|
+      field = Field.find_by_code(key)
+      if field.kind == 'photo'
+        source['properties'][key] = "#{Settings.host}/photo_field/#{property}"
+        break
+      end
+    end
+    
     obj[:properties] = source['properties']
 
     obj

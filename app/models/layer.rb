@@ -104,6 +104,16 @@ class Layer < ActiveRecord::Base
 
   end
 
+  def decode_raw_layer layer
+    data = layer.except('fields')
+    data['fields_attributes'] =  {}
+    layer['fields'].each_with_index do |field,index|
+      data['fields_attributes'][index] = field.except('id')
+      data['fields_attributes'][index]['collection_id'] = collection_id
+    end
+    data
+  end
+
   private
 
   def field_hash(field)

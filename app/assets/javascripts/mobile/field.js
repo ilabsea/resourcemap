@@ -280,7 +280,6 @@ function setSubHierarchy(sub, field, level){
       for(var j=0; j<level; j++){
         space = space + "&nbsp;";
       }
-      // console.log(space+field.sub[i].name);
       sub.push(new SubHierarchy(field.sub[i].id, space+field.sub[i].name));
       nSpace = level + 3;
       setSubHierarchy(sub, field.sub[i], nSpace);

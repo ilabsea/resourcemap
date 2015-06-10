@@ -10,8 +10,8 @@ class HomeController < ApplicationController
         redirect_to collections_path
       end
     else
-      if mobile_device?
-        redirect_to new_user_session_path 
+      if !session[:desktop_param] && mobile_device?
+        redirect_to new_user_session_path(:mobile=>1)
       end
     end
   end

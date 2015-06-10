@@ -3,6 +3,7 @@
 //= require mobile/option
 //= require mobile/field_logic
 //= require mobile/sub_hierarchy
+//= require mobile/collections/sites_permission
 
 function Collection (collection) {
   this.id = collection != null ? collection.id : void 0;
@@ -45,8 +46,9 @@ Collection.prototype.fetchFields = function() {
 };
 
 Collection.prototype.createSite = function(id){
+  currentCollectionSchema = Collection.getSchemaByCollectionId(id);
   Collection.hideWhileOffline();
-  Collection.prototype.showFormAddSite(Collection.getSchemaByCollectionId(id));
+  Collection.prototype.showFormAddSite(currentCollectionSchema);
 }
 
 Collection.hideWhileOffline = function(){
@@ -77,6 +79,7 @@ Collection.prototype.showFormAddSite = function(schema){
   $("#fields").html(fieldHtml);
   Collection.prototype.applyBrowserLocation();
   Collection.prototype.handleFieldUI(schema);
+  Collection.prototype.formSiteWithPermission(schema);
 }
 
 Collection.prototype.saveSite = function(){  
@@ -227,87 +230,103 @@ Collection.prototype.ajaxUpdateOfflineSite = function(collectionId, formData){
 }
 
 Collection.prototype.validateData = function(collectionId){
-  if($("#name").val().trim() == ""){
+  currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
+  if(currentCollectionSchema["is_visible_name"] == true && $("#name").val().trim() == ""){
     Collection.prototype.showErrorMessage("Name can not be empty.");
     return false;
   }
-  if($("#lat").val().trim() == ""){
+  if(currentCollectionSchema["is_visible_location"] == true && $("#lat").val().trim() == ""){
     Collection.prototype.showErrorMessage("Location's latitude can not be empty.");
     return false;
   }
-  if($("#lng").val().trim() == ""){
+  if(currentCollectionSchema["is_visible_location"] == true && $("#lng").val().trim() == ""){
     Collection.prototype.showErrorMessage("Location's longitude can not be empty.");
     return false;
   }
-
   for(var k=0; k< window.collectionSchema.length; k++){
     if(window.collectionSchema[k]["id"] == collectionId){
-      schema = window.collectionSchema[k];
-      for(i=0; i<schema["layers"].length;i++){
-        for(j=0; j<schema["layers"][i]["fields"].length; j++){
-          var field = schema["layers"][i]["fields"][j];
-          state = true;
-          switch(field["kind"])
-          {
-            case "text":
-              state = Collection.valiateMandatoryText(field);
-              break;
-            case "numeric":
-              value = $("#" + field["code"]).val();
-              range = field["config"]["range"];
-              if(Collection.prototype.validateNumeric(value) == false){
-                Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
-                return false;
-              }
-              if(field["config"]["allows_decimals"] == "false"){
-                if(value.indexOf(".") != -1){
-                  Collection.prototype.showErrorMessage("Please enter an integer.");
-                  Collection.setFieldStyleFailed(field["code"]);
-                  return false;                  
+      var rule = SitesPermission.allRule(window.currentCollectionId, window.currentSiteId);
+      if(!rule.none){
+        for(i=0; i<schema["layers"].length;i++){
+          for(j=0; j<schema["layers"][i]["fields"].length; j++){
+            var field = schema["layers"][i]["fields"][j];
+            state = true;
+            switch(field["kind"])
+            {
+              case "text":
+                state = Collection.valiateMandatoryText(field);
+                break;
+              case "numeric":
+                value = $("#" + field["code"]).val();
+                range = field["config"]["range"];
+                digitsPrecision = field["config"]["digits_precision"];
+                if(Collection.prototype.validateNumeric(value) == false){
+                  Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
+                  return false;
                 }
-              }
-              if(range){                  
-                  if(Collection.prototype.validateRange(value, range) == false){
-                    Collection.prototype.showErrorMessage("Invalid number range");
+                if(field["config"]["allows_decimals"] == "false"){
+                  if(value.indexOf(".") != -1){
+                    Collection.prototype.showErrorMessage("Please enter an integer.");
                     Collection.setFieldStyleFailed(field["code"]);
-                    return false;
+                    return false;                  
                   }
-              }
-              state =  Collection.valiateMandatoryText(field);
-              break;
-            case "date":
-              state =  Collection.valiateMandatoryText(field);
-              break;
-            case "yes_no":
-              break;
-            case "select_one":
-              state =  Collection.valiateMandatorySelectOne(field);
-              break;
-            case "select_many":
-              state =  Collection.valiateMandatorySelectMany(field);
-              break;
-            case "phone number":
-              state =  Collection.valiateMandatoryText(field);
-              break;
-            case "email":
-              value = $("#" + field["code"]).val();
-              if(Collection.prototype.validateEmail(value) == false){
-                Collection.prototype.showErrorMessage(field["name"] + " is not a valid email value.");
-                return false;
-              }
-              state =  Collection.valiateMandatoryText(field);
-              break;
-            case "photo":
-              state =  Collection.valiateMandatoryPhoto(field);
-              break;
-          }
-          if(!state){
-            Collection.prototype.showErrorMessage(field["name"] + " is mandatory.");
-            Collection.setFieldStyleFailed(field["code"]);
-            return false
-          }
-          else{
-            Collection.setFieldStyleSuccess(field["code"]);
+                }
+
+                if(range){
+                  if(value != ""){
+                    msg = Collection.prototype.validateRange(value, range);
+                    if(msg != ""){
+                      Collection.prototype.showErrorMessage(msg);
+                      $('div').removeClass('invalid_field');
+                      Collection.setFieldStyleFailed(field["code"]);                    
+                      return false;
+                    }
+                  }
+                }
+                
+                if(digitsPrecision){
+                  console.log("Action");
+                  value = parseInt(value * Math.pow(10, parseInt(digitsPrecision))) / Math.pow(10, parseInt(digitsPrecision))
+                  $("#" + field["code"]).val(value);
+                  console.log(value);
+                }
+
+                state =  Collection.valiateMandatoryText(field);
+                break;
+              case "date":
+                state =  Collection.valiateMandatoryText(field);
+                break;
+              case "yes_no":
+                break;
+              case "select_one":
+                state =  Collection.valiateMandatorySelectOne(field);
+                break;
+              case "select_many":
+                state =  Collection.valiateMandatorySelectMany(field);
+                break;
+              case "phone number":
+                state =  Collection.valiateMandatoryText(field);
+                break;
+              case "email":
+                value = $("#" + field["code"]).val();
+                if(Collection.prototype.validateEmail(value) == false){
+                  Collection.prototype.showErrorMessage(field["name"] + " is not a valid email value.");
+                  return false;
+                }
+                state =  Collection.valiateMandatoryText(field);
+                break;
+              case "photo":
+                state =  Collection.valiateMandatoryPhoto(field);
+                break;
+            }
+            if(!state){
+              Collection.prototype.showErrorMessage(field["name"] + " is mandatory.");
+              Collection.setFieldStyleFailed(field["code"]);
+              return false
+            }
+            else{
+              Collection.setFieldStyleSuccess(field["code"]);
+            }
           }
         }
       }
@@ -514,23 +533,26 @@ Collection.prototype.validateNumeric = function(number) {
 
 Collection.prototype.validateRange = function(number, range){
   if(range["minimum"] && range["maximum"]){
-    if(parseInt(number) >= parseInt(range["minimum"]) && parseInt(number) <= parseInt(range["maximum"]))
-      return true;
-    else
-      return false;
+    if(parseInt(number) >= parseInt(range["minimum"]) && parseInt(number) <= parseInt(range["maximum"])){
+      return '';
+    }else{
+      return('Invalid value, value must be in the range of ('+range["minimum"]+'-'+range["maximum"]+')');
+    }
   }
   else{
     if(range["maximum"]){
-      if(parseInt(number) <= parseInt(range["maximum"]))
-        return true;
-      else
-        return false;      
+      if(parseInt(number) <= parseInt(range["maximum"])){
+        return "";
+      }else{
+        return('Invalid value, value must be less than or equal to '+range["maximum"]);
+      }      
     }
     if(range["minimum"]){
-      if(parseInt(value) >= parseInt(range["minimum"]))
-        return true;
-      else
-        return false;      
+      if(parseInt(value) >= parseInt(range["minimum"])){
+        return "";
+      }else{
+        return('Invalid value, value must be greater than or equal to '+range["minimum"]);
+      }      
     }
   }
   return true;
@@ -551,19 +573,39 @@ Collection.prototype.progressHandlingFunction =function(e){
 Collection.prototype.addLayerForm = function(schema){
   form = "";
   for(i=0; i<schema["layers"].length;i++){
-    form = form + '<div><h5>' + schema["layers"][i]["name"] + '</h5>';
+    form = form + '<div id="wrapper_layer_' + schema["layers"][i]["id"] + '"><h5>' + schema["layers"][i]["name"] + '</h5>';
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j];
       myField = new Field(field);
       form = form + myField.getField();
+      writeable = schema["layers"][i]["fields"][j].writeable;
     }
     form = form + "</div>";
   }
   return form;
 }
 
+Collection.prototype.formSiteWithPermission = function(schema){
+  for(i=0; i<schema["layers"].length;i++){
+    var writeable = false;
+    for(j=0; j<schema["layers"][i]["fields"].length; j++){
+      writeable = schema["layers"][i]["fields"][j].writeable;
+      break;
+    }
+    if(!writeable)
+      $("#wrapper_layer_" + schema["layers"][i]["id"]).addClass("ui-disabled");
+    else
+      $("#wrapper_layer_" + schema["layers"][i]["id"]).removeClass("ui-disabled");
+  }
+}
+
 Collection.prototype.handleFieldUI = function(schema){
-  
+  if(schema["is_visible_name"] == false){
+    $('#collectionName').hide();
+  }
+  if(schema["is_visible_location"] == false){
+    $('#location').hide();
+  }  
   for(i=0; i<schema["layers"].length;i++){
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j];
@@ -575,7 +617,6 @@ Collection.prototype.handleFieldUI = function(schema){
 }
 
 Collection.prototype.addDataToCollectionList = function(collection_schema){
-  
   for(var i=0; i< collection_schema.length; i++){
     if(collection_schema.length > 1 && i == 0){
       classListName = "ui-first-child" 
@@ -605,10 +646,11 @@ Collection.prototype.getListCollectionTemplate = function(collection, classListN
 }
 
 Collection.prototype.getListSiteTemplate = function(collectionId, site, classListName){
+  siteName = site["name"] ? site["name"] : "&nbsp;";
   item = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ' + classListName + '" >' + 
             '<div class="ui-btn-inner ui-li">' + 
               '<div class="ui-btn-text">' +
-                '<a style="cursor: pointer;" onclick="Collection.prototype.showSite(' + collectionId + ','+ site["id"] +  ','+ site["idSite"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + site["name"] + '</a>' + 
+                '<a style="cursor: pointer;" onclick="Collection.prototype.showSite(' + collectionId + ','+ site["id"] +  ','+ site["idSite"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + siteName + '</a>' + 
               '</div>' + 
               '<span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>' +
             '</div>' +
@@ -884,11 +926,33 @@ Collection.assignSite = function(site){
   $("#lat").val(site["lat"]);
   $("#lng").val(site["lng"]);
   focusSchema = Collection.getSchemaByCollectionId(window.currentCollectionId);
+  if(focusSchema["is_visible_name"] == false){
+    $('#collectionName').hide();
+  }
+  if(focusSchema["is_visible_location"] == false){
+    $('#location').hide();
+  }
   var currentSchemaData = jQuery.extend(true, {}, focusSchema);
   $("#title").html(currentSchemaData["name"]);
-  fieldHtml = Collection.editLayerForm(currentSchemaData, site["properties"]);
+  var rule = SitesPermission.allRule(window.currentCollectionId, window.currentSiteId);
+  $("#fields").show();
+  if(rule.canRead || rule.canWrite){
+    Collection.visibleLayer(window.currentCollectionId, window.currentSiteId, function(visible_layers){
+      Collection.handleViewEdit({layers: visible_layers}, site)
+      Collection.prototype.handleFieldUI(currentSchemaData);
+    });
+  }else if(rule.none){
+    $("#fields").hide();
+  }else{
+    Collection.handleViewEdit(currentSchemaData, site);
+    Collection.prototype.handleFieldUI(currentSchemaData);
+  }
+}
+
+Collection.handleViewEdit = function(schema, site){
+  fieldHtml = Collection.editLayerForm(schema, site["properties"]);
   $("#fields").html(fieldHtml);
-  Collection.prototype.handleFieldUI(currentSchemaData);
+  Collection.prototype.formSiteWithPermission(schema);
 }
 
 Collection.clearFormData = function(){
@@ -902,7 +966,7 @@ Collection.clearFormData = function(){
 Collection.editLayerForm = function(schema, properties){
   form = "";
   for(i=0; i<schema["layers"].length;i++){
-    form = form + '<div><h5>' + schema["layers"][i]["name"] + '</h5>';
+    form = form + '<div id="wrapper_layer_' + schema["layers"][i]["id"] + '"><h5>' + schema["layers"][i]["name"] + '</h5>';
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j]
       for(var key in properties){
@@ -957,6 +1021,13 @@ Collection.prototype.showSiteOnline = function(collectionId, siteId){
       $("#mobile-sites-main").show();
       $.mobile.saving('hide');
     }
+  });
+}
+
+Collection.visibleLayer = function(collectionId, siteId, callback){
+  $.ajax({
+    url: "/mobile/collections/" + collectionId + "/sites/" + siteId + "/visible_layers_for",
+    success: callback
   });
 }
 

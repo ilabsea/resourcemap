@@ -10,6 +10,12 @@
       %input{ko(checked: 'impl().allowsDecimals'), type: 'checkbox', style: 'float:left;'}
       %div{style: 'width:200px; float:left; margin-top: 1px; color: #555555;'}= t('views.layers.form.field.allow_decimal_numbers')
   %br/
+  /ko if: impl().allowsDecimals
+  %div
+    %br
+    %label= t('views.layers.form.field.number_of_digits_precision')
+    = ko_text_field_tag "impl().digitsPrecision", html: { id: 'digits_precision'}
+  //ko
   //ko
 
   %hr/
@@ -147,5 +153,42 @@
       <!-- /ko -->
   %br/
   %br/
+
+  /ko if: kind() == 'location'
+  %hr/
+  %label{ko(css: {error: 'impl().maximumSearchLengthError'})}= t('views.layers.form.field.maximum_search_length')
+  = ko_text_field_tag 'impl().maximumSearchLength', css: {error: 'impl().maximumSearchLengthError'}, html: { id: 'field_maximumSearchLength'}
+  %hr/
+  %label{ko(css: {error: 'impl().locationError'})}= t('views.layers.form.field.import_places') 
+  %p.smalltext
+    = t('views.layers.form.field.upload_a_csv') 
+    Code, LocationName, Latitude, Longitude
+    /ko ifnot: impl().errorUploadingLocation()
+    /ko if: config  && config.locations
+    %a{ko(attr: {href: "'/api/collections/'+$root.collectionId+'/download_location_csv?field='+id()"}), style: 'color:blue'} Download location csv
+    //ko
+    //ko
+  %form.location_form{action: collection_decode_location_csv_path(collection), method: :post, enctype: 'multipart/form-data', target: 'location_iframe', style: 'margin-top:6px;margin-bottom:10px'}
+    %input{type: :hidden, name: 'authenticity_token', value: form_authenticity_token}
+    %input.location_upload{type: :file, name: :file, id: :location_upload}
+  %iframe#location_iframe{name: 'location_iframe', style: 'display:none'}
+  /ko if: impl().errorUploadingLocation()
+  %p
+    = t('views.layers.form.field.there_was')
+    = link_to t('views.layers.form.field.an_error'), "#", :class => 'error_description_bubble'
+    = t('views.layers.form.field.processing_the_location_file')
+  //ko
+  /ko if: impl().uploadingLocation()
+  = t('views.layers.form.field.uploading')
+  //ko
+  /ko if: !impl().uploadingLocation() && impl().locations().length > 0 && !impl().errorUploadingLocation()
+  .hierarchy-container
+    %ul{ko(foreach: 'impl().locations'), style: "list-style-type:none; margin-left:-30px; font-size: 12px"}
+      %li
+        %span{ko(text: :code)}
+        %span ,
+        %span{ko(text: :name)}
+  //ko
+  //ko
 
 .clear

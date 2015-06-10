@@ -15,7 +15,10 @@
             %td
               %div{style: "width:230px;overflow:hidden;"}
                 %input{ko(checked: :checked, disable: '$root.showingAlert()? $root.showingAlert()== !checked() : false'), type: :checkbox, style: 'position:relative;'}
-                %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor:pointer;width:205px;overflow:hidden;display:block;float:right;text-overflow:ellipsis;white-space:nowrap'}"
+                %span{ko(text: :name, click: '$root.enterCollection'), style: 'cursor:pointer;width:185px;overflow:hidden;display:block;float:right;text-overflow:ellipsis;white-space:nowrap'}"
+                <!-- ko if: loading() -->
+                %img{src: "/images/load.gif", style: 'cursor:pointer;width:20px;overflow:hidden;display:block;float:right;text-overflow:ellipsis;white-space:nowrap'}
+                <!-- /ko -->
               <!-- ko if: currentSnapshot -->
               .snapshot_on.right{style: 'padding-right:0'}
                 .i18g-snapshot
@@ -115,45 +118,57 @@
         <!-- ko if: !inEditMode() -->
         %span= t('views.collections.index.new_site')
         <!-- /ko -->
-      .tablescroll{ko(event: { mouseover: '$root.hideDatePicker'})}
+      .tablescroll
         %table
           %tbody
             %tr
               %td
-                %div
-                  = label_tag :name, t('views.collections.index.name')
-                  = text_field_tag :name, '', placeholder: 'Enter new site name', class: 'w20 right', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true), :autofocus => true
-                  .clear
-                %div
-                  %label Location:
-                  = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search right w20', placeholder: t('views.collections.index.search_or_drug_the_pin')}
-                  .clear
-                / ko if: collection.readable($data)
+                /ko if: collection.isVisibleName || collection.isVisibleLocation
+                .light-box{style: 'padding-bottom:10px !important'}
+                  /ko if: collection.isVisibleName
+                  %div
+                    = label_tag :name, t('views.collections.index.name')
+                    = text_field_tag :name, '', placeholder: 'Enter new site name', class: 'w25', 'data-bind' => kov(value: :name, valueUpdate: :afterkeydown, hasfocus: true), :autofocus => true
+                    
+                  //ko
+                  /ko if: collection.isVisibleLocation
+                  %div
+                    %label= t('views.collections.index.location')
+                    = ko_text_field_tag :locationText, event: {keydown: :newLocationKeyPress, blur: :moveLocation}, html: {class: 'ux-search w25', placeholder: t('views.collections.index.search_or_drug_the_pin')}
+                    
+                  //ko
+                //ko
+
                 <!-- ko foreach: layers -->
-                %div
-                  %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + (expanded() ? 'Down' : 'Right') + '.png'"}, click: :toggleExpand), style: "position:relative;top:1px;cursor:pointer", width: 11, height: 11}
-                  %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
-                <!-- ko if: expanded() -->
-                <!-- ko foreach: fields -->
-                %div
-                  %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
-                  <!-- ko if: is_mandatory -->
-                  %label *
-                  <!-- /ko -->
-                  = label_tag '', '', ko(attr: {:for => :esCode}, text: "name + ':'")
-                  <!-- ko if: !writeable -->
-                  %span.value{ko(text: :valueUI)}
-                  <!-- /ko -->
-                  <!-- ko if: writeable -->
-                  - Field::kinds.each do |kind|
-                    <!-- ko if: kind == '#{kind}' -->
-                    = render partial: field_edit_view(kind), locals: { single_editing_mode: false, mobile: false }
+                .container-box
+                  %div.header{style: 'margin-bottom:10px'}
+                    %div.coldiv{ko(click: :toggleExpand, css: {coldiv: '!expanded()', expdiv: 'expanded()'})}
+                      %span &nbsp;
+                    %div.title{ko(text: :name, click: :toggleExpand), style: 'cursor:pointer'}
+                  <!-- ko if: expanded() -->
+                  <!-- ko foreach: fields -->
+                  %div{style: 'padding: 0px 10px 0px 30px;'}
+                    
+                    %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
+                    
+                    %div.ftitle
+                      %span{ko(attr: {:for => :esCode}, text: "name")}
+                      <!-- ko if: is_mandatory -->
+                      %span{style: 'color: red; font-size:18px'} *
+                      <!-- /ko -->                    
+                    <!-- ko if: !writeable -->
+                    %div.fvalue{ko(text: :valueUI)}
+                    <!-- /ko -->
+                    <!-- ko if: writeable -->
+                    - Field::kinds.each do |kind|
+                      <!-- ko if: kind == '#{kind}' -->
+                      = render partial: field_edit_view(kind), locals: { single_editing_mode: false, mobile: false }
+                      <!-- /ko -->
                     <!-- /ko -->
                   <!-- /ko -->
+                  %br
+                  <!-- /ko -->
                 <!-- /ko -->
-                <!-- /ko -->
-                <!-- /ko -->
-                / /ko
       .tablebottom
         .right{style: 'margin-right:3px;margin-top:-5px;'}
           %button.grey{ko(enable: :valid), type: 'submit'}= t('views.collections.index.done')
@@ -168,90 +183,122 @@
         %button.pback{ko(click: '$root.exitSite'), type: 'button'}
         %span
         %span{ko(text: :name)}
-      .tablescroll{ko(event: { mouseover: '$root.hideDatePicker'})}
+      .tablescroll
         %table{style: 'width:100%'}
           %tbody
             %tr
               %td
-                %div{style: 'margin-bottom:14px'}
-                  %label= t('views.collections.index.name')
-                  - if current_user.is_guest
-                    %span.value{ko(text: :name, visible: '!editingName()')}
-                  -else
-                    %span.value{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
-                  <!-- ko if: editingName() -->
-                  = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
-                  <!-- /ko -->
-                %div{style: 'margin-bottom:14px'}
-                  %label= t('views.collections.index.location')
-                  <!-- ko if: !hasLocation() -->
-                  - if current_user.is_guest
-                    %span.value{style: 'color:grey;'}
-                      = t('views.collections.index.no_value')
-                  - else
-                    %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
-                  <!-- /ko -->
-                  <!-- ko if: hasLocation() && !editingLocation() -->
-                  - if current_user.is_guest
-                    %span.value{ko(text: :locationText, visible: '!editingLocation()')}
-                  - else
-                    %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
-                  <!-- /ko -->
-                  <!-- ko if: editingLocation() -->
-                  = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search'}
-                  <!-- /ko -->
-                - if Settings.mobile_id?
+                /ko if: collection.isVisibleName || collection.isVisibleLocation
+                .light-box
+                  /ko if: collection.isVisibleName
                   %div{style: 'margin-bottom:14px'}
-                    %label= t('views.collections.index.id_with_prefix')
-                    %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
-
-                / ko if: collection.readable($data)
-                <!-- ko foreach: layers -->
-                / col = collection
-                %div.coldiv{ko(css: {coldiv: '!expanded()', expdiv: 'expanded()'}), style: 'margin-top:24px;margin-bottom:14px'}
-                  %span{ko(text: :name, click: :toggleExpand), style: 'font-weight:bold;color:grey;cursor:pointer'}
-                <!-- ko if: expanded() -->
-                <!-- ko foreach: fields -->
-                %div{style: 'margin-bottom:14px'}
-                  %span{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
-                  %label.field-name{ko(html: "name + '<sup>' + code + '</sup>:'", css: { error: :error })}
-                  <!-- ko if: kind == 'photo' && hasValue() && !editing() -->
-                  %a{ko(attr: {href: "photoPath + value()"}), id: "previewimg"}
-                    %img{ko(attr: {src: "photoPath + value()"}), width: "60px", style: "vertical-align: middle; border: 2px solid #BBB;"}
-                  <!-- /ko -->
-                  <!-- ko if: hasValue() && !error() -->
-                  <!-- ko if: writeable -->
-                  <!-- ko if: kind != 'photo' -->
-                  %span.value{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer'}
-                  <!-- /ko -->
-                  <!-- /ko -->
-                  <!-- ko if: !writeable -->
-                  %span.value{ko(text: :valueUI)}
-                  <!-- /ko -->
-                  <!-- ko if: kind == 'site' && !editing() && !error() -->
-                  %button.farrow.right{ko(click: 'function(data, event) { $root.editSiteFromId(value(),$root.currentCollection().id) }'), type: "button"}
-                  <!-- /ko -->
-                  <!-- /ko -->
-                  <!-- ko if: !hasValue() &&  !error() -->
-                  <!-- ko if: writeable -->
-                  <!-- ko if: kind != 'photo' -->
-                  %span.value{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
-                  <!-- /ko -->
-                  <!-- /ko -->
-                  <!-- ko if: !writeable -->
-                  %span.value{style: 'color:grey'}= t('views.collections.index.no_value')
-                  <!-- /ko -->
-                  <!-- /ko -->
-                  <!-- ko if: editing() || error() -->
-                  - Field::kinds.each do |kind|
-                    <!-- ko if: kind == '#{kind}' -->
-                    = render partial: field_edit_view(kind), locals: { single_editing_mode: true, mobile: false }
+                    %label= t('views.collections.index.name')
+                    - if current_user.is_guest
+                      %span.value{ko(text: :name, visible: '!editingName()')}
+                    -else
+                      %span.value{ko(text: :name, visible: '!editingName()', click: 'editName'), style: 'cursor: pointer'}
+                    <!-- ko if: editingName() -->
+                    = ko_text_field_tag :name, visible: 'editingName()', hasfocus: true, event: {keydown: :nameKeyPress, blur: :saveName}
                     <!-- /ko -->
+                  //ko
+                  /ko if: collection.isVisibleLocation
+                  %div{style: 'margin-bottom:14px'}
+                    %label= t('views.collections.index.location')
+                    <!-- ko if: !hasLocation() -->
+                    - if current_user.is_guest
+                      %span.value{style: 'color:grey;'}
+                        = t('views.collections.index.no_value')
+                    - else
+                      %span.value{ko(visible: '!editingLocation()', click: 'editLocation'), style: 'color:grey;cursor:pointer'}= t('views.collections.index.no_value')
+                    <!-- /ko -->
+                    <!-- ko if: hasLocation() && !editingLocation() -->
+                    - if current_user.is_guest
+                      %div.value{ko(text: :locationText, visible: '!editingLocation()')}
+                    - else
+                      %span.value{ko(text: :locationText, visible: '!editingLocation()', click: 'editLocation'), style: 'cursor: pointer'}
+                    <!-- /ko -->
+                    <!-- ko if: editingLocation() -->
+                    = ko_text_field_tag :locationText, visible: :editingLocation, hasfocus: true, event: {keydown: :locationKeyPress, blur: :saveLocation}, html: {class: 'ux-search w17'}
+                    <!-- /ko -->
+                  //ko
+                  - if Settings.mobile_id?
+                    %div{style: 'margin-bottom:14px'}
+                      %label= t('views.collections.index.id_with_prefix')
+                      %span.value{ko(text: :idWithPrefix), style: 'cursor: pointer'}
+                //ko
+                <!-- ko foreach: layers -->
+                .container-box
+                  / col = collection
+                  %div.header
+                    %div.coldiv{ko(click: :toggleExpand, css: {coldiv: '!expanded()', expdiv: 'expanded()'})}
+                      %span &nbsp;
+                    %div.title{ko(text: :name, click: :toggleExpand), style: 'cursor:pointer'}
+                  <!-- ko if: expanded() -->
+                  <!-- ko foreach: fields -->
+                  %div{style: 'padding: 0px 10px 0px 30px;over-flow:hidden; margin-left:0px'}
+                    %div{ko(text: :errorMessage, validationPopover: :errorMessage), style: 'display: none;'}
+                    %div.ftitle{ko(text: :name, css: { error: :error })}
+                    %div.fcode
+                      %span{ko(text: :code)}
+                    %div.fvalue
+
+                      <!-- ko if: kind == 'photo' -->
+                      <!-- ko if: hasValue() && !editing() -->
+                      
+                      %div
+                        %a{ko(attr: {href: "photoPath + value()"}), id: "previewimg"}
+                          %img{ko(attr: {src: "photoPath + value()"}), width: "100px;", style: "vertical-align: middle; border: 2px solid #BBB;"}
+                      .clear
+                      <!-- /ko -->
+
+                      <!-- /ko -->
+                      
+                      <!-- ko if: hasValue() && !error() -->
+                      
+                      <!-- ko if: writeable -->
+                      <!-- ko if: kind != 'photo' -->
+                      <!-- ko if: !editing() -->
+                      %span.arrow &nbsp;
+                      %span{ko(text: :valueUI, visible: '!editing()'), style: 'cursor:pointer;width:205px;float:left;  text-overflow:ellipsis;white-space: nowrap;overflow: hidden;'}
+                      %span.edit{ko(click: 'edit')} &nbsp;
+                      <!-- /ko -->
+                      <!-- /ko -->
+                      <!-- /ko -->
+
+                      <!-- ko if: !writeable -->
+                      %span.arrow{ko(text: :valueUI)}
+                      %span.edit &nbsp;
+                      <!-- /ko -->
+
+                      <!-- /ko -->
+
+                      <!-- ko if: !hasValue() &&  !error() -->
+                      <!-- ko if: writeable -->
+                      <!-- ko if: kind != 'photo' -->
+                      %span.arrow{ko(visible: '!editing()'), style: 'color:grey;cursor:pointer', style: 'width:205px'}= t('views.collections.index.no_value')
+                      <!-- ko if: !editing() -->
+                      %span.edit{ko(click: 'edit')} &nbsp;
+                      <!-- /ko -->
+                      <!-- /ko -->
+                      <!-- /ko -->
+
+                      <!-- ko if: !writeable -->
+                      %span.arrow{style: 'color:grey'}= t('views.collections.index.no_value')
+                      %span.edit &nbsp;
+                      <!-- /ko -->
+                      <!-- /ko -->
+                      <!-- ko if: editing() || error() -->
+                      - Field::kinds.each do |kind|
+                        <!-- ko if: kind == '#{kind}' -->
+                        = render partial: field_edit_view(kind), locals: { single_editing_mode: true, mobile: false }
+                        <!-- /ko -->
+                      <!-- /ko -->
+                      
+                    
+                  <!-- /ko -->
+                  %br
                   <!-- /ko -->
                 <!-- /ko -->
-                <!-- /ko -->
-                <!-- /ko -->
-                / /ko
       <!-- ko if: !$root.currentSnapshot() -->
       .tablebottom
         -# if (can? :edit, site)
@@ -278,6 +325,9 @@
     - if Settings.is_on? :alerts
       - Plugin.all.each do |plugin|
         = render_plugin_hook plugin, :map_header
+    <!-- ko if: loading() -->
+    %img{src: "/images/load.gif", style: 'width:20px;'}
+    <!-- /ko -->
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     <!-- ko if: !editingSite() -->
     %button.icon_button.ftable.right{ko(click: '$root.showTable', css: {active: "!$root.showingMap()"})}
@@ -299,25 +349,25 @@
     
     <!-- ko if: currentCollection() -->
     <!-- ko with: currentCollection -->
-    <!-- ko if: thresholds().length > 0 -->
-    <!-- ko if: $root.showingLegend() --> 
-    <!-- ko if: !$root.alert_legend() -->
+    <!-- ko if: showingCollectionAlert() -->
+    <!-- ko if: !$root.toggleLegend() -->
     %div#alert-legend{style: 'position: absolute; top: 45px; right: 15px; z-index: 99;'}
-      / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend') } Legend
       %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#ffffff; vertical-align:middle; padding-left:10px; font-size:15px;border-radius: 5px 5px 5px 5px;'}
         %b Legend
+        %img{ko(visible: '$root.loadingLegend'),src: "/images/load.gif", style: 'width:15px; padding-left:7px'}
         %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px;'}      
-    <!-- /ko --> 
+    <!-- /ko -->
 
-    <!-- ko if: showLegend() && $root.alert_legend() -->
+    <!-- ko if: $root.toggleLegend() -->
     %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:200px;overflow-y:auto;border-radius:10px'}
       %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
         %b Legend
+        %img{ko(visible: '$root.loadingLegend'),src: "/images/load.gif", style: 'width:15px; padding-left:7px'}
         %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
       
       %ul#legend_alert_list{ko(foreach: :thresholds), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none; max-width:350px;'}
 
-        <!-- ko if: alertedSitesNum() > 0 -->
+        <!-- ko if: showingThreshold() -->
         %li{style: 'height:auto;'}
           %div{style: 'padding-right:5px;float:left'}
             %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:20px;' }
@@ -328,28 +378,26 @@
         <!-- /ko -->     
       %div{style: 'height: 20px; background-color:#E6E6E6;border-radius: 0px 0px 10px 10px;'}
     <!-- /ko -->
-    <!-- /ko -->
+
     <!-- /ko -->
     <!-- /ko -->
     <!-- /ko -->
 
-
-    <!-- ko if: !currentCollection() -->  
-    <!-- ko if: $root.showingLegend() -->  
-    <!-- ko if: !$root.alert_legend() -->
+    <!-- ko ifnot: currentCollection() -->
+    <!-- ko if: showingLegend() -->
+    <!-- ko if: !toggleLegend() -->
     %div#alert-legend{style: 'position: absolute; top: 45px; right: 15px; z-index: 99; '}
-      / %button.white.right{ko(click: '$root.toggleAlertLegend') } Legend
       %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#ffffff; vertical-align:middle; padding-left:10px; font-size:15px;  border-radius: 5px 5px 5px 5px; float: left;'}
         %b Legend
+        %img{ko(visible: :loadingLegend),src: "/images/load.gif", style: 'width:15px; padding-left:7px'}
         %img{src: "/assets/round_plus.png", style: 'padding:7px 7px 0px 7px'}      
-    <!-- /ko -->       
-    
-    <!-- ko if: $root.alert_legend() -->
+    <!-- /ko -->
+    <!-- ko if: toggleLegend() -->
     %div#alert-legend{style: 'position: absolute; top: 50px; right: 15px; z-index: 99; background-color:white;max-height:350px;border:1px solid #BDBDBD;border-radius:10px'}
       
       %div{ko(click: '$root.toggleAlertLegend'), style: 'cursor: pointer;line-height: 30px; background-color:#E6E6E6; vertical-align:middle; padding-left:10px; font-size:15px; positio; border-radius: 10px 10px 0px 0px;'}
-        %b Legend     
-        / %button.collapse.white.right{ko(click: '$root.toggleAlertLegend'), style: 'margin:0px;' }
+        %b Legend
+        %img{ko(visible: :loadingLegend),src: "/images/load.gif", style: 'width:15px; padding-left:7px'}
         %img.right{src: "/assets/round_minus.png", style: 'padding:5px 10px 0px'}
 
       %div{style: 'overflow: auto;max-height: 290px;border-top:1px solid #BDBDBD;border-bottom:1px solid #BDBDBD;max-width:350px;'}
@@ -357,12 +405,12 @@
         
         %div{ko(foreach: :collections), style: ''}
           <!-- ko if: checked() -->
-          <!-- ko if: showLegend() -->
+          <!-- ko if: showingCollectionAlert() -->
           %div{style: 'padding:10px 10px 0px 10px;border-bottom:1px solid #E6E6E6'}
             %b{ko(text: :name)}
             %ul#legend_alert_list{ko(foreach: :thresholds), style: 'min-width:200px;padding-left:5px; padding-right:5px; list-style:none'}
 
-              <!-- ko if: alertedSitesNum() > 0 -->
+              <!-- ko if: showingThreshold() -->
               %li{style: 'height:auto;'}
                 %div{style: 'padding-right:5px;float:left'}
                   %img{"data-bind" => "attr: { src:iconUrl }", style: 'width:20px;' }
@@ -370,14 +418,12 @@
                   %span{ko(text: :propertyName)}
                   %span :
                   %span{ko(text: :alertedSitesNum)}
-              <!-- /ko --> 
-
+              <!-- /ko -->
+             
           <!-- /ko -->   
           <!-- /ko -->   
-
-         
-      %div{style: 'height: 20px; background-color:#E6E6E6;border-radius: 0px 0px 10px 10px;'}
     <!-- /ko -->
-    <!-- /ko --> 
-    <!-- /ko --> 
-
+         
+    %div{style: 'height: 20px; background-color:#E6E6E6;border-radius: 0px 0px 10px 10px;'}
+    <!-- /ko -->
+    <!-- /ko -->

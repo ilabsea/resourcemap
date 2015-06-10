@@ -7,6 +7,7 @@ onThresholds -
       @isAllCondition = ko.observable data?.is_all_condition.toString()
       @isNotify = ko.observable data?.is_notify.toString()
       @messageNotification = ko.observable data?.message_notification
+      @showingThreshold = ko.observable(false)
     
       @fieldsEmail  = ko.observableArray data?.email_notification["fields"] ? []
       @usersEmail   = ko.observableArray data?.email_notification["users"] ? []

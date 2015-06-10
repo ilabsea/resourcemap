@@ -2,13 +2,12 @@ module ApplicationHelper
   include KnockoutHelper
 
   def google_maps_javascript_include_tag
-    javascript_include_tag(raw("http://maps.googleapis.com/maps/api/js?sensor=false&key=#{GoogleMapsKey}&v=3.9"))
+    javascript_include_tag(raw("http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&key=#{GoogleMapsKey}&v=3.9"))
   end
 
   def leave_collection_permission?
     flag = false
     if !collection_admin? || collection.get_number_of_admin_membership > 1
-      p collection.get_number_of_admin_membership
       flag = true
     end
     flag

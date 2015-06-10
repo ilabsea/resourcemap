@@ -8,10 +8,13 @@
 
       $("button").click(function(){
         if (this != $('.white')[0]){
+          $('#select_icon').val($("#focus_icon").val());
           $('.' + $('#focus_icon').val()).css({backgroundColor: '#f5f5f5', border: '1px solid white'});
           this.style.backgroundColor =  "#D2D2D2";
           this.style.border =  "1px solid #565656";
+          
           $("#focus_icon").val(this.classList["0"]);
+
         }else{
           $('#select_icon').val($("#focus_icon").val());
         }
@@ -19,25 +22,25 @@
     });
 
   .field.w60
-    = f.label :name
+    = f.label t('views.collections.form.name') 
     = f.text_field :name, :readonly => !creation && (cannot? :update, collection)
     - if f.object.errors[:name].present?
       %label.error= "Name #{f.object.errors[:name].join(', ')}"
   .field.w60
-    = f.label :description
+    = f.label t('views.collections.form.description') 
     = f.text_area :description, rows: 3, :readonly =>  !creation && (cannot? :update, collection)
   - if Settings.is_on? :public_collection
     .field.w60
-      = f.label :public
+      = f.label t('views.collections.form.public') 
       = f.check_box :public, :disabled => !creation && (cannot? :update, collection)
 
   .field.w60
     %label
-      Icon
+      = t('views.collections.form.icon') 
     = render 'icon_selector', :f => f
   .w60
   %br{clear: :all}
 
   - if (creation || can?(:update, collection))
-    = f.button 'Save', :class => 'white'
-    = link_to 'Cancel', collections_path, :class=> 'grey'
+    = f.button t('views.collections.form.save') , :class => 'white'
+    = link_to t('views.collections.form.cancel'), collections_path, :class=> 'grey'

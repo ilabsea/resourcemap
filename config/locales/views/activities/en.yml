@@ -26,6 +26,7 @@ en:
         loading: "Loading..."
       table:
         collection_was_created: "Collection %{name} was created"
+        collection_was_deleted: "Collection %{name} was deleted"
         layer_was_created: "Layer %{name} was created with fields: %{field}"
         site_was_created: "Site %{name} was created"
         site_was_deleted: "Site %{name} was deleted"

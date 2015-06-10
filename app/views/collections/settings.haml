@@ -1,8 +1,10 @@
 = render '/tabs'
 
 .tabsline.settings-form
-  %h2 Settings
-  %p Change basic information about this collection
+  %h2 
+    =t('views.collections.settings.title')
+  %p 
+    =t('views.collections.settings.description')
   %br/
 
   = render 'form', creation: false

@@ -10,8 +10,18 @@ onLayers -> if $('#layers-main').length > 0
     $('.hierarchy_form').submit()
     window.model.startUploadHierarchy()
 
-  $.get "/collections/#{collectionId}/layers.json", {}, (layers) =>
-    window.model = new MainViewModel(collectionId, layers)
-    ko.applyBindings window.model
+  $('.location_upload').live 'change', ->
+    $('.location_form').submit()
+    window.model.startUploadLocation()
 
-    $('.hidden-until-loaded').show()
+  $('#layer_upload').live 'change', ->
+    $('#import_layer_form').submit()
+
+  $.get "/collections/#{collectionId}/layers.json", {}, (layers) =>
+  	$.get "/collections/#{collectionId}.json", {}, (collection) =>
+	    isVisibleName = collection.is_visible_name
+	    isVisibleLocation = collection.is_visible_location
+	    window.model = new MainViewModel(collectionId, layers, isVisibleName, isVisibleLocation)
+	    ko.applyBindings window.model
+
+	    $('.hidden-until-loaded').show()

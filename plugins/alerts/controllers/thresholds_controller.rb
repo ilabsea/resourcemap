@@ -41,7 +41,6 @@ class ThresholdsController < ApplicationController
 
   def set_order
     threshold.update_attribute :ord, params[:ord]
-
     render json: threshold
   end
 

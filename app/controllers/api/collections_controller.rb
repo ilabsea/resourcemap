@@ -16,7 +16,7 @@ class Api::CollectionsController < ApplicationController
     if params[:format] == 'csv' || params[:page] == 'all'
       options << :all
       params.delete(:page)
-    elsif params[:format] == 'kml' || 'shp'
+    elsif params[:format] == 'kml' || params[:format] == 'shp'
       options << :require_location
       options << :page
     else
@@ -32,6 +32,18 @@ class Api::CollectionsController < ApplicationController
       format.kml { collection_kml(collection, @results) }
       format.shp { collection_shp(collection, @results) }
     end
+  end
+  
+  def export_layers   
+    respond_to do |format|
+      format.json {send_data layers.to_json(include: :fields.as_json(:except => [:id]), :except => [:id, :ord, :collection_id]), filename: "#{collection.name}_layers.json"}
+    end
+  end
+
+  def download_location_csv
+    field = fields.find(params[:field])
+    location_csv = collection.location_csv(field.config["locations"]) if field.config["locations"]
+    send_data location_csv, type: 'text/csv', filename: "#{field.name}_locations.csv"
   end
 
   def sample_csv
@@ -133,6 +145,23 @@ class Api::CollectionsController < ApplicationController
     return Date.new(array_date[2].to_i, array_date[0].to_i, array_date[1].to_i)
   end
 
+  def sites_by_term
+    search = new_search
+
+    search.full_text_search params[:term] if params[:term]
+    search.alerted_search params[:_alert] if params[:_alert] 
+    search.select_fields(['id', 'name', 'properties'])
+    search.apply_queries
+
+    results = search.results.map{ |item| item["fields"]}
+
+    results.each do |item|
+      item[:value] = item["name"]
+    end
+
+    render json: results
+  end
+
   private
 
   def perform_search(*options)
@@ -204,5 +233,8 @@ class Api::CollectionsController < ApplicationController
     send_data sites_kml, type: 'application/vnd.google-earth.kml+xml', filename: "#{collection.name}_sites.kml"
   end
 
+  def visible_layer_for_site    
+    
+  end
 
 end

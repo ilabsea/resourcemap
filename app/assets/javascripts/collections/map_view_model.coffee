@@ -1,7 +1,11 @@
 onCollections ->
   class @MapViewModel
     @constructor: ->
+      @loading = ko.observable(false)
       @showingMap = ko.observable(true)
+      @showingLegend = ko.observable(false)
+      @toggleLegend = ko.observable(false)
+      @loadingLegend = ko.observable(false)
       @mapSitesCount = ko.observable(0)
       @mapSitesCountText = ko.computed =>
         sitesText = if @mapSitesCount() == 1 then window.t('javascripts.collections.site') else window.t('javascripts.collections.sites')
@@ -19,14 +23,29 @@ onCollections ->
       @ghostMarkers = []
       @mapRequestNumber = 0
       @geocoder = new google.maps.Geocoder()
+      @currentPosition = {}
 
       $.each @collections(), (idx) =>
         @collections()[idx].checked.subscribe (newValue) =>
-          @setThresholds()
           @reloadMapSites()
 
       @showingMap.subscribe =>
         @rewriteUrl()
+
+    @getCurrentLocation:->
+      if navigator.geolocation
+        navigator.geolocation.getCurrentPosition ((pos) =>
+          lat = pos.coords.latitude
+          lng = pos.coords.longitude
+          @currentPosition = {lat: lat, lng: lng}
+        ), =>
+          @handleNoGeolocation()
+      else
+        @handleNoGeolocation()
+
+    @handleNoGeolocation: ->
+      pos = window.model.map.getCenter()
+      @currentPosition = {lat: pos.lat(), lng: pos.lng()}
 
     @initMap: ->
       return true unless @showingMap()
@@ -51,6 +70,8 @@ onCollections ->
         mapTypeId: google.maps.MapTypeId.ROADMAP
         scaleControl: true
       @map = new google.maps.Map document.getElementById("map"), mapOptions
+
+      @getCurrentLocation()
 
       # Create a dummy overlay to easily get a position of a marker in pixels
       # See the second answer in http://stackoverflow.com/questions/2674392/how-to-access-google-maps-api-v3-markers-div-and-its-pixel-position
@@ -119,11 +140,13 @@ onCollections ->
 
       zoom = @map.getZoom()
       query = @generateQueryParams(bounds, collection_ids, zoom)
+      queryAlertedSites = @generateQueryParams(bounds, collection_ids, zoom)
 
       @mapRequestNumber += 1
       currentMapRequestNumber = @mapRequestNumber
 
       getCallback = (data = {}) =>
+        @loading(false)
         return unless currentMapRequestNumber == @mapRequestNumber
         if @showingMap()
           @drawSitesInMap data.sites
@@ -133,6 +156,7 @@ onCollections ->
           @reloadMapSitesAutomatically = true
           @adjustZIndexes()
           @updateMapSitesCount()
+          @getAlertedSites(queryAlertedSites)
           @notifySitesChanged()
 
         callback() if callback && typeof(callback) == 'function'
@@ -141,7 +165,158 @@ onCollections ->
         # Save a request to the server if there are no selected collections
         getCallback()
       else
+        @loading(true)
         $.get "/sites/search.json", query, getCallback
+
+    @showLegend: =>
+      noAlert = true
+      for collection in window.model.collections()
+        noThreshold = true
+        if collection.checked()
+          for threshold in collection.thresholds()
+            if threshold.alertedSitesNum() > 0
+              threshold.showingThreshold(true)
+              collection.showingCollectionAlert(true)
+              noThreshold = false
+            else
+              threshold.showingThreshold(false)
+            
+            if noThreshold
+              collection.showingCollectionAlert(false)
+
+          if collection.showingCollectionAlert()
+            window.model.showingLegend(true)
+            noAlert = false
+      if noAlert
+        window.model.showingLegend(false)
+
+    
+    @toggleAlertLegend: ->
+      if @toggleLegend() == true
+        @toggleLegend(false)
+      else
+        @toggleLegend(true)
+
+    @setAlertedSites: (sites) =>
+      @clearAlertedSites()
+      bounds = window.model.map.getBounds()
+      for site in sites
+        latlng = new google.maps.LatLng(site.lat_analyzed,site.lng_analyzed)
+        isMapContainedSite = @isMapContainedSite(site, latlng, bounds)
+        if isMapContainedSite == true
+          collection = window.model.findCollectionById(site.collection_id)
+          collection.alertedSites.push(new Site(collection, site))
+
+      isMapContainedSite = false
+      if window.model.selectedSite()?.alert() == true
+        for site in window.model.currentCollection().alertedSites()
+          if parseInt(site.id()) == parseInt(window.model.selectedSite().id())
+            isMapContainedSite = true
+            break
+        if isMapContainedSite == false
+          window.model.currentCollection().alertedSites.push(window.model.selectedSite())
+
+      @drawLegend()
+      @showLegend()
+      window.model.loadingLegend(false)
+    
+    @isMapContainedSite: (site, latlng, bounds) =>
+      isContainInMap = false
+      
+      for siteId, marker of window.model.markers
+        if bounds.contains(marker.getPosition()) && parseInt(siteId) == parseInt(site.id)
+          return true
+
+      for clusterId,cluster of window.model.clusters
+        if bounds.contains(cluster.position) && cluster.bounds.contains(latlng)
+          return true
+
+      return isContainInMap
+
+    @clearAlertedSites: =>
+      for collection in window.model.collections()
+        collection.alertedSites([])
+        for threshold in collection.thresholds()
+          threshold.alertedSitesNum(0)
+
+    @drawLegend: =>
+      for collection in window.model.collections()
+        @compareSitePropertyWithAlertCondition(collection.alertedSites(), collection.thresholds())
+
+    @compareSitePropertyWithAlertCondition: (sites, thresholds) =>
+      for site in sites
+        for threshold in thresholds
+          if threshold.isAllSite() == "false" && !@isThresholdSite(site, threshold.alertSites())
+            continue
+          alertSite = @operateWithCondition(threshold.conditions(), site, threshold.isAllCondition())
+          
+          if alertSite
+            threshold.alertedSitesNum(threshold.alertedSitesNum()+1)
+            break
+
+    @isThresholdSite: (site, thresholdSites) =>
+      for t_site in thresholdSites
+        if site.id() == t_site.collection.id
+          return true
+
+      return false
+
+    @operateWithCondition: (conditions, site, isAllCondition) =>
+      b = true
+      for key, condition of conditions
+        operator = condition.op().code()
+        if condition.valueType().code() is 'percentage'
+          percentage = (site.properties()[condition.compareField()] * condition.value())/100
+          compareField = percentage
+        else
+          compareField = condition.value()
+          
+        field = site?.properties()[condition.field()]
+        
+        kind = condition.kind()
+        if field is undefined && kind is "yes_no"
+          field = false
+
+        switch operator
+          when "eq","eqi"
+            if kind == 'text'
+              field = field.toLowerCase()
+              compareField = compareField.toLowerCase()
+            
+            if field is compareField
+              b = true
+            else
+              b = false
+          when "gt"
+            if field > compareField
+              b = true
+            else
+              b = false   
+          when "lt"
+            if field < compareField
+              b = true
+            else
+              b = false
+          when "con"
+            if typeof field != 'undefined' && field.toLowerCase().indexOf(compareField.toLowerCase()) != -1
+              b = true
+            else
+              b = false                   
+          else
+            null
+        if isAllCondition == "true"
+          return null if b == false            
+        else
+          return site if b == true            
+          return null if b == false && parseInt(key) == conditions.length-1
+
+      return site
+
+    @getAlertedSites: (query) =>
+      window.model.loadingLegend(true)
+      query._alert = true
+      $.get "/sites/search_alert_site.json", query, (json) =>
+        @setAlertedSites(json)
 
     @generateQueryParams: (bounds, collection_ids, zoom) ->
       ne = bounds.getNorthEast()
@@ -289,6 +464,14 @@ onCollections ->
       dataClusterIds = {}
       editing = window.model.editingSiteLocation()
 
+      # Determine which clusters need to be removed from the map
+      toRemove = []
+      for clusterId, cluster of @clusters
+        toRemove.push clusterId unless dataClusterIds[clusterId]
+
+      # And remove them
+      @deleteCluster clusterId for clusterId in toRemove
+
       # Add clusters if they are not already on the map
       for cluster in clusters
         dataClusterIds[cluster.id] = cluster.id
@@ -298,14 +481,6 @@ onCollections ->
         else
           currentCluster = @createCluster(cluster)
         currentCluster.setInactive() if editing
-
-      # Determine which clusters need to be removed from the map
-      toRemove = []
-      for clusterId, cluster of @clusters
-        toRemove.push clusterId unless dataClusterIds[clusterId]
-
-      # And remove them
-      @deleteCluster clusterId for clusterId in toRemove
 
     @setAllMarkersInactive: ->
       editingSiteId = @editingSite()?.id()?.toString()

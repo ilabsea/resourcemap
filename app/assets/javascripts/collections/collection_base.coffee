@@ -20,16 +20,21 @@ onCollections ->
       @id = data?.id
       @name = data?.name
       @icon = data?.icon
+      @isVisibleName = data?.is_visible_name
+      @isVisibleLocation = data?.is_visible_location
       @currentSnapshot = if data?.snapshot_name then data?.snapshot_name else ''
       @updatedAt = ko.observable(data?.updated_at)
       @showLegend = ko.observable(false)
+      @showingCollectionAlert = ko.observable(false)
       @updatedAtTimeago = ko.computed => if @updatedAt() then $.timeago(@updatedAt()) else ''
       @loadCurrentSnapshotMessage()
       @loadAllSites()
-      @loadSites() unless window.currentUserIsGuest
+      @loading = ko.observable(false)
 
     loadSites: =>
+      @loading(true)
       $.get @sitesUrl(), (data) =>
+        @loading(false)
         for site in data
           @addSite @createSite(site)    
 
@@ -53,80 +58,13 @@ onCollections ->
       id = (site for site in window.model.currentCollection().allSites() when site.name is value)[0]?.id
       id
     
-    fetchThresholds: (data) =>
+    fetchThresholds: (data) =>  
       thresholds = []
       for threshold in data
         if threshold.collection_id == this.id
           threshold_new = new Threshold(threshold, this.icon)
           thresholds.push(threshold_new)
       thresholds
-
-    findSitesByThresholds: (thresholds) =>
-      alertSites = []
-      b = false
-      for key,threshold of thresholds
-        if threshold.alertSites().length > 0
-          sites = threshold.alertSites()
-        else
-          sites = this.sites()
-        for site in sites
-          site = @findSiteById(site.collection.id, threshold.collectionId) if threshold.isAllSite() == "false"
-          alertSite = this.operateWithCondition(threshold.conditions(), site, threshold.isAllCondition()) if site?
-          if alertSite? && alertSites.indexOf(alertSite) == -1
-            b = true
-            alertSites.push(alertSite)
-            thresholds[key].alertedSitesNum(thresholds[key].alertedSitesNum()+1)
-            window.model.showingLegend(true)
-            @showLegend(true)
-          else
-            b = false
-      for key,threshold of thresholds
-        if threshold.alertedSitesNum() == 0
-          thresholds.splice(key,1)
-      return thresholds
-
-    operateWithCondition: (conditions, site, isAllCondition) =>
-      b = true
-      for key, condition of conditions
-        operator = condition.op().code()
-        if condition.valueType().code() is 'percentage'
-          percentage = (site?.properties()[condition.compareField()] * condition.value())/100
-          compareField = percentage
-        else
-          compareField = condition.value()
-          
-        field = site?.properties()[condition.field()]
-        switch operator
-          when "eq","eqi"
-            if field is compareField
-              b = true
-            else
-              b = false
-          when "gt"
-            if field > compareField
-              b = true
-            else
-              b = false   
-          when "lt"
-            if field < compareField
-              b = true
-            else
-              b = false
-          when "con"
-            if typeof field != 'undefined' && field.toLowerCase().indexOf(compareField.toLowerCase()) != -1
-              b = true
-            else
-              b = false                   
-          else
-            null
-        if isAllCondition == "true"
-          return null if b == false            
-        else
-          return site if b == true            
-          return null if b == false && parseInt(key) == conditions.length-1
-
-      return site
-
 
     loadCurrentSnapshotMessage: =>
       @viewingCurrentSnapshotMessage = ko.observable()
@@ -148,6 +86,8 @@ onCollections ->
 
         @fields(fields)
         @refineFields(fields)
+
+    findFieldByCode: (code) => (field for field in @fields() when field.code == code)[0]
 
     findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 

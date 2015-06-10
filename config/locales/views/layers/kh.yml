@@ -2,7 +2,7 @@ kh:
   views:
     layers:
       title: "ស្រទាប់"
-      description: "គ្រប់គ្រងស្រទាប់ និង ហ្វៀល របស់ទិន្នន័យតបន់នេះ"
+      description: "គ្រប់គ្រងស្រទាប់ និង ហ្វៀល របស់ទិន្នន័យតំបន់នេះ"
       name: "ឈ្មោះ"
       saving_layer: "កំពុងរក្សាទុកស្រទាប់, សូមរង់ចាំ..."
       save_layer: "រក្សាទុក ស្រទាប់"
@@ -29,6 +29,7 @@ kh:
         identifier: "អត្តសញ្ញាណ"
         email: "អ៊ុីមែល"
         phone: "លេខទូរស័ព្ធ"
+        location: "កន្លែង នៅក្បែរ"
       form:
         remove_field: "លុបហ្វៀល"
         move_field_up: "រំកិលហ្វៀលឡើង"
@@ -80,3 +81,12 @@ kh:
           is_select_then_skip_form_to: "ត្រូវបានជ្រើសរើស រំលងទៅកាន់"
           add_skip_logic: "បន្ថែមរបៀបកំណត់ការរំលង"
           enable_skip_logic_for_this_field: "បើកអោយដំណើរការសំរាប់រំលងហ្វៀល"
+          number_of_digits_precision: "ចំនួនខ្ទង់ទសភាគ"
+          maximum_search_length: "ចម្ងាយស្វែងរកអតិបរមា ( ម៉ែត្រ )"
+          import_places: "នាំចូល កន្លែង"
+      defaults:
+        default_layer: "ស្រទាប់លំនាំដើម"
+        name: "ឈ្មោះ"
+        location: "ទីតាំង"
+        visible: "អាចមើលឃើញ"
+        invisible: "មើលមិនឃើញ"

@@ -28,8 +28,15 @@ ResourceMap::Application.routes.draw do
       get :visible_layers_for
     end
     resources :layers do
+      
       member do
         put :set_order
+      end
+
+      collection do
+        post :upload_layers
+        get :adjust_layers
+        get :pending_layers
       end
     end
     resources :fields
@@ -62,6 +69,7 @@ ResourceMap::Application.routes.draw do
     get 'recreate_index'
     get 'search'
     post 'decode_hierarchy_csv'
+    post 'decode_location_csv'
 
     get 'sites_info'
 
@@ -85,6 +93,7 @@ ResourceMap::Application.routes.draw do
   resources :sites do
     get 'root_sites'
     get 'search', :on => :collection
+    get 'search_alert_site', :on => :collection
 
     post 'update_property'
   end
@@ -101,6 +110,8 @@ ResourceMap::Application.routes.draw do
 
   namespace :api do
     get 'collections/:id' => 'collections#show',as: :collection
+    get 'collections/:id/export_layers' => 'collections#export_layers', as: :export_layers
+    get 'collections/:id/download_location_csv' => 'collections#download_location_csv', as: :download_location_csv
     get 'collections/:id/sample_csv' => 'collections#sample_csv',as: :sample_csv
     get 'collections/:id/count' => 'collections#count',as: :count
     get 'collections/:id/geo' => 'collections#geo_json',as: :geojson
@@ -109,7 +120,8 @@ ResourceMap::Application.routes.draw do
     # match 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', :via => :put
     # put 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', as: :collections
     resources :tokens, :only => [:index, :destroy]
-    resources :collections do      
+    resources :collections do  
+      get 'sites_by_term'    
       member do 
         put 'update_sites'
         get 'get_fields'
@@ -133,15 +145,30 @@ ResourceMap::Application.routes.draw do
     # v1
     namespace :v1 do
       resources :collections do
-        resources :sites, only: [:create,:index,:update,:show]
-        resources :fields, only: [:create,:index,:update,:show]
+        resources :sites, only: [:create,:index,:update,:show] do
+          get :visible_layers_for, on: :member
+        end
+        resources :memberships, only: [:index] do
+          collection do
+            get 'search'
+          end
+        end
+        resources :fields, only: [:create,:index,:update,:show] 
+        resources :layer_memberships, only: [:create,:index,:update,:show]
+        resources :site_permissions, only: [:create,:index,:update,:show]
+      end
+      namespace :admin do
+        resources :collections
       end
     end
   end
 
   namespace :mobile do
     resources :collections do
-      resources :sites
+      resources :sites do
+        get :visible_layers_for, on: :member
+      end
+      resources :sites_permission
       match 'create_offline_site' => 'sites#create_offline_site', :via => :post
     end
     match 'collections/:collection_id/sites/:id/update_offline_site' => 'sites#update_offline_site', :via => :put

@@ -29,6 +29,7 @@ en:
         identifier: "Identifier"
         email: "Email"
         phone: "Phone"
+        location: "Nearby Places"
       form:
         remove_field: "Remove field"
         move_field_up: "Move field up"
@@ -58,6 +59,7 @@ en:
           there_was: "There was"
           an_error: "an error"
           processing_the_hierarchy_file: "processing the hierarchy file"
+          processing_the_location_file: "processing the location file"
           uploading: "Uploading, please wait..."
           advanced: "Advanced"
           attributes: "Attributes"
@@ -80,3 +82,12 @@ en:
           is_select_then_skip_form_to: "is selected then skip form to"
           add_skip_logic: "Add skip logic"
           enable_skip_logic_for_this_field: "Enable skip logic for this field"
+          number_of_digits_precision: "Number of digits precision"
+          maximum_search_length: "Maximum search length(meter)"
+          import_places: "Import places"
+      defaults:
+        default_layer: "Default layer"
+        name: "Name"
+        location: "Location"
+        visible: "visible"
+        invisible: "invisible"

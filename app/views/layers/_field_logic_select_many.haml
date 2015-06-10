@@ -27,7 +27,7 @@
             = t('views.layers.form.field.any_of_following')
     %ul{style: 'padding:0px; list-style:none'}
       %li{ko(with: '$root.newFieldLogic()')}
-        %div.box.w25{style: 'padding-bottom:10px'}
+        %div.box.w25{style: 'padding:10px !important'}
           %span.smalltext.left{style: 'padding-right:18px;padding-top:10px;'}= t('views.layers.form.field.if_input_is')
           = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select', event: '{ change: $root.addOptionFieldLogic }'), style: 'height:30px;margin-left:0px;'
           %button.clist-add{ko(click: '$root.addOptionFieldLogic', enable: '$root.fieldSelectManyLogicValid'), title: 'Add another option'}
@@ -39,7 +39,7 @@
           //ko
           %br
           %span.smalltext= t('views.layers.form.field.skip_form_to')
-          %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id, selectedOptions: field_id', style: 'max-width:135px;height:30px'}
+          %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id', style: 'max-width:135px;height:30px'}
             /ko if: $index() == 0
             %option{value: ""}= t('views.layers.form.field.no_value')
             //ko
@@ -70,7 +70,8 @@
         %label{ko(text: 'label')}
       //ko
     %span.smalltext= t('views.layers.form.field.is_select_then_skip_form_to')
-    %label{ko(text: '$root.to_field_name(field_id)')}
+    / %label{ko(text: :field_code)}
+    %label{ko(text: '$root.to_field_name(field_code)')}
     %br
     %button.farrow{ko(click: '$root.editFieldLogic'), style:'margin-bottom:0px;margin-top:0px', title: t('views.layers.edit_layer')}= t('views.layers.edit')
   .rightbuttons
@@ -105,7 +106,7 @@
             = t('views.layers.form.field.any_of_following')
     %ul{style: 'padding:0px; list-style:none'}
       %li{ko(with: '$root.newFieldLogic()')}
-        %div.box.w25{style: 'padding-bottom:10px'}
+        %div.box.w25{style: 'padding:10px !important'}
           %span.smalltext.left{style: 'padding-right:18px;padding-top:10px;'}= t('views.layers.form.field.if_input_is')
           = select_tag :value, nil, 'data-bind' => kov(attr: '{id: label}', options: '$root.currentField().impl().options()', optionsText: 'function(item) { return item.label }', optionsValue: 'function(item) { return item.id }', value: 'value', optionsCaption: 'window.model.default_select', event: '{ change: $root.addOptionFieldLogic }'), style: 'height:30px;margin-left:0px;'
           %button.clist-add{ko(click: '$root.addOptionFieldLogic', enable: '$root.fieldSelectManyLogicValid'), title: 'Add another option'}
@@ -117,7 +118,7 @@
           //ko
           %br
           %span.smalltext= t('views.layers.form.field.skip_form_to')
-          %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id, selectedOptions: field_id', style: 'max-width:135px;height:30px'}
+          %select{"data-bind" => 'foreach: $root.selectLogicLayers(), value: field_id', style: 'max-width:135px;height:30px'}
             /ko if: $index() == 0
             %option{value: ""}= t('views.layers.form.field.no_value')
             //ko

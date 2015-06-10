@@ -1,18 +1,21 @@
 onLayers ->
   class @Layer
-    constructor: (data) ->
+    constructor: (data, isPending = false) ->
       @id = ko.observable data?.id
       @name = ko.observable data?.name
       @public = ko.observable data?.public
       @ord = ko.observable data?.ord
       @threshold_ids = data?.threshold_ids ? []
+      @isPending = ko.observable isPending ? false
       if data?.fields
         @fields = ko.observableArray($.map(data.fields, (x) => new Field(@, x)))
       else
         @fields = ko.observableArray([])
       @hasFocus = ko.observable(false)
       @nameError = ko.computed => if @hasName() then null else "the layer's Name is missing"
+      @importError = ko.observable()
       @fieldsError = ko.computed =>
+        @importError("")
         return "the layer must have at least one field" if @fields().length == 0
 
         codes = []
@@ -34,8 +37,14 @@ onLayers ->
               return "a field with name '#{field.name()}' already exists in the layer named #{layer.name()}" if names.indexOf(field.name()) >= 0
               return "a field with code '#{field.code()}' already exists in the layer named #{layer.name()}"  if codes.indexOf(field.code()) >= 0
 
-        null
-      @error = ko.computed => @nameError() || @fieldsError()
+        #   #####
+          if window.model.allLayers
+            for layer in window.model.allLayers
+              for field in layer.fields()
+                return "a field with name '#{field.name()}' already exists in the layer named #{layer.name()}" if names.indexOf(field.name()) >= 0
+                return "a field with code '#{field.code()}' already exists in the layer named #{layer.name()}"  if codes.indexOf(field.code()) >= 0
+
+      @error = ko.computed => @nameError() || @fieldsError() || @importError()
       @valid = ko.computed => !@error()
 
     hasName: => $.trim(@name()).length > 0

@@ -5,8 +5,13 @@ module Concerns::MobileDeviceDetection
     helper_method :mobile_device?
   end
 
-  def mobile_device?
-    from_mobile_browser? || session[:mobile_param] == "1"
+  def mobile_device?  
+    if params[:_desktop] == "1" || params[:_desktop] == "true"
+      return false
+    else
+      session[:desktop_param] = false
+      from_mobile_browser? || session[:mobile_param] == "1" 
+    end
   end
 
   def from_mobile_browser?

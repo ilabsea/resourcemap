@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   before_create :reset_authentication_token
   # before_save :ensure_authentication_token
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
-  has_many :memberships
+  has_many :memberships, :dependent => :destroy
   has_many :channels
   has_many :collections, through: :memberships, order: 'collections.name ASC'
   has_one :user_snapshot
@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
 
   def create_collection(collection)
     return false unless collection.save
-    memberships.create! collection_id: collection.id, admin: true
+    memberships.create! collection_id: collection.id, admin: true, owner: true
     collection.register_gateways_under_user_owner(self)
     collection
   end

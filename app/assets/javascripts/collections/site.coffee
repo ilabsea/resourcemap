@@ -11,7 +11,7 @@ onCollections ->
       @collection = collection
       @selected = ko.observable()
       @id = ko.observable data?.id
-      @name = ko.observable data?.name
+      @name = ko.observable data?.name ? ""
       @layers = ko.observableArray()
       @fields = ko.observableArray()
       @fieldsInitialized = false
@@ -28,14 +28,18 @@ onCollections ->
       @alert = ko.observable data?.alert
       @locationText = ko.computed
         read: =>
-          if @hasLocation()
+          if @hasLocation() && @collection.isVisibleLocation
             (Math.round(@lat() * 100000000000) / 100000000000) + ', ' + (Math.round(@lng() * 100000000000) / 100000000000)
           else
             ''
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
-      @valid = ko.computed => @hasName() and @hasInputMendatoryProperties()
+      @valid = ko.computed => 
+        if collection.isVisibleName
+          @hasName() and @hasInputMendatoryProperties()
+        else
+          @hasInputMendatoryProperties()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
 
@@ -45,8 +49,11 @@ onCollections ->
 
     hasInputMendatoryProperties: =>
       for field in @fields()
-        if field.is_mandatory and !field.value()
-          return false
+        if field.is_mandatory
+          if field.kind == 'yes_no' && field.value() != null
+            return true
+          if !field.value()
+            return false
       return true
 
     propertyValue: (field) =>
@@ -61,6 +68,8 @@ onCollections ->
         @position(data)
         @updatedAt(data.updated_at)
       @collection.fetchLocation()
+
+    findFieldByCode: (code) => (field for field in @fields() when field.code == code)[0]
 
     findFieldByEsCode: (esCode) => (field for field in @fields() when field.esCode == esCode)[0]
 
@@ -99,6 +108,17 @@ onCollections ->
           if field.originalValue and !field.value()
             @photosToRemove.push(field.originalValue)
 
+    roundNumericDecimalNumber: (collection) =>
+      tmpProperties = this.properties()
+      for field in @fields()
+        if(field.kind == 'numeric' && field.allowsDecimals() && field.digitsPrecision != undefined)
+          $.map(tmpProperties, (value, key) =>
+            if key.toString() == field.esCode.toString()
+              field.value(parseInt(value * Math.pow(10, parseInt(field.digitsPrecision))) / Math.pow(10, parseInt(field.digitsPrecision)))
+              tmpProperties[key.toString()] = field.value()
+          )
+      this.properties(tmpProperties)
+
     copyPropertiesFromCollection: (collection) =>
       oldProperties = @properties()
 
@@ -109,7 +129,7 @@ onCollections ->
         if field.kind == 'hierarchy' && @id()
           hierarchyChanges.push({field: field, oldValue: oldProperties[field.esCode], newValue: field.value()})
 
-        if field.value()
+        if field.value() != null
           value = field.value()
 
           @properties()[field.esCode] = value
@@ -235,6 +255,7 @@ onCollections ->
         @editingLocation(true)
         @startEditLocationInMap()
 
+    
     startEditLocationInMap: =>
       @originalLocation = @position()
 
@@ -257,7 +278,7 @@ onCollections ->
         @alertMarker.setData( id: @id(), collection_id: @collection.id, lat: @lat(), lng: @lng(), color: @color, icon: @icon, target: true)
       else
         @marker.setPosition(@position()) if position
-        @marker.setDraggable false
+        @marker.setDraggable false if @marker
         @deleteMarker() if !@position()
 
       window.model.setAllMarkersActive()
@@ -343,10 +364,13 @@ onCollections ->
         field.editing(false)
         field.originalValue = field.value()
 
+      @getLocationFieldOption()
+
       @inEditMode(true)
-      @startEditLocationInMap()
+      @startEditLocationInMap() if @collection.isVisibleLocation
       window.model.initDatePicker()
       window.model.initAutocomplete()
+      $('textarea').autogrow()
 
     exitEditMode: (saved) =>
       @inEditMode(false)
@@ -420,8 +444,8 @@ onCollections ->
       json =
         id: @id()
         name: @name()
-      json.lat = @lat() if @lat()
-      json.lng = @lng() if @lng()
+      json.lat = @lat() if @lat() && @collection.isVisibleLocation
+      json.lng = @lng() if @lng() && @collection.isVisibleLocation
       json.properties = @properties() if @properties()
       json
 
@@ -439,7 +463,8 @@ onCollections ->
         for layer in @layers()
           for field in layer.fields
             fields.push(field)
-        @fields(fields)
+        @fields(fields) 
+        @getLocationFieldOption(@lat(), @lng())
 
         @copyPropertiesToFields()
         $('a#previewimg').fancybox()
