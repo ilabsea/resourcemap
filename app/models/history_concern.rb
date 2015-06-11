@@ -18,11 +18,10 @@ module HistoryConcern
   end
 
   def create_history
-    debugger
     history = histories.new
     attributes.each_pair do |att_name, att_value|
-      unless ['id', 'created_at', 'updated_at'].include? att_name
-        history[att_name] = att_value
+      unless ['id', 'created_at', 'updated_at', 'device_id', 'external_id'].include? att_name
+        history[att_name] = att_value if history[att_name]
       end
     end
     history["valid_since"] = updated_at

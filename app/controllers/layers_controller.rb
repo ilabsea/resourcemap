@@ -28,6 +28,7 @@ class LayersController < ApplicationController
 
   def create
     layer = layers.new params[:layer]
+    layer.collection_id = params[:collection_id]
     layer.user = current_user
     layer.save!
     current_user.layer_count += 1
@@ -208,6 +209,10 @@ class LayersController < ApplicationController
     end
 
     params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
+  end
+
+  def layer_params
+    params.require(:layer).permit(:name, :ord, :fields_attributes => {})
   end
 
 end

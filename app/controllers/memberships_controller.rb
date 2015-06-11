@@ -30,7 +30,7 @@ class MembershipsController < ApplicationController
         }
       }
     end
-    render json: memberships
+    render json: memberships, :root => false
   end
 
   def create
@@ -47,18 +47,18 @@ class MembershipsController < ApplicationController
   def invitable
     users = User.
       where('email LIKE ?', "#{params[:term]}%").
-      where("id not in (?)", collection.memberships.value_of(:user_id)).
+      where("id not in (?)", collection.memberships.pluck(:user_id)).
       order('email')
-    render json: users.pluck(:email)
+    render json: users.pluck(:email), :root => false
   end
 
   def search
     users = User.
       where('email LIKE ?', "#{params[:term]}%").
-      where("id in (?)", collection.memberships.value_of(:user_id)).
+      where("id in (?)", collection.memberships.pluck(:user_id)).
       order('email')
 
-    render json: users.pluck(:email)
+    render json: users.pluck(:email), :root => false
   end
 
   def destroy
