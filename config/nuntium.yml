@@ -6,9 +6,9 @@ production:
 
 development:
   url: http://nuntium.instedd.org
-  account: rm.instedd
-  application: rm.instedd
-  password: 123456
+  account: dyrm.dev
+  application: dyrm.dev
+  password: dev c0der
 
 testing:
   url: http://nuntium.instedd.org

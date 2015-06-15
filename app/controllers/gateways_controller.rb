@@ -6,11 +6,12 @@ class GatewaysController < ApplicationController
     method = Channel.nuntium_info_methods
     respond_to do |format|
       format.html 
-      format.json { render json: params[:without_nuntium] ?  current_user.channels.where("channels.is_enable=?", true).all.as_json : current_user.channels.select('channels.id,channels.name,channels.password,channels.is_enable,channels.basic_setup, channels.advanced_setup, channels.national_setup').all.as_json(methods: method)}
+      format.json { render json: (params[:without_nuntium] ?  current_user.channels.where("channels.is_enable=?", true).all.as_json : current_user.channels.select('channels.id,channels.name,channels.password,channels.is_enable,channels.basic_setup, channels.advanced_setup, channels.national_setup').all.as_json(methods: method)), :root => false}
     end
   end
 
   def create
+    debugger
     channel = current_user.channels.new params[:gateway]
     if channel.valid?
       channel.save!

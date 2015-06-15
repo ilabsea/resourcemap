@@ -8,7 +8,7 @@ class ChannelsController < ApplicationController
         add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
         add_breadcrumb I18n.t('views.plugins.channels.channels'), collection_channels_path(collection)
       end
-      format.json { render json: collection.channels.all.as_json }
+      format.json { render json: collection.channels.all.as_json, :root => false }
     end
   end
 

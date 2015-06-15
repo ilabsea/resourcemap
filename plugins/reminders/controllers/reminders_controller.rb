@@ -8,7 +8,7 @@ class RemindersController < ApplicationController
         add_breadcrumb I18n.t('views.collections.tab.reminders'), collection_reminders_path(collection)
       end
       all_reminders = reminders.all.as_json(include: [:repeat], methods: [:reminder_date], except: [:schedule])
-      format.json { render json: apply_time_zone(all_reminders)}
+      format.json { render json: apply_time_zone(all_reminders), :root => false}
     end
   end
 
@@ -52,15 +52,15 @@ class RemindersController < ApplicationController
       utc_offset = tz.utc_offset / 3600
       time_zones << {:identifier => "#{tz.name}", :text => "(GMT #{'%.2f' % utc_offset}): #{tz.name}"}
     end
-    render :json => {:list_time_zone => time_zones, :user_time_zone => current_user.time_zone}
+    render :json => {:list_time_zone => time_zones, :user_time_zone => current_user.time_zone}, :root => false
   end
 
   def apply_time_zone reminders
     arr = []
     reminders.each do |r|
-      p r[:reminder_date].in_time_zone(r["time_zone"])
+      p r
       r["next_run"] = r["next_run"].in_time_zone(r["time_zone"]) if r["time_zone"]
-      r[:reminder_date] = r[:reminder_date].in_time_zone(r["time_zone"]) if r["time_zone"]
+      r["reminder_date"] = r["reminder_date"].in_time_zone(r["time_zone"]) if r["time_zone"]
       arr.push r
     end
     arr
