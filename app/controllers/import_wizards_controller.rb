@@ -23,7 +23,7 @@ class ImportWizardsController < ApplicationController
   end
 
   def guess_columns_spec
-    render json: ImportWizard.guess_columns_spec(current_user, collection)
+    render json: ImportWizard.guess_columns_spec(current_user, collection), :root =>false
   end
 
   def adjustments

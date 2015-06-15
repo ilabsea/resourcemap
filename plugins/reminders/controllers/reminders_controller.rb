@@ -58,7 +58,6 @@ class RemindersController < ApplicationController
   def apply_time_zone reminders
     arr = []
     reminders.each do |r|
-      p r
       r["next_run"] = r["next_run"].in_time_zone(r["time_zone"]) if r["time_zone"]
       r["reminder_date"] = r["reminder_date"].in_time_zone(r["time_zone"]) if r["time_zone"]
       arr.push r
