@@ -346,7 +346,6 @@ onCollections ->
     @onSitesChanged: (listener) ->
       @sitesChangedListeners.push listener
     @notifySitesChanged: ->
-      console.log 'loaded'
       @loading(false)
       for listener in @sitesChangedListeners
         listener()
