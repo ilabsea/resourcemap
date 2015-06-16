@@ -171,4 +171,6 @@ class ApplicationController < ActionController::Base
     headers['Access-Control-Allow-Origin'] = '*' 
   end
 
+  
+
 end

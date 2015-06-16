@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.17'
 gem 'mysql2'
-gem 'devise'
+gem 'devise', '2.2.4'
 gem 'haml-rails'
 gem 'decent_exposure'
 gem "instedd-rails", '0.0.17'
@@ -10,7 +10,7 @@ gem "breadcrumbs_on_rails"
 gem "tire"
 gem "valium"
 gem "resque", :require => "resque/server"
-gem 'resque-scheduler', :require => 'resque_scheduler'
+gem 'resque-scheduler', "~> 2.5.5", :require => 'resque_scheduler'
 gem "nuntium_api", "~> 0.13", :require => "nuntium"
 gem 'ice_cube'
 gem 'knockoutjs-rails'
@@ -24,16 +24,24 @@ gem 'newrelic_rpm'
 gem 'cancan'
 gem 'aws-sdk'
 gem 'whenever', :require => false
-gem 'georuby'
+gem 'georuby', "2.2.1"
+gem 'zip-zip'
 gem 'dbf', :require => 'dbf'
 gem 'rubyzip', :require => 'zip/zip'
 gem "password_strength"
 gem "ruby-recaptcha"
 gem 'i18n-coffee'
+gem "omniauth"
+gem "omniauth-openid"
+gem 'alto_guisso', github: "instedd/alto_guisso", branch: 'master'
+gem 'alto_guisso_rails', github: "instedd/alto_guisso_rails", branch: 'master'
+gem 'oj'
+gem 'activerecord-import'
+gem 'active_model_serializers'
 
 group :test do
   gem 'shoulda-matchers'
-  gem 'ci_reporter'
+  gem 'ci_reporter', "1.8.4"
   gem 'selenium-webdriver'
   gem 'nokogiri'
   gem 'capybara'

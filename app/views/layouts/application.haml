@@ -40,14 +40,14 @@
             %ul
               %li
                 %a{:href => "mailto:support@instedd.org?subject=[#{application_name.underscore}-bug]"}= t('views.report_a_bug')
-              %li= link_to t('views.account.sign_out'), destroy_user_session_path, method: :delete
+              %li= link_to t('views.account.sign_out'), guisso_sign_out_path_for(:user, after_sign_out_url: root_url), method: :delete
       %li
         = link_to '', edit_user_registration_path, class: 'fsettings'
     - else
       %li{style: 'line-height:20px'}
         = link_to t('views.account.create_account'), new_user_registration_path, class: 'fedit', style: 'padding-top:0px !important'
       %li{style: 'line-height:20px'}
-        = link_to t('views.account.login'), new_user_session_path(:_desktop => 1), class: 'fuser', style: 'padding-top:0px !important'
+        = link_to t('views.account.login'), guisso_sign_in_path_for(:user), class: 'fuser', style: 'padding-top:0px !important'
     %li{style: "padding: 4px 5px;line-height:20px", id: "locale-switcher"}
       %div{style: "padding-top:0px;"}
         = show_language_options

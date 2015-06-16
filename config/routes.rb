@@ -1,6 +1,8 @@
 ResourceMap::Application.routes.draw do
 
-  devise_for :users, :controllers => {:registrations => "registrations", :sessions => 'sessions' }
+  # devise_for :users, :controllers => {:registrations => "registrations", :sessions => 'sessions' }
+  devise_for :users, controllers: {registrations: "registrations", omniauth_callbacks: "omniauth_callbacks"}
+  guisso_for :user
 
   # match 'messaging' => 'messaging#index'
   match 'nuntium' => 'nuntium#receive', :via => :post
@@ -160,6 +162,50 @@ ResourceMap::Application.routes.draw do
       namespace :admin do
         resources :collections
       end
+    end
+
+    # v2
+    namespace :v2 do
+      resources :collections, except: [:update] do
+        resources :memberships, only: [:index, :create, :destroy] do
+          member do
+            post :set_admin
+            post :unset_admin
+          end
+          collection do
+            get 'invitable'
+          end
+        end
+
+        resources :layers, except: [:show, :new, :edit] do
+          resources :fields, only: [:create]
+        end
+
+        resources :fields, only: [:index] do
+          collection do
+            get 'mapping'
+          end
+        end
+
+        member do
+          get 'sample_csv', as: :sample_csv
+          get 'count', as: :count
+          get 'geo', as: :geojson, to: "collections#geo_json"
+          post 'sites', to: 'sites#create'
+          post 'update_sites', to: 'collections#bulk_update'
+        end
+      end
+
+      resources :sites, only: [:show, :destroy, :update] do
+        member do
+          post :update_property
+          post :partial_update
+        end
+      end
+      get 'histogram/:field_id', to: 'collections#histogram_by_field', as: :histogram_by_field
+      get 'collections/:collection_id/sites/:id/histories' => 'sites#histories', as: :histories
+      get 'activity' => 'activities#index', as: :activity
+      resources :tokens, :only => [:index, :destroy]
     end
   end
 
