@@ -3,24 +3,9 @@ source 'https://rubygems.org'
 gem 'rails', '~> 4.1.6'
 gem 'mysql2'
 gem 'devise'
-# gem 'haml-rails'
-# gem 'decent_exposure'
-# gem "instedd-rails", '0.0.17'
-# gem "breadcrumbs_on_rails"
 gem "tire"
 gem "valium"
-# gem "resque", :require => "resque/server"
-# gem 'resque-scheduler', :require => 'resque_scheduler'
-# gem "nuntium_api", "~> 0.13", :require => "nuntium"
-# gem 'ice_cube'
-# gem 'knockoutjs-rails'
-# gem 'will_paginate'
-# gem 'jquery-rails', "~> 2.0.2"
-# gem 'foreman'
-# gem 'uuidtools-offline'
 gem 'rmagick', '2.13.2', :require => false
-# gem 'newrelic_rpm'
-# gem 'cancan'
 gem 'aws-sdk'
 gem 'whenever', :require => false
 gem 'georuby', '2.2.1'
@@ -32,17 +17,13 @@ gem "ruby-recaptcha"
 gem 'i18n-coffee'
 gem 'rack-offline'
 
-
 gem 'haml-rails', '~> 0.4'
 gem 'gettext', '~> 3.1.2'
-# gem 'gettext_i18n_rails_js', git: "https://github.com/juanboca/gettext_i18n_rails_js.git", branch: 'master'
 gem 'ruby_parser', :require => false, :group => :development
 gem 'haml-magic-translations'
 gem 'decent_exposure'
 gem "instedd-rails", '~> 0.0.24'
 gem "breadcrumbs_on_rails"
-# gem "elasticsearch"
-# gem "elasticsearch-ruby"
 gem "resque", :require => "resque/server"
 gem 'resque-scheduler', '2.5.5', :require => 'resque_scheduler'
 gem "nuntium_api", "~> 0.13", :require => "nuntium"
@@ -54,14 +35,8 @@ gem 'foreman'
 gem 'uuidtools'
 gem 'newrelic_rpm'
 gem 'cancancan', '~> 1.9'
-gem "omniauth"
-gem "omniauth-openid"
-gem 'alto_guisso', git: "https://github.com/instedd/alto_guisso.git", branch: 'master'
-gem 'oj'
 gem 'carrierwave'
 gem 'mini_magick'
-gem 'activerecord-import'
-gem 'active_model_serializers'
 gem 'includes-count'
 gem 'poirot_rails', git: "https://github.com/instedd/poirot_rails.git", branch: 'master' unless ENV['CI']
 
@@ -70,6 +45,13 @@ gem 'treetop', '1.4.15'
 gem 'protected_attributes'
 gem 'rails-observers'
 gem 'actionpack-page_caching'
+gem "omniauth"
+gem "omniauth-openid"
+gem 'alto_guisso', github: "instedd/alto_guisso", branch: 'master'
+gem 'alto_guisso_rails', github: "instedd/alto_guisso_rails", branch: 'master'
+gem 'oj'
+gem 'activerecord-import'
+gem 'active_model_serializers'
 gem 'actionpack-action_caching'
 gem 'activerecord-deprecated_finders'
 

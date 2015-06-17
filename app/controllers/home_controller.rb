@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   
-  before_filter :authenticate_user!, :except => [:show, :index]
+  # before_filter :authenticate_user!, :except => [:show, :index]
 
   def index
     if current_user && !params[:explicit]

@@ -63,6 +63,12 @@ Field.prototype.getField = function() {
     case "hierarchy":
       return this.getHierarchyField();
       break;
+    case "site":
+      return this.getSiteField();
+      break;
+    case "user":
+      return this.getUserField();
+      break;
     default:
       return this.getTextField();
   }
@@ -104,19 +110,46 @@ Field.prototype.getHierarchyField = function() {
 
 };
 
+Field.prototype.getSiteField = function() {
+  siteName = Collection.prototype.getSiteName(this.value);
+  return  '<div class="ui-controlgroup-controls">'+
+            '<label>' + this.label + '</label>'+
+            '<div id="div_wrapper_' + this.code + '" class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield ui-body-c">'+
+              '<input value="' + siteName +'" onblur="Collection.prototype.validFieldSite(this.id)" onkeyup="Collection.prototype.filterSite(this.id)"  id="' + this.code + '" class="ui-input-text ui-body-c" data-type="search">'+
+              '<input type="hidden" value="' + this.value +'" name="properties['+this.id+']" id="site_'+this.code+'">'+
+            '</div>'+
+          '</div>'+
+          '<div class="ui-controlgroup-controls">'+
+            '<ul id="filterSiteList_'+this.code+'" class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-role="listSitesView" data-inset="true">'+
+            '</ul>'+
+          '</div>';
 
+};
 
+Field.prototype.getUserField = function(){
+  return  '<div class="ui-controlgroup-controls">'+
+            '<label>' + this.label + '</label>'+
+            '<div id="div_wrapper_' + this.code + '" class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield ui-body-c">'+
+              '<input value="' + this.value +'" name="properties['+this.id+']" onblur="Collection.prototype.validFieldUser(this.id)"  onkeyup="Collection.prototype.filterUser(this.id)"  id="' + this.code + '" class="ui-input-text ui-body-c" data-type="search">'+
+              '<input type="hidden" value="' + this.value +'"  id="user_'+this.code+'">'+
+            '</div>'+
+          '</div>'+
+          '<div class="ui-controlgroup-controls">'+
+            '<ul id="filterUserList_'+this.code+'" class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-role="listUserView" data-inset="true">'+
+            '</ul>'+
+          '</div>';
+};
 
 Field.prototype.getTextField = function() {  
   return '<div class="ui-corner-all ui-controlgroup ui-controlgroup-vertical" style="margin-left:10px">'+
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.label + '</label>'+
         '<div id="div_wrapper_' + this.code + '" class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="text" datatype="text">'+
+          '<input value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="ui-input-text ui-body-c" type="text" datatype="text">'+
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+
-    '</div>';
+    '</div>'; 
 };
 
 Field.prototype.getNumericField = function() {

@@ -30,6 +30,126 @@ Collection.prototype.pushingPendingSites = function(){
 
 }
 
+Collection.prototype.getSiteName = function(value){
+  for(var a=0; a<window.sites.length; a++){
+    if(window.sites[a]['id'] == value){
+      return window.sites[a]['name'];
+    }
+  }
+  return "";
+}
+
+Collection.prototype.filterSite = function(fieldId){
+  Collection.prototype.clearSiteId(fieldId);
+  value = $('#'+fieldId).val();
+  if(value == ""){
+    $('#filterSiteList_'+fieldId).empty();
+    return;
+  }
+  collectionId = window.currentCollectionId;
+  $.ajax({
+      url: '/collections/' + collectionId + '/sites_by_term.json',
+      type: 'GET',
+      success: function(sites){
+        Collection.prototype.buildSiteList(sites, fieldId);
+      },error: function(data){
+        
+      },
+      data: {term: value}
+  }); 
+}
+
+Collection.prototype.filterUser = function(fieldId){
+  $('#user_'+fieldId).val(null);
+  value = $('#'+fieldId).val();
+  if(value == ""){
+    $('#filterUserList_'+fieldId).empty();
+    return;
+  }
+  collectionId = window.currentCollectionId;
+  $.ajax({
+      url: '/collections/' + collectionId + '/memberships/search.json',
+      type: 'GET',
+      success: function(users){
+        Collection.prototype.buildUserList(users, fieldId);
+      },error: function(data){
+        
+      },
+      data: {term: value}
+  }); 
+}
+
+Collection.prototype.buildUserList = function(users, fieldId){
+  userList = $('#filterUserList_'+fieldId);
+  userList.empty();
+  for(i=0; i<users.length; i++){
+    if(i == 0){
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+    }else if(i == sites.length - 1){
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
+    }else{
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
+    }
+    userEle = li +  '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+            '<span>'+users[i]+'</span>'+
+      '</div>'+
+    '</li>';
+    
+    userList.append(userEle);
+  }
+}
+
+Collection.prototype.validFieldUser = function(fieldId){
+  userVal = $('#user_'+fieldId).val();
+  if(userVal == ''){
+    $('#'+fieldId).val('');
+  }
+}
+
+Collection.prototype.selectUser = function(userEmail, fieldId){
+  $('#'+fieldId).val(userEmail);
+  $('#user_'+fieldId).val(userEmail);
+  $('#filterUserList_'+fieldId).empty();
+}
+
+
+Collection.prototype.clearSiteId = function(fieldId){
+  $('#site_'+fieldId).val(null);
+}
+
+Collection.prototype.validFieldSite = function(fieldId){
+  siteVal = $('#site_'+fieldId).val();
+  if(siteVal == ''){
+    $('#'+fieldId).val(null);
+  }
+}
+
+Collection.prototype.buildSiteList = function(sites, fieldId){
+  siteList = $('#filterSiteList_'+fieldId);
+  siteList.empty();
+  for(i=0; i<sites.length; i++){
+    if(i == 0){
+      li = '<li onclick="Collection.prototype.selectSite('+sites[i]["id"] +',\''+ sites[i]["name"] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+    }else if(i == sites.length - 1){
+      li = '<li onclick="Collection.prototype.selectSite('+sites[i]["id"] +',\''+ sites[i]["name"] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
+    }else{
+      li = '<li onclick="Collection.prototype.selectSite('+sites[i]["id"] +',\''+ sites[i]["name"] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
+    }
+    siteEle = li +  '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+            '<span>'+sites[i]["name"]+'</span>'+
+      '</div>'+
+    '</li>';
+    
+    siteList.append(siteEle);
+  }
+}
+
+Collection.prototype.selectSite = function(siteId, siteName, fieldId){
+  $('#'+fieldId).val(siteName);
+  $('#site_'+fieldId).val(siteId);
+  $('#filterSiteList_'+fieldId).empty();
+}
+
 Collection.prototype.fetchFields = function() {
   var fields = [];
   var layers = this.layers();
@@ -84,7 +204,7 @@ Collection.prototype.showFormAddSite = function(schema){
 
 Collection.prototype.saveSite = function(){  
   var collectionId = window.currentCollectionId;
-  if(Collection.prototype.validateData(collectionId)){    
+  if(Collection.prototype.validateData(collectionId)){ 
     if(window.navigator.onLine){
       if(window.currentSiteId){
         var formData = new FormData($('form')[0]);
@@ -245,88 +365,84 @@ Collection.prototype.validateData = function(collectionId){
   }
   for(var k=0; k< window.collectionSchema.length; k++){
     if(window.collectionSchema[k]["id"] == collectionId){
-      var rule = SitesPermission.allRule(window.currentCollectionId, window.currentSiteId);
-      if(!rule.none){
-        for(i=0; i<schema["layers"].length;i++){
-          for(j=0; j<schema["layers"][i]["fields"].length; j++){
-            var field = schema["layers"][i]["fields"][j];
-            state = true;
-            switch(field["kind"])
-            {
-              case "text":
-                state = Collection.valiateMandatoryText(field);
-                break;
-              case "numeric":
-                value = $("#" + field["code"]).val();
-                range = field["config"]["range"];
-                digitsPrecision = field["config"]["digits_precision"];
-                if(Collection.prototype.validateNumeric(value) == false){
-                  Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
-                  return false;
+      schema = window.collectionSchema[k];
+      for(i=0; i<schema["layers"].length;i++){
+        for(j=0; j<schema["layers"][i]["fields"].length; j++){
+          var field = schema["layers"][i]["fields"][j];
+          state = true;
+          switch(field["kind"])
+          {
+            case "text":
+              state = Collection.valiateMandatoryText(field);
+              break;
+            case "numeric":
+              value = $("#" + field["code"]).val();
+              range = field["config"]["range"];
+              digitsPrecision = field["config"]["digits_precision"];
+              if(Collection.prototype.validateNumeric(value) == false){
+                Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
+                return false;
+              }
+              if(field["config"]["allows_decimals"] == "false"){
+                if(value.indexOf(".") != -1){
+                  Collection.prototype.showErrorMessage("Please enter an integer.");
+                  Collection.setFieldStyleFailed(field["code"]);
+                  return false;                  
                 }
-                if(field["config"]["allows_decimals"] == "false"){
-                  if(value.indexOf(".") != -1){
-                    Collection.prototype.showErrorMessage("Please enter an integer.");
-                    Collection.setFieldStyleFailed(field["code"]);
-                    return false;                  
+              }
+
+              if(range){
+                if(value != ""){
+                  msg = Collection.prototype.validateRange(value, range);
+                  if(msg != ""){
+                    Collection.prototype.showErrorMessage(msg);
+                    $('div').removeClass('invalid_field');
+                    Collection.setFieldStyleFailed(field["code"]);                    
+                    return false;
                   }
                 }
+              }
+              
+              if(digitsPrecision){
+                value = parseInt(value * Math.pow(10, parseInt(digitsPrecision))) / Math.pow(10, parseInt(digitsPrecision))
+                $("#" + field["code"]).val(value);
+              }
 
-                if(range){
-                  if(value != ""){
-                    msg = Collection.prototype.validateRange(value, range);
-                    if(msg != ""){
-                      Collection.prototype.showErrorMessage(msg);
-                      $('div').removeClass('invalid_field');
-                      Collection.setFieldStyleFailed(field["code"]);                    
-                      return false;
-                    }
-                  }
-                }
-                
-                if(digitsPrecision){
-                  console.log("Action");
-                  value = parseInt(value * Math.pow(10, parseInt(digitsPrecision))) / Math.pow(10, parseInt(digitsPrecision))
-                  $("#" + field["code"]).val(value);
-                  console.log(value);
-                }
-
-                state =  Collection.valiateMandatoryText(field);
-                break;
-              case "date":
-                state =  Collection.valiateMandatoryText(field);
-                break;
-              case "yes_no":
-                break;
-              case "select_one":
-                state =  Collection.valiateMandatorySelectOne(field);
-                break;
-              case "select_many":
-                state =  Collection.valiateMandatorySelectMany(field);
-                break;
-              case "phone number":
-                state =  Collection.valiateMandatoryText(field);
-                break;
-              case "email":
-                value = $("#" + field["code"]).val();
-                if(Collection.prototype.validateEmail(value) == false){
-                  Collection.prototype.showErrorMessage(field["name"] + " is not a valid email value.");
-                  return false;
-                }
-                state =  Collection.valiateMandatoryText(field);
-                break;
-              case "photo":
-                state =  Collection.valiateMandatoryPhoto(field);
-                break;
-            }
-            if(!state){
-              Collection.prototype.showErrorMessage(field["name"] + " is mandatory.");
-              Collection.setFieldStyleFailed(field["code"]);
-              return false
-            }
-            else{
-              Collection.setFieldStyleSuccess(field["code"]);
-            }
+              state =  Collection.valiateMandatoryText(field);
+              break;
+            case "date":
+              state =  Collection.valiateMandatoryText(field);
+              break;
+            case "yes_no":
+              break;
+            case "select_one":
+              state =  Collection.valiateMandatorySelectOne(field);
+              break;
+            case "select_many":
+              state =  Collection.valiateMandatorySelectMany(field);
+              break;
+            case "phone number":
+              state =  Collection.valiateMandatoryText(field);
+              break;
+            case "email":
+              value = $("#" + field["code"]).val();
+              if(Collection.prototype.validateEmail(value) == false){
+                Collection.prototype.showErrorMessage(field["name"] + " is not a valid email value.");
+                return false;
+              }
+              state =  Collection.valiateMandatoryText(field);
+              break;
+            case "photo":
+              state =  Collection.valiateMandatoryPhoto(field);
+              break;
+          }
+          if(!state){
+            Collection.prototype.showErrorMessage(field["name"] + " is mandatory.");
+            Collection.setFieldStyleFailed(field["code"]);
+            return false
+          }
+          else{
+            Collection.setFieldStyleSuccess(field["code"]);
           }
         }
       }
@@ -681,6 +797,7 @@ Collection.prototype.showListSites = function(collectionId, isFromCollectionList
       url: "/mobile/collections/" + collectionId + "/sites.json",
       success: function(sites) {
         $("#listSitesView").html("");
+        window.sites = sites;
         for(var i=0; i< sites.length; i++){
           classListName = Collection.prototype.addClassToSiteList(sites, i);
           item = Collection.prototype.getListSiteTemplate(collectionId, sites[i], classListName)
@@ -934,7 +1051,7 @@ Collection.assignSite = function(site){
   }
   var currentSchemaData = jQuery.extend(true, {}, focusSchema);
   $("#title").html(currentSchemaData["name"]);
-  var rule = SitesPermission.allRule(window.currentCollectionId, window.currentSiteId);
+  rule = SitesPermission.allRule(window.currentCollectionId, window.currentSiteId);
   $("#fields").show();
   if(rule.canRead || rule.canWrite){
     Collection.visibleLayer(window.currentCollectionId, window.currentSiteId, function(visible_layers){
