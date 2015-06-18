@@ -146,7 +146,8 @@ onCollections ->
       currentMapRequestNumber = @mapRequestNumber
 
       getCallback = (data = {}) =>
-        @loading(false)
+        # console.log 'loaded'
+        # @loading(false)
         return unless currentMapRequestNumber == @mapRequestNumber
         if @showingMap()
           @drawSitesInMap data.sites
@@ -166,6 +167,7 @@ onCollections ->
         getCallback()
       else
         @loading(true)
+        # console.log 'loading'
         $.get "/sites/search.json", query, getCallback
 
     @showLegend: =>
@@ -354,6 +356,7 @@ onCollections ->
     @onSitesChanged: (listener) ->
       @sitesChangedListeners.push listener
     @notifySitesChanged: ->
+      @loading(false)
       for listener in @sitesChangedListeners
         listener()
 

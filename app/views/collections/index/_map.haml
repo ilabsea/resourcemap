@@ -259,7 +259,7 @@
                       <!-- ko if: kind != 'photo' -->
                       <!-- ko if: !editing() -->
                       %span.arrow &nbsp;
-                      %span{ko(text: :valueUI, visible: '!editing()'), style: 'cursor:pointer;width:205px;float:left;  text-overflow:ellipsis;white-space: nowrap;overflow: hidden;'}
+                      %span{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer;width:205px;float:left;  text-overflow:ellipsis;white-space: nowrap;overflow: hidden;'}
                       %span.edit{ko(click: 'edit')} &nbsp;
                       <!-- /ko -->
                       <!-- /ko -->
@@ -275,7 +275,7 @@
                       <!-- ko if: !hasValue() &&  !error() -->
                       <!-- ko if: writeable -->
                       <!-- ko if: kind != 'photo' -->
-                      %span.arrow{ko(visible: '!editing()'), style: 'color:grey;cursor:pointer', style: 'width:205px'}= t('views.collections.index.no_value')
+                      %span.arrow{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer', style: 'width:205px'}= t('views.collections.index.no_value')
                       <!-- ko if: !editing() -->
                       %span.edit{ko(click: 'edit')} &nbsp;
                       <!-- /ko -->
@@ -326,7 +326,8 @@
       - Plugin.all.each do |plugin|
         = render_plugin_hook plugin, :map_header
     <!-- ko if: loading() -->
-    %img{src: "/images/load.gif", style: 'width:20px;'}
+    %span{style: 'width:auto;line-height:30px; vertical-align:middle'}  
+      %img{src: "/images/loader.gif"}
     <!-- /ko -->
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     <!-- ko if: !editingSite() -->
