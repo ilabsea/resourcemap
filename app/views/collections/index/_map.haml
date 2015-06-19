@@ -258,9 +258,9 @@
                       <!-- ko if: writeable -->
                       <!-- ko if: kind != 'photo' -->
                       <!-- ko if: !editing() -->
-                      %span.arrow &nbsp;
+                      %span.arrow{ko(click: 'edit'), style: 'color:grey;cursor:pointer'} &nbsp;
                       %span{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer;width:205px;float:left;  text-overflow:ellipsis;white-space: nowrap;overflow: hidden;'}
-                      %span.edit{ko(click: 'edit')} &nbsp;
+                      %span.edit{ko(click: 'edit'), style: 'color:grey;cursor:pointer'} &nbsp;
                       <!-- /ko -->
                       <!-- /ko -->
                       <!-- /ko -->
@@ -274,9 +274,10 @@
                       <!-- ko if: !hasValue() &&  !error() -->
                       <!-- ko if: writeable -->
                       <!-- ko if: kind != 'photo' -->
-                      %span.arrow{ko(visible: '!editing()', click: 'edit'), style: 'color:grey;cursor:pointer', style: 'width:205px'}= t('views.collections.index.no_value')
                       <!-- ko if: !editing() -->
-                      %span.edit{ko(click: 'edit')} &nbsp;
+                      %span.arrow{ko(click: 'edit'), style: 'color:grey;cursor:pointer'} &nbsp;
+                      %span{ko(text: 't("views.collections.index.no_value")', visible: '!editing()', click: 'edit'), style: 'cursor:pointer;width:205px;float:left;  text-overflow:ellipsis;white-space: nowrap;overflow: hidden;'}
+                      %span.edit{ko(click: 'edit'), style: 'color:grey;cursor:pointer'} &nbsp;
                       <!-- /ko -->
                       <!-- /ko -->
                       <!-- /ko -->
