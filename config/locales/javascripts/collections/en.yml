@@ -23,7 +23,7 @@ en:
       with_location_missing: "with location missing"
       is_yes: " is 'yes'"
       is_no: " is 'no'"
-      with_field_operator_value: "with %{field} %{operator} \"%{valueLabel}\""
+      with_field_operator_value: "with %{field} %{operator} \"%{value}\""
       fields:
         no_value: "(no value)"
         'yes': "yes"

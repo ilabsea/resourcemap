@@ -46,6 +46,8 @@ onCollections ->
         window.model.initAutocomplete()
 
     @filterDescription: (filter) ->
+      console.log 'filter : ', filter
+      console.log 'description : ', filter.valueLabel
       if @filters()[0] == filter
         window.t('javascripts.collections.show_sites', {description: filter.description()})
       else

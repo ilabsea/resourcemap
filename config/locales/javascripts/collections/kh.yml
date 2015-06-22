@@ -23,7 +23,7 @@ kh:
       with_location_missing: "ដែលបាត់ទីតាំង"
       is_yes: " គឺ 'បាទ'"
       is_no: " គឺ 'ទេ'"
-      with_field_operator_value: "ដែល %{field} %{operator} \"%{valueLabel}\""
+      with_field_operator_value: "ដែល %{field} %{operator} \"%{value}\""
       fields:
         no_value: "(គ្មានតម្លៃ)"
         'yes': "បាទ"
