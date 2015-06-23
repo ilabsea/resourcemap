@@ -182,4 +182,28 @@ class ApplicationController < ActionController::Base
     render options
   end
 
+  def authenticate_api_user!
+    return if @current_user
+    if (req = env["guisso.oauth2.req"])
+      email = AltoGuissoRails.validate_oauth2_request(req)
+      if email
+        @current_user = find_or_create_user(email)
+        return
+      end
+    elsif request.authorization && request.authorization =~ /^Basic (.*)/m
+      email, password = Base64.decode64($1).split(/:/, 2)
+      if AltoGuissoRails.valid_credentials?(email, password)
+        @current_user = find_or_create_user(email)
+        return
+      end
+    end
+    # try to authenticate using other methods defined in current_#{mapping}
+    return if @current_user
+    head :unauthorized
+  end
+
+  def ignore_public_attribute
+    params[:layer].delete(:public) if params[:layer] && params[:layer][:public]
+  end
+
 end

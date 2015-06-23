@@ -313,4 +313,15 @@ class Collection < ActiveRecord::Base
     Activity.create! item_type: 'collection', action: 'deleted', collection_id: nil, collection_name: name, layer_id: nil, user_id: user.id, 'data' => {'name' => name}
   end  
 
+  def layers_to_json(at_present, user)
+    if at_present
+      layers.includes(:fields).as_json(include: :fields)
+    else
+      current_user_snapshot = UserSnapshot.for(user, self)
+      layer_histories.at_date(current_user_snapshot.snapshot.date)
+        .includes(:field_histories)
+        .as_json(include: :field_histories)
+    end
+  end
+
 end

@@ -10,7 +10,7 @@ module Api::V2
     expose(:collection) { Collection.find(params[:collection_id] || params[:id]) }
 
     def index
-      render json: current_user.collections.includes_count(:sites).load, each_serializer: Api::CollectionSerializer
+      render json: current_user.collections.includes_count(:sites).load, each_serializer: Api::CollectionSerializer, :root => false
     end
 
     def create

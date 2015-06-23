@@ -1,7 +1,6 @@
 class ApiController < ApplicationController
 
   skip_before_filter :set_gettext_locale
-  skip_before_filter :redirect_to_localized_url
 
   skip_before_filter :verify_authenticity_token
   before_filter :authenticate_api_user!
