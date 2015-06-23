@@ -1,4 +1,25 @@
 GIT
+  remote: git://github.com/instedd/alto_guisso.git
+  revision: 6d72573c211f45ff95d36847af733449acdfa04a
+  branch: master
+  specs:
+    alto_guisso (0.0.2)
+      rack-oauth2
+
+GIT
+  remote: git://github.com/instedd/alto_guisso_rails.git
+  revision: bd944d08c59e5835285f0d956fb1fb00402fc385
+  branch: master
+  specs:
+    alto_guisso_rails (0.0.1)
+      alto_guisso
+      omniauth
+      omniauth-openid
+      rack-oauth2
+      rails (>= 3.0)
+      ruby-openid
+
+GIT
   remote: git://github.com/nicksieger/ci_reporter.git
   revision: a67fc106f3c29536b6b1df33f495f1b830f7bfc4
   specs:
@@ -11,14 +32,6 @@ GIT
   specs:
     jasminerice (0.1.0)
       coffee-rails
-
-GIT
-  remote: https://github.com/instedd/alto_guisso.git
-  revision: 6d72573c211f45ff95d36847af733449acdfa04a
-  branch: master
-  specs:
-    alto_guisso (0.0.2)
-      rack-oauth2
 
 GIT
   remote: https://github.com/instedd/poirot_rails.git
@@ -297,7 +310,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     rack (1.5.3)
-    rack-oauth2 (1.1.1)
+    rack-oauth2 (1.2.0)
       activesupport (>= 2.3)
       attr_required (>= 0.0.5)
       httpclient (>= 2.4)
@@ -486,6 +499,7 @@ DEPENDENCIES
   activerecord-deprecated_finders
   activerecord-import
   alto_guisso!
+  alto_guisso_rails!
   aws-sdk
   breadcrumbs_on_rails
   byebug

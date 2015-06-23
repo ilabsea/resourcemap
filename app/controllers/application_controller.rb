@@ -174,6 +174,12 @@ class ApplicationController < ActionController::Base
     headers['Access-Control-Allow-Origin'] = '*' 
   end
 
-  
+  # Faster way to render json, using the Oj library.
+  # There is a way to let render :json use Oj by default,
+  # but in my tests it turned out to be slower... - Ary
+  def render_json(object, options = {})
+    options = options.merge(text: object.to_json_oj, content_type: 'application/json')
+    render options
+  end
 
 end
