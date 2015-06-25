@@ -290,6 +290,12 @@ class Collection < ActiveRecord::Base
     builder.find(:all, :order => "sites.created_at DESC") 
   end
 
+  def self.filter_page_order_by_name limit, offset, builder
+    builder = builder.limit limit   if limit
+    builder = builder.offset offset if offset
+    builder.find(:all, :order => "sites.name ASC") 
+  end
+
   def new_site_properties
     self.fields.each_with_object({}) do |field, hash|
       value = field.default_value_for_create(self)

@@ -11,7 +11,7 @@ module Api::V1
       builder = Collection.filter_sites(params)
 
       sites_size = builder.size
-      sites_by_page  = Collection.filter_page(params[:limit], params[:offset], builder)
+      sites_by_page  = Collection.filter_page_order_by_name(params[:limit], params[:offset], builder)
       render :json => {:sites => sites_by_page, :total => sites_size}
     end
 
