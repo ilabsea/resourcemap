@@ -20,6 +20,11 @@ class User < ActiveRecord::Base
 
   attr_accessor :is_guest
 
+  def ability(format = nil)
+    @ability ||= Ability.new(self, format)
+  end
+  delegate :can?, :cannot?, :authorize!, :to => :ability
+
   def create_collection(collection)
     return false unless collection.save
     memberships.create! collection_id: collection.id, admin: true, owner: true

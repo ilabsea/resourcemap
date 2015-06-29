@@ -105,6 +105,10 @@ class Field < ActiveRecord::Base
     nil
   end
 
+  def default_value_for_update
+    nil
+  end
+
   def value_type_description
     "#{kind} values"
   end

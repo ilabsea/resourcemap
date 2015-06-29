@@ -54,4 +54,30 @@ class Membership < ActiveRecord::Base
       # collection.layer_memberships.create! :layer_id => options[:layer_id], :user_id => user_id, :read => read, :write => write
     # end
   end
+
+  #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
+  def can_read?(object)
+    if admin
+      true
+    elsif object == "name"
+      name_permission.can_read?
+    elsif object == "location"
+      location_permission.can_read?
+    else
+      raise "Undefined element #{object} for membership."
+    end
+  end
+
+  #TODO: refactor Name, Location, Site, and Layer permission into membership subclases
+  def can_update?(object)
+    if admin
+      true
+    elsif object == "name"
+      name_permission.can_update?
+    elsif object == "location"
+      location_permission.can_update?
+    else
+      raise "Undefined element #{object} for membership."
+    end
+  end
 end

@@ -7,7 +7,7 @@ class Api::CollectionsController < ApplicationController
   skip_before_filter  :verify_authenticity_token
 
   def index
-    render json: current_user.collections
+    render json: current_user.collections, :root => false
   end
 
   def show

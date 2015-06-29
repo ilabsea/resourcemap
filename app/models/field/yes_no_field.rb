@@ -13,4 +13,12 @@ class Field::YesNoField < Field
     decode value
   end
 
+  def default_value_for_update
+    if config && Field.yes?(config['auto_reset'])
+      false
+    else
+      nil
+    end
+  end
+
 end

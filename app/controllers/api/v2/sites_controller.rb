@@ -1,5 +1,5 @@
 module Api::V2
-  class Api::SitesController < ApiController
+  class SitesController < ApiController
     include Api::JsonHelper
 
     before_filter :authenticate_api_user!
@@ -16,7 +16,7 @@ module Api::V2
       site.assign_default_values_for_create
 
       if site.valid? && site.save!
-        current_user.increase_site_count_and_status
+        current_user.site_count += 1
         render_json site, status: 200
       else
         render_error_response_422(site.errors.messages)
