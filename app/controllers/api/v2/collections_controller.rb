@@ -46,7 +46,7 @@ module Api::V2
       respond_to do |format|
         format.rss { render :show, layout: false }
         format.csv { collection_csv(collection, @results, format_options) }
-        format.json { render_json collection_json(collection, @results, current_user, format_options) }
+        format.json { render_json collection_json(collection, @results) }
       end
     end
 
