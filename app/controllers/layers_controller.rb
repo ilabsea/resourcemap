@@ -12,6 +12,9 @@ class LayersController < ApplicationController
       end
       if current_user_snapshot.at_present?
         json = layers.includes(:fields).all.as_json(include: :fields).each { |layer|
+          layer[:fields].each { |field|
+            field['threshold_ids'] = get_associated_field_threshold_ids(field)
+          }
           layer['threshold_ids'] = Layer.find(layer['id']).get_associated_threshold_ids
         }
         format.json { render json:  json}
@@ -208,6 +211,23 @@ class LayersController < ApplicationController
     end
 
     params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
+  end
+
+  def get_associated_field_threshold_ids(field)
+    associated_field_threshold_ids = []
+    fieldID = field["id"]
+
+    self.collection.thresholds.map { |threshold|
+      threshold.conditions.map { |condition| 
+        conditionFieldID = condition['field'].to_i
+        if fieldID == conditionFieldID
+          associated_field_threshold_ids.push(threshold.id)
+          break
+        end
+      }
+    }
+
+    associated_field_threshold_ids
   end
 
 end
