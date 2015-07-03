@@ -82,6 +82,11 @@ onCollections ->
             @resultLocationsUI().filter((x) => @value()?.indexOf(x.id) == -1 && x.name.toLowerCase().indexOf(@filterText().toLowerCase()) != -1)
           else
             @resultLocationsUI().filter((x) => x.name.toLowerCase().indexOf(@filterText().toLowerCase()) != -1)
+          #sort the result by name
+          remaining.sort (a, b) => 
+            return -1 if a.name < b.name
+            return 1  if a.name > b.name
+            return 0          
           remaining 
 
 
