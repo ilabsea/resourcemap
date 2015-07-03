@@ -68,10 +68,25 @@ onCollections ->
                       $.map data.config.locations, (x) => new Location x
                      else
                       []
-        @resultLocations = ko.observableArray []
+        @resultLocations = ko.observableArray([])
+        @filterText = ko.observable('')
+        
+        @resultLocationsUI =  ko.observableArray([])
+        @offset = 0 
+        @limit = 10
+        @showLocations = ko.observable(false)
+        @remainingLocations = ko.computed =>
+          remaining = if @value()
+            location = @findLocationName(@value())
+            @filterText(location.name) if location
+            @resultLocationsUI().filter((x) => @value()?.indexOf(x.id) == -1 && x.name.toLowerCase().indexOf(@filterText().toLowerCase()) != -1)
+          else
+            @resultLocationsUI().filter((x) => x.name.toLowerCase().indexOf(@filterText().toLowerCase()) != -1)
+          remaining 
+
+
 
         @maximumSearchLength = data.config?.maximumSearchLength
-        
 
       if @kind == 'hierarchy'
         @hierarchy = data.config?.hierarchy
@@ -211,8 +226,6 @@ onCollections ->
         if value then window.t('javascripts.collections.fields.yes') else window.t('javascripts.collections.fields.no')
       else if @kind == 'select_one'
         if value then @labelFor(value) else ''
-      else if @kind == 'location'
-        if value then @labelForLocation(value) else ''
       else if @kind == 'select_many'
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
       else if @kind == 'hierarchy'
@@ -220,7 +233,9 @@ onCollections ->
       else if @kind == 'site'
         name = window.model.currentCollection()?.findSiteNameById(value)
         if value && name then name else ''
-
+      # else if @kind == 'location'
+        # location = @findLocationName(value)
+        # if location then location.name else ''
       else
         if value then value else ''
 
@@ -432,6 +447,51 @@ onCollections ->
       @value('')
       $("#" + @code).attr("value",'')
       $("#divUpload-" + @code).hide()
+
+    loadMoreLocations: =>
+      console.log 'loadMoreLocations'
+      @showLocations(true)
+      startIndex = (@offset * @limit)+@offset
+      endIndex = startIndex + @limit
+      @offset = @offset + 1
+      @resultLocationsUI(@resultLocationsUI().concat(@resultLocations()[startIndex..endIndex]))
+
+    selectLocation: (location) =>
+      @showLocations(false)
+      @filterText(location.name)
+      @value(location.code)
+
+    filterLocation: (model, event) =>
+      switch event.keyCode
+        when 13 # Enter
+          for location, i in @remainingLocations()
+            if location.selected()
+              @selectLocation(location)
+              break
+          false
+        when 38 # Up
+          for location, i in @remainingLocations()
+            if location.selected() && i > 0
+              location.selected(false)
+              @remainingLocations()[i - 1].selected(true)
+              break
+          false
+        when 40 # Down
+          for location, i in @remainingLocations()
+            if location.selected() && i != @remainingLocations().length - 1
+              location.selected(false)
+              @remainingLocations()[i + 1].selected(true)
+              break
+          false
+        when 8
+          @value('')
+          true
+        else
+          true
+    findLocationName: (code) =>
+      for location in @resultLocations()
+        return location if location.code == code
+
   
 
 

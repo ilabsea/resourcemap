@@ -30,6 +30,7 @@ Collection.prototype.pushingPendingSites = function(){
 }
 
 Collection.prototype.buildLocation = function(){
+  console.log('buildLocation');
   var currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
   currentLat = $('#lat').val();
   currentLng = $('#lng').val();
@@ -48,28 +49,46 @@ Collection.prototype.buildLocation = function(){
             nearByPlaces.push(fieldLocation);
           }
         }
-
         nearByPlaces.sort(function(a, b){return a["distance"]-b["distance"]});
         nearByPlaces.splice(20, nearByPlaces.length);
         fieldValue = $('#hidden_'+field['code']).val();
-        options = '<option value=""> (no value) </option>';
+        elements = '';
         for(l=0; l< nearByPlaces.length; l++){
-          if(nearByPlaces[l]['code'] == fieldValue){
-            options = options + '<option value="'+nearByPlaces[l]["code"]+'" selected="selected">'+nearByPlaces[l]["name"]+'</option>';
+
+          // if(nearByPlaces[l]['code'] == fieldValue){
+          //   // options = options + '<option value="'+nearByPlaces[l]["code"]+'" selected="selected">'+nearByPlaces[l]["name"]+'</option>';
+          //   elements = elements + '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+          // }else{
+          //   // options = options + '<option value="'+nearByPlaces[l]["code"]+'">'+nearByPlaces[l]["name"]+'</option>';
+          //   elements = elements + '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+          // }
+
+          if(l == 0){
+            li = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+          }else if(l == nearByPlaces.length - 1){
+            li = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
           }else{
-            options = options + '<option value="'+nearByPlaces[l]["code"]+'">'+nearByPlaces[l]["name"]+'</option>';
+            li = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
           }
+          ele = li + '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+                  '<span>'+nearByPlaces[l]["name"]+'</span>'+
+            '</div>'+
+          '</li>';
+          
+          $('#filterLocationList_'+field["code"]).append(ele);
         }
-        
-        
-        $('#'+field["code"]).append(options);
-        $('#'+field["code"]).selectmenu('refresh');        
+        // $('#'+field["code"]).append(elements);
+        // $('#'+field["code"]).selectmenu('refresh');        
       }
     }
   }  
   
-};
+}
 
+Collection.prototype.filterLocation = function(value){
+  console.log(value);
+  // Collection.prototype.buildLocation();
+}
 Collection.calculateDistance = function(fromLat, fromLng, toLat, toLng){
   fromLatlng = new google.maps.LatLng(fromLat, fromLng);
   toLatlng = new google.maps.LatLng(toLat, toLng);

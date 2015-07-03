@@ -46,9 +46,11 @@ onCollections ->
               result.push(location)
           result.sort (a, b) => 
             return parseFloat(a.distance) - parseFloat(b.distance)
-
-          result.splice(20, result.length)
           field.resultLocations(result)
+          field.resultLocationsUI(field.resultLocations[0..field.limit])
+          # field.resultLocationsUI.valueHasMutated()
+          # field.value.valueHasMutated()
+          field.offset = 1
 
     @createSite: ->
       @goBackToTable = true unless @showingMap()
@@ -69,6 +71,8 @@ onCollections ->
           for field in site.fields()
             if field.kind == 'yes_no'
               field.setDefaultValueToYesNoField()
+            if field.kind == 'location'
+              field.filterText('')
 
         #update @currentCollection().allSite()
         fields = @currentCollection().fields()

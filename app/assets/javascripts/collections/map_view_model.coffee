@@ -7,6 +7,7 @@ onCollections ->
       @toggleLegend = ko.observable(false)
       @loadingLegend = ko.observable(false)
       @mapSitesCount = ko.observable(0)
+      @resultLocationsUI = ko.observableArray([])
       @mapSitesCountText = ko.computed =>
         sitesText = if @mapSitesCount() == 1 then window.t('javascripts.collections.site') else window.t('javascripts.collections.sites')
         if @currentCollection()

@@ -259,7 +259,12 @@
                       <!-- ko if: kind != 'photo' -->
                       <!-- ko if: !editing() -->
                       %span.arrow{ko(click: 'edit'), style: 'color:grey;cursor:pointer'} &nbsp;
+                      <!-- ko if: kind == 'location' -->
+                      %span{ko(text: :filterText, visible: '!editing()', click: 'edit'), style: 'cursor:pointer;width:205px;float:left;  text-overflow:ellipsis;white-space: nowrap;overflow: hidden;'}
+                      <!-- /ko -->
+                      <!-- ko if: kind != 'location' -->
                       %span{ko(text: :valueUI, visible: '!editing()', click: 'edit'), style: 'cursor:pointer;width:205px;float:left;  text-overflow:ellipsis;white-space: nowrap;overflow: hidden;'}
+                      <!-- /ko -->
                       %span.edit{ko(click: 'edit'), style: 'color:grey;cursor:pointer'} &nbsp;
                       <!-- /ko -->
                       <!-- /ko -->
