@@ -87,6 +87,8 @@ class User < ActiveRecord::Base
     field = Field.where("code=? && collection_id=?", field_code, collection.id).first
     return false if field.nil?
     lm = LayerMembership.where(user_id: self.id, collection_id: collection.id, layer_id: field.layer_id).first
+    membership = self.memberships.where(:collection_id => collection.id).first
+    return true if membership.admin?
     return false if lm.nil?
     return false if(lm.write == false)
     return true

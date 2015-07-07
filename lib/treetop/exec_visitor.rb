@@ -163,7 +163,6 @@ class ExecVisitor < Visitor
       code = property[:code]
       if code != 'name' and code != 'lat' and code != 'lng'
         can_write = sender.can_write?(collection, code)
-        p 'can_write : ', can_write
         if !can_write
           properties_non_write.push code
         end
