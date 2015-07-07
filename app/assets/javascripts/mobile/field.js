@@ -101,7 +101,7 @@ Field.prototype.getLocationField = function(){
             '<div id="div_wrapper_' + this.code + '" class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield ui-body-c">'+
               '<form class="ui-filterable">'+
               '<input value="' + this.value +'"    id="' + this.code + '" class="ui-input-text ui-body-c" data-type="search" onkeyup="Collection.prototype.filterLocation(this.value,'+this.id+')">'+
-              '<input type="hidden" value="' + this.value +'" name="properties['+this.id+']" id="hidden_'+this.code+'">'+
+              '<input type="hidden" value="' + this.value +'" name="properties['+this.id+']" id="location_'+this.code+'">'+
               '</form>'+
             '</div>'+
           '</div>'+
