@@ -60,14 +60,6 @@ class ExecVisitor < Visitor
         return MSG[:name_is_required]
       end
 
-      properties_none_write = can_write_properties(key_value_properties, node.sender, collection)
-      
-      if properties_none_write.length > 1
-        return 'Field codes: ' + properties_none_write.join(',') + ' do not have permission to add.'
-      elsif properties_none_write.length == 1
-        return 'Field code: ' + properties_none_write.join(',') + ' does not have permission to add.'
-      end
-
       properties = node_to_site_properties key_value_properties,collection.id
       if properties["not_exist"]
         if properties["not_exist"].length > 1
@@ -155,20 +147,6 @@ class ExecVisitor < Visitor
     else
       nil
     end
-  end
-
-  def can_write_properties(key_value_properties, sender, collection)
-    properties_non_write = []
-    key_value_properties.each { |property|
-      code = property[:code]
-      if code != 'name' and code != 'lat' and code != 'lng'
-        can_write = sender.can_write?(collection, code)
-        if !can_write
-          properties_non_write.push code
-        end
-      end
-    }
-    properties_non_write
   end
 
   def node_to_site_properties(key_value_properties, collection_id)
