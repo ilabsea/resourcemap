@@ -83,6 +83,15 @@ class User < ActiveRecord::Base
     # return membership.admin if membership.admin?
   end
 
+  def can_write?(collection, field_code)
+    field = Field.where("code=? && collection_id=?", field_code, collection.id).first
+    return false if field.nil?
+    lm = LayerMembership.where(user_id: self.id, collection_id: collection.id, layer_id: field.layer_id).first
+    return false if lm.nil?
+    return false if(lm.write == false)
+    return true
+  end
+
   def validate_layer_write_permission(site, properties)
     properties.each do |prop|
       field = Field.where("code=? && collection_id=?", prop.values[0].to_s, site.collection_id).first
@@ -99,8 +108,8 @@ class User < ActiveRecord::Base
     return false if field.nil?
     lm = LayerMembership.where(user_id: self.id, collection_id: collection.id, layer_id: field.layer_id).first
     return false if lm.nil?
-    return false if(!lm && lm.read)
-    return true
+    return false if (!lm && lm.read)
+    return true 
   end
 
   def self.encrypt_users_password
