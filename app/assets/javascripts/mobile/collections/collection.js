@@ -29,12 +29,15 @@ Collection.prototype.pushingPendingSites = function(){
 
 }
 
-Collection.prototype.buildLocation = function(){
-  console.log('buildLocation');
+Collection.prototype.getNearByLocations = function(){
+ 
   var currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
   currentLat = $('#lat').val();
   currentLng = $('#lng').val();
-
+  window.nearByPlaces = [];
+  window.nearByPlacesUI = [];
+  window.offset = 1;
+  window.limit = 4;
   for(i=0; i<currentCollectionSchema["layers"].length;i++){
     for(j=0; j<currentCollectionSchema["layers"][i]["fields"].length; j++){
       field = currentCollectionSchema["layers"][i]["fields"][j];
@@ -46,49 +49,73 @@ Collection.prototype.buildLocation = function(){
           distance = Collection.calculateDistance(currentLat, currentLng, fieldLocation["latitude"], fieldLocation["longitude"]);
           if(distance < parseFloat(field["config"]["maximumSearchLength"])){
             fieldLocation["distance"] = distance;
-            nearByPlaces.push(fieldLocation);
+            window.nearByPlaces.push(fieldLocation);
           }
         }
-        nearByPlaces.sort(function(a, b){return a["distance"]-b["distance"]});
-        nearByPlaces.splice(20, nearByPlaces.length);
+        window.nearByPlaces.sort(function(a, b){return a["distance"]-b["distance"]});
+        window.nearByPlacesUI = window.nearByPlaces.slice(0,window.limit);
         fieldValue = $('#hidden_'+field['code']).val();
-        elements = '';
-        for(l=0; l< nearByPlaces.length; l++){
-
-          // if(nearByPlaces[l]['code'] == fieldValue){
-          //   // options = options + '<option value="'+nearByPlaces[l]["code"]+'" selected="selected">'+nearByPlaces[l]["name"]+'</option>';
-          //   elements = elements + '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
-          // }else{
-          //   // options = options + '<option value="'+nearByPlaces[l]["code"]+'">'+nearByPlaces[l]["name"]+'</option>';
-          //   elements = elements + '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
-          // }
-
-          if(l == 0){
-            li = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
-          }else if(l == nearByPlaces.length - 1){
-            li = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
-          }else{
-            li = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
-          }
-          ele = li + '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
-                  '<span>'+nearByPlaces[l]["name"]+'</span>'+
-            '</div>'+
-          '</li>';
-          
-          $('#filterLocationList_'+field["code"]).append(ele);
-        }
-        // $('#'+field["code"]).append(elements);
-        // $('#'+field["code"]).selectmenu('refresh');        
+        Collection.prototype.buildLocation(window.nearByPlacesUI,field['code']);
       }
     }
   }  
   
 }
 
-Collection.prototype.filterLocation = function(value){
-  console.log(value);
-  // Collection.prototype.buildLocation();
+Collection.prototype.filterLocation = function(fieldValue,fieldId, fieldCode=null){
+  if(fieldCode == null){
+    field = Collection.prototype.findFieldById(parseInt(fieldId));
+    fieldCode = field['code'];
+  }
+  filter = new RegExp(fieldValue, 'i');
+  locations =  window.nearByPlacesUI.filter(function(o){
+    return o['name'].match(filter);
+  });
+  Collection.prototype.buildLocation(locations, fieldCode);
 }
+
+Collection.prototype.loadMoreLocation = function(fieldCode){
+  startIndex = (window.offset * window.limit)+window.offset;
+  endIndex = startIndex + window.limit;
+  window.offset = window.offset + 1;
+  window.nearByPlacesUI =  window.nearByPlacesUI.concat(window.nearByPlaces.slice(startIndex,endIndex));
+  filterText = $("#"+fieldCode).val();
+  if(filterText != ""){
+    Collection.prototype.filterLocation(filterText, null, fieldCode);
+  }else{
+    
+    Collection.prototype.buildLocation(window.nearByPlacesUI, fieldCode);
+  }
+}
+
+Collection.prototype.buildLocation = function(locations, fieldCode){
+  $('#filterLocationList_'+fieldCode).empty();
+  locations.sort(function(a, b) {
+    if(a.name < b.name) return -1 ;
+    if(a.name > b.name) return 1  ;
+    return 0 ;
+  });
+  for(l=0; l<locations.length; l++){
+    if(l == 0){
+      li = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+    }else{
+      li = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
+    }
+    ele = li + '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+                  '<span>'+locations[l]["name"]+'</span>'+
+            '</div>'+
+          '</li>';
+    $('#filterLocationList_'+fieldCode).append(ele);      
+  }
+  // load more option
+  li = '<li onclick="Collection.prototype.loadMoreLocation(\''+fieldCode+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
+  ele = li + '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+              '<span>Load more locations ...</span>'+
+        '</div>'+
+      '</li>';
+  $('#filterLocationList_'+fieldCode).append(ele);   
+}
+
 Collection.calculateDistance = function(fromLat, fromLng, toLat, toLng){
   fromLatlng = new google.maps.LatLng(fromLat, fromLng);
   toLatlng = new google.maps.LatLng(toLat, toLng);
@@ -988,7 +1015,7 @@ Collection.prototype.findFieldById = function(fieldId){
   schema = Collection.getSchemaByCollectionId(window.currentCollectionId);
   for(i=0; i<schema["layers"].length;i++){
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
-      var field = schema["layers"][i]["fields"][j];   
+      var field = schema["layers"][i]["fields"][j]; 
       if(field["id"] == fieldId){
         return field;
       }
@@ -1011,7 +1038,7 @@ Collection.prototype.getFieldLogicByFieldId = function(fieldId){
 Collection.prototype.showPosition = function(position){
   $("#lat").val(position.coords.latitude);
   $("#lng").val(position.coords.longitude);
-  Collection.prototype.buildLocation();
+  Collection.prototype.getNearByLocations();
 }
 
 Collection.prototype.goHome = function(){
@@ -1049,7 +1076,7 @@ Collection.showMainSitePage = function(){
   Collection.hidePages();
   $("#lat").val(Collection.mapContainer.currentLat);
   $("#lng").val(Collection.mapContainer.currentLng);
-  Collection.prototype.buildLocation();
+  Collection.prototype.getNearByLocations();
   $("#mobile-sites-main").show();
 }
 
@@ -1213,7 +1240,7 @@ Collection.prototype.showSiteOnline = function(collectionId, siteId){
       Collection.hidePages();
       Collection.hideWhileOffline();
       Collection.assignSite(site);
-      Collection.prototype.buildLocation();
+      Collection.prototype.getNearByLocations();
       $("#mobile-sites-main").show();
       $.mobile.saving('hide');
     }

@@ -73,7 +73,7 @@ onCollections ->
         
         @resultLocationsUI =  ko.observableArray([])
         @offset = 0 
-        @limit = 10
+        @limit = 3
         @showLocations = ko.observable(false)
         @remainingLocations = ko.computed =>
           remaining = if @value()
@@ -454,7 +454,6 @@ onCollections ->
       $("#divUpload-" + @code).hide()
 
     loadMoreLocations: =>
-      console.log 'loadMoreLocations'
       @showLocations(true)
       startIndex = (@offset * @limit)+@offset
       endIndex = startIndex + @limit

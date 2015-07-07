@@ -48,8 +48,6 @@ onCollections ->
             return parseFloat(a.distance) - parseFloat(b.distance)
           field.resultLocations(result)
           field.resultLocationsUI(field.resultLocations[0..field.limit])
-          # field.resultLocationsUI.valueHasMutated()
-          # field.value.valueHasMutated()
           field.offset = 1
 
     @createSite: ->
