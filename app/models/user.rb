@@ -74,8 +74,13 @@ class User < ActiveRecord::Base
 
   def can_add?(collection_id)
     membership = self.memberships.where(:collection_id => collection_id).first
-    return false unless membership
-    return membership.admin if membership.admin?
+    if  membership
+      return true
+    else
+      return false
+    end
+    # return false unless membership
+    # return membership.admin if membership.admin?
   end
 
   def validate_layer_write_permission(site, properties)
