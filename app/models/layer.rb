@@ -25,7 +25,7 @@ class Layer < ActiveRecord::Base
   before_update :record_status_before_update, :unless => :mute_activities
   def record_status_before_update
     @name_was = name_was
-    @before_update_fields = fields.all
+    @before_update_fields = Field.where("layer_id = ?", id)
     @before_update_changes = changes.dup
   end
 

@@ -45,7 +45,6 @@ class LayersController < ApplicationController
     layer.update_attributes! params[:layer]   
     layer.reload
     render json: layer.as_json(include: :fields)
-
   end
 
   def set_order
@@ -204,7 +203,7 @@ class LayersController < ApplicationController
     max_key += 1
 
     removed_fields_ids.each do |id|
-      params[:layer][:fields_attributes][max_key.to_s] = {id: id, _destroy: true}
+      params[:layer][:fields_attributes][max_key.to_s] = {id: id, _destroy: 1}
       max_key += 1
     end
 
