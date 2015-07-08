@@ -330,8 +330,9 @@
       - Plugin.all.each do |plugin|
         = render_plugin_hook plugin, :map_header
     <!-- ko if: loading() -->
-    %span{style: 'width:auto;line-height:30px; vertical-align:middle'}  
-      %img{src: "/images/loader.gif"}
+    %img{src: "/images/load.gif", style: 'width:20px;'}
+    / %span{style: 'width:auto;line-height:30px; vertical-align:middle'}  
+    /   %img{src: "/images/loader.gif"}
     <!-- /ko -->
     %button.icon_button.ffullscreen.right{ko(click: '$root.tooglefullscreen') }
     <!-- ko if: !editingSite() -->
