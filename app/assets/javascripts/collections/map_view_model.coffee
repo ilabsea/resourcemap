@@ -147,8 +147,6 @@ onCollections ->
       currentMapRequestNumber = @mapRequestNumber
 
       getCallback = (data = {}) =>
-        # console.log 'loaded'
-        # @loading(false)
         return unless currentMapRequestNumber == @mapRequestNumber
         if @showingMap()
           @drawSitesInMap data.sites

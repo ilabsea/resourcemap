@@ -30,7 +30,7 @@ Collection.prototype.pushingPendingSites = function(){
 }
 
 Collection.prototype.getNearByLocations = function(){
- 
+
   var currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
   currentLat = $('#lat').val();
   currentLng = $('#lng').val();
@@ -43,7 +43,6 @@ Collection.prototype.getNearByLocations = function(){
         field['config']['nearByPlaces'] = [];
         field['config']['nearByPlacesUI'] = [];
         field['config']['offset'] = 1;
-
         $('#'+field["code"]).empty();
         for(k=0; k<field["config"]["locations"].length; k++){
           fieldLocation = field["config"]["locations"][k]
@@ -51,6 +50,9 @@ Collection.prototype.getNearByLocations = function(){
           if(distance < parseFloat(field["config"]["maximumSearchLength"])){
             fieldLocation["distance"] = distance;
             field['config']['nearByPlaces'].push(fieldLocation);
+          }
+          if(parseInt(fieldLocation['code']) == parseInt($('#location_'+field['code']).val())){
+            $('#'+field['code']).val(fieldLocation['name']);
           }
         }
         field['config']['nearByPlaces'].sort(function(a, b){return a["distance"]-b["distance"]});
@@ -63,9 +65,11 @@ Collection.prototype.getNearByLocations = function(){
   
 }
 
-Collection.prototype.filterLocation = function(fieldValue,fieldId){
+Collection.prototype.filterLocation = function(fieldValue,fieldId,flag){
   field = Collection.prototype.findFieldById(parseInt(fieldId));
-  Collection.prototype.clearLocationId(field['code']);
+  if(flag == true){
+    Collection.prototype.clearLocationId(field['code']);
+  }
   filter = new RegExp(fieldValue, 'i');
   locations =  field['config']['nearByPlacesUI'].filter(function(o){
     return o['name'].match(filter);
@@ -85,9 +89,9 @@ Collection.prototype.loadMoreLocation = function(fieldId){
   field['config']['nearByPlacesUI'] =  field['config']['nearByPlacesUI'].concat(field['config']['nearByPlaces'].slice(startIndex,endIndex));
   filterText = $("#"+field['code']).val();
   if(filterText != ""){
-    Collection.prototype.filterLocation(filterText, field['id']);
+    Collection.prototype.filterLocation(filterText, field['id'], false);
+    return ;
   }else{
-    
     Collection.prototype.buildLocation(field, null);
   }
 }
@@ -126,9 +130,8 @@ Collection.prototype.buildLocation = function(field, locations){
 
 Collection.prototype.selectLocation = function(locationId, locationName, fieldCode){
   $('#'+fieldCode).val(locationName);
-  console.log(locationId);
   $('#location_'+fieldCode).val(locationId);
-  // $('#filterLocationList_'+fieldId).empty();
+  $('#filterLocationList_'+fieldCode).empty();
 }
 
 Collection.calculateDistance = function(fromLat, fromLng, toLat, toLng){

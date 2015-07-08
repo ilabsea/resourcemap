@@ -99,15 +99,12 @@ Field.prototype.getLocationField = function(){
   return  '<div class="ui-controlgroup-controls">'+
             '<label>' + this.label + '</label>'+
             '<div id="div_wrapper_' + this.code + '" class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield ui-body-c">'+
-              '<form class="ui-filterable">'+
-              '<input value="' + this.value +'"    id="' + this.code + '" class="ui-input-text ui-body-c" data-type="search" onkeyup="Collection.prototype.filterLocation(this.value,'+this.id+')">'+
+              '<input id="' + this.code + '" class="ui-input-text ui-body-c" data-type="search" onkeyup="Collection.prototype.filterLocation(this.value,'+this.id+', true)">'+
               '<input type="hidden" value="' + this.value +'" name="properties['+this.id+']" id="location_'+this.code+'">'+
-              '</form>'+
             '</div>'+
           '</div>'+
           '<div class="ui-controlgroup-controls">'+
             '<ul id="filterLocationList_'+this.code+'" class="ui-listview ui-listview-inset ui-corner-all ui-shadow"  data-role="listview" data-inset="true" data-filter="true" >'+
-              // '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">Location</li>'
             '</ul>'+  
           '</div>';
 
