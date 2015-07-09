@@ -104,6 +104,7 @@ kh:
         name: "ឈ្មោះ"
         description: "ការពិពណ៌នាសង្ខេប"
         public: "សាធារណៈ"
+        hierarchy_mode: "ការបង្ហាញជាឋានានុក្រម"
         icon: "រូបតំណាង"
         save: "រក្សាទុក"
         cancel: "បោះបង់"

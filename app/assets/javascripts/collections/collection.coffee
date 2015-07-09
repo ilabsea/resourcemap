@@ -44,6 +44,7 @@ onCollections ->
       else if @position()
         window.model.map.panTo @position()
 
+
     # loadSites: =>
     #   $.get @sitesUrl(), (data) =>
     #     for site in data

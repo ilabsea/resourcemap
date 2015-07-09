@@ -104,6 +104,7 @@ en:
         name: "Name"
         description: "Description"
         public: "Public"
+        hierarchy_mode: "Hierarchy mode"
         icon: "Icon"
         save: "Save"
         cancel: "Cancel"
