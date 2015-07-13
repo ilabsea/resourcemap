@@ -208,7 +208,15 @@ onCollections ->
     # If it's a select one or many, we need to get the label from the option code.
     valueUIFor: (value) =>
       if @kind == 'yes_no'
-        if value then window.t('javascripts.collections.fields.yes') else window.t('javascripts.collections.fields.no')
+        if value
+          value = window.t('javascripts.collections.fields.yes')
+        else 
+          if @writeable
+            value = window.t('javascripts.collections.fields.no')
+          else
+            value = ''
+            if window.model.showSite()
+              value = window.t('javascripts.collections.fields.no')        
       else if @kind == 'select_one'
         if value then @labelFor(value) else ''
       else if @kind == 'location'
