@@ -1,5 +1,5 @@
 module Api::V2
-  class Api::MembershipsController < ApiController
+  class MembershipsController < ApiController
 
     before_filter :authenticate_collection_admin!, :only => [:create, :index, :destroy]
 

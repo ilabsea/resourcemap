@@ -3,7 +3,8 @@ source 'https://rubygems.org'
 gem 'rails', '~> 4.1.6'
 gem 'mysql2'
 gem 'devise'
-gem "tire"
+gem "elasticsearch"
+gem "elasticsearch-ruby"
 gem "valium"
 gem 'rmagick', '2.13.2', :require => false
 gem 'aws-sdk'

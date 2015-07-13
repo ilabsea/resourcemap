@@ -1,5 +1,5 @@
 module Api::V2
-	class Api::TokensController < ApiController
+	class TokensController < ApiController
 	  before_filter :authenticate_api_user!
 
 	  def index

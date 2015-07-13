@@ -78,24 +78,47 @@ class SitesController < ApplicationController
   end
 
   def search
+    # zoom = params[:z].to_i
+
+    # search = MapSearch.new params[:collection_ids], user: current_user
+
+    # search.zoom = zoom
+    # search.bounds = params if zoom >= 2
+    # search.exclude_id params[:exclude_id].to_i if params[:exclude_id].present?
+    # search.after params[:updated_since] if params[:updated_since]
+    # search.full_text_search params[:search] if params[:search].present?
+    # search.alerted_search params[:_alert] if params[:_alert].present?
+    # search.location_missing if params[:location_missing].present?
+    # if params[:selected_hierarchies].present?
+    #   search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
+    # end
+    # search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
+
+    # search.apply_queries
+    # render json: search.results, :root => false
+
     zoom = params[:z].to_i
 
-    search = MapSearch.new params[:collection_ids], user: current_user
+    if params[:collection_ids].is_a? String
+      collection_ids_array = params[:collection_ids].split ","
+    elsif params[:collection_ids].is_a? Array
+      collection_ids_array = params[:collection_ids]
+    end
+
+    search = MapSearch.new collection_ids_array, user: current_user
 
     search.zoom = zoom
     search.bounds = params if zoom >= 2
     search.exclude_id params[:exclude_id].to_i if params[:exclude_id].present?
     search.after params[:updated_since] if params[:updated_since]
     search.full_text_search params[:search] if params[:search].present?
-    search.alerted_search params[:_alert] if params[:_alert].present?
     search.location_missing if params[:location_missing].present?
-    if params[:selected_hierarchies].present?
-      search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
+    search.name_search params[:sitename] if params[:sitename].present?
+    if params[:selected_hierarchy_id].present?
+      search.selected_hierarchy params[:hierarchy_code], Field.find(params[:hierarchy_code]).descendants_of_in_hierarchy(params[:selected_hierarchy_id])
     end
-    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
-
-    search.apply_queries
-    render json: search.results, :root => false
+    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchy_id, :locale, :sitename)
+    render_json search.results, :root => false
   end
 
   def search_alert_site
@@ -115,8 +138,9 @@ class SitesController < ApplicationController
     end
     search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
 
-    search.apply_queries
-    render json: search.sites_json    
+    # search.apply_queries
+    # render json: search.sites_json    
+    render_json search.results, :root => false
   end
 
   def destroy
