@@ -35,6 +35,11 @@
       = f.check_box :public, :disabled => !creation && (cannot? :update, collection)
 
   .field.w60
+    = f.label t('views.collections.form.hierarchy_mode') 
+    = f.check_box :hierarchy_mode, :disabled , :onclick => !creation && (cannot? :update, collection)
+    = render 'hierarchy_mode'
+
+  .field.w60
     %label
       = t('views.collections.form.icon') 
     = render 'icon_selector', :f => f

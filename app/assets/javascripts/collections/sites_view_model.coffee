@@ -94,6 +94,7 @@ onCollections ->
 
       initialized = @initMap()
       site.collection.panToPosition(true) unless initialized
+      window.model.map.setZoom(12)
 
       site.collection.fetchSitesMembership()
       site.collection.fetchFields =>
@@ -234,6 +235,7 @@ onCollections ->
             delete @goBackToTable
           else
             @reloadMapSites()
+        window.model.map.setZoom(3)
 
       @loadBreadCrumb()
       @rewriteUrl()
