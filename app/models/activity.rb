@@ -3,7 +3,7 @@ require "csv"
 
 class Activity < ActiveRecord::Base
   ItemTypesAndActions = {
-    'collection' => %w(created imported csv_imported),
+    'collection' => %w(created imported csv_imported deleted),
     'layer' => %w(created changed deleted),
     'site' => %w(created changed deleted)
   }
@@ -18,7 +18,61 @@ class Activity < ActiveRecord::Base
   serialize :data, MarshalZipSerializable
 
   validates_inclusion_of :item_type, :in => ItemTypesAndActions.keys
-  
+  before_save :set_log_by_reference_column_value
+  before_save :set_user_email
+  before_save :set_collection_name
+
+  def set_collection_name
+    self.collection_name = collection.name unless collection.nil?
+  end
+
+  def set_user_email
+    self.user_email = user.email unless user.nil?
+  end
+
+  def set_log_by_reference_column_value
+    self.log = description
+  end
+
+  def self.filter user, options=nil
+    #index with default options
+    current_user = user
+    # debugger
+    acts = Activity.order('id desc').includes(:collection, :site, :user)
+    result = []
+    unless options
+      acts_with_collection = acts.where(collection_id: current_user.memberships.pluck(:collection_id))
+      acts_with_deleted_collection = acts.where(collection_id: nil, user_id: current_user.id)
+      result = acts_with_collection + acts_with_deleted_collection
+    end
+
+
+    #filter
+    if options
+      if options[:collection_ids]
+        acts_with_collection = acts.where(collection_id: options[:collection_ids])
+        result = acts_with_collection
+      end
+
+      if options[:deleted_collection] == "true"
+        acts_with_deleted_collection = acts.where(collection_id: nil, user_id: current_user.id)
+        # p acts_with_delete_collection
+        result = result + acts_with_deleted_collection
+      end      
+    end
+
+    # result.uniq
+    result
+  end
+
+  def self.migrate_columns_to_log
+    Activity.transaction do
+      Activity.find_each(batch_size: 100) do |activity|
+        activity.log = activity.description
+        activity.save
+      end
+    end
+  end
   
   def self.search_collection options 
      activities = Activity.order('id desc' ).includes(:site, :user, :collection, :field)
@@ -143,6 +197,7 @@ class Activity < ActiveRecord::Base
         column_keys.each do |key, value|
           colunm_header << value
         end
+
         colunm_header << "Action"
         csv << colunm_header  
       
@@ -163,26 +218,26 @@ class Activity < ActiveRecord::Base
           site_activities = activities.select{|activity| (activity.site and activity.site.id == site.id) }  
           
           site_activities.each do |activity|   
-             properties_row = properties_row.merge(activity.data["properties"] || {} )
-             row = [
-               activity.user.email,
-               activity.data["name"] ,
-               activity.site.id_with_prefix ,
-               activity.data["lat"] ,
-               activity.data["lng"] ,              
-               activity.updated_at               
-             ]            
-             properties_row.each do |col_key, col_value|
-               if field_kinds[col_key] == 'photo' and not col_value.empty?
+            properties_row = properties_row.merge(activity.data["properties"] || {} )
+            row = [
+              activity.user.email,
+              activity.data["name"] ,
+              activity.site.id_with_prefix ,
+              activity.data["lat"] ,
+              activity.data["lng"] ,              
+              activity.updated_at               
+            ]            
+            properties_row.each do |col_key, col_value|
+              if field_kinds[col_key] == 'photo' and not col_value.empty?
                 col_value = "http://" + Settings.host + "/photo_field/" + col_value
-               end
-               row << col_value
-             end
+              end
+              row << col_value
+            end
              
-             row << activity.action
-             #row << activity.description
+            row << activity.action
+            #row << activity.description
              
-             csv << row
+            csv << row
           end
           
           #put 3 empty rows to separate each site
@@ -198,6 +253,8 @@ class Activity < ActiveRecord::Base
     case [item_type, action]
     when ['collection', 'created']
       I18n.t('views.activities.table.collection_was_created', name: data['name'])
+    when ['collection', 'deleted']
+      I18n.t('views.activities.table.collection_was_deleted', name: data['name'])      
     when 'collection_imported'
       I18n.t('views.activities.table.import_wizard', sites_text: sites_were_imported_text)
     when ['collection', 'csv_imported']
@@ -246,51 +303,53 @@ class Activity < ActiveRecord::Base
   end
 
   def site_changes_text
-    fields = collection.fields.index_by(&:es_code)
-    text_changes = []
-    only_name_changed = false
-    
-    if (change = data['changes']['name'])
-      text_changes << I18n.t('views.activities.table.name_changed', from: change[0], to: change[1])
-      only_name_changed = true
-    end
-
-    if data['changes']['lat'] && data['changes']['lng']
-      text_changes << I18n.t('views.activities.table.location_changed', from: format_location(data['changes'], :from), to: format_location(data['changes'], :to))
+    fields = collection.fields.index_by(&:es_code) if collection
+    if fields.length > 0
+      text_changes = []
       only_name_changed = false
-    end
-    
-    if data['changes']['properties']
-      properties = data['changes']['properties']
       
-      properties[0].each do |key, old_value|
-        new_value = properties[1][key]
-        if new_value != old_value
-          field = fields[key]
-          code = field.try(:code)
-          text_changes << I18n.t('views.activities.table.code_changed',code: code, from: format_value(field, old_value), to: format_value(field, new_value))
-        end
+      if (change = data['changes']['name'])
+        text_changes << I18n.t('views.activities.table.name_changed', from: change[0], to: change[1])
+        only_name_changed = true
       end
 
-      properties[1].each do |key, new_value|
-        if !properties[0].has_key? key
-          field = fields[key]
-          code = field.try(:code)
-          to_new_value = new_value.nil? ? I18n.t('views.activities.table.nothing') : format_value(field, new_value)
-          text_changes << I18n.t('views.activities.table.code_changed',code: code, from: I18n.t('views.activities.table.nothing'), to: to_new_value)
+      if data['changes']['lat'] && data['changes']['lng']
+        text_changes << I18n.t('views.activities.table.location_changed', from: format_location(data['changes'], :from), to: format_location(data['changes'], :to))
+        only_name_changed = false
+      end
+      
+      if data['changes']['properties']
+        properties = data['changes']['properties']
+        
+        properties[0].each do |key, old_value|
+          new_value = properties[1][key]
+          if new_value != old_value
+            field = fields[key]
+            code = field.try(:code)
+            text_changes << I18n.t('views.activities.table.code_changed',code: code, from: format_value(field, old_value), to: format_value(field, new_value))
+          end
         end
+
+        properties[1].each do |key, new_value|
+          if !properties[0].has_key? key
+            field = fields[key]
+            code = field.try(:code)
+            to_new_value = new_value.nil? ? I18n.t('views.activities.table.nothing') : format_value(field, new_value)
+            text_changes << I18n.t('views.activities.table.code_changed',code: code, from: I18n.t('views.activities.table.nothing'), to: to_new_value)
+          end
+        end
+
+        only_name_changed = false
       end
 
-      only_name_changed = false
+      [only_name_changed, text_changes.join(', ')]
     end
-
-    [only_name_changed, text_changes.join(', ')]
   end
 
   def layer_changed_text
     only_name_changed, changes = layer_changes_text
     if only_name_changed
-      I18n.t('views.activities.table.layer_changed', name: data['name'], new_name: data['changes']['name'][1])
+      I18n.t('views.activities.table.layer_was_renamed', name: data['name'], new_name: data['changes']['name'][1])
     else
       I18n.t('views.activities.table.layer_changed', name: data['name'], changes: changes)
     end
@@ -371,7 +430,11 @@ class Activity < ActiveRecord::Base
     lat = changes['lat'][idx]
     lng = changes['lng'][idx]
     if lat
-      "(#{((lat) * 1e6).round / 1e6.to_f}, #{((lng) * 1e6).round / 1e6.to_f})"
+      result = "(#{((lat) * 1e6).round / 1e6.to_f}"
+      if lng
+        result = result+", #{((lng) * 1e6).round / 1e6.to_f})"
+      end
+      result
     else
       I18n.t('views.activities.table.nothing')
     end

@@ -56,7 +56,7 @@ class ExecVisitor < Visitor
     if collection
       key_value_properties = node_to_properties(node.property_list)
       site = node_to_site key_value_properties
-      if not site.keys.include?('name')
+      if collection.is_visible_name == true && (not site.keys.include?('name'))
         return MSG[:name_is_required]
       end
       properties = node_to_site_properties key_value_properties,collection.id
@@ -109,8 +109,13 @@ class ExecVisitor < Visitor
   def update_properties(site, user, props)
     site.user = user
     props.each do |p|
-      field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
-      site.properties[field.es_code] = p.values[1]
+      code = p[:code]
+      if code != "name"
+        field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
+        site.properties[field.es_code] = to_supported_value(field, p.values[1])
+      else
+        site[code] = p.values[1]
+      end
     end
     if site.valid?
       site.save!
@@ -150,7 +155,8 @@ class ExecVisitor < Visitor
       if code != 'name' and code != 'lat' and code != 'lng'
         id = get_field_id(code,collection_id)
         if id
-          properties[id.to_s] =  property[:value]
+          field =Field.find_by_id id
+          properties[id.to_s] = to_supported_value(field, property[:value])
         else
           properties['not_exist'] = [] if properties['not_exist'].nil?
           properties['not_exist'].push code
@@ -167,5 +173,33 @@ class ExecVisitor < Visitor
       site[code] = property[:value] if code == 'name' or code == 'lat' or code == 'lng'
     }
     site
+  end
+
+  def to_supported_value(field, value)
+    case field.kind
+    when "yes_no"
+      return not(["n", "N", "no", "NO", "No", "nO",  "0"].include? value)
+    when "select_one"
+      field.config["options"].each do |op|
+        return op["id"] if (op["code"] == value || op["label"] == value)
+      end
+    when "select_many"
+      many_value = value.split('&')
+      result = []
+      many_value.each do |v|
+        field.config["options"].each do |op|
+          if (op["code"] == v || op["label"] == v)
+            result.push(op["id"])
+          end
+        end
+      end
+      if result.length > 0
+        return result
+      else
+        nil
+      end
+    else
+      return value
+    end
   end
 end

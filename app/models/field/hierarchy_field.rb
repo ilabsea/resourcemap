@@ -105,7 +105,54 @@ class Field::HierarchyField < Field
     option[:name] if option
   end
 
+  def find_hierarchy_by_id(value)
+    if @cache_for_read
+      @options_by_id ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:id]] = opt[:name] }
+      return @options_by_id[value]
+    end
+    option = hierarchy_options.find { |opt| opt[:id] == value }
+    option if option
+  end  
+
+  def find_hierarchy_by_name(value)
+    if @cache_for_read
+      @options_by_id ||= hierarchy_options.each_with_object({}) { |opt, hash| hash[opt[:name]] = opt[:id] }
+      return @options_by_id[value]
+    end
+    option = hierarchy_options.find { |opt| opt[:name] == value }
+    option if option
+  end  
+
+  def transform
+    field_hierarchy = {}
+    field_hierarchy["hierarchy"] = inject_parent_id(self.config["hierarchy"], nil, 0) if self.config["hierarchy"]
+    return field_hierarchy
+  end
+
+  def get_longest_depth
+    max = 0
+    self.hierarchy_options.each do |item|
+      if max < item[:level].to_i
+        max = item[:level].to_i
+      end
+    end
+    max
+  end
+
 	private
+
+  def inject_parent_id hierarchy, parent_id, level
+    level = level + 1
+    hierarchy.each do |item|
+      item["parent_id"] = parent_id
+      item["level"] = level
+      if item["sub"]
+        inject_parent_id item["sub"], item["id"], level
+      end
+    end
+    level = level - 1
+    hierarchy
+  end
 
 	def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
     start_at.each do |item|

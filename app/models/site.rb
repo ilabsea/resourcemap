@@ -8,7 +8,7 @@ class Site < ActiveRecord::Base
   include HistoryConcern
 
   belongs_to :collection
-  validates_presence_of :name
+  validates_presence_of :name, :if => Proc.new {collection.is_visible_name}
 
   serialize :properties, Hash
   validate :valid_properties
@@ -80,6 +80,12 @@ class Site < ActiveRecord::Base
     self.properties = properties
   end
 
+  def filter_site_by_id site_id
+    builder = Site.find site_id
+  end
+  
+
+
   private
 
   def standardize_properties
@@ -107,6 +113,7 @@ class Site < ActiveRecord::Base
   end
 
   def valid_properties
+    return unless valid_lat_lng
     fields = collection.fields.index_by(&:es_code)
     fields_mandatory = collection.fields.find_all_by_is_mandatory(true)
     properties.each do |es_code, value|
@@ -128,6 +135,31 @@ class Site < ActiveRecord::Base
     fields_mandatory.each do |f|
       errors.add(:properties, {f.id.to_s => "#{f.code} is required."})
     end
-
   end
+
+  def valid_lat_lng
+    valid = true
+    if collection.is_visible_location
+      
+      if lat
+        if (lat >= -90) && (lat <= 90)
+          valid = true
+        else
+          errors.add(:lat, "latitude must be in the range of -90 to 90")
+          return false
+        end
+      end
+
+      if lng
+        if (lng >= -180) && (lng <= 180)
+          valid = true
+        else
+          errors.add(:lng, "longitude must be in the range of -180 to 180")
+          return false
+        end
+      end
+
+    end
+    return valid
+  end  
 end

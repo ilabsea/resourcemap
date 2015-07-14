@@ -1,6 +1,6 @@
 module Collection::CsvConcern
   extend ActiveSupport::Concern
-
+  # include Rails.application.routes.url_helpers
   def csv_template
     CSV.generate do |csv|
       csv << csv_header
@@ -12,6 +12,7 @@ module Collection::CsvConcern
   def to_csv(elastic_search_api_results = new_search.unlimited.api_results, current_user)
     layers = self.layers.all
     fields = []
+    hierarchy_fields = {}
     layers.each do |layer|
       allFields = layer.fields
       allFields.each do |field|
@@ -22,6 +23,7 @@ module Collection::CsvConcern
     CSV.generate do |csv|
       header = ['resmap-id', 'name', 'lat', 'long']
       fields.each { |field| header << field.code }
+
       header << 'last updated'
       csv << header
 
@@ -32,6 +34,8 @@ module Collection::CsvConcern
         fields.each do |field|
           if field.kind == 'yes_no'
             row << (Field.yes?(source['properties'][field.code]) ? 'yes' : 'no')
+          elsif field.kind == 'photo'
+            row << "#{Settings.host}/photo_field/#{source['properties'][field.code]}"
           else
             row << Array(source['properties'][field.code]).join(", ")
           end
@@ -46,6 +50,14 @@ module Collection::CsvConcern
         csv << row
       end
     end
+  end
+
+  def location_csv(locations)
+    CSV.generate do |csv|
+      locations.each do |location|
+        csv << [location["code"], location["name"], location["latitude"], location["longitude"]]
+      end
+    end      
   end
 
   def sample_csv(user = nil)
@@ -93,7 +105,6 @@ module Collection::CsvConcern
     # And validate it's content
     items = validate_format(csv)
 
-
     # Add to parents
     items.each do |order, item|
       if item[:parent].present? && !item[:error].present?
@@ -127,6 +138,68 @@ module Collection::CsvConcern
     rescue Exception => ex
       return [{error: ex.message}]
 
+  end
+
+  def decode_location_csv(string)
+    csv = CSV.parse(string)
+
+    items = validate_format_location(csv)
+
+    locations = []
+    items.each do |item|
+      locations.push item[1]
+    end
+    
+    locations
+    
+    rescue Exception => ex
+      return [{error: ex.message}]
+  end
+
+  def validate_format_location(csv)
+    i = 0
+    items = {}
+    csv.each do |row|
+      item = {}
+      if row[0] == 'Code'
+        next
+      else
+        i = i+1
+        item[:order] = i
+
+        if row.length != 4
+          item[:error] = "Wrong format."
+          item[:error_description] = "Invalid column number"
+        else
+
+          #Check unique name
+          name = row[1].strip
+          # if items.any?{|item| item.second[:name] == name}
+          #   item[:error] = "Invalid name."
+          #   item[:error_description] = "location name should be unique"
+          #   error = true
+          # end
+          
+          #Check unique id
+          code = row[0].strip
+          # if items.any?{|item| item.second[:code] == code}
+          #   item[:error] = "Invalid code."
+          #   item[:error_description] = "location code should be unique"
+          #   error = true
+          # end
+
+          # if !error
+            item[:code] = code
+            item[:name] = name
+            item[:latitude] = row[2].strip
+            item[:longitude] = row[3].strip
+          # end
+        end
+
+        items[item[:order]] = item
+      end
+    end
+    items
   end
 
   def validate_format(csv)

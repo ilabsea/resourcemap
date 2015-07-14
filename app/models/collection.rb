@@ -20,7 +20,7 @@ class Collection < ActiveRecord::Base
   has_many :reminders, dependent: :destroy
   has_many :share_channels, dependent: :destroy
   has_many :channels, :through => :share_channels
-  has_many :activities, dependent: :destroy
+  has_many :activities
   has_many :snapshots, dependent: :destroy
   has_many :user_snapshots, :through => :snapshots
   has_many :site_histories, dependent: :destroy
@@ -41,6 +41,31 @@ class Collection < ActiveRecord::Base
 
   def snapshot_for(user)
     user_snapshots.where(user_id: user.id).first.try(:snapshot)
+  end
+
+  def is_site_exist? device_id, external_id
+    flag = nil
+    result = nil
+    if device_id
+      flag = false
+      sites.each do |site|
+        if site.device_id == device_id
+          if site.external_id.to_s == external_id.to_s
+            #update
+            result = site
+            flag = true
+            break
+          else
+            #create
+            flag = false
+          end
+        else
+          #create
+          flag = false
+        end
+      end
+    end
+    return result
   end
 
   def writable_fields_for(user)
@@ -132,7 +157,6 @@ class Collection < ActiveRecord::Base
         ord: layer.ord,
       }
     end
-
     membership = user.membership_in self
     if !user.is_guest && !membership.try(:admin?)
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
@@ -159,6 +183,7 @@ class Collection < ActiveRecord::Base
       end
     end
     layers.sort! { |x, y| x[:ord] <=> y[:ord] }
+
     layers
   end
 
@@ -168,9 +193,14 @@ class Collection < ActiveRecord::Base
     layer ? layer['o'].to_i + 1 : 1
   end
 
+  def update_activities
+    ActiveRecord::Base.transaction do
+      Activity.where(collection_id: id).update_all(:collection_id => nil)
+    end
+  end
+
   def delete_sites_and_activities
     ActiveRecord::Base.transaction do
-      Activity.where(collection_id: id).delete_all
       Site.where(collection_id: id).delete_all
       recreate_index
     end
@@ -278,5 +308,9 @@ class Collection < ActiveRecord::Base
   def self.recreate_site_index collection_id
     Collection.find(collection_id).recreate_index
   end
+
+  def create_deleted_activity(user)
+    Activity.create! item_type: 'collection', action: 'deleted', collection_id: nil, collection_name: name, layer_id: nil, user_id: user.id, 'data' => {'name' => name}
+  end  
 
 end

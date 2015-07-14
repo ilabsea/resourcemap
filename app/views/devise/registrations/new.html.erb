@@ -5,17 +5,17 @@
 
 
 
-  <h2>Sign up</h2>
+  <h2><%= t('views.account.sign_up')%></h2>
 
   <hr class="shadow" />
 
   <div class="field w30">
-    <%= f.label :email %>
+    <%= f.label t('views.account.email')%>
     <%= f.email_field :email %>
   </div>
 
   <div class="field w30">
-    <%= f.label :password %>
+    <%= f.label t('views.account.password') %>
     <%= f.password_field :password %>
     <div style='padding-top:10px; padding-left:5px; line-height:5px;'>
       <div id='validateMeter' style='height:5px; float:left;'></div>
@@ -25,7 +25,7 @@
   </div>
 
   <div class="field w30">
-    <%= f.label :password_confirmation %>
+    <%= f.label t('views.account.password_confirmation') %>
     <%= f.password_field :password_confirmation %>
     <div style='padding-top:10px; padding-left:5px; line-height:5px;'>
       <p id='confirmMessage' style='color:red'></p>
@@ -33,7 +33,7 @@
   </div>
 
   <div class="field w30">
-    <%= f.label :phone_number %> <i>(85512345678)</i>
+    <%= f.label t('views.account.phone_number') %> <i>(85512345678)</i>
     <%= f.telephone_field :phone_number %>
   </div>
 
@@ -56,7 +56,7 @@
   </div>
 
   <div class="actions">
-    <button type="submit" class="white">Create account</button>
+    <button type="submit" class="white"><%= t('views.account.create_account') %></button>
   </div>
 
 

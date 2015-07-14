@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140911073733) do
+ActiveRecord::Schema.define(:version => 20150402025648) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -19,11 +19,14 @@ ActiveRecord::Schema.define(:version => 20140911073733) do
     t.integer  "layer_id"
     t.integer  "field_id"
     t.integer  "site_id"
-    t.binary   "data",          :limit => 2147483647
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.binary   "data",            :limit => 2147483647
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
     t.string   "item_type"
     t.string   "action"
+    t.text     "log"
+    t.string   "user_email"
+    t.string   "collection_name"
   end
 
   create_table "channels", :force => true do |t|
@@ -42,16 +45,18 @@ ActiveRecord::Schema.define(:version => 20140911073733) do
     t.string   "name"
     t.text     "description"
     t.boolean  "public"
-    t.datetime "created_at",                                                :null => false
-    t.datetime "updated_at",                                                :null => false
-    t.decimal  "lat",         :precision => 10, :scale => 6
-    t.decimal  "lng",         :precision => 10, :scale => 6
-    t.decimal  "min_lat",     :precision => 10, :scale => 6
-    t.decimal  "min_lng",     :precision => 10, :scale => 6
-    t.decimal  "max_lat",     :precision => 10, :scale => 6
-    t.decimal  "max_lng",     :precision => 10, :scale => 6
+    t.datetime "created_at",                                                           :null => false
+    t.datetime "updated_at",                                                           :null => false
+    t.decimal  "lat",                 :precision => 10, :scale => 6
+    t.decimal  "lng",                 :precision => 10, :scale => 6
+    t.decimal  "min_lat",             :precision => 10, :scale => 6
+    t.decimal  "min_lng",             :precision => 10, :scale => 6
+    t.decimal  "max_lat",             :precision => 10, :scale => 6
+    t.decimal  "max_lng",             :precision => 10, :scale => 6
     t.string   "icon"
-    t.integer  "quota",                                      :default => 0
+    t.integer  "quota",                                              :default => 0
+    t.boolean  "is_visible_name",                                    :default => true
+    t.boolean  "is_visible_location",                                :default => true
   end
 
   create_table "field_histories", :force => true do |t|
@@ -60,9 +65,9 @@ ActiveRecord::Schema.define(:version => 20140911073733) do
     t.string   "name"
     t.string   "code"
     t.string   "kind"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-    t.text     "config"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
+    t.binary   "config",        :limit => 2147483647
     t.integer  "ord"
     t.datetime "valid_since"
     t.datetime "valid_to"
@@ -152,6 +157,7 @@ ActiveRecord::Schema.define(:version => 20140911073733) do
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
     t.boolean  "admin",         :default => false
+    t.boolean  "owner",         :default => false
   end
 
   create_table "messages", :force => true do |t|
@@ -253,6 +259,8 @@ ActiveRecord::Schema.define(:version => 20140911073733) do
     t.string   "location_mode",  :limit => 10,                                :default => "automatic"
     t.string   "id_with_prefix"
     t.string   "uuid"
+    t.string   "device_id"
+    t.string   "external_id"
   end
 
   create_table "sites_permissions", :force => true do |t|

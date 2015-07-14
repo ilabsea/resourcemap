@@ -283,7 +283,8 @@ a.lbutton{
   vertical-align: middle;
 }
 
-.hierarchy-container:focus , #editorContent input:focus:not(.error), textarea:focus:not(.error),select:focus:not(.error) {
+
+.hierarchy-container:focus , #editorContent input:focus:not(.error), textarea:focus:not(.error), select:focus:not(.error) {
   box-shadow: 0 0 5px rgba(81, 203, 238, 1);
   border: 1px solid rgba(81, 203, 238, 1) !important;
 }
@@ -300,4 +301,126 @@ a.lbutton{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+textarea.text{
+  height: 22px;
+}
+
+.pending{
+  color: red;
+}
+
+.slocation {
+    background: url("/assets/fields_small_icons/location.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    display: inline-block;
+    height: 21px;
+    margin: 4px 2px 4px 5px;
+    min-width: 20px;
+    padding-left: 27px;
+    vertical-align: middle;
+}
+
+.light-box{
+  padding: 10px 10px 1px 30px !important;
+  margin: 5px !important;
+  background: none repeat scroll 0 0 #f2f2f2;
+  border-radius: 5px;
+
+}
+
+.container-box{
+  border-radius:5px;
+  margin: 10px 0px 10px 5px !important;
+  background: none repeat scroll 0 0 #f2f2f2;
+  width: 285px;
+}
+.container-box > .header{
+  background: none repeat scroll 0 0 #a6e082;
+  border: 1px solid #7ec452;
+  padding: 0px !important;
+  height: 30px;
+  border-radius: 5px;
+
+  vertical-align: middle;
+  line-height: 25px;
+}
+
+.container-box > .header > .title{
+  line-height: 30px;
+  text-align: center;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: normal;
+  font-family: Arial;
+}
+
+.fb-title{
+  font-weight: bold;
+  color: black;
+}
+
+.fcode{
+  font-size: 12px;
+  color: grey;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 250px;
+  text-align: right;
+}
+
+
+.fcode span{
+  width: 100px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  float: right;
+  padding-right: 5px;
+}
+
+.fvalue{
+  background-color: white;
+  border-radius: 5px;
+  padding: 0px;
+  line-height: 20px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.arrow{
+  background: url("/assets/arrow.png");
+  background-position: left center;
+  background-repeat: no-repeat;
+  padding-left: 20px;
+  float: left;
+}
+
+.edit{
+  background: url("/assets/edit.png");
+  background-position: right;
+  background-repeat: no-repeat;
+  padding-right: 10px;
+  float: right;
+}
+
+.w25{
+  width: 240px !important;
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+.light-box div{
+  margin-bottom: 5px;
+}
+
+.ftitle{
+  color: black;
+  padding-top: 8px;
+}
+
+.w17{
+  width: 170px !important;
 }

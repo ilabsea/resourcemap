@@ -1,24 +1,33 @@
 onLayers ->
   class @MainViewModel
-    constructor: (collectionId, layers) ->
+    constructor: (collectionId, layers, is_visible_name, is_visible_location, is_pending = false, allLayers = null) ->
       @collectionId = collectionId
-      @layers = ko.observableArray $.map(layers, (x) -> new Layer(x))
+      @layers = ko.observableArray $.map(layers, (x) -> new Layer(x, is_pending))
+      # set_order()
       @currentLayer = ko.observable()
       @currentField = ko.observable()
       @default_select = '(no value)'
+      @countAllImportedLayer = ko.observable() 
+      
+      if allLayers
+        @allLayers = $.map(allLayers, (x) -> new Layer(x))
+        @validateImportedLayers(@layers(), @allLayers)
+
+      @isVisibleName = ko.observable is_visible_name ? true
+      @isVisibleLocation = ko.observable is_visible_location ? true
+      @editingDefaultLayer = ko.observable(false)
 
       @newOption = ko.observable(new Option)
       @newFieldLogic = ko.observable(new FieldLogic)     
       @newAttribute = ko.observable(new Attribute)
-      
+
       @optionValid = ko.computed =>
         $.trim(@newOption().code()).length > 0 && $.trim(@newOption().label()).length > 0
 
       @fieldLogicValid = ko.computed =>
         ($.trim(@newFieldLogic().value()).length > 0 || $.trim(@newFieldLogic().condition_type()).length > 0) && $.trim(@newFieldLogic().field_id()).length > 0
 
-      @fieldSelectManyLogicValid = ko.computed =>
-        # $.trim(@newFieldLogic().value()).length > 0      
+      @fieldSelectManyLogicValid = ko.computed =>    
         true
 
       @attributeValid = ko.computed =>
@@ -36,11 +45,16 @@ onLayers ->
           0
 
       @savingLayer = ko.observable(false)
+      @savingAllLayer = ko.observable(false)
+      @savedAllLayers = ko.observable(false)
+      @savedAllLayers.subscribe =>
+        if @savedAllLayers() 
+          @savingAllLayer(false)
+          window.location.href = "/collections/#{@collectionId}/layers"
 
       @selectLogicLayers = ko.computed =>
         if @currentLayer()
-          if @currentLayer().id()
-            # @layers().filter (layer) => layer.id() isnt @currentLayer().id()
+          if @currentLayer().id() || @currentLayer().isPending()
             @layers()
           else
             @layers().filter (layer) => typeof layer.id() isnt 'undefined'
@@ -57,20 +71,59 @@ onLayers ->
           return false
         return false
 
+      @validateAllLayers = ko.computed =>
+        valid = false
+        for layer in @layers()
+          if layer.valid()
+            valid = true
+          else
+            return false
+        return valid
+
+
+    validateImportedLayers: (importedLayers, allLayers)=>
+      @countAllImportedLayer(importedLayers.length)
+      l = allLayers.length
+      for importLayer in importedLayers
+        #set order for imported layers
+        l = l + 1
+        importLayer.ord(l)
+  
+        flag = false
+        for importedField in importLayer.fields()
+          for layer in allLayers
+            for field in layer.fields()
+              if field.name() == importedField.name()
+                importLayer.importError("a field with name '#{field.name()}' already exists in the layer named #{layer.name()}")
+                flag = true
+                break
+              if field.code() == importedField.code()
+                importLayer.importError("a field with code '#{field.code()}' already exists in the layer named #{layer.name()}")
+                flag = true
+                break
+
+          if flag = true
+            break
+
     newLayer: =>
+      @cancelDefaultLayer()
       layer = new Layer ord: (@layers().length + 1)
       @layers.push(layer)
       @currentLayer(layer)
       layer.hasFocus(true)
+      @editingDefaultLayer(false)
 
     editLayer: (layer) =>
+      @clearUnsavedLayer()
+      @cancelDefaultLayer()
       @originalFields = $.map(layer.fields(), (x) -> new Field(layer, x.toJSON()))
       @currentLayer(layer)
       @currentField(layer.fields()[0]) if layer.fields().length > 0
       layer.hasFocus(true)
+      @editingDefaultLayer(false)
 
     cancelLayer: =>
-      if @currentLayer().id()
+      if @currentLayer().id() || @currentLayer().isPending()
         @currentLayer().fields.removeAll()
         @currentLayer().fields.push(field) for field in @originalFields
       else
@@ -78,8 +131,63 @@ onLayers ->
       @currentLayer(null)
       @currentField(null)
 
-    saveLayer: =>
+    clearUnsavedLayer: =>
+      if @currentLayer()
+        if not @currentLayer().id() && @currentLayer().isPending() == false
+          @layers.remove(@currentLayer())
+        else
+          for field in @currentLayer().fields()
+            unless field.id()
+              @currentLayer().fields.remove(field) 
+              return
+              
+    editDefaultLayer: =>
+      @clearUnsavedLayer()
+      @tmpVisibleName = @isVisibleName()
+      @tmpVisibleLocation = @isVisibleLocation()
+      @editingDefaultLayer(true)
+      @currentLayer(null)
+      @currentField(null)
+
+    saveAllLayers: (layers)=>
+      index  = 0
+      @savingAllLayer(true)
+      for layer in @layers()
+        json = {layer: layer.toJSON()}
+        if layer.id()
+          json._method = 'put'
+          $.post "/collections/#{@collectionId}/layers/#{layer.id()}.json", json, (result) =>
+            index = @saveAllLayersCallback(index)
+        else
+          $.post "/collections/#{@collectionId}/layers.json", json, (result) =>
+            index = @saveAllLayersCallback(index)
+
+    saveAllLayersCallback: (index) =>
+      index++
+      if index == @layers().length
+        @savedAllLayers(true)
+      index
+
+    saveDefaultLayer: =>
+      @tmpVisibleName = @isVisibleName()
+      @tmpVisibleLocation = @isVisibleLocation()
+      json = {collection: {is_visible_name: @isVisibleName(), is_visible_location: @isVisibleLocation()}}
+      json._method = 'put'
+      $.post "/collections/#{@collectionId}.json", json
+      @editingDefaultLayer(false)
+      @currentLayer(null)
+
+    cancelDefaultLayer: =>
+      @isVisibleName(@tmpVisibleName)
+      @isVisibleLocation(@tmpVisibleLocation)
+      @editingDefaultLayer(false)
+      @currentLayer(null)
+
+    saveLayer: (layer)=>
+      @countAllImportedLayer(@countAllImportedLayer() - 1)
       @savingLayer(true)
+      @currentLayer(layer)
+
       json = {layer: @currentLayer().toJSON()}
 
       if @currentLayer().id()
@@ -125,25 +233,37 @@ onLayers ->
       $.post "/collections/#{@collectionId}/layers/#{layer.id()}/set_order.json", json
 
     deleteLayer: (layer) =>
-      # if confirm("This layer is being used with #{layer.threshold_ids.length} alerts. The alert associated with this layer will also be deleted.")
       if layer.threshold_ids.length == 0
-        $.post "/collections/#{@collectionId}/layers/#{layer.id()}", {threshold_ids: layer.threshold_ids, _method: 'delete'}, =>
-          idx = @layers().indexOf(layer)
-          for nextLayer in @layers().slice(idx + 1)
-            nextLayer.ord(nextLayer.ord() - 1)
-            @saveLayerOrd(nextLayer)
+        if confirm("Are you sure you want to delete this layer?")
+          $.post "/collections/#{@collectionId}/layers/#{layer.id()}", {threshold_ids: layer.threshold_ids, _method: 'delete'}, =>
+            idx = @layers().indexOf(layer)
+            for nextLayer in @layers().slice(idx + 1)
+              nextLayer.ord(nextLayer.ord() - 1)
+              @saveLayerOrd(nextLayer)
 
-          @layers.remove(layer)
+            @layers.remove(layer)
 
-          $.status.showNotice("Layer '#{layer.name()}' successfully deleted", 2000)
+            $.status.showNotice("Layer '#{layer.name()}' successfully deleted", 2000)
       else
-          $.status.showError("This layer is being used with #{layer.threshold_ids.length} alert(s), you are not allowed to delete", 2000)
+        $.status.showError("This layer is being used with #{layer.threshold_ids.length} alert(s), you are not allowed to delete", 2000)
+
+    deletePendingLayer: (layer) =>
+      @countAllImportedLayer(@countAllImportedLayer() - 1)
+      @layers.remove(layer)
+      @resetLayerOrder()
+
+    resetLayerOrder: =>
+      ord = @allLayers.length
+      for layer in @layers()
+        ord = ord + 1
+        layer.ord(ord)
 
     selectingLayer: =>
       alert 'selectingLayer'
 
     isFirstLayer: (layer) => layer.ord() == 1
     isLastLayer: (layer) => layer.ord() == @layers().length
+    isSavedAllLayer: => @countAllImportedLayer() == 0 
 
     moveLayerDown: (layer) =>
       nextLayer = @layers()[layer.ord()]
@@ -169,11 +289,9 @@ onLayers ->
       @moveFieldDown @currentLayer().fields()[field.ord() - 2]
 
     newField: (kind) =>
-      # @fieldLogic(new FieldLogic())
       @currentField(new Field(@currentLayer(), kind: kind, ord: @currentLayer().fields().length + 1))
       @currentLayer().fields.push(@currentField())
       @currentField().hasFocus(true)
-      # @currentField().field_logic(@currentField())
 
     selectField: (field) =>
       @currentField(field)
@@ -283,7 +401,7 @@ onLayers ->
     to_field_name: (field) =>
       if @currentLayer()
         for l in @layers()
-          f = $.map(l.fields(), (x) -> x if x.id() == parseInt(field()[0]))
+          f = $.map(l.fields(), (x) -> x if x.id() == parseInt(field()))
           if(f.length > 0)
             return f[0].name()
       return ""
@@ -384,5 +502,36 @@ onLayers ->
 
       });
 
+
+    startUploadLocation: =>
+      @currentField().impl().uploadingLocation(true)
+    
+    locationUploaded: (location) =>
+      @currentField().impl().setLocation(location)
+
+    errorUploadingLocation: (locations_errors) =>
+      @currentField().impl().uploadingLocation(false)
+      @currentField().impl().errorUploadingLocation(true)
+
+      $('.error_description_bubble').CreateBubblePopup({
+        selectable: true,
+        position : 'top',
+        innerHtml: locations_errors,
+        innerHtmlStyle: {
+            color:'#000000',
+            'background-color' :'white'
+            },
+        themeName:  'bubble',
+        themePath:  '<%= InsteddRails.url %>/theme/images/'
+
+      });
+
     change: =>
       alert 'test'
+
+    findField: (id) =>
+      for layer in @layers()
+        for field in layer.fields()
+          if field.id() == parseInt(id)
+            return field
+

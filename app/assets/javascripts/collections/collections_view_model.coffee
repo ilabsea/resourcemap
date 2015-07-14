@@ -5,10 +5,10 @@ onCollections ->
     @constructor: (collections) ->
       @collections = ko.observableArray $.map(collections, (x) -> new Collection(x))
       @currentCollection = ko.observable()
-      @alert_legend = ko.observable(false)
       @showingLegend = ko.observable(false)
       @fullscreen = ko.observable(false)
       @fullscreenExpanded = ko.observable(false)
+      @getAlertConditions()
       @currentSnapshot = ko.computed =>
         @currentCollection()?.currentSnapshot
 
@@ -16,14 +16,15 @@ onCollections ->
     
     @goToRoot: ->
       @queryParams = $.url().param()
+      @filters([])
+      @exitSite() if @editingSite()
+      @exitSite() if @selectedSite()
+      @unselectSite() if @selectedSite()
       @currentCollection(null)
       @showingAlert(false)
       @cancelFilterAlertedSites()
-      @exitSite() if @editingSite()
-      @unselectSite() if @selectedSite()
       @search('')
       @lastSearch(null)
-      @filters([])
       @sort(null)
       @sortDirection(null)
       @groupBy(@defaultGroupBy)
@@ -32,7 +33,6 @@ onCollections ->
       @refreshTimeago()
       @makeFixedHeaderTable()
       @hideRefindAlertOnMap()
-      @setThresholds()
       @rewriteUrl()
 
       $('.BreadCrumb').load("/collections/breadcrumbs", {})
@@ -50,7 +50,7 @@ onCollections ->
 
     @enterCollection: (collection) ->
       if @showingAlert()
-        return if !collection.checked()
+        return if !collection.checked()      
       @queryParams = $.url().param()
 
       # collection may be a collection object (in most of the cases)
@@ -62,6 +62,7 @@ onCollections ->
       @unselectSite() if @selectedSite()
       @exitSite() if @editingSite()   
 
+      @currentCollection().checked(true)
       if @showingAlert()
         $.get "/collections/#{@currentCollection().id}/sites_by_term.json", _alert: true, (sites) =>
           @currentCollection().allSites(sites)
@@ -91,7 +92,7 @@ onCollections ->
       window.adjustContainerSize()
       window.model.updateSitesInfo()
       @showRefindAlertOnMap()
-      @setThresholds()
+      @getAlertConditions()
       @filters([])
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
@@ -150,39 +151,18 @@ onCollections ->
       $('#sites_whitout_location_alert').show()
 
     @createCollection: -> window.location = "/collections/new"
-
-    @setThresholds: ->
+    
+    @getAlertConditions: ->
       if @currentCollection()
-        @showingLegend(false)
-        @currentCollection().thresholds([])
-        @currentCollection().showLegend(false) 
-        $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>  
-          thresholds = @currentCollection().fetchThresholds(data)     
-          @currentCollection().thresholds(@currentCollection().findSitesByThresholds(thresholds))
+        $.get "/plugin/alerts/collections/#{@currentCollection().id}/thresholds.json", (data) =>
+          thresholds = @currentCollection().fetchThresholds(data)
+          @currentCollection().thresholds(thresholds)
       else
-        $.get "/plugin/alerts/thresholds.json", (data) =>
+        $.get "/plugin/alerts/thresholds.json", (data) =>   
           for collection in @collections()
-            if collection.checked() == true && collection.sites().length > 0
+            if collection.checked() == true
               thresholds = collection.fetchThresholds(data)
-              collection.thresholds(collection.findSitesByThresholds(thresholds))
-              thresholds = []
-
-          @showLegendState()
-
-    @showLegendState: ->
-      for collection in @collections()
-        if collection.checked() == true && collection.showLegend()
-          @showingLegend(true)
-          break
-        else
-          @showingLegend(false)
-
-    @toggleAlertLegend: ->
-      if @showingLegend() == true
-        if @alert_legend() == true
-          @alert_legend(false)
-        else
-          @alert_legend(true)
+              collection.thresholds(thresholds)
 
     @hideDatePicker: ->
       $("input").datepicker "hide"

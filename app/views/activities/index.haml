@@ -13,19 +13,29 @@
 
     %table{width: '100%'}
       %tr
+        %td
+          %input#check_all_collections{ko(click: 'checkAllCollectionIds'), type: 'checkbox', checked: 'checked'}= t('views.activities.index.check_all')
+        %td
+          %input#check_all_events{ko(click: 'checkAllKinds'), type: 'checkbox', checked: 'checked'}= t('views.activities.index.check_all')
+      %tr
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
             %legend= t('views.activities.index.collections')
-            %div{style: 'height:80px;overflow:auto'}
+            %div{style: 'height:90px;overflow:auto'}
               %table
                 - collections.sort_by(&:name).each do |collection|
                   %tr
                     %td
                       %input.collection_id{ko(checked: 'selectedCollectionIds'), type: 'checkbox', checked: 'checked', value: collection.id}= collection.name
+
+                %tr
+                  %td
+                    / %input{ko(checked: 'deletedCollections'), value: 'collected,deleted', type: 'checkbox', checked: 'checked'} Deleted collections                      
+                    %input.collection_id{ko(checked: 'selectedCollectionIds'), type: 'checkbox', checked: 'checked', value: "null"} Deleted collections                      
         %td{width: '50%'}
           %fieldset{:style => 'border: 1px solid gray; background-color:#F6F6F6'}
             %legend= t('views.activities.index.events')
-            %div{style: 'height:80px;overflow:auto'}
+            %div{style: 'height:90px;overflow:auto'}
               %table
                 %tr
                   %td
@@ -48,16 +58,10 @@
                     %input{ko(checked: 'selectedKinds'), value: 'site,deleted', type: 'checkbox', checked: 'checked'}= t('views.activities.index.site_deleted')
                   %td
                     %input{ko(checked: 'selectedKinds'), value: 'layer,deleted', type: 'checkbox', checked: 'checked'}= t('views.activities.index.layer_deleted')
-      %tr
-        %td
-          %span{ko(click: 'checkAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'}= t('views.activities.index.check_all')
-          |
-          %span{ko(click: 'uncheckAllCollectionIds'), style: 'text-decoration:underline;cursor:pointer'}= t('views.activities.index.uncheck_all')
-        %td
-          %span{ko(click: 'checkAllKinds'), style: 'text-decoration:underline;cursor:pointer;margin-left:6px'}= t('views.activities.index.check_all')
-          |
-          %span{ko(click: 'uncheckAllKinds'), style: 'text-decoration:underline;cursor:pointer'}= t('views.activities.index.uncheck_all')
-
+                %tr
+                  %td
+                    %input{ko(checked: 'selectedKinds'), value: 'collection,deleted', type: 'checkbox', checked: 'checked'} Collection deleted
+    %br
     .tablewrapp
       %table.GralTable
         %tr
@@ -70,7 +74,8 @@
           %td{ko(text: :collection), style: 'min-width:120px'}
           %td{ko(text: :user)}
           %td
-            %span{ko(text: :displayedDescription), style: 'display:inline'}
+            / %span{ko(text: :displayedDescription), style: 'display:inline'}
+            %span{ko(text: :displayedLog), style: 'display:inline'}
             <!-- ko if: !expanded() && canBeExpanded() -->
             %span{ko(click: :expand), style: 'display:inline;text-decoration:underline;cursor:pointer'}= t('views.activities.index.show_more')
             <!-- /ko -->

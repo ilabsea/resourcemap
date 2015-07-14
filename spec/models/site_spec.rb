@@ -72,4 +72,32 @@ describe Site do
     site.properties = site.properties
     site.save!
   end
+
+  describe '.valid_lat_lng' do
+    it "should return false when invalid lat" do
+      site.lat = 105.23
+      site.lng = 102.24
+      expect(site.send(:valid_lat_lng)).to eq(false)
+    end
+
+    it "should return false when invalid lng" do
+      site.lat = 95.23
+      site.lng = 190.24
+      expect(site.send(:valid_lat_lng)).to eq(false)
+    end
+
+    it "should return true when valid lat lng" do
+      site.lat = 88.23
+      site.lng = 120.24
+      expect(site.send(:valid_lat_lng)).to eq(true)
+    end
+
+    it "should return true when lat lng is nil" do
+      site.lat = nil
+      site.lng = nil
+      expect(site.send(:valid_lat_lng)).to eq(true)
+    end
+
+  end
+
 end

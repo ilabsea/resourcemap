@@ -18,7 +18,6 @@ onCollections ->
       @writeable = @originalWriteable = data?.writeable
       
       @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
-
       @value = ko.observable()
       
       @value.subscribe => @setFieldFocus()
@@ -35,9 +34,9 @@ onCollections ->
          @value(@valueUIFrom(value))
 
       if @kind == 'numeric'
+        @digitsPrecision = data?.config?.digits_precision
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
-        @is_mandatory = if @range then true else data.is_mandatory
         @field_logics = if data.config?.field_logics?
                           $.map data.config.field_logics, (x) => new FieldLogic x
                         else
@@ -63,6 +62,16 @@ onCollections ->
         @optionsUIIds = $.map @optionsUI, (x) => x.id
 
         @hierarchy = @options
+
+      if @kind == 'location'
+        @locations = if data.config?.locations?
+                      $.map data.config.locations, (x) => new Location x
+                     else
+                      []
+        @resultLocations = ko.observableArray []
+
+        @maximumSearchLength = data.config?.maximumSearchLength
+        
 
       if @kind == 'hierarchy'
         @hierarchy = data.config?.hierarchy
@@ -101,7 +110,7 @@ onCollections ->
             b = false
             if field_logic.field_id?
               if @kind == 'yes_no' || @kind == 'select_one'
-                if value == field_logic.value                          
+                if value == field_logic.value
                   @setFocusStyleByField(field_logic.field_id)
                   return
               if @kind == 'numeric'
@@ -181,10 +190,13 @@ onCollections ->
       value = '' unless value
 
       @value(value)
-    
+
+    setDefaultValueToYesNoField: =>
+      @value(false)
+
     removeFocusStyle: =>
       $('div').removeClass('focus')
-      $('input').removeClass('focus')
+      $('input:not(#name)').removeClass('focus')
       $('select').removeClass('focus')
       $('select').blur()
       $('input').blur()
@@ -199,6 +211,8 @@ onCollections ->
         if value then window.t('javascripts.collections.fields.yes') else window.t('javascripts.collections.fields.no')
       else if @kind == 'select_one'
         if value then @labelFor(value) else ''
+      else if @kind == 'location'
+        if value then @labelForLocation(value) else ''
       else if @kind == 'select_many'
         if value then $.map(value, (x) => @labelFor(x)).join(', ') else ''
       else if @kind == 'hierarchy'
@@ -226,6 +240,7 @@ onCollections ->
       @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: window.t('javascripts.collections.fields.no_value')})
 
     edit: =>
+      @editing(true)
       if !window.model.currentCollection()?.currentSnapshot
         @originalValue = @value()
 
@@ -242,6 +257,15 @@ onCollections ->
           @save()
         window.model.initDatePicker(optionsDatePicker)
         window.model.initAutocomplete()
+        $('textarea').autogrow()
+
+    validateRangeAndDigitsPrecision: =>
+      @validateRange()
+      @validateDigitsPrecision()
+
+    validateDigitsPrecision: =>
+      if @digitsPrecision
+        @value(parseInt(@value() * Math.pow(10, parseInt(@digitsPrecision))) / Math.pow(10, parseInt(@digitsPrecision)))
 
     validateRange: =>
       if @range
@@ -285,7 +309,7 @@ onCollections ->
       value = $('#'+@kind+'-input-'+@code).val()
       if (value == null || value == "")&& (keyCode == 229 || keyCode == 190) #prevent dot at the beginning
         return false
-      if (keyCode != 8 && keyCode != 46) && (keyCode != 190 || value.indexOf('.') != -1) && (keyCode < 48 || keyCode > 57) #prevent multiple dot
+      if (keyCode != 8 && keyCode != 46 && keyCode != 173) && (keyCode != 190 || value.indexOf('.') != -1) && (keyCode < 48 || keyCode > 57) #prevent multiple dot
         return false
       else
         return true
@@ -361,6 +385,12 @@ onCollections ->
       for option in @optionsUI
         if option.id == id
           return option.label
+      null
+
+    labelForLocation: (code) =>
+      for option in @resultLocations()
+        if option.code == code
+          return option.name
       null
 
     # In the table view, use a fixed size width for each property column,

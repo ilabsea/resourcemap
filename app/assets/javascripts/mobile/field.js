@@ -18,6 +18,8 @@ function Field (field) {
     }
   }else if(this.kind == 'numeric'){
     this.range = field["config"]["range"];
+  }else if(this.kind == 'location'){
+    this.config = field['config'];
   }
 
   if(field["is_enable_field_logic"] == true){
@@ -29,7 +31,7 @@ function Field (field) {
     }
   }
 };
- 
+
 Field.prototype.getField = function() {
   switch(this.kind)
   {
@@ -63,6 +65,15 @@ Field.prototype.getField = function() {
     case "hierarchy":
       return this.getHierarchyField();
       break;
+    case "site":
+      return this.getSiteField();
+      break;
+    case "user":
+      return this.getUserField();
+      break;
+    case "location":
+      return this.getLocationField();
+      break;
     default:
       return this.getTextField();
   }
@@ -72,7 +83,6 @@ Field.prototype.completeFieldRequirement = function() {
   switch(this.kind)
   {
     case "yes_no":
-      // $("#" + this.code).checkboxradio("refresh");
       break;
     case "hierarchy":
       $("#" + this.code).selectmenu();
@@ -80,11 +90,24 @@ Field.prototype.completeFieldRequirement = function() {
     case "select_one":
       $("#" + this.code).selectmenu();
       break;
+    case "location":
+      $("#" + this.code).selectmenu();
+      break;      
     case "select_many":
-      // $("input[type='checkbox']").prop("checked",true).checkboxradio("refresh");
       break;
   }
-}
+};
+
+Field.prototype.getLocationField = function(){
+  return  '<div class="ui-select" style="margin-left:10px;">' +
+              '<label>' + this.label + '</label>'+
+                  '<input type="hidden" value="' + this.value +'"  id="hidden_'+this.code+'">'+
+                  '<select name="properties['+this.id+']" id="'+this.code+'"  datatype="location" >' +
+                    '<option value="" > (no value) </option>' +
+                  '</select>' +
+          '</div>';
+};
+
 Field.prototype.getHierarchyField = function() { 
 
   list = "";
@@ -104,19 +127,46 @@ Field.prototype.getHierarchyField = function() {
 
 };
 
+Field.prototype.getSiteField = function() {
+  siteName = Collection.prototype.getSiteName(this.value);
+  return  '<div class="ui-controlgroup-controls">'+
+            '<label>' + this.label + '</label>'+
+            '<div id="div_wrapper_' + this.code + '" class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield ui-body-c">'+
+              '<input value="' + siteName +'" onblur="Collection.prototype.validFieldSite(this.id)" onkeyup="Collection.prototype.filterSite(this.id)"  id="' + this.code + '" class="ui-input-text ui-body-c" data-type="search">'+
+              '<input type="hidden" value="' + this.value +'" name="properties['+this.id+']" id="site_'+this.code+'">'+
+            '</div>'+
+          '</div>'+
+          '<div class="ui-controlgroup-controls">'+
+            '<ul id="filterSiteList_'+this.code+'" class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-role="listSitesView" data-inset="true">'+
+            '</ul>'+
+          '</div>';
 
+};
 
+Field.prototype.getUserField = function(){
+  return  '<div class="ui-controlgroup-controls">'+
+            '<label>' + this.label + '</label>'+
+            '<div id="div_wrapper_' + this.code + '" class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield ui-body-c">'+
+              '<input value="' + this.value +'" name="properties['+this.id+']" onblur="Collection.prototype.validFieldUser(this.id)"  onkeyup="Collection.prototype.filterUser(this.id)"  id="' + this.code + '" class="ui-input-text ui-body-c" data-type="search">'+
+              '<input type="hidden" value="' + this.value +'"  id="user_'+this.code+'">'+
+            '</div>'+
+          '</div>'+
+          '<div class="ui-controlgroup-controls">'+
+            '<ul id="filterUserList_'+this.code+'" class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-role="listUserView" data-inset="true">'+
+            '</ul>'+
+          '</div>';
+};
 
 Field.prototype.getTextField = function() {  
   return '<div class="ui-corner-all ui-controlgroup ui-controlgroup-vertical" style="margin-left:10px">'+
       '<div class="ui-controlgroup-controls">'+
         '<label>' + this.label + '</label>'+
         '<div id="div_wrapper_' + this.code + '" class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">'+
-          '<input value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="right w20 ui-input-text ui-body-c" type="text" datatype="text">'+
+          '<input value="' + this.value +'" name="properties[' + this.id + ']" id="' + this.code + '" class="ui-input-text ui-body-c" type="text" datatype="text">'+
         '</div>'+
         '<div class="clear"></div>'+
       '</div>'+
-    '</div>';
+    '</div>'; 
 };
 
 Field.prototype.getNumericField = function() {
@@ -155,10 +205,10 @@ Field.prototype.getYesNoField = function() {
           '<label for="' + this.code + '" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-all ui-btn-up-c">' +
             '<span class="ui-btn-inner">'+
               '<span style="font-weight:normal;">' + this.label + '</span>' +
-              '<input ' + checked + ' type="checkbox" name="properties[' + this.id + ']" id="' +
-               this.code + 
+              '<input ' + checked + ' type="checkbox" id="' + this.code + 
                '" class="custom"  datatype="yes_no" onchange="Collection.prototype.setFieldFocus('+this.id+','+this.code+',\''+this.kind+'\')">' +
-            '</span>'+
+              '</span>'+
+              '<input type="hidden" value="' + this.value +'" name="properties[' + this.id + ']" id="hidden_'+this.code+'">'+
           '</label>'+
       '</div>'+
     '</div>';
@@ -280,7 +330,6 @@ function setSubHierarchy(sub, field, level){
       for(var j=0; j<level; j++){
         space = space + "&nbsp;";
       }
-      // console.log(space+field.sub[i].name);
       sub.push(new SubHierarchy(field.sub[i].id, space+field.sub[i].name));
       nSpace = level + 3;
       setSubHierarchy(sub, field.sub[i], nSpace);

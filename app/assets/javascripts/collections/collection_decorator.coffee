@@ -24,7 +24,9 @@ onCollections ->
       @groupByOptions = collection.groupByOptions
       @sitesPermission = collection.sitesPermission
       @thresholds = collection.thresholds
-      @showLegend = collection.showLegend
+      @showingCollectionAlert = collection.showingCollectionAlert
+      @isVisibleName = collection.isVisibleName
+      @isVisibleLocation = collection.isVisibleLocation
       @allSites(collection.allSites())
 
 

@@ -9,13 +9,7 @@ onCollections ->
       @op = ko.observable Operator.findByCode data?.op
       @value = ko.observable data?.value
       @valueType = ko.observable ValueType.findByCode data?.type ? 'value'
-      # @valueUI = ko.computed
-      #   read: => @field()?.format? @value()
-      #   write: (value) => @value value
-      # @formattedValue = ko.computed =>
-      #   switch @field()?.kind()?
-      #     when 'numeric' then "#{@valueType()?.format @value()}"
-      #     else @valueUI()
+      @kind = ko.observable data?.kind
       @error = ko.computed => return "value is invalid" unless @field()?.valid? @value()
       @valid = ko.computed => not @error()?
 
@@ -31,3 +25,4 @@ onCollections ->
       value: @field()?.encode @value()
       type: @valueType().code()
       compare_field: @compareField()?.esCode()
+      kind: @kind()

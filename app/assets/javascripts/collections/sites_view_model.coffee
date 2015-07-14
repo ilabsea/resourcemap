@@ -7,7 +7,7 @@ onCollections ->
       @selectedHierarchy = ko.observable()
       @loadingSite = ko.observable(false)
       @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
-      @showSite = ko.computed => if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
+      @showSite = ko.computed =>  if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       window.markers = @markers = {}
       
     @loadBreadCrumb: ->
@@ -21,22 +21,63 @@ onCollections ->
     @editingSiteLocation: ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
+    @calculateDistance: (fromLat, fromLng, toLat, toLng) => 
+      fromLatlng = new google.maps.LatLng(fromLat, fromLng)
+      toLatlng = new google.maps.LatLng(toLat, toLng)
+      distance = google.maps.geometry.spherical.computeDistanceBetween(fromLatlng, toLatlng)
+      return distance
+
+    @getLocations: (fromLat, fromLng) =>
+      if window.model.selectedSite()
+        fields = window.model.selectedSite().fields()
+        fromLat = window.model.selectedSite().lat()
+        fromLng = window.model.selectedSite().lng()
+      else if window.model.currentCollection()
+        fields = window.model.currentCollection().fields()
+
+      for field in fields
+        if field.kind == 'location'
+          result = []
+
+          for location in field.locations
+            distance = @calculateDistance(fromLat, fromLng, location.latitude, location.longitude)
+            if distance < parseFloat(field.maximumSearchLength)
+              location.distance = distance
+              result.push(location)
+          result.sort (a, b) => 
+            return parseFloat(a.distance) - parseFloat(b.distance)
+
+          result.splice(20, result.length)
+          field.resultLocations(result)
+
     @createSite: ->
       @goBackToTable = true unless @showingMap()
       @showMap =>
-        pos = @originalSiteLocation = @map.getCenter()
-        site = new Site(@currentCollection(), lat: pos.lat(), lng: pos.lng())
+        if !@currentPosition.lat
+          @handleNoGeolocation()
+
+        pos = @originalSiteLocation = @currentPosition
+        site = new Site(@currentCollection(), lat: pos.lat, lng: pos.lng)
         site.copyPropertiesToCollection(@currentCollection())
         if window.model.newSiteProperties
           for esCode, value of window.model.newSiteProperties
             field = @currentCollection().findFieldByEsCode esCode
             field.setValueFromSite(value) if field
+        
+        #set default value to field yes_no as false
+        if site
+          for field in site.fields()
+            if field.kind == 'yes_no'
+              field.setDefaultValueToYesNoField()
 
         @unselectSite()
         @editingSite site
-        @editingSite().startEditLocationInMap()
+        @editingSite().startEditLocationInMap() if @currentCollection().isVisibleLocation
+        @getLocations(pos.lat, pos.lng)
         window.model.initDatePicker()
         window.model.initAutocomplete()
+        $('textarea').autogrow()
+        $('#name').focus()
 
     @editSite: (site) ->
       initialized = @initMap()
@@ -51,20 +92,23 @@ onCollections ->
           @showMap =>
 
             site.copyPropertiesToCollection(site.collection)
-
+            
             if @selectedSite() && @selectedSite().id() == site.id()
               @unselectSite()
 
             if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
               site.fetchFields()
+            else if site.collection.sitesPermission.canNone(site)
+              site.layers([]) 
 
             @selectSite(site)
             @editingSite(site)
+            @getLocations(site.lat(), site.lng())
             @currentCollection(site.collection)
-
             @loadBreadCrumb()
 
           $('a#previewimg').fancybox()
+          $('#name').focus()
 
     @editSiteFromId: (siteId, collectionId) ->
       site = @siteIds[siteId]
@@ -144,12 +188,14 @@ onCollections ->
 
         $('a#previewimg').fancybox()
         window.model.updateSitesInfo()
+        @reloadMapSites()
 
       callbackError = () =>
         @hideProgress()
 
       @editingSite().copyPropertiesFromCollection(@currentCollection())
       @editingSite().fillPhotos(@currentCollection())
+      @editingSite().roundNumericDecimalNumber(@currentCollection)
 
       if @editingSite().id()
         @editingSite().update_site(@editingSite().toJSON(), callback, callbackError)
@@ -163,6 +209,7 @@ onCollections ->
       field.exitEditing() for field in @currentCollection().fields()
       if @editingSite()?.inEditMode()
         @editingSite().exitEditMode()
+        @exitSite() if @selectedSite()
       else
         if @editingSite()
           # Unselect site if it's not on the tree

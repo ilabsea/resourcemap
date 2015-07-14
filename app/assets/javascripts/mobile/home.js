@@ -18,7 +18,6 @@ function initialize(locale){
           i = 0;
           while (i < cachedSites) {
             if (id = cachedSites[i]["id"]) {
-              console.log("DELETE ID" + id);
               delete cachedSites[i];
               break;
             }
@@ -75,9 +74,7 @@ function initialize(locale){
 function prepareFlushMessage(id){
   var content = $(id).html();
   if(content.trim() != ""){
-    console.log("Have content");
     parent = $(id).children()[0];
-    console.log(parent);
     if(parent){
       text = parent.children[0].innerHTML;
       showFlushMessage(text);

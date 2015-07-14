@@ -392,7 +392,7 @@ DEPENDENCIES
   ruby-recaptcha
   rubyzip
   rvm
-  rvm-capistrano (= 1.2.2)
+  rvm-capistrano
   sass-rails (~> 3.2.3)
   selenium-webdriver
   shoulda-matchers

@@ -19,9 +19,19 @@ class ActivitiesController < ApplicationController
         acts = acts.where('id < ?', params[:before_id]) if params[:before_id]
 
         if params[:collection_ids]
+          params[:collection_ids].each_with_index do |c_id, key|
+            if c_id == 'null'
+              params[:collection_ids][key] = nil
+              break
+            end
+          end
+
+          acts = acts.where("collection_id in (?) or user_id = ?", params[:collection_ids], current_user.id)
           acts = acts.where(collection_id: params[:collection_ids])
+
         else
-          acts = acts.where(collection_id: current_user.memberships.pluck(:collection_id))
+          acts = acts.where("collection_id IN (?) or user_id = ?", current_user.memberships.pluck(:collection_id), current_user.id)
+
         end
 
         if params[:kinds]
@@ -31,9 +41,9 @@ class ActivitiesController < ApplicationController
         activities_json = acts.map do |activity|
           {
             id: activity.id,
-            collection: activity.collection.name,
-            user: activity.user.display_name,
-            description: activity.description,
+            collection: activity.collection_name,
+            user: activity.user_email,
+            log: activity.log,
             created_at: activity.created_at
           }
         end

@@ -65,6 +65,44 @@ class LayersController < ApplicationController
     head :ok
   end
 
+  def upload_layers
+    path = File.join('public', 'tmp_layers.json')
+    content = params[:file].read
+    File.open(path, "wb") { |f| f.write(content) }
+    begin
+      layers = JSON.parse content
+      flash[:notice] = "File uploaded"
+      redirect_to :action => "adjust_layers"
+    rescue Exception => e
+      flash[:alert] = "Invalid file content"
+      redirect_to :action => "index"
+    end
+
+  end
+
+  def adjust_layers
+    show_collection_breadcrumb
+    add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
+    add_breadcrumb I18n.t('views.collections.tab.layers'), collection_layers_path(collection)    
+  end
+
+  def pending_layers
+    path = File.join('public', 'tmp_layers.json')
+    all_new_layers = []
+    if File.exist?(path)
+      raw_layers = File.read(path, :encoding => 'utf-8')
+      all_layers = JSON.parse raw_layers
+      File.delete(path)
+      all_layers.each do |l|
+        result = layer.decode_raw_layer l
+        new_layer = layers.new result
+        new_layer.user = current_user
+        all_new_layers.push(new_layer.as_json(include: :fields.as_json(:except => [:id]), :except => [:id, :ord]))
+      end
+    end
+    render json: all_new_layers
+  end
+
   private
 
   # The options come as a hash insted of a list, so we convert the hash to a list
@@ -75,6 +113,9 @@ class LayersController < ApplicationController
 
 
         if field[:config]
+          if field[:config][:locations]
+            field[:config][:locations] = field[:config][:locations].values
+          end          
           if field[:config][:options]
             field[:config][:options] = field[:config][:options].values
             field[:config][:options].each { |option| option['id'] = option['id'].to_i }
@@ -95,18 +136,15 @@ class LayersController < ApplicationController
               field_logic['id'] = field_logic['id'].to_i
               field_logic['value'] = field_logic['value'].to_i
               if field_logic['field_id']
-                field_logic['field_id'].each { |field_id|
-                  if field_id == ""
-                    field_logic['field_id'] = nil
-                  else
-                    field_logic['field_id'] = field_id
-                  end
-                }
-              end
+                
+                if field_logic['field_id'] == ""
+                  field_logic['field_id'] = nil
+                end
+              end         
             }    
           end
 
-          field[:config][:range] = fix_field_config_range(field_idx,field) if field[:is_enable_range]
+          field[:config][:range] = fix_field_config_range(field_idx, field) if field[:is_enable_range]
           
         end
       end
@@ -171,4 +209,5 @@ class LayersController < ApplicationController
 
     params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
   end
+
 end

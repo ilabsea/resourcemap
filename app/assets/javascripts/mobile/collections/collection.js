@@ -3,6 +3,7 @@
 //= require mobile/option
 //= require mobile/field_logic
 //= require mobile/sub_hierarchy
+//= require mobile/collections/sites_permission
 
 function Collection (collection) {
   this.id = collection != null ? collection.id : void 0;
@@ -25,8 +26,175 @@ Collection.prototype.pushingPendingSites = function(){
     }
     window.localStorage.setItem("offlineSites", JSON.stringify([]));
   }
-  // Collection.prototype.goHome();
 
+}
+
+Collection.prototype.buildLocation = function(){
+  var currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
+  currentLat = $('#lat').val();
+  currentLng = $('#lng').val();
+
+  for(i=0; i<currentCollectionSchema["layers"].length;i++){
+    for(j=0; j<currentCollectionSchema["layers"][i]["fields"].length; j++){
+      field = currentCollectionSchema["layers"][i]["fields"][j];
+      if(field["kind"] == "location"){
+        nearByPlaces = [];
+        $('#'+field["code"]).empty();
+        for(k=0; k<field["config"]["locations"].length; k++){
+          fieldLocation = field["config"]["locations"][k]
+          distance = Collection.calculateDistance(currentLat, currentLng, fieldLocation["latitude"], fieldLocation["longitude"]);
+          if(distance < parseFloat(field["config"]["maximumSearchLength"])){
+            fieldLocation["distance"] = distance;
+            nearByPlaces.push(fieldLocation);
+          }
+        }
+
+        nearByPlaces.sort(function(a, b){return a["distance"]-b["distance"]});
+        nearByPlaces.splice(20, nearByPlaces.length);
+        fieldValue = $('#hidden_'+field['code']).val();
+        options = '<option value=""> (no value) </option>';
+        for(l=0; l< nearByPlaces.length; l++){
+          if(nearByPlaces[l]['code'] == fieldValue){
+            options = options + '<option value="'+nearByPlaces[l]["code"]+'" selected="selected">'+nearByPlaces[l]["name"]+'</option>';
+          }else{
+            options = options + '<option value="'+nearByPlaces[l]["code"]+'">'+nearByPlaces[l]["name"]+'</option>';
+          }
+        }
+        
+        
+        $('#'+field["code"]).append(options);
+        $('#'+field["code"]).selectmenu('refresh');        
+      }
+    }
+  }  
+  
+};
+
+Collection.calculateDistance = function(fromLat, fromLng, toLat, toLng){
+  fromLatlng = new google.maps.LatLng(fromLat, fromLng);
+  toLatlng = new google.maps.LatLng(toLat, toLng);
+  distance = google.maps.geometry.spherical.computeDistanceBetween(fromLatlng, toLatlng);
+  return distance;
+}
+
+Collection.prototype.getSiteName = function(value){
+  for(var a=0; a<window.sites.length; a++){
+    if(window.sites[a]['id'] == value){
+      return window.sites[a]['name'];
+    }
+  }
+  return "";
+}
+
+Collection.prototype.filterSite = function(fieldId){
+  Collection.prototype.clearSiteId(fieldId);
+  value = $('#'+fieldId).val();
+  if(value == ""){
+    $('#filterSiteList_'+fieldId).empty();
+    return;
+  }
+  collectionId = window.currentCollectionId;
+  $.ajax({
+      url: '/collections/' + collectionId + '/sites_by_term.json',
+      type: 'GET',
+      success: function(sites){
+        Collection.prototype.buildSiteList(sites, fieldId);
+      },error: function(data){
+        
+      },
+      data: {term: value}
+  }); 
+}
+
+Collection.prototype.filterUser = function(fieldId){
+  $('#user_'+fieldId).val(null);
+  value = $('#'+fieldId).val();
+  if(value == ""){
+    $('#filterUserList_'+fieldId).empty();
+    return;
+  }
+  collectionId = window.currentCollectionId;
+  $.ajax({
+      url: '/collections/' + collectionId + '/memberships/search.json',
+      type: 'GET',
+      success: function(users){
+        Collection.prototype.buildUserList(users, fieldId);
+      },error: function(data){
+        
+      },
+      data: {term: value}
+  }); 
+}
+
+Collection.prototype.buildUserList = function(users, fieldId){
+  userList = $('#filterUserList_'+fieldId);
+  userList.empty();
+  for(i=0; i<users.length; i++){
+    if(i == 0){
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+    }else if(i == sites.length - 1){
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
+    }else{
+      li = '<li onclick="Collection.prototype.selectUser(\''+ users[i] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
+    }
+    userEle = li +  '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+            '<span>'+users[i]+'</span>'+
+      '</div>'+
+    '</li>';
+    
+    userList.append(userEle);
+  }
+}
+
+Collection.prototype.validFieldUser = function(fieldId){
+  userVal = $('#user_'+fieldId).val();
+  if(userVal == ''){
+    $('#'+fieldId).val('');
+  }
+}
+
+Collection.prototype.selectUser = function(userEmail, fieldId){
+  $('#'+fieldId).val(userEmail);
+  $('#user_'+fieldId).val(userEmail);
+  $('#filterUserList_'+fieldId).empty();
+}
+
+
+Collection.prototype.clearSiteId = function(fieldId){
+  $('#site_'+fieldId).val(null);
+}
+
+Collection.prototype.validFieldSite = function(fieldId){
+  siteVal = $('#site_'+fieldId).val();
+  if(siteVal == ''){
+    $('#'+fieldId).val(null);
+  }
+}
+
+Collection.prototype.buildSiteList = function(sites, fieldId){
+  siteList = $('#filterSiteList_'+fieldId);
+  siteList.empty();
+  for(i=0; i<sites.length; i++){
+    if(i == 0){
+      li = '<li onclick="Collection.prototype.selectSite('+sites[i]["id"] +',\''+ sites[i]["name"] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+    }else if(i == sites.length - 1){
+      li = '<li onclick="Collection.prototype.selectSite('+sites[i]["id"] +',\''+ sites[i]["name"] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
+    }else{
+      li = '<li onclick="Collection.prototype.selectSite('+sites[i]["id"] +',\''+ sites[i]["name"] +'\',\''+ fieldId+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
+    }
+    siteEle = li +  '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+            '<span>'+sites[i]["name"]+'</span>'+
+      '</div>'+
+    '</li>';
+    
+    siteList.append(siteEle);
+  }
+}
+
+Collection.prototype.selectSite = function(siteId, siteName, fieldId){
+  $('#'+fieldId).val(siteName);
+  $('#site_'+fieldId).val(siteId);
+  $('#filterSiteList_'+fieldId).empty();
 }
 
 Collection.prototype.fetchFields = function() {
@@ -45,8 +213,9 @@ Collection.prototype.fetchFields = function() {
 };
 
 Collection.prototype.createSite = function(id){
+  currentCollectionSchema = Collection.getSchemaByCollectionId(id);
   Collection.hideWhileOffline();
-  Collection.prototype.showFormAddSite(Collection.getSchemaByCollectionId(id));
+  Collection.prototype.showFormAddSite(currentCollectionSchema);
 }
 
 Collection.hideWhileOffline = function(){
@@ -77,11 +246,12 @@ Collection.prototype.showFormAddSite = function(schema){
   $("#fields").html(fieldHtml);
   Collection.prototype.applyBrowserLocation();
   Collection.prototype.handleFieldUI(schema);
+  Collection.prototype.formSiteWithPermission(schema);
 }
 
 Collection.prototype.saveSite = function(){  
   var collectionId = window.currentCollectionId;
-  if(Collection.prototype.validateData(collectionId)){    
+  if(Collection.prototype.validateData(collectionId)){ 
     if(window.navigator.onLine){
       if(window.currentSiteId){
         var formData = new FormData($('form')[0]);
@@ -227,19 +397,19 @@ Collection.prototype.ajaxUpdateOfflineSite = function(collectionId, formData){
 }
 
 Collection.prototype.validateData = function(collectionId){
-  if($("#name").val().trim() == ""){
+  currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
+  if(currentCollectionSchema["is_visible_name"] == true && $("#name").val().trim() == ""){
     Collection.prototype.showErrorMessage("Name can not be empty.");
     return false;
   }
-  if($("#lat").val().trim() == ""){
+  if(currentCollectionSchema["is_visible_location"] == true && $("#lat").val().trim() == ""){
     Collection.prototype.showErrorMessage("Location's latitude can not be empty.");
     return false;
   }
-  if($("#lng").val().trim() == ""){
+  if(currentCollectionSchema["is_visible_location"] == true && $("#lng").val().trim() == ""){
     Collection.prototype.showErrorMessage("Location's longitude can not be empty.");
     return false;
   }
-
   for(var k=0; k< window.collectionSchema.length; k++){
     if(window.collectionSchema[k]["id"] == collectionId){
       schema = window.collectionSchema[k];
@@ -255,6 +425,7 @@ Collection.prototype.validateData = function(collectionId){
             case "numeric":
               value = $("#" + field["code"]).val();
               range = field["config"]["range"];
+              digitsPrecision = field["config"]["digits_precision"];
               if(Collection.prototype.validateNumeric(value) == false){
                 Collection.prototype.showErrorMessage(field["name"] + " is not valid numeric value.");
                 return false;
@@ -266,19 +437,31 @@ Collection.prototype.validateData = function(collectionId){
                   return false;                  
                 }
               }
-              if(range){                  
-                  if(Collection.prototype.validateRange(value, range) == false){
-                    Collection.prototype.showErrorMessage("Invalid number range");
-                    Collection.setFieldStyleFailed(field["code"]);
+
+              if(range){
+                if(value != ""){
+                  msg = Collection.prototype.validateRange(value, range);
+                  if(msg != ""){
+                    Collection.prototype.showErrorMessage(msg);
+                    $('div').removeClass('invalid_field');
+                    Collection.setFieldStyleFailed(field["code"]);                    
                     return false;
                   }
+                }
               }
+              
+              if(digitsPrecision){
+                value = parseInt(value * Math.pow(10, parseInt(digitsPrecision))) / Math.pow(10, parseInt(digitsPrecision))
+                $("#" + field["code"]).val(value);
+              }
+
               state =  Collection.valiateMandatoryText(field);
               break;
             case "date":
               state =  Collection.valiateMandatoryText(field);
               break;
             case "yes_no":
+              Collection.setYesNoFieldValue(field);   
               break;
             case "select_one":
               state =  Collection.valiateMandatorySelectOne(field);
@@ -315,6 +498,15 @@ Collection.prototype.validateData = function(collectionId){
   }
 
   return true;
+}
+
+Collection.setYesNoFieldValue = function(field){
+  if($( "#"+field["code"]+":checked").length == 1){
+    value = true;
+  }else{
+    value = false;
+  }
+  $("#hidden_"+field["code"]).val(value);
 }
 
 Collection.setFocusOnFieldFromSelectMany = function(fieldId){
@@ -514,23 +706,26 @@ Collection.prototype.validateNumeric = function(number) {
 
 Collection.prototype.validateRange = function(number, range){
   if(range["minimum"] && range["maximum"]){
-    if(parseInt(number) >= parseInt(range["minimum"]) && parseInt(number) <= parseInt(range["maximum"]))
-      return true;
-    else
-      return false;
+    if(parseInt(number) >= parseInt(range["minimum"]) && parseInt(number) <= parseInt(range["maximum"])){
+      return '';
+    }else{
+      return('Invalid value, value must be in the range of ('+range["minimum"]+'-'+range["maximum"]+')');
+    }
   }
   else{
     if(range["maximum"]){
-      if(parseInt(number) <= parseInt(range["maximum"]))
-        return true;
-      else
-        return false;      
+      if(parseInt(number) <= parseInt(range["maximum"])){
+        return "";
+      }else{
+        return('Invalid value, value must be less than or equal to '+range["maximum"]);
+      }      
     }
     if(range["minimum"]){
-      if(parseInt(value) >= parseInt(range["minimum"]))
-        return true;
-      else
-        return false;      
+      if(parseInt(value) >= parseInt(range["minimum"])){
+        return "";
+      }else{
+        return('Invalid value, value must be greater than or equal to '+range["minimum"]);
+      }      
     }
   }
   return true;
@@ -551,19 +746,39 @@ Collection.prototype.progressHandlingFunction =function(e){
 Collection.prototype.addLayerForm = function(schema){
   form = "";
   for(i=0; i<schema["layers"].length;i++){
-    form = form + '<div><h5>' + schema["layers"][i]["name"] + '</h5>';
+    form = form + '<div id="wrapper_layer_' + schema["layers"][i]["id"] + '"><h5>' + schema["layers"][i]["name"] + '</h5>';
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j];
       myField = new Field(field);
       form = form + myField.getField();
+      writeable = schema["layers"][i]["fields"][j].writeable;
     }
     form = form + "</div>";
   }
   return form;
 }
 
+Collection.prototype.formSiteWithPermission = function(schema){
+  for(i=0; i<schema["layers"].length;i++){
+    var writeable = false;
+    for(j=0; j<schema["layers"][i]["fields"].length; j++){
+      writeable = schema["layers"][i]["fields"][j].writeable;
+      break;
+    }
+    if(!writeable)
+      $("#wrapper_layer_" + schema["layers"][i]["id"]).addClass("ui-disabled");
+    else
+      $("#wrapper_layer_" + schema["layers"][i]["id"]).removeClass("ui-disabled");
+  }
+}
+
 Collection.prototype.handleFieldUI = function(schema){
-  
+  if(schema["is_visible_name"] == false){
+    $('#collectionName').hide();
+  }
+  if(schema["is_visible_location"] == false){
+    $('#location').hide();
+  }  
   for(i=0; i<schema["layers"].length;i++){
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j];
@@ -575,7 +790,6 @@ Collection.prototype.handleFieldUI = function(schema){
 }
 
 Collection.prototype.addDataToCollectionList = function(collection_schema){
-  
   for(var i=0; i< collection_schema.length; i++){
     if(collection_schema.length > 1 && i == 0){
       classListName = "ui-first-child" 
@@ -605,10 +819,11 @@ Collection.prototype.getListCollectionTemplate = function(collection, classListN
 }
 
 Collection.prototype.getListSiteTemplate = function(collectionId, site, classListName){
+  siteName = site["name"] ? site["name"] : "&nbsp;";
   item = '<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ' + classListName + '" >' + 
             '<div class="ui-btn-inner ui-li">' + 
               '<div class="ui-btn-text">' +
-                '<a style="cursor: pointer;" onclick="Collection.prototype.showSite(' + collectionId + ','+ site["id"] +  ','+ site["idSite"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + site["name"] + '</a>' + 
+                '<a style="cursor: pointer;" onclick="Collection.prototype.showSite(' + collectionId + ','+ site["id"] +  ','+ site["idSite"] + ')"' + ' href="javascript:void(0)" class="ui-link-inherit">' + siteName + '</a>' + 
               '</div>' + 
               '<span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>' +
             '</div>' +
@@ -639,6 +854,7 @@ Collection.prototype.showListSites = function(collectionId, isFromCollectionList
       url: "/mobile/collections/" + collectionId + "/sites.json",
       success: function(sites) {
         $("#listSitesView").html("");
+        window.sites = sites;
         for(var i=0; i< sites.length; i++){
           classListName = Collection.prototype.addClassToSiteList(sites, i);
           item = Collection.prototype.getListSiteTemplate(collectionId, sites[i], classListName)
@@ -776,6 +992,7 @@ Collection.prototype.getFieldLogicByFieldId = function(fieldId){
 Collection.prototype.showPosition = function(position){
   $("#lat").val(position.coords.latitude);
   $("#lng").val(position.coords.longitude);
+  Collection.prototype.buildLocation();
 }
 
 Collection.prototype.goHome = function(){
@@ -813,6 +1030,7 @@ Collection.showMainSitePage = function(){
   Collection.hidePages();
   $("#lat").val(Collection.mapContainer.currentLat);
   $("#lng").val(Collection.mapContainer.currentLng);
+  Collection.prototype.buildLocation();
   $("#mobile-sites-main").show();
 }
 
@@ -884,11 +1102,33 @@ Collection.assignSite = function(site){
   $("#lat").val(site["lat"]);
   $("#lng").val(site["lng"]);
   focusSchema = Collection.getSchemaByCollectionId(window.currentCollectionId);
+  if(focusSchema["is_visible_name"] == false){
+    $('#collectionName').hide();
+  }
+  if(focusSchema["is_visible_location"] == false){
+    $('#location').hide();
+  }
   var currentSchemaData = jQuery.extend(true, {}, focusSchema);
   $("#title").html(currentSchemaData["name"]);
-  fieldHtml = Collection.editLayerForm(currentSchemaData, site["properties"]);
+  rule = SitesPermission.allRule(window.currentCollectionId, window.currentSiteId);
+  $("#fields").show();
+  if(rule.canRead || rule.canWrite){
+    Collection.visibleLayer(window.currentCollectionId, window.currentSiteId, function(visible_layers){
+      Collection.handleViewEdit({layers: visible_layers}, site)
+      Collection.prototype.handleFieldUI(currentSchemaData);
+    });
+  }else if(rule.none){
+    $("#fields").hide();
+  }else{
+    Collection.handleViewEdit(currentSchemaData, site);
+    Collection.prototype.handleFieldUI(currentSchemaData);
+  }
+}
+
+Collection.handleViewEdit = function(schema, site){
+  fieldHtml = Collection.editLayerForm(schema, site["properties"]);
   $("#fields").html(fieldHtml);
-  Collection.prototype.handleFieldUI(currentSchemaData);
+  Collection.prototype.formSiteWithPermission(schema);
 }
 
 Collection.clearFormData = function(){
@@ -902,7 +1142,7 @@ Collection.clearFormData = function(){
 Collection.editLayerForm = function(schema, properties){
   form = "";
   for(i=0; i<schema["layers"].length;i++){
-    form = form + '<div><h5>' + schema["layers"][i]["name"] + '</h5>';
+    form = form + '<div id="wrapper_layer_' + schema["layers"][i]["id"] + '"><h5>' + schema["layers"][i]["name"] + '</h5>';
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
       var field = schema["layers"][i]["fields"][j]
       for(var key in properties){
@@ -954,9 +1194,17 @@ Collection.prototype.showSiteOnline = function(collectionId, siteId){
       Collection.hidePages();
       Collection.hideWhileOffline();
       Collection.assignSite(site);
+      Collection.prototype.buildLocation();
       $("#mobile-sites-main").show();
       $.mobile.saving('hide');
     }
+  });
+}
+
+Collection.visibleLayer = function(collectionId, siteId, callback){
+  $.ajax({
+    url: "/mobile/collections/" + collectionId + "/sites/" + siteId + "/visible_layers_for",
+    success: callback
   });
 }
 

@@ -115,6 +115,17 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_api_admin_user!
+    params.delete :auth_token if current_user
+    unless current_user
+      basic_authentication_admin_check
+    end
+  end
+
+  def basic_authentication_admin_check
+    user = User.find_by_authentication_token(params.delete :auth_token) and sign_in user and user.is_super_user
+  end
+
   def authenticate_collection_user!
     head :forbidden unless current_user.belongs_to?(collection)
   end

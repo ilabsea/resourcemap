@@ -163,12 +163,68 @@ class Mobile::SitesController < SitesController
 
   def fix_value_on_yesNo_properties(properties)
     properties.each do |key,value|
-      if value == "on" #fix value for yes_no field
-        properties[key] = true
+      if Field.find_by_id(key.to_i) and Field.find_by_id(key.to_i).kind == "yes_no"
+        if value == "true" || value == "on" #fix value for yes_no field
+          properties[key] = true
+        else
+          properties[key] = false
+        end
         break
       end
     end
     properties
   end
 
+  def visible_layers_for
+    layers = []
+    if site.collection.site_ids_permission(current_user).include? site.id
+      target_fields = fields.includes(:layer).all
+      layers = target_fields.map(&:layer).uniq.map do |layer|
+        {
+          id: layer.id,
+          name: layer.name,
+          ord: layer.ord
+        }
+      end
+      if site.collection.site_ids_write_permission(current_user).include? site.id
+        layers.each do |layer|
+          layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
+          layer[:fields].map! do |field|
+            {
+              id: field.es_code,
+              name: field.name,
+              code: field.code,
+              kind: field.kind,
+              config: field.config,
+              ord: field.ord,
+              is_mandatory: field.is_mandatory,
+              is_enable_field_logic: field.is_enable_field_logic,
+              writeable: true
+            }
+          end
+        end
+      elsif site.collection.site_ids_read_permission(current_user).include? site.id
+        layers.each do |layer|
+          layer[:fields] = target_fields.select { |field| field.layer_id == layer[:id] }
+          layer[:fields].map! do |field|
+            {
+              id: field.es_code,
+              name: field.name,
+              code: field.code,
+              kind: field.kind,
+              config: field.config,
+              ord: field.ord,
+              is_mandatory: field.is_mandatory,
+              is_enable_field_logic: field.is_enable_field_logic,
+              writeable: false
+            }
+          end
+        end
+      end
+      layers.sort! { |x, y| x[:ord] <=> y[:ord] }
+    else
+      layers = site.collection.visible_layers_for(current_user)
+    end
+    render json: layers
+  end
 end
