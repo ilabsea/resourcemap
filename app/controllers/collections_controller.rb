@@ -20,8 +20,6 @@ class CollectionsController < ApplicationController
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
   before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders, :quotas]
 
-  
-
   def index
     if params[:name].present?
       render json: Collection.where("name like ?", "%#{params[:name]}%") if params[:name].present?
@@ -74,6 +72,10 @@ class CollectionsController < ApplicationController
   end
 
   def update
+    if params[:collection][:hierarchy_mode] == "0"
+      params[:collection][:field_identify] = ""
+      params[:collection][:field_parent] = ""
+    end
     if collection.update_attributes params[:collection]
       collection.recreate_index
       redirect_to collection_settings_path(collection), notice: I18n.t('views.collections.form.collection_updated', name: collection.name)
@@ -100,6 +102,10 @@ class CollectionsController < ApplicationController
   end
 
   def settings
+    @options_for_select = [["(no value)", ""]]
+    collection.fields.each do |field|
+      @options_for_select.push([field.name, field.id])
+    end
     add_breadcrumb I18n.t('views.collections.tab.settings'), collection_settings_path(collection)
   end
 

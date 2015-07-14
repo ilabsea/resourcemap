@@ -1,6 +1,11 @@
 = form_for collection do |f|
   :javascript
-    $(document).ready(function(){ var select_icon = $('#select_icon');
+    $(document).ready(function(){ 
+      var ori_checked = $("#collection_hierarchy_mode").attr("checked");
+      if (ori_checked == undefined){
+        $("#hierachy_mode_options").hide();
+      }
+      var select_icon = $('#select_icon');
       if(select_icon.val() == "")
         select_icon.val('default');
       $("#focus_icon").val(select_icon.val());
@@ -19,8 +24,19 @@
           $('#select_icon').val($("#focus_icon").val());
         }
       });
-    });
 
+      $("#collection_hierarchy_mode").click(function(){
+        var ori_checked = $("#collection_hierarchy_mode").attr("checked");
+        if (ori_checked){
+          $("#hierachy_mode_options").show();
+        }else{
+          $("#hierachy_mode_options").hide();
+          $("#collection_field_identify").val("");
+          $("#collection_field_parent").val("");
+        }
+      })
+    });
+  
   .field.w60
     = f.label t('views.collections.form.name') 
     = f.text_field :name, :readonly => !creation && (cannot? :update, collection)
@@ -34,10 +50,16 @@
       = f.label t('views.collections.form.public') 
       = f.check_box :public, :disabled => !creation && (cannot? :update, collection)
 
-  .field.w60
-    = f.label t('views.collections.form.hierarchy_mode') 
-    = f.check_box :hierarchy_mode, :disabled , :onclick => !creation && (cannot? :update, collection)
-    = render 'hierarchy_mode'
+  - if !creation 
+    .field.w60
+      = f.label t('views.collections.form.hierarchy_mode') 
+      = f.check_box :hierarchy_mode, :disabled => !creation && (cannot? :update, collection)
+
+    .field.w60#hierachy_mode_options
+      = f.label t('views.collections.form.field_identify')
+      = f.select :field_identify, options_for_select(@options_for_select, collection.field_identify)
+      = f.label t('views.collections.form.field_parent')
+      = f.select :field_parent, options_for_select(@options_for_select, collection.field_parent)
 
   .field.w60
     %label

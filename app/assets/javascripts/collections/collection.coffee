@@ -17,6 +17,9 @@ onCollections ->
       @alertedSites = ko.observableArray()
       @checked = ko.observable if window.currentUserIsGuest then false else true
       @fieldsInitialized = false
+      @hierarchy_mode = data?.hierarchy_mode
+      @field_identify = data?.field_identify
+      @field_parent = data?.field_parent
       @groupByOptions = ko.computed =>
         defaultOptions = []
         if window.model

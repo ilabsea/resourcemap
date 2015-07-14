@@ -28,6 +28,13 @@ onCollections ->
           @addSite @createSite(site)
         @loadingSites false
         window.model.refreshTimeago()
+        @prepareSitesViewAsHierarchy()
+
+    @prepareSitesViewAsHierarchy: ->
+      for site in @sites()
+        console.log 'site : ', site.properties()
+        # console.log 'field_identify ', @field_identify
+        # console.log 'field_parent', @field_identify
 
     @reloadSites: ->
       @loadingSites true

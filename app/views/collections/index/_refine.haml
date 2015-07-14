@@ -138,4 +138,10 @@
     <!-- /ko -->
     = ko_text_field_tag :search, html: {class: 'ux-search', placeholder: t('views.collections.index.search')}
 .clear
+<!-- ko if: currentCollection() && currentCollection().hierarchy_mode-->
+.left{style: 'margin-right:8px; margin-left: 3px;'}
+  = t('views.collections.index.hierarchy_mode')
+  %input{type: 'checkbox', checked: 'checked'}
+<!-- /ko -->
+.clear
 %br/
