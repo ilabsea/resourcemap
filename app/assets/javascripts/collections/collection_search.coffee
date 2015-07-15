@@ -40,7 +40,9 @@ onCollections ->
             q.sort_direction = if @sortDirection then 'desc' else 'asc'
           else
             q.sort_direction = if @sortDirection then 'asc' else 'desc'
-      filter.setQueryParams(q, api) for filter in @filters
+      for filter in @filters
+        console.log 'filters : ', filter
+        filter.setQueryParams(q, api) 
       q
 
     link: (format) => "/api/collections/#{@id}.#{format}?#{$.param @queryParams(true)}"

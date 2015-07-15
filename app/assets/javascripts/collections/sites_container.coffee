@@ -11,6 +11,9 @@ onCollections ->
       @hasMoreSites = ko.observable true
       @loadingSites = ko.observable true
       @siteIds = {}
+      @items = [{id: 654, name:"siteAA"}]
+      @hierarchies = []
+      @hierarchySites = [{id: 654, name:"siteAA"}]
 
     # Loads SITES_PER_PAGE sites more from the server, it there are more sites.
     @loadMoreSites: ->
@@ -29,12 +32,47 @@ onCollections ->
         @loadingSites false
         window.model.refreshTimeago()
         @prepareSitesViewAsHierarchy()
+        @hierarchies = @getNestedChildren(@items, "")
+        @hierarchySites = $.map @hierarchies, (x) => new HierarchySite(x)
+
+    @getHierarchySites : ->
+      for item in @items()
+        if item.sub?
+          @HierarchyItems = $.map item.sub, (x) => new HierarchySite(item, x, level + 1)
+        else
+          @HierarchyItems.push(new HierarchySite(item))
 
     @prepareSitesViewAsHierarchy: ->
+      fi = @field_identify
+      fp = @field_parent
+      @items = []
       for site in @sites()
-        console.log 'site : ', site.properties()
-        # console.log 'field_identify ', @field_identify
-        # console.log 'field_parent', @field_identify
+        property = site.properties()
+        if property[fp] == undefined
+          site.parent_id = ""
+          @items.push({id: site.id(), name: site.name(), site: site, parent_id: ""})
+        else 
+          for s, i in @sites()
+            p = s.properties()
+            if property[fp].toString() == p[fi] && p[fi] != undefined
+              site.parent_id = s.id()
+              @items.push({id: site.id(), name: site.name(), site: site, parent_id: s.id()}) 
+              break
+            else 
+              if i == @sites().length-1
+                site.parent_id = ""
+                @items.push({id: site.id(), name: site.name(), site: site, parent_id: ""})
+
+
+    @getNestedChildren: (items, parent_id) ->
+      out = []
+      for i of items
+        if items[i].parent_id == parent_id
+          sub = @getNestedChildren(items, items[i].id)
+          if sub.length
+            items[i].sub = sub
+          out.push items[i]
+      out
 
     @reloadSites: ->
       @loadingSites true
