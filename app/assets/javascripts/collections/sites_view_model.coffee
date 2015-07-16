@@ -85,6 +85,10 @@ onCollections ->
         $('textarea').autogrow()
         $('#name').focus()
 
+    @editSiteInHierarchyMode: (hierarchy) ->
+      site = hierarchy.site
+      @editSite(site)
+
     @editSite: (site) ->
       #update @currentCollection().allSite()
       fields = @currentCollection().fields()

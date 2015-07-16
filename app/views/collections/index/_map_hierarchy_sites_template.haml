@@ -1,23 +1,16 @@
+-# Hierarchy item template (used when grouping results by hierarchy item)
 %script{type: "text/html", id: "map-hierarchy-sites-template"}
-  <!-- ko foreach: items -->
+  <!-- ko foreach: hierarchySites -->
   %tr
-    %td.hierarchyItem
-      %div
-        %a{href: 'javascript:void(0)'}
-          / %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
-        %span{ko(text: :name)}
-  / <!-- ko if: expanded -->
-  / <!-- ko template: {name: 'map-hierarchy-sites-template', with: hierarchySites} -->
-  / <!-- /ko -->
-  / <!-- ko if: hasMoreSites() && !loadingSites()-->
-  / %tr
-  /   %td.loadmore
-  /     = link_to t('views.collections.index.load_more_sites'), 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + level * 20) + 'px'"})
-  / <!-- /ko -->
-  / <!-- ko if: hasMoreSites() && loadingSites()-->
-  / %tr
-  /   %td.loadmore
-  /     %span{ko(style: {marginLeft: "'' + (30 + (level + 1) * 20) + 'px'"})}= t('views.collections.index.loading')
-  / <!-- /ko -->
-  / <!-- /ko -->
-  / <!-- /ko -->
+    %td
+      %div.hierarchyItem{ko(click: :toggleExpand, style: :columnStyle)}
+        %div{ko(style: :labelStyle, css: {greyback: :isSelected})}
+          %a{href: 'javascript:void(0)'}
+            %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
+          %span{ko(text: :name)}
+      %button.farrow{ko(click: '$root.editSite'), type: "button"}
+  <!-- ko if: expanded -->
+  <!-- ko template: {name: 'map-hierarchy-sites-template', with: hierarchySites} -->
+  <!-- /ko -->
+  <!-- /ko -->
+  <!-- /ko -->
