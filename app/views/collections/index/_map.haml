@@ -86,12 +86,12 @@
           <!-- ko template: {name: 'map-hierarchy-items-template', with: $data} -->
           <!-- /ko -->
           <!-- /ko -->
-          <!-- ko if: hierarchy_mode -->
+          <!-- ko if: hierarchy_mode && checkedHierarchyMode() -->
           <!-- ko template: {name: 'map-hierarchy-sites-template', with: $data} -->
           <!-- /ko -->
           <!-- /ko -->
 
-          <!-- ko if: !hierarchy_mode -->
+          <!-- ko if: !hierarchy_mode || (hierarchy_mode && !checkedHierarchyMode())-->
           <!-- ko template: {name: 'map-sites-template', with: $data} -->
           <!-- /ko -->
           <!-- ko if: hasMoreSites() && !loadingSites()-->

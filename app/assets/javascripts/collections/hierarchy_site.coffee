@@ -1,11 +1,14 @@
+#= require module
 #= require collections/sites_container
 
 onCollections ->
 
   # Used when enable view as hierarchy mode
-  class @HierarchySite
+  class @HierarchySite extends Module
+    @include SitesContainer
 
     constructor: (data, level = 0) ->
+      @constructorSitesContainer()
       @id = data?.id
       @name = data?.name
       @site = data?.site

@@ -25,6 +25,7 @@ onCollections ->
         if window.model
           defaultOptions =[window.model.defaultGroupBy]
         defaultOptions.concat(@fields().filter((f) -> f.showInGroupBy))
+      @checkedHierarchyMode = ko.observable(@hierarchy_mode)
       
     isSearch: => false
 
@@ -48,9 +49,5 @@ onCollections ->
         window.model.map.panTo @position()
 
 
-    # loadSites: =>
-    #   $.get @sitesUrl(), (data) =>
-    #     for site in data
-    #       @addSite @createSite(site)
 
 

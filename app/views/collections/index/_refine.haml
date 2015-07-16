@@ -141,7 +141,22 @@
 <!-- ko if: currentCollection() && currentCollection().hierarchy_mode-->
 .left{style: 'margin-right:8px; margin-left: 3px;'}
   = t('views.collections.index.hierarchy_mode')
-  %input{type: 'checkbox', checked: 'checked'}
+  %input{ko(checked: 'currentCollection().checkedHierarchyMode'), type: 'checkbox'}
 <!-- /ko -->
 .clear
 %br/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
