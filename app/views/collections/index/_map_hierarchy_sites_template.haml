@@ -3,8 +3,8 @@
   <!-- ko foreach: hierarchySites -->
   %tr
     %td
-      %div.hierarchyItem{ko(click: :toggleExpand, style: :columnStyle)}
-        %div{ko(style: :labelStyle, css: {greyback: :isSelected})}
+      %div.hierarchyItem{ko(click: :selectedHierarchy, style: :columnStyle)}
+        %div{ko(style: :labelStyle, css: {greyback: :selected})}
           %a{href: 'javascript:void(0)'}
             %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
           %span{ko(text: :name)}
@@ -14,14 +14,3 @@
   <!-- /ko -->
   <!-- /ko -->
   <!-- /ko -->
-
-  / <!-- ko if: hasMoreSites() && !loadingSites()-->
-  / %tr
-  /   %td.loadmore
-  /     = link_to t('views.collections.index.load_more_sites'), 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + level * 20) + 'px'"})
-  / <!-- /ko -->
-  / <!-- /ko -->
-  / <!-- /ko -->
-
-
-

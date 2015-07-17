@@ -8,32 +8,39 @@ onCollections ->
     @include SitesContainer
 
     constructor: (data, level = 0) ->
-      @constructorSitesContainer()
       @id = data?.id
       @name = data?.name
       @site = data?.site
       @level = level
       @expanded = ko.observable(false)
       @selected = ko.observable(false)
-
+      @selectedHierarchy = ko.observable()
+      
       @hierarchySites = if data.sub?
                           $.map data.sub, (x) => new HierarchySite(x, level + 1)
                         else
                           []
 
+      @selectedHierarchy.subscribe (newValue) =>
+        @toggleExpand()
+        if @expanded()
+          model.selectHierarchySites(@hierarchySites, newValue)
+
       # Styles
       @labelStyle = @style()['labelStyle']
       @columnStyle = @style()['columnStyle']
 
-      @isSelected = ko.computed => @ == window.model.selectedHierarchy()
+    unselect: =>
+      @selected(false)
 
     toggleExpand: =>
       @expanded(!@expanded())
+      
 
     # private
     style: =>
       pixels_per_indent_level = 20
-      row_width = 280
+      row_width = 270
 
       indent = @level * pixels_per_indent_level
 

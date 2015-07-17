@@ -4,6 +4,7 @@ onCollections ->
     @constructor: ->
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
+      @selectedSites = ko.observableArray() #selectedSites in hierarchy mode
       @selectedHierarchy = ko.observable()
       @loadingSite = ko.observable(false)
       @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
@@ -260,17 +261,66 @@ onCollections ->
           @exitSite()
           @reloadMapSites() if @showingMap()
           window.model.updateSitesInfo()
+          if @currentCollection().hierarchy_mode
+            @currentCollection().prepareSitesAsHierarchy()
+
+    @selectHierarchySites: (hierarchySite, parent) ->
+      #deselected old selectedSites
+      for s in @selectedSites()
+        if s
+          if s.marker
+            @setMarkerIcon s.marker, 'active'
+            s.marker.setZIndex(@zIndex(s.marker.getPosition().lat()))
+          s.selected(false)
+      for hs in hierarchySite
+        site = hs.site
+        @selectHierarchySite(site)
+        @selectedSites().push(site)
+
+    @selectHierarchySite: (site) ->
+      if @showingMap()
+        if @selectedSite() == site
+          @selectedSite(null)
+          @reloadMapSites()
+        else
+          @selectedSite(site)
+
+          @selectedSite().selected(true)
+          if @selectedSite().id() && @selectedSite().hasLocation()
+            # Again, all these checks are to prevent flickering
+            if @markers[@selectedSite().id()]
+              @selectedSite().marker = @markers[@selectedSite().id()]
+              @selectedSite().marker.setZIndex(200000)
+              @setMarkerIcon @selectedSite().marker, 'target'
+              @deleteMarker @selectedSite().id(), false
+            else
+              @selectedSite().createMarker()
+            @selectedSite().panToPosition()
+          else if @oldSelectedSite
+            @oldSelectedSite.deleteMarker()
+            delete @oldSelectedSite
+            @reloadMapSites()
+      else
+        @selectedSite().selected(false) if @selectedSite()
+        if @selectedSite() == site
+          @selectedSite(null)
+        else
+          @selectedSite(site)
+
+      @rewriteUrl()
+
+
 
     @selectSite: (site) ->
       if @selectedHierarchy()
           @selectedHierarchy(null)
       if @showingMap()
-        if @selectedSite()
-          if @selectedSite().marker
-            @oldSelectedSite = @selectedSite()
-            @setMarkerIcon @selectedSite().marker, 'active'
-            @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
-          @selectedSite().selected(false)
+        # if @selectedSite()
+        #   if @selectedSite().marker
+        #     @oldSelectedSite = @selectedSite()
+        #     @setMarkerIcon @selectedSite().marker, 'active'
+        #     @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
+        #   @selectedSite().selected(false)
 
         if @selectedSite() == site
           @selectedSite(null)

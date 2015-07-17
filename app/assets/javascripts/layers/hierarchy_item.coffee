@@ -9,7 +9,6 @@ onLayers ->
                           ko.observableArray($.map(data.sub, (x) -> new HierarchyItem(x, level + 1)))
                         else
                           ko.observableArray()
-      console.log @hierarchyItems()
 
     toggleExpand: =>
       @expanded(!@expanded())
