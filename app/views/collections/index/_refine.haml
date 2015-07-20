@@ -1,8 +1,11 @@
+<!-- ko if: !currentCollection().hierarchy_mode || (currentCollection().hierarchy_mode && !currentCollection().checkedHierarchyMode()) -->
 <!-- ko if: !inSearch() && currentCollection() && currentCollection().groupByOptions().length > 1 -->
 .left{ko(with: :currentCollection), style: 'margin-right:8px'}
   = t('views.collections.index.group_by')
   %select{ko(value: '$root.groupBy', options: :groupByOptions, optionsText: "'name'")}
 <!-- /ko -->
+<!-- /ko -->
+
 .left.superblyTagItems
   <!-- ko foreach: filters() -->
   %li.superblyTagItem{style: 'float:left;padding:3px;margin-right:4px;cursor:pointer'}

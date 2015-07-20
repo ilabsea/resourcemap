@@ -18,6 +18,7 @@ onCollections ->
       @checked = ko.observable if window.currentUserIsGuest then false else true
       @fieldsInitialized = false
       @hierarchy_mode = data?.hierarchy_mode
+      @checkedHierarchyMode = ko.observable(@hierarchy_mode)
       @field_identify = data?.field_identify
       @field_parent = data?.field_parent
       @groupByOptions = ko.computed =>
@@ -25,7 +26,6 @@ onCollections ->
         if window.model
           defaultOptions =[window.model.defaultGroupBy]
         defaultOptions.concat(@fields().filter((f) -> f.showInGroupBy))
-      @checkedHierarchyMode = ko.observable(@hierarchy_mode)
       
     isSearch: => false
 

@@ -6,7 +6,6 @@ onCollections ->
   class @CollectionSearch extends CollectionDecorator
     constructor: (collection, search, filters, sort, sortDirection) ->
       super(collection)
-
       @search = search
       @filters = filters
       @sort = sort
