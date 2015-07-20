@@ -22,6 +22,11 @@ onCollections ->
                           []
 
       @selectedHierarchy.subscribe (newValue) =>
+        if model.selectedHierarchyMode()
+          model.selectedHierarchyMode().selected(false)
+        @selected(true)
+        model.selectedHierarchyMode(newValue)
+        
         @toggleExpand()
         if @expanded()
           model.selectHierarchySites(@hierarchySites, newValue)

@@ -89,6 +89,15 @@
           <!-- ko if: hierarchy_mode && checkedHierarchyMode() -->
           <!-- ko template: {name: 'map-hierarchy-sites-template', with: $data} -->
           <!-- /ko -->
+          <!-- ko if: hasMoreSites() && !loadingSites()-->
+          %tr
+            %td.loadmore
+              = ko_link_to t('views.collections.index.load_more_sites'), :loadMoreSites, style: 'margin-left: 23px'
+          <!-- /ko -->
+          <!-- ko if: hasMoreSites() && loadingSites()-->
+          %tr
+            %td.loadmore= t('views.collections.index.loading')
+          <!-- /ko -->
           <!-- /ko -->
 
           <!-- ko if: !hierarchy_mode || (hierarchy_mode && !checkedHierarchyMode())-->

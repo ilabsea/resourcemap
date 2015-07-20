@@ -6,6 +6,7 @@ onCollections ->
       @selectedSite = ko.observable()
       @selectedSites = ko.observableArray() #selectedSites in hierarchy mode
       @selectedHierarchy = ko.observable()
+      @selectedHierarchyMode = ko.observable()
       @loadingSite = ko.observable(false)
       @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
       @showSite = ko.computed =>  if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
@@ -312,15 +313,17 @@ onCollections ->
 
 
     @selectSite: (site) ->
+      if @selectedHierarchyMode()
+        @selectedHierarchyMode(null)
       if @selectedHierarchy()
-          @selectedHierarchy(null)
+        @selectedHierarchy(null)
       if @showingMap()
-        # if @selectedSite()
-        #   if @selectedSite().marker
-        #     @oldSelectedSite = @selectedSite()
-        #     @setMarkerIcon @selectedSite().marker, 'active'
-        #     @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
-        #   @selectedSite().selected(false)
+        if @selectedSite()
+          if @selectedSite().marker
+            @oldSelectedSite = @selectedSite()
+            @setMarkerIcon @selectedSite().marker, 'active'
+            @selectedSite().marker.setZIndex(@zIndex(@selectedSite().marker.getPosition().lat()))
+          @selectedSite().selected(false)
 
         if @selectedSite() == site
           @selectedSite(null)
