@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150721095029) do
+ActiveRecord::Schema.define(:version => 20150721095415) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -58,6 +58,8 @@ ActiveRecord::Schema.define(:version => 20150721095029) do
     t.boolean  "is_visible_name",                                    :default => true
     t.boolean  "is_visible_location",                                :default => true
     t.boolean  "hierarchy_mode"
+    t.integer  "field_parent"
+    t.integer  "field_identify"
   end
 
   create_table "field_histories", :force => true do |t|
