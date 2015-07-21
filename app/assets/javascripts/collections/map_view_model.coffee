@@ -7,6 +7,9 @@ onCollections ->
       @toggleLegend = ko.observable(false)
       @loadingLegend = ko.observable(false)
       @mapSitesCount = ko.observable(0)
+      @siteHierarchyIds = ko.observableArray()
+      @parent_siteHierarchyIds = ko.observable()
+
       @mapSitesCountText = ko.computed =>
         sitesText = if @mapSitesCount() == 1 then window.t('javascripts.collections.site') else window.t('javascripts.collections.sites')
         if @currentCollection()
@@ -146,8 +149,6 @@ onCollections ->
       currentMapRequestNumber = @mapRequestNumber
 
       getCallback = (data = {}) =>
-        # console.log 'loaded'
-        # @loading(false)
         return unless currentMapRequestNumber == @mapRequestNumber
         if @showingMap()
           @drawSitesInMap data.sites
@@ -167,7 +168,6 @@ onCollections ->
         getCallback()
       else
         @loading(true)
-        # console.log 'loading'
         $.get "/sites/search.json", query, getCallback
 
     @showLegend: =>
@@ -348,6 +348,8 @@ onCollections ->
 
       query.exclude_id = @selectedSite().id() if @selectedSite()?.id()
       query.search = @lastSearch() if @lastSearch()
+      query.site_ids = @siteHierarchyIds()
+      query.parent_site_ids = @parent_siteHierarchyIds()
 
       filter.setQueryParams(query) for filter in @filters()
 

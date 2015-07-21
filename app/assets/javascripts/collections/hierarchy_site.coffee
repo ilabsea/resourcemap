@@ -15,6 +15,7 @@ onCollections ->
       @expanded = ko.observable(false)
       @selected = ko.observable(false)
       @selectedHierarchy = ko.observable()
+      @siteIds = ko.observableArray()
       
       @hierarchySites = if data.sub?
                           $.map data.sub, (x) => new HierarchySite(x, level + 1)
@@ -22,18 +23,29 @@ onCollections ->
                           []
 
       @selectedHierarchy.subscribe (newValue) =>
+        #make the hierarchy selected or highlighted
         if model.selectedHierarchyMode()
           model.selectedHierarchyMode().selected(false)
         @selected(true)
         model.selectedHierarchyMode(newValue)
         
         @toggleExpand()
-        if @expanded()
-          model.selectHierarchySites(@hierarchySites, newValue)
+
+        #elastic search for children of selected hierarchy
+        model.parent_siteHierarchyIds(newValue.id)
+        siteIds = @toArray(@hierarchySites, [])
+        model.siteHierarchyIds(siteIds)
+        model.reloadMapSites()
 
       # Styles
       @labelStyle = @style()['labelStyle']
       @columnStyle = @style()['columnStyle']
+
+    toArray: (hierarchySites, siteIds)=>
+      for hs in hierarchySites
+        siteIds.push(hs.id)
+        @toArray(hs.hierarchySites, siteIds)
+      siteIds
 
     unselect: =>
       @selected(false)
@@ -61,5 +73,3 @@ onCollections ->
           marginTop: '1px'
         }
       }
-
-

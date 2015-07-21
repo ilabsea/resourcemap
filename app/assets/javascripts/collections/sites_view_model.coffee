@@ -20,6 +20,7 @@ onCollections ->
       params["collection_id"] = @currentCollection().id if @currentCollection()
 
       $('.BreadCrumb').load("/collections/breadcrumbs", params)
+
     @editingSiteLocation: ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
@@ -309,8 +310,6 @@ onCollections ->
           @selectedSite(site)
 
       @rewriteUrl()
-
-
 
     @selectSite: (site) ->
       if @selectedHierarchyMode()
