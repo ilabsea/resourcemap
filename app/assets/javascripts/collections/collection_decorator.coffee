@@ -28,6 +28,8 @@ onCollections ->
       @isVisibleName = collection.isVisibleName
       @isVisibleLocation = collection.isVisibleLocation
       @allSites(collection.allSites())
+      @hierarchy_mode = collection?.hierarchy_mode
+      @checkedHierarchyMode = ko.observable collection?.checkedHierarchyMode()
 
 
     createSite: (site) => new Site(@collection, site)

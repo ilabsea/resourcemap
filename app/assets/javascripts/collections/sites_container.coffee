@@ -3,7 +3,8 @@
 
 onCollections ->
 
-  class @SitesContainer
+  class @SitesContainer 
+
     @constructorSitesContainer: ->
       @expanded = ko.observable false
       @sites = ko.observableArray()

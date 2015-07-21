@@ -9,8 +9,6 @@ onCollections ->
       @field = field
       @hierarchyItemsMap = {}
       @hierarchyItems = $.map field.hierarchy, (x) => new HierarchyItem(@, field, x)
-      @hierarchy_mode = collection?.hierarchy_mode
-      @checkedHierarchyMode = ko.observable collection?.checkedHierarchyMode()
 
     isSearch: => false
 
