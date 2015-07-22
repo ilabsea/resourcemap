@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(:version => 20150722042954) do
     t.integer  "field_identify"
     t.integer  "field_parent"
     t.boolean  "hierarchy_mode"
+    t.integer  "field_identify_id"
   end
 
   create_table "field_histories", :force => true do |t|
