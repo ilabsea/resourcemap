@@ -1,9 +1,9 @@
 class RemoveFieldParentFromCollection < ActiveRecord::Migration
   def up
-    remove_column :collections, :field_parent
+    # remove_column :collections, :field_parent
   end
 
   def down
-    add_column :collections, :field_parent, :int
+    # add_column :collections, :field_parent, :int
   end
 end
