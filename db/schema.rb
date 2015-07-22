@@ -57,9 +57,9 @@ ActiveRecord::Schema.define(:version => 20150722024618) do
     t.integer  "quota",                                              :default => 0
     t.boolean  "is_visible_name",                                    :default => true
     t.boolean  "is_visible_location",                                :default => true
-    t.boolean  "hierarchy_mode"
     t.integer  "field_parent"
     t.integer  "field_identify"
+    t.boolean  "hierarchy_mode"
   end
 
   create_table "field_histories", :force => true do |t|

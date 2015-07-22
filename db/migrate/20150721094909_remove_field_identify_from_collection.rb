@@ -4,6 +4,6 @@ class RemoveFieldIdentifyFromCollection < ActiveRecord::Migration
   end
 
   def down
-    add_column :collections, :field_identify, :string
+    add_column :collections, :field_identify, :int
   end
 end
