@@ -30,7 +30,7 @@ class ThresholdsController < ApplicationController
     params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]} if params[:threshold][:sites]
     params[:threshold][:email_notification] = {} unless params[:threshold][:email_notification] # email not selected
     params[:threshold][:phone_notification] = {} unless params[:threshold][:phone_notification] # phone not selected
-    threshold = thresholds.new params[:threshold].except(:sites) 
+    threshold = thresholds.new threshold_params
     threshold.sites = Site.get_id_and_name params[:threshold][:sites] if params[:threshold][:sites]#select only id and name
     threshold.strongly_type_conditions
     threshold.save!
@@ -49,7 +49,7 @@ class ThresholdsController < ApplicationController
     params[:threshold][:phone_notification] = {} unless params[:threshold][:phone_notification] # phone not selected
     params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]} if params[:threshold][:sites]
     threshold.strongly_type_conditions
-    threshold.update_attributes! params[:threshold].except(:sites)
+    threshold.update_attributes! threshold_params
     if params[:threshold][:is_all_site] == "false" && params[:threshold][:sites]
       threshold.sites = Site.get_id_and_name params[:threshold][:sites]
       threshold.save
@@ -72,6 +72,9 @@ class ThresholdsController < ApplicationController
   end
 
   private
+  def threshold_params
+    params.require(:threshold).permit(:name, :color, :is_all_site, :is_all_condition, :is_notify, :ord , :message_notification, :email_notification => {:members=>[]} , :phone_notification =>{:members=>[]}, :conditions => [:field, :op, :value, :type, :kind])
+  end
 
   def fix_conditions
     params[:threshold][:conditions] = params[:threshold][:conditions].values

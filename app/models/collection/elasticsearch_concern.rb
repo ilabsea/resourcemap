@@ -43,7 +43,6 @@ module Collection::ElasticsearchConcern
     create_index
 
     client = Elasticsearch::Client.new
-
     docs = sites.map do |site|
       site.collection = self
       site.to_elastic_search
@@ -54,6 +53,7 @@ module Collection::ElasticsearchConcern
         ops.push index: { _index: index_name, _type: 'site', _id: doc[:id]}
         ops.push doc
       end
+      debugger
       client.bulk body: ops
     end
     client.indices.refresh index: index_name

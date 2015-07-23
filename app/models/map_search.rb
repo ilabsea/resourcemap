@@ -3,7 +3,7 @@ class MapSearch
 
   def initialize(collection_ids, options = {})
     @collection_ids = Array(collection_ids)
-    @search = Collection.index_names_with_options(*@collection_ids, options)
+    @index_names = Collection.index_names_with_options(*@collection_ids, options)
     # @search.size 100000
     @bounds = {s: -90, n: 90, w: -180, e: 180}
     @hierarchy = {}

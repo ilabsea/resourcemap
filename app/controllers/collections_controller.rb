@@ -175,17 +175,13 @@ class CollectionsController < ApplicationController
     search = new_search
 
     search.full_text_search params[:term] if params[:term]
-    search.alerted_search params[:_alert] if params[:_alert] 
-    search.select_fields(['id', 'name', 'properties'])
-    search.apply_queries
-
-    results = search.results.map{ |item| item["fields"]}
-
+    search.select_fields(['id', 'name'])
+    results = search.results.map { |item| item["fields"] }
     results.each do |item|
       item[:value] = item["name"]
     end
 
-    render json: results, :root => false
+    render_json results
   end
 
   def search
@@ -201,7 +197,7 @@ class CollectionsController < ApplicationController
     search.location_missing if params[:location_missing].present?
     search.where params.except(:action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing, :_alert)
 
-    search.apply_queries
+    # search.apply_queries
 
     results = search.results.map do |result|
       source = result['_source']
@@ -301,10 +297,10 @@ class CollectionsController < ApplicationController
     ids = collections.map do |c|
       s = c.new_search
       s.alerted_search true
-      s.apply_queries
+      # s.apply_queries
       c.id if s.results.length > 0 
     end
-    render json: ids.compact
+    render json: ids.compact, :root => false
   end
 
   def send_new_member_sms
@@ -327,13 +323,22 @@ class CollectionsController < ApplicationController
   def sites_info
     options = new_search_options
 
-    total = collection.new_tire_count(options).value
-    no_location = collection.new_tire_count(options) do
-      filtered do
-        query { all }
-        filter :not, exists: {field: :location}
-      end
-    end.value
+    total = collection.elasticsearch_count
+    no_location = collection.elasticsearch_count do
+      {
+        query: {
+          filtered: {
+            filter: {
+              not: {
+                filter: {
+                  exists: {field: :location}
+                }
+              }
+            }
+          }
+        }
+      }
+    end
 
     info = {}
     info[:total] = total
