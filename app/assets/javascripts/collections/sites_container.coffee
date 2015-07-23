@@ -44,7 +44,7 @@ onCollections ->
         else 
           for s, i in @sites()
             p = s.properties()
-            if property[fp].toString() == p[fi].toString() && p[fi] != undefined
+            if p[fi] != undefined && property[fp].toString() == p[fi].toString() 
               items.push({id: site.id(), name: site.name(), site: site, parent_id: s.id()}) 
               break
             else 
