@@ -20,18 +20,26 @@ onCollections ->
       @loadingSites true
       # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
       # extra element so the user always sees SITES_PER_PAGE elements.
-      $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1, _alert: window.model.showingAlert() if window.model.showingAlert()}, (data) =>
-        @sitesPage += 1
-        if data.length == SITES_PER_PAGE + 1
-          data.pop()
-        else
-          @hasMoreSites false
-        for site in data
-          @addSite @createSite(site)
-        @loadingSites false
-        window.model.refreshTimeago()  
-        
-        @prepareSitesAsHierarchy() if @hierarchy_mode 
+      if @hierarchy_mode
+        $.get @sitesUrl(), {offset: 0, limit: 2000, _alert: window.model.showingAlert() if window.model.showingAlert()}, (result) =>
+          console.log result.length
+          for site in result
+            @addSite @createSite(site)
+          @loadingSites false
+          window.model.refreshTimeago()
+          @prepareSitesAsHierarchy() if @hierarchy_mode 
+      else
+        $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1, _alert: window.model.showingAlert() if window.model.showingAlert()}, (data) =>
+          @sitesPage += 1
+          if data.length == SITES_PER_PAGE + 1
+            data.pop()
+          else
+            @hasMoreSites false
+          for site in data
+            @addSite @createSite(site)
+          @loadingSites false
+          window.model.refreshTimeago()  
+      
 
     @prepareSitesAsHierarchy: ->
       fi = @field_identify
