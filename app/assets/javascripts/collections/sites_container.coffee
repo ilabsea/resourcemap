@@ -29,10 +29,9 @@ onCollections ->
         for site in data
           @addSite @createSite(site)
         @loadingSites false
-        window.model.refreshTimeago()
+        window.model.refreshTimeago()  
         
-        if @hierarchy_mode
-          @prepareSitesAsHierarchy()
+        @prepareSitesAsHierarchy() if @hierarchy_mode 
 
     @prepareSitesAsHierarchy: ->
       fi = @field_identify
@@ -45,7 +44,7 @@ onCollections ->
         else 
           for s, i in @sites()
             p = s.properties()
-            if property[fp].toString() == p[fi] && p[fi] != undefined
+            if property[fp].toString() == p[fi].toString() && p[fi] != undefined
               items.push({id: site.id(), name: site.name(), site: site, parent_id: s.id()}) 
               break
             else 
