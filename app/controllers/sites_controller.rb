@@ -90,11 +90,11 @@ class SitesController < ApplicationController
     search.full_text_search params[:search] if params[:search].present?
     search.alerted_search params[:_alert] if params[:_alert].present?
     search.location_missing if params[:location_missing].present?
-    search.hierarchy_mode params[:site_ids] if params[:parent_site_ids].present?
+    search.hierarchy_mode params[:selected_site_children] if params[:selected_site_parent].present?
     if params[:selected_hierarchies].present?
       search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
     end
-    search.where params.except(:parent_site_ids, :site_ids, :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
+    search.where params.except(:selected_site_children,:selected_site_parent, :site_ids, :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
 
     search.apply_queries
     render json: search.results
@@ -112,11 +112,11 @@ class SitesController < ApplicationController
     search.full_text_search params[:search] if params[:search].present?
     search.alerted_search params[:_alert] if params[:_alert].present?
     search.location_missing if params[:location_missing].present?
-    search.hierarchy_mode params[:site_ids] if params[:parent_site_ids].present?
+    search.hierarchy_mode params[:selected_site_children] if params[:selected_site_parent].present?
     if params[:selected_hierarchies].present?
       search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
     end
-    search.where params.except(:parent_site_ids, :site_ids, :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
+    search.where params.except(:selected_site_parent, :selected_site_children, :site_ids, :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
 
     search.apply_queries
     render json: search.sites_json    

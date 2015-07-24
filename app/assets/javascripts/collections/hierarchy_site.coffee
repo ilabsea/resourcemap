@@ -8,19 +8,26 @@ onCollections ->
     @include SitesContainer
 
     constructor: (data, level = 0) ->
+      @constructorSitesContainer()
       @id = data?.id
+      @selectedSiteFid = data?.field_id
+      @selectedSiteFValue = data?.field_value
       @name = data?.name
       @site = data?.site
       @level = level
       @expanded = ko.observable(false)
       @selected = ko.observable(false)
       @selectedHierarchy = ko.observable()
-      @siteIds = ko.observableArray()
+
+      @selectedSiteChildren = ko.observableArray()
+      @selectedSiteParent = ko.observable()
       
       @hierarchySites = if data.sub?
                           $.map data.sub, (x) => new HierarchySite(x, level + 1)
                         else
                           []
+
+
 
       @selectedHierarchy.subscribe (newValue) =>
         #make the hierarchy selected or highlighted
@@ -31,15 +38,19 @@ onCollections ->
         
         @toggleExpand()
 
-        #elastic search for children of selected hierarchy
-        model.parent_siteHierarchyIds(newValue.id)
-        siteIds = @toArray(@hierarchySites, [])
-        model.siteHierarchyIds(siteIds)
-        model.reloadMapSites()
-
       # Styles
       @labelStyle = @style()['labelStyle']
       @columnStyle = @style()['columnStyle']
+
+    sitesUrl: =>
+      console.log @queryParams()
+      # "/collections/#{window.model.currentCollection().id}/search.json?#{$.param @queryParams()}"
+
+    queryParams: =>
+      selected_site_children: @selectedSiteChildren(@toArray(@hierarchySites, []))
+      selected_site_parent: @selectedSiteParent()
+      selected_site_fId: @selectedSiteFid
+      selected_site_fValue: @selectedSiteFValue
 
     toArray: (hierarchySites, siteIds)=>
       for hs in hierarchySites
@@ -52,8 +63,8 @@ onCollections ->
 
     toggleExpand: =>
       @expanded(!@expanded())
+      window.model.reloadMapSites()
       
-
     # private
     style: =>
       pixels_per_indent_level = 20

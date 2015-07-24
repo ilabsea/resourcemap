@@ -21,6 +21,7 @@ onCollections ->
       @checkedHierarchyMode = ko.observable(@hierarchy_mode)
       @field_identify = data?.field_identify
       @field_parent = data?.field_parent
+      @hierarchySites = ko.observableArray()
       @groupByOptions = ko.computed =>
         defaultOptions = []
         if window.model

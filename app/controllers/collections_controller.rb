@@ -205,7 +205,8 @@ class CollectionsController < ApplicationController
     search.sort params[:sort], params[:sort_direction] != 'desc' if params[:sort]
     search.hierarchy params[:hierarchy_code], params[:hierarchy_value] if params[:hierarchy_code]
     search.location_missing if params[:location_missing].present?
-    search.where params.except(:parent_site_ids, :site_ids, :action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing, :_alert)
+    search.hierarchy_sites_view params[:selected_site_children] if params[:selected_site_parent].present?
+    search.where params.except(:selected_site_parent, :selected_site_children, :site_ids, :action, :controller, :format, :id, :collection_id, :updated_since, :search, :limit, :offset, :sort, :sort_direction, :hierarchy_code, :hierarchy_value, :location_missing, :_alert)
 
     search.apply_queries
 
