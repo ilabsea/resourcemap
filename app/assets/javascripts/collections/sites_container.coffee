@@ -20,6 +20,7 @@ onCollections ->
       # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
       # extra element so the user always sees SITES_PER_PAGE elements.
       $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1, _alert: window.model.showingAlert() if window.model.showingAlert()}, (data) =>
+        console.log 'data : ', data
         @sitesPage += 1
         if data.length == SITES_PER_PAGE + 1
           data.pop()
@@ -29,7 +30,7 @@ onCollections ->
           @addSite @createSite(site)
         @loadingSites false
         window.model.refreshTimeago()  
-        @prepareSitesAsHierarchy() if @hierarchy_mode && @checkedHierarchyMode()  
+        @prepareSitesAsHierarchy() if model.currentCollection().hierarchy_mode && model.currentCollection().checkedHierarchyMode()  
 
     @prepareSitesAsHierarchy: ->
       fi = @field_identify
@@ -37,7 +38,7 @@ onCollections ->
       items = []
       for site in @sites()
         property = site.properties()
-        item = {id: site.id(), name: site.name(), site: site, field_id: @field_identify, field_value: property[fi]}
+        item = {id: site.id(), name: site.name(), site: site, field_child_id: fp, field_value: property[fi]}
         if property[fp] == undefined
           item.parent_id = ""
         else 
@@ -106,12 +107,12 @@ onCollections ->
       if !@expanded() && @hasMoreSites() && @sitesPage == 1
         @loadMoreSites()
 
-
       # Toggle select folder
-      if !@expanded()
-        window.model.selectHierarchy(this)
-      else
-        window.model.selectHierarchy(null)
+      if !model.currentCollection().checkedHierarchyMode()
+        if !@expanded()
+          window.model.selectHierarchy(this)
+        else
+          window.model.selectHierarchy(null)
 
       @expanded(!@expanded())
       window.model.reloadMapSites()

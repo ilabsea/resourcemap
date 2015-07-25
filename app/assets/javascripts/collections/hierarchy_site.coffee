@@ -10,7 +10,7 @@ onCollections ->
     constructor: (data, level = 0) ->
       @constructorSitesContainer()
       @id = data?.id
-      @selectedSiteFid = data?.field_id
+      @selectedSiteFChildId = data?.field_child_id
       @selectedSiteFValue = data?.field_value
       @name = data?.name
       @site = data?.site
@@ -27,29 +27,29 @@ onCollections ->
                         else
                           []
 
-
-
       @selectedHierarchy.subscribe (newValue) =>
         #make the hierarchy selected or highlighted
         if model.selectedHierarchyMode()
           model.selectedHierarchyMode().selected(false)
         @selected(true)
         model.selectedHierarchyMode(newValue)
-        
+
+        @selectedSiteParent(newValue.id)
+        @selectedSiteChildren(@toArray(@hierarchySites, []))
         @toggleExpand()
+
 
       # Styles
       @labelStyle = @style()['labelStyle']
       @columnStyle = @style()['columnStyle']
 
     sitesUrl: =>
-      console.log @queryParams()
-      # "/collections/#{window.model.currentCollection().id}/search.json?#{$.param @queryParams()}"
+      "/collections/#{window.model.currentCollection().id}/search.json?#{$.param @queryParams()}"
 
     queryParams: =>
-      selected_site_children: @selectedSiteChildren(@toArray(@hierarchySites, []))
+      selected_site_children: @selectedSiteChildren()
       selected_site_parent: @selectedSiteParent()
-      selected_site_fId: @selectedSiteFid
+      selected_site_fChildId: @selectedSiteFChildId
       selected_site_fValue: @selectedSiteFValue
 
     toArray: (hierarchySites, siteIds)=>
@@ -61,9 +61,11 @@ onCollections ->
     unselect: =>
       @selected(false)
 
-    toggleExpand: =>
-      @expanded(!@expanded())
-      window.model.reloadMapSites()
+    # toggleExpand: =>
+    #   if !@expanded() && @hasMoreSites() && @sitesPage == 1
+    #     @loadMoreSites()
+    #   @expanded(!@expanded())
+    #   window.model.reloadMapSites()
       
     # private
     style: =>

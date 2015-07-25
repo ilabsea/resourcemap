@@ -345,6 +345,9 @@ onCollections ->
 
       query.exclude_id = @selectedSite().id() if @selectedSite()?.id()
       query.search = @lastSearch() if @lastSearch()
+      if model.selectedHierarchyMode()
+        query.selected_site_children = model.selectedHierarchyMode().selectedSiteChildren()
+        query.selected_site_parent = model.selectedHierarchyMode().selectedSiteParent()
 
       filter.setQueryParams(query) for filter in @filters()
 

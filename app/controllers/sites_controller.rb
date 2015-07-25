@@ -94,7 +94,13 @@ class SitesController < ApplicationController
     if params[:selected_hierarchies].present?
       search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
     end
-    search.where params.except(:selected_site_children,:selected_site_parent, :site_ids, :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
+    search.where params.except(
+      :selected_site_children, :selected_site_parent, 
+      :selected_site_fChildId, :selected_site_fValue, 
+      :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, 
+      :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, 
+      :selected_hierarchies, :_alert
+    )
 
     search.apply_queries
     render json: search.results
@@ -116,8 +122,13 @@ class SitesController < ApplicationController
     if params[:selected_hierarchies].present?
       search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
     end
-    search.where params.except(:selected_site_parent, :selected_site_children, :site_ids, :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
-
+    search.where params.except(
+      :selected_site_children, :selected_site_parent, 
+      :selected_site_fChildId, :selected_site_fValue ,
+      :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, 
+      :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, 
+      :selected_hierarchies, :_alert
+    )
     search.apply_queries
     render json: search.sites_json    
   end
