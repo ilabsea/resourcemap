@@ -12,8 +12,13 @@ class SitesController < ApplicationController
 
     search.name_start_with params[:name] if params[:name].present?
     search.alerted_search params[:_alert] if params[:_alert] == "true"
-    search.offset params[:offset]
-    search.limit params[:limit]
+    search.offset params[:offset] if params[:offset].present?
+    search.limit params[:limit] if params[:limit].present?
+
+    #hierarchy mode display
+    if !(params[:limit] && params[:offset])
+      search.unlimited
+    end
 
     render json: search.ui_results.map { |x| x['_source'] }
   end
@@ -96,7 +101,6 @@ class SitesController < ApplicationController
     end
     search.where params.except(
       :selected_site_children, :selected_site_parent, 
-      :selected_site_fChildId, :selected_site_fValue, 
       :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, 
       :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, 
       :selected_hierarchies, :_alert
@@ -124,7 +128,6 @@ class SitesController < ApplicationController
     end
     search.where params.except(
       :selected_site_children, :selected_site_parent, 
-      :selected_site_fChildId, :selected_site_fValue ,
       :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, 
       :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, 
       :selected_hierarchies, :_alert

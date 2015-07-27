@@ -90,16 +90,6 @@
           <!-- ko if: hierarchy_mode && checkedHierarchyMode() -->
           <!-- ko template: {name: 'map-hierarchy-sites-template', with: $data} -->
           <!-- /ko -->
-          <!-- ko if: hasMoreSites() && !loadingSites()-->
-          %tr
-            %td.loadmore
-              = link_to t('views.collections.index.load_more_sites'), 'javascript:void()', 'data-bind' => kov(click: :loadMoreSites, style: {marginLeft: "'' + (30 + level * 20) + 'px'"})
-          <!-- /ko -->
-          <!-- ko if: hasMoreSites() && loadingSites()-->
-          %tr
-            %td.loadmore
-              %span{ko(style: {marginLeft: "'' + (30 + (level + 1) * 20) + 'px'"})}= t('views.collections.index.loading')
-          <!-- /ko -->
           <!-- /ko -->
           
           <!-- ko if: !hierarchy_mode || (hierarchy_mode && !checkedHierarchyMode())-->
