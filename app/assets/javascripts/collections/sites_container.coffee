@@ -19,8 +19,12 @@ onCollections ->
       @loadingSites true
       # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
       # extra element so the user always sees SITES_PER_PAGE elements.
-      $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1, _alert: window.model.showingAlert() if window.model.showingAlert()}, (data) =>
-        console.log 'data : ', data
+      if model.currentCollection().hierarchy_mode 
+        queryParam = {_alert: window.model.showingAlert() if window.model.showingAlert()}
+      else
+        queryParam = {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1, _alert: window.model.showingAlert() if window.model.showingAlert()}
+      
+      $.get @sitesUrl(), queryParam , (data) =>
         @sitesPage += 1
         if data.length == SITES_PER_PAGE + 1
           data.pop()
@@ -103,12 +107,11 @@ onCollections ->
       delete @siteIds[site.id()]
 
     @toggleExpand: ->
-      # Load more sites when we expand, but only the first time
-      if !@expanded() && @hasMoreSites() && @sitesPage == 1
-        @loadMoreSites()
-
-      # Toggle select folder
       if !model.currentCollection().checkedHierarchyMode()
+        # Load more sites when we expand, but only the first time
+        if !@expanded() && @hasMoreSites() && @sitesPage == 1
+          @loadMoreSites()
+        # Toggle select folder
         if !@expanded()
           window.model.selectHierarchy(this)
         else

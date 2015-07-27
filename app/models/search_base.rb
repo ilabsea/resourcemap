@@ -16,10 +16,6 @@ module SearchBase
     self
   end
 
-  def hierarchy_view_site(field_child_id, field_parent_value)
-    @search.filter :term, field_child_id => field_parent_value
-  end
-
   def hierarchy_mode(ids)
     ids = [] if ids == nil
     @search.filter :terms, id: ids

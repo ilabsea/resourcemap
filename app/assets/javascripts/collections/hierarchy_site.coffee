@@ -8,10 +8,7 @@ onCollections ->
     @include SitesContainer
 
     constructor: (data, level = 0) ->
-      @constructorSitesContainer()
       @id = data?.id
-      @selectedSiteFChildId = data?.field_child_id
-      @selectedSiteFValue = data?.field_value
       @name = data?.name
       @site = data?.site
       @level = level
@@ -49,8 +46,6 @@ onCollections ->
     queryParams: =>
       selected_site_children: @selectedSiteChildren()
       selected_site_parent: @selectedSiteParent()
-      selected_site_fChildId: @selectedSiteFChildId
-      selected_site_fValue: @selectedSiteFValue
 
     toArray: (hierarchySites, siteIds)=>
       for hs in hierarchySites
