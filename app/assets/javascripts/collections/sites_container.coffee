@@ -42,7 +42,7 @@ onCollections ->
       items = []
       for site in @sites()
         property = site.properties()
-        item = {id: site.id(), name: site.name(), site: site, field_child_id: fp, field_value: property[fi]}
+        item = {id: site.id(), name: site.name(), site: site}
         if property[fp] == undefined
           item.parent_id = ""
         else 
