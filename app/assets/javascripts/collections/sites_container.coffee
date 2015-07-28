@@ -19,7 +19,7 @@ onCollections ->
       @loadingSites true
       # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
       # extra element so the user always sees SITES_PER_PAGE elements.
-      if model.currentCollection().hierarchy_mode 
+      if model.currentCollection().hierarchy_mode && model.showingMap() && !model.inSearch()
         queryParam = {_alert: window.model.showingAlert() if window.model.showingAlert()}
       else
         queryParam = {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1, _alert: window.model.showingAlert() if window.model.showingAlert()}
@@ -34,7 +34,8 @@ onCollections ->
           @addSite @createSite(site)
         @loadingSites false
         window.model.refreshTimeago()  
-        @prepareSitesAsHierarchy() if model.currentCollection().hierarchy_mode && model.currentCollection().checkedHierarchyMode()  
+        if model.currentCollection().hierarchy_mode && model.currentCollection().checkedHierarchyMode() && !model.inSearch()
+          @prepareSitesAsHierarchy() 
 
     @prepareSitesAsHierarchy: ->
       fi = @field_identify
