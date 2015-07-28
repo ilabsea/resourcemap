@@ -175,6 +175,7 @@ class CollectionsController < ApplicationController
     search = new_search
 
     search.full_text_search params[:term] if params[:term]
+    search.alerted_search params[:_alert] if params[:_alert] 
     search.select_fields(['id', 'name'])
     results = search.results.map { |item| item["fields"] }
     results.each do |item|

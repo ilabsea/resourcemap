@@ -6,7 +6,6 @@ module Site::AlertConcerns
   end
 
   def set_alert
-    debugger
     alert = collection.thresholds_test self unless self.is_a? SiteHistory
     if alert != nil
       extended_properties[:alert] = true

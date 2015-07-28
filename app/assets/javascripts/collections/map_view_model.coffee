@@ -270,7 +270,7 @@ onCollections ->
           compareField = percentage
         else
           compareField = condition.value()
-          
+        
         field = site?.properties()[condition.field()]
         
         kind = condition.kind()

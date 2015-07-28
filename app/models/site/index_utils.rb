@@ -98,6 +98,15 @@ module Site::IndexUtils
       version: (site.version rescue nil)
     }
 
+    alert = site.collection.thresholds_test site unless self.is_a? SiteHistory
+    if alert != nil
+      hash[:alert] = true
+      hash[:color] = alert.color
+      hash[:ord] = alert.ord
+    else
+      hash[:alert] = false
+    end
+
     if site.lat && site.lng
       hash[:location] = {lat: site.lat.to_f, lon: site.lng.to_f}
       hash[:lat_analyzed] = site.lat.to_s

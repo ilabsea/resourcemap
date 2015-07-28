@@ -43,24 +43,12 @@ class MapSearch
 
     clusterer.clusters
   end
-  
+
   def sites_json
     return {} if @collection_ids.empty?
-    set_bounds_filter
-    apply_queries
-    sort_list = @sort_list
-    if @sort
-      @search.sort { by sort_list }
-    else
-      @search.sort { by 'name_not_analyzed' }
-    end
-    @search.size 1_000_000
-    
-    Rails.logger.debug @search.to_curl if Rails.logger.level <= Logger::DEBUG
-
-    results = @search.perform.results
     sites = []
-    results.each do |item|
+    data = JSON.parse(stream.read)
+    data["hits"]["hits"].each do |item|
       site = Hash.new
       site[:collection_id] = item['_index'].split('_')[1]
       item['_source'].each do |key, value|
