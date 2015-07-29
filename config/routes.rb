@@ -24,6 +24,8 @@ ResourceMap::Application.routes.draw do
     post :register_gateways
     get  :message_quota
     get :sites_by_term
+    get :import_rrt
+    post :upload_rrt
     resources :sites do
       get :visible_layers_for
     end

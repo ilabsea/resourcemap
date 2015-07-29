@@ -39,6 +39,7 @@ group :test do
   gem 'capybara'
   gem 'database_cleaner'
   gem 'resque_spec'
+  gem 'rvm-capistrano', '1.2.2'
 end
 
 group :test, :development do
@@ -48,7 +49,7 @@ group :test, :development do
   gem 'machinist', '1.0.6'
   gem 'capistrano', '~> 2.15'
   gem 'rvm'
-  gem 'rvm-capistrano', '1.2.2'
+  
   gem 'jasminerice'
   gem 'guard-jasmine'
   gem 'pry'
@@ -59,6 +60,7 @@ group :development do
   gem 'dist', :git => 'https://github.com/manastech/dist.git'
   gem 'ruby-prof', :git => 'https://github.com/ruby-prof/ruby-prof.git'
   gem 'mailcatcher'
+  gem 'rvm-capistrano', '1.2.2', require: false
 end
 
 # Gems used only for assets and not required

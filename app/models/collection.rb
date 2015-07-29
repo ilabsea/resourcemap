@@ -31,6 +31,16 @@ class Collection < ActiveRecord::Base
 
   attr_accessor :time_zone
 
+  def prepare_site_params_with_fields site_params, fields, properties
+    # properties = {}
+    site_params.each_with_index do |param, index|
+      # p "#{fields[index].id}"
+      # p param
+      properties["#{fields[index].id}"] = param
+    end
+    properties
+  end
+
   def max_value_of_property(es_code)
     search = new_tire_search
     search.sort { by es_code, 'desc' }

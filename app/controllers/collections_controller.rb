@@ -12,7 +12,7 @@ class CollectionsController < ApplicationController
     else
       Collection.all
     end
-  }
+  } 
 
   expose(:collections_with_snapshot) { select_each_snapshot(collections) }
 
@@ -20,7 +20,109 @@ class CollectionsController < ApplicationController
   before_filter :show_collection_breadcrumb, :except => [:index, :new, :create, :render_breadcrumbs]
   before_filter :show_properties_breadcrumb, :only => [:members, :settings, :reminders, :quotas]
 
-  
+  def import_rrt
+    
+  end
+
+  def upload_rrt
+    csv_text = File.read(params[:file].path, :encoding => 'utf-8')
+    csv = CSV.parse(csv_text)
+    i = 1
+    site = nil
+    properties = {}
+    num_layer = 0
+    ord_layer = 1
+    p_code = ""
+    od_code = ""
+    rh_code = ""     
+    csv.each_with_index do |row, index|
+
+      if row[0] != nil
+        if row[1] != nil || row[2] != nil || row[3] != nil || row[4] != nil
+
+          if site
+            site.properties = properties
+            site.save!
+          end
+          i = 1
+          ord_layer = 1
+          properties = {}
+
+          # code = row[7].to_s
+          # p_code = code[0,code.length - 2]
+
+          if row[1] != nil
+            properties = {"1146" => row[7], "1135" => 1, "1136" => row[8], "1137" => row[9], "1138" => row[10], "1139" => row[11], "1140" => row[12], "1141" => row[13], "1142" => row[14], "1143" => row[15], "1144" => row[16], "1145" => row[17] }
+            site = collection.sites.new(name: row[1], lat: row[5], lng: row[6])
+            p_code = row[7]
+            p "#{row[0]} #{site.name} #{row[7]}"
+          elsif row[2] != nil
+            properties = {"1146" => row[7], "1364" => p_code, "1135" => 2, "1136" => row[8], "1137" => row[9], "1138" => row[10], "1139" => row[11], "1140" => row[12], "1141" => row[13], "1142" => row[14], "1143" => row[15], "1144" => row[16], "1145" => row[17] }
+            site = collection.sites.new(name: row[2], lat: row[5], lng: row[6])
+            od_code = row[7]
+            p "#{row[0]} #{site.name} #{row[7]} #{p_code}"
+          elsif row[3] != nil
+            properties = {"1146" => row[7], "1364" => od_code, "1135" => 3, "1136" => row[8], "1137" => row[9], "1138" => row[10], "1139" => row[11], "1140" => row[12], "1141" => row[13], "1142" => row[14], "1143" => row[15], "1144" => row[16], "1145" => row[17] }
+            site = collection.sites.new(name: row[3], lat: row[5], lng: row[6])
+            # rh_code = row[7]
+            p "#{row[0]} #{site.name} #{row[7]} #{od_code}"
+          else
+            properties = {"1146" => row[7], "1364" => od_code, "1135" => 4, "1136" => row[8], "1137" => row[9], "1138" => row[10], "1139" => row[11], "1140" => row[12], "1141" => row[13], "1142" => row[14], "1143" => row[15], "1144" => row[16], "1145" => row[17] }
+            site = collection.sites.new(name: row[4], lat: row[5], lng: row[6])
+            p "#{row[0]} #{site.name} #{row[7]} #{od_code}"
+          end
+          
+          
+
+            
+          site.user = current_user          
+        end
+
+        site_params = [row[18], row[19], row[20], row[21], row[22], row[23]]
+
+        if ord_layer > num_layer
+          # p 'create layer'
+          layer = collection.layers.new(name: "Contact_#{i}", ord: i)
+          layer.user = current_user
+          layer.save!          
+          num_layer = num_layer + 1
+
+          (1..6).each do |j|
+            case j
+            when 1
+              name = "Full_name_#{i}"
+            when 2
+              name = "Profession_#{i}"
+            when 3
+              name = "Position_#{i}"
+            when 4
+              name = "Telephone_#{i}"
+            when 5
+              name = "Email_#{i}"
+            else
+              name = "Other_#{i}"
+            end
+            field = layer.fields.new(name: name, kind: 'text', ord: j, code: name.downcase)
+            field.save!
+          end
+
+          
+          properties = collection.prepare_site_params_with_fields(site_params, layer.fields, properties)          
+
+        else
+          # p "insert to old layer #{ord_layer}"
+          properties = collection.prepare_site_params_with_fields(site_params, collection.layers[ord_layer].fields, properties)
+        end
+
+        ord_layer = ord_layer + 1
+        i = i + 1
+        if index == csv.length - 1
+          site.properties = properties
+          site.save!
+        end
+      end
+    end
+  end
 
   def index
     if params[:name].present?
