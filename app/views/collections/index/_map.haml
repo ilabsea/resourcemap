@@ -87,12 +87,12 @@
           <!-- /ko -->
           <!-- /ko -->
           
-          <!-- ko if: hierarchy_mode && checkedHierarchyMode() -->
+          <!-- ko if: hierarchy_mode && checkedHierarchyMode() && !isSearch() -->
           <!-- ko template: {name: 'map-hierarchy-sites-template', with: $data} -->
           <!-- /ko -->
           <!-- /ko -->
           
-          <!-- ko if: !hierarchy_mode || (hierarchy_mode && !checkedHierarchyMode())-->
+          <!-- ko if: !checkedHierarchyMode() || isSearch() -->
           <!-- ko template: {name: 'map-sites-template', with: $data} -->
           <!-- /ko -->
           <!-- ko if: hasMoreSites() && !loadingSites()-->

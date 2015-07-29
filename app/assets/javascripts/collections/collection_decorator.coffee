@@ -30,6 +30,7 @@ onCollections ->
       @allSites(collection.allSites())
       @hierarchy_mode = collection?.hierarchy_mode
       @checkedHierarchyMode = ko.observable collection?.checkedHierarchyMode()
+      @hierarchySites = ko.observableArray()
 
 
     createSite: (site) => new Site(@collection, site)
