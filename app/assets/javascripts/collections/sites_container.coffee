@@ -8,6 +8,7 @@ onCollections ->
     @constructorSitesContainer: ->
       @expanded = ko.observable false
       @sites = ko.observableArray()
+      @partlySites = ko.observableArray()
       @sitesPage = 1
       @hasMoreSites = ko.observable true
       @loadingSites = ko.observable true

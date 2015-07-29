@@ -619,6 +619,11 @@ onCollections ->
       @exitSite() if @editingSite()
       @editingSite(null)
       @oldSelectedSite = null
+      if @currentCollection()
+        sites = @currentCollection().sites() 
+        sites = sites.slice(0, 15) if sites
+        @currentCollection().partlySites(sites)
+
       delete @markers
       delete @clusters
       delete @map
@@ -626,6 +631,14 @@ onCollections ->
       @refreshTimeago()
       setTimeout(@makeFixedHeaderTable, 10)
       setTimeout(window.adjustContainerSize, 10)
+
+    @scrollTable: ->
+      sites = @currentCollection().sites() 
+      partlySites = @currentCollection().partlySites()
+      l = partlySites.length
+      if sites.length != l
+        sites = partlySites.concat(sites.slice(l, l + 15))
+        @currentCollection().partlySites(sites)
 
     @makeFixedHeaderTable: ->
       unless @showingMap()
