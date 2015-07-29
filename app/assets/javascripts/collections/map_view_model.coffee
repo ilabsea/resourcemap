@@ -626,7 +626,7 @@ onCollections ->
       @refreshTimeago()
       setTimeout(@makeFixedHeaderTable, 10)
       setTimeout(window.adjustContainerSize, 10)
-
+      
     @makeFixedHeaderTable: ->
       unless @showingMap()
         oldScrollLeft = $('.tablescroll').scrollLeft()
