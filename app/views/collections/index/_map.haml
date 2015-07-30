@@ -86,6 +86,13 @@
           <!-- ko template: {name: 'map-hierarchy-items-template', with: $data} -->
           <!-- /ko -->
           <!-- /ko -->
+          
+          <!-- ko if: hierarchy_mode && checkedHierarchyMode() && !isSearch() -->
+          <!-- ko template: {name: 'map-hierarchy-sites-template', with: $data} -->
+          <!-- /ko -->
+          <!-- /ko -->
+          
+          <!-- ko if: !checkedHierarchyMode() || isSearch() -->
           <!-- ko template: {name: 'map-sites-template', with: $data} -->
           <!-- /ko -->
           <!-- ko if: hasMoreSites() && !loadingSites()-->
@@ -96,6 +103,7 @@
           <!-- ko if: hasMoreSites() && loadingSites()-->
           %tr
             %td.loadmore= t('views.collections.index.loading')
+          <!-- /ko -->
           <!-- /ko -->
     .tablebottom
       <!-- ko if: !currentSnapshot-->

@@ -17,6 +17,11 @@ onCollections ->
       @alertedSites = ko.observableArray()
       @checked = ko.observable if window.currentUserIsGuest then false else true
       @fieldsInitialized = false
+      @hierarchy_mode = data?.hierarchy_mode
+      @checkedHierarchyMode = ko.observable(@hierarchy_mode)
+      @field_identify = data?.field_identify
+      @field_parent = data?.field_parent
+      @hierarchySites = ko.observableArray()
       @groupByOptions = ko.computed =>
         defaultOptions = []
         if window.model
@@ -43,10 +48,3 @@ onCollections ->
         )
       else if @position()
         window.model.map.panTo @position()
-
-    # loadSites: =>
-    #   $.get @sitesUrl(), (data) =>
-    #     for site in data
-    #       @addSite @createSite(site)
-
-

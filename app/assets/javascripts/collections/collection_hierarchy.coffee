@@ -6,7 +6,6 @@ onCollections ->
   class @CollectionHierarchy extends CollectionDecorator
     constructor: (collection, field) ->
       super(collection)
-
       @field = field
       @hierarchyItemsMap = {}
       @hierarchyItems = $.map field.hierarchy, (x) => new HierarchyItem(@, field, x)

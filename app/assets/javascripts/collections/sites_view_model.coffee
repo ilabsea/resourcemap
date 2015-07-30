@@ -4,7 +4,9 @@ onCollections ->
     @constructor: ->
       @editingSite = ko.observable()
       @selectedSite = ko.observable()
+      @selectedSites = ko.observableArray() #selectedSites in hierarchy mode
       @selectedHierarchy = ko.observable()
+      @selectedHierarchyMode = ko.observable()
       @loadingSite = ko.observable(false)
       @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
       @showSite = ko.computed =>  if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
@@ -18,6 +20,7 @@ onCollections ->
       params["collection_id"] = @currentCollection().id if @currentCollection()
 
       $('.BreadCrumb').load("/collections/breadcrumbs", params)
+
     @editingSiteLocation: ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
@@ -87,6 +90,10 @@ onCollections ->
         $('textarea').autogrow()
         $('#name').focus()
 
+    @editSiteInHierarchyMode: (hierarchy) ->
+      site = hierarchy.site
+      @editSite(site)
+
     @editSite: (site) ->
       #update @currentCollection().allSite()
       fields = @currentCollection().fields()
@@ -96,6 +103,7 @@ onCollections ->
 
       initialized = @initMap()
       site.collection.panToPosition(true) unless initialized
+      window.model.map.setZoom(12)
 
       site.collection.fetchSitesMembership()
       site.collection.fetchFields =>
@@ -236,15 +244,24 @@ onCollections ->
             delete @goBackToTable
           else
             @reloadMapSites()
+        window.model.map.setZoom(3)
 
       @loadBreadCrumb()
       @rewriteUrl()
+
+      hierarchySites = @currentCollection().hierarchySites() 
+      @deselectHierarchySite(hierarchySites)
 
       $('a#previewimg').fancybox()
       # Return undefined because otherwise some browsers (i.e. Miss Firefox)
       # would render the Object returned when called from a 'javascript:___'
       # value in an href (and this is done in the breadcrumb links).
       undefined
+
+    @deselectHierarchySite: (hierarchySites)->
+      for site in hierarchySites
+        site.selected(false)
+        @deselectHierarchySite(site.hierarchySites)
 
     @deleteSite: ->
       if confirm("Are you sure you want to delete #{@editingSite().name()}?")
@@ -256,10 +273,59 @@ onCollections ->
           @exitSite()
           @reloadMapSites() if @showingMap()
           window.model.updateSitesInfo()
+          if @currentCollection().hierarchy_mode
+            @currentCollection().prepareSitesAsHierarchy()
+
+    @selectHierarchySites: (hierarchySite, parent) ->
+      #deselected old selectedSites
+      for s in @selectedSites()
+        if s
+          if s.marker
+            @setMarkerIcon s.marker, 'active'
+            s.marker.setZIndex(@zIndex(s.marker.getPosition().lat()))
+          s.selected(false)
+      for hs in hierarchySite
+        site = hs.site
+        @selectHierarchySite(site)
+        @selectedSites().push(site)
+
+    @selectHierarchySite: (site) ->
+      if @showingMap()
+        if @selectedSite() == site
+          @selectedSite(null)
+          @reloadMapSites()
+        else
+          @selectedSite(site)
+
+          @selectedSite().selected(true)
+          if @selectedSite().id() && @selectedSite().hasLocation()
+            # Again, all these checks are to prevent flickering
+            if @markers[@selectedSite().id()]
+              @selectedSite().marker = @markers[@selectedSite().id()]
+              @selectedSite().marker.setZIndex(200000)
+              @setMarkerIcon @selectedSite().marker, 'target'
+              @deleteMarker @selectedSite().id(), false
+            else
+              @selectedSite().createMarker()
+            @selectedSite().panToPosition()
+          else if @oldSelectedSite
+            @oldSelectedSite.deleteMarker()
+            delete @oldSelectedSite
+            @reloadMapSites()
+      else
+        @selectedSite().selected(false) if @selectedSite()
+        if @selectedSite() == site
+          @selectedSite(null)
+        else
+          @selectedSite(site)
+
+      @rewriteUrl()
 
     @selectSite: (site) ->
+      if @selectedHierarchyMode()
+        @selectedHierarchyMode(null)
       if @selectedHierarchy()
-          @selectedHierarchy(null)
+        @selectedHierarchy(null)
       if @showingMap()
         if @selectedSite()
           if @selectedSite().marker

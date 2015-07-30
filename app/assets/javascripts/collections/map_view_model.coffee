@@ -166,7 +166,6 @@ onCollections ->
         getCallback()
       else
         @loading(true)
-        # console.log 'loading'
         $.get "/sites/search.json", query, getCallback
 
     @showLegend: =>
@@ -347,6 +346,9 @@ onCollections ->
 
       query.exclude_id = @selectedSite().id() if @selectedSite()?.id()
       query.search = @lastSearch() if @lastSearch()
+      if model.selectedHierarchyMode()
+        query.selected_site_children = model.selectedHierarchyMode().selectedSiteChildren()
+        query.selected_site_parent = model.selectedHierarchyMode().selectedSiteParent()
 
       filter.setQueryParams(query) for filter in @filters()
 
@@ -618,6 +620,11 @@ onCollections ->
       @exitSite() if @editingSite()
       @editingSite(null)
       @oldSelectedSite = null
+      if @currentCollection()
+        sites = @currentCollection().sites() 
+        sites = sites.slice(0, 15) if sites
+        @currentCollection().partlySites(sites)
+
       delete @markers
       delete @clusters
       delete @map
@@ -625,6 +632,14 @@ onCollections ->
       @refreshTimeago()
       setTimeout(@makeFixedHeaderTable, 10)
       setTimeout(window.adjustContainerSize, 10)
+
+    @scrollTable: ->
+      sites = @currentCollection().sites() 
+      partlySites = @currentCollection().partlySites()
+      l = partlySites.length
+      if sites.length != l
+        sites = partlySites.concat(sites.slice(l, l + 15))
+        @currentCollection().partlySites(sites)
 
     @makeFixedHeaderTable: ->
       unless @showingMap()
