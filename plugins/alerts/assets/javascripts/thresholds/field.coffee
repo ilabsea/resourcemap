@@ -13,6 +13,7 @@ onThresholds ->
       @options = ko.computed => @impl.getOptions() 
       @operators = ko.computed => @impl.getOperators()
       @value = ko.observable()
+      @valueLabel = ko.observable()
 
       if @kind() == 'hierarchy'
         @buildFieldHierarchyItems()
@@ -110,7 +111,16 @@ onThresholds ->
   class @Field_phone extends @FieldText
 
   class @Field_select_many extends @FieldSelectOne
-    encode: (value) -> 
-      [value]
+    format: (value) ->
+      if value.length
+        @field.findOptionById(value[0])?.label()
+      else
+        @field.findOptionById(value)?.label()
+
+    encode: (value) ->
+      if !value.length
+        [value]
+      else
+        value
 
   class @Field_select_one extends @FieldSelectOne

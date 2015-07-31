@@ -34,4 +34,6 @@ onThresholds ->
       @parent.toggleParentsExpand() if @parent
 
 
-    select: => @field.value(@id)
+    select: => 
+      @field.valueLabel(@name)
+      @field.value(@id)
