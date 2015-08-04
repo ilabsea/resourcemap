@@ -1,3 +1,4 @@
+
 function prepareFlushMessage(id){
 	var content = $(id).html();	
   if(content.trim() != ""){
@@ -10,6 +11,6 @@ function prepareFlushMessage(id){
 }
 
 function showFlushMessage(message){
-	$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, message, true );
-  	setTimeout( $.mobile.hidePageLoadingMsg, 3000 );
+	jq.mobile.showPageLoadingMsg( jq.mobile.pageLoadErrorMessageTheme, message, true );
+  	setTimeout( jq.mobile.hidePageLoadingMsg, 3000 );
 }

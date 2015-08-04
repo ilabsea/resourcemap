@@ -24,8 +24,7 @@ class Threshold < ActiveRecord::Base
       field = fields[hash[:field]]
       if field
         value = properties[hash[:field]] || field.strongly_type(value)
-
-        true if condition(hash, properties).evaluate(value)
+        true if condition(hash, properties).evaluate(field, value)
       end
     end
   end
@@ -42,7 +41,7 @@ class Threshold < ActiveRecord::Base
     Threshold.where(:collection_id => Collection.public_collections)
   end
 
-  def self.add_condition_field_kind
+  def self.add_condition_field_kind   
     Threshold.transaction do
       Threshold.find_each(batch_size: 100) do |threshold|
         threshold.conditions.each do |condition|

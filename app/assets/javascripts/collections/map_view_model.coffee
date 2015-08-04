@@ -146,8 +146,6 @@ onCollections ->
       currentMapRequestNumber = @mapRequestNumber
 
       getCallback = (data = {}) =>
-        # console.log 'loaded'
-        # @loading(false)
         return unless currentMapRequestNumber == @mapRequestNumber
         if @showingMap()
           @drawSitesInMap data.sites
@@ -167,7 +165,6 @@ onCollections ->
         getCallback()
       else
         @loading(true)
-        # console.log 'loading'
         $.get "/sites/search.json", query, getCallback
 
     @showLegend: =>
@@ -281,19 +278,24 @@ onCollections ->
 
         switch operator
           when "eq","eqi"
-            if kind == 'text'
+            if kind == 'text' && typeof field != 'undefined'
               field = field.toLowerCase()
               compareField = compareField.toLowerCase()
+
+            else if kind == 'select_many' && typeof field != 'undefined'
+              field = field.toString()
+              compareField = compareField.toString()
             
             if field is compareField
               b = true
             else
               b = false
+
           when "gt"
             if field > compareField
               b = true
             else
-              b = false   
+              b = false 
           when "lt"
             if field < compareField
               b = true
@@ -303,7 +305,12 @@ onCollections ->
             if typeof field != 'undefined' && field.toLowerCase().indexOf(compareField.toLowerCase()) != -1
               b = true
             else
-              b = false                   
+              b = false  
+          when "under"
+            if typeof field != 'undefined'
+              b = true
+            else
+              b = false
           else
             null
         if isAllCondition == "true"
@@ -338,6 +345,9 @@ onCollections ->
 
       query.exclude_id = @selectedSite().id() if @selectedSite()?.id()
       query.search = @lastSearch() if @lastSearch()
+      if model.selectedHierarchyMode()
+        query.selected_site_children = model.selectedHierarchyMode().selectedSiteChildren()
+        query.selected_site_parent = model.selectedHierarchyMode().selectedSiteParent()
 
       filter.setQueryParams(query) for filter in @filters()
 
@@ -609,6 +619,11 @@ onCollections ->
       @exitSite() if @editingSite()
       @editingSite(null)
       @oldSelectedSite = null
+      if @currentCollection()
+        sites = @currentCollection().sites() 
+        sites = sites.slice(0, 15) if sites
+        @currentCollection().partlySites(sites)
+
       delete @markers
       delete @clusters
       delete @map
@@ -616,6 +631,14 @@ onCollections ->
       @refreshTimeago()
       setTimeout(@makeFixedHeaderTable, 10)
       setTimeout(window.adjustContainerSize, 10)
+
+    @scrollTable: ->
+      sites = @currentCollection().sites() 
+      partlySites = @currentCollection().partlySites()
+      l = partlySites.length
+      if sites.length != l
+        sites = partlySites.concat(sites.slice(l, l + 15))
+        @currentCollection().partlySites(sites)
 
     @makeFixedHeaderTable: ->
       unless @showingMap()

@@ -1,0 +1,19 @@
+%script{type: "text/html", id: "map-hierarchy-sites-template"}
+  <!-- ko foreach: hierarchySites -->
+  %tr
+    %td
+      %div.hierarchyItem{ko(click: :selectedHierarchy, style: :columnStyle)}
+        %div{ko(style: :labelStyle, css: {greyback: :selected})}
+          %a{href: 'javascript:void(0)'}
+            %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/18/black/folder' + (expanded() ? '_open' : '') + '.png'"})}
+          %span{ko(text: :name)}
+      %button.farrow{ko(click: '$root.editSiteInHierarchyMode'), type: "button"}
+  <!-- ko if: expanded -->
+  <!-- ko template: {name: 'map-hierarchy-sites-template', with: hierarchySites} -->
+  <!-- /ko -->
+  <!-- /ko -->
+  <!-- /ko -->
+
+
+
+

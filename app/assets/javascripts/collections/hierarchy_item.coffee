@@ -9,7 +9,6 @@ onCollections ->
 
     constructor: (collection, field, data, level = 0) ->
       @constructorSitesContainer()
-
       @field = field
 
       collection.hierarchyItemsMap[data.id] = @
@@ -19,6 +18,7 @@ onCollections ->
       @name = data.name ? data.label
       @level = level
       @selected = ko.observable(false)
+
       @hierarchyItems = if data.sub?
                           $.map data.sub, (x) => new HierarchyItem(collection, @field, x, level + 1)
                         else

@@ -59,6 +59,7 @@ class ExecVisitor < Visitor
       if collection.is_visible_name == true && (not site.keys.include?('name'))
         return MSG[:name_is_required]
       end
+
       properties = node_to_site_properties key_value_properties,collection.id
       if properties["not_exist"]
         if properties["not_exist"].length > 1

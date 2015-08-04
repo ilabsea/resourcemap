@@ -41,7 +41,7 @@ module Field::Base
   end
 
   def stored_as_number?
-    numeric? || select_one? || select_many?
+    numeric? || select_one? || select_many?  || hierarchy?
   end
 
   def allow_decimals?

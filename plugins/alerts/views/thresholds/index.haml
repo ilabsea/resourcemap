@@ -8,6 +8,8 @@
 = render 'thresholds/condition/date_field_template'
 = render 'thresholds/condition/email_field_template'
 = render 'thresholds/condition/phone_field_template'
+= render 'thresholds/condition/select_many_field_template'
+= render 'thresholds/condition/hierarchy_field_template'
 
 = render '/tabs'
 
@@ -104,9 +106,21 @@
           %br
           <!-- ko foreach :conditions -->
           %select{ ko(options: '$root.fields', optionsText: "'name'", value: :field, hasfocus: true) }
-
+          
+          <!-- ko if: field().kind() != 'hierarchy' -->
           /      ko template: {name: field().kind() + '-field-template', afterRender: $root.initDatePicker}
           /      /ko
+          <!-- /ko -->
+
+          <!-- ko if: field().kind() == 'hierarchy' -->
+          %span{ ko(text: 'field().operators()[0].label') }
+          <!-- ko with: field() -->
+          .hierarchy-container.w25{:style => "display: inline-table;height:auto; font-size: 12px"}
+            /      ko template: {name: kind() + '-field-template', afterRender: $root.initDatePicker, with: fieldHierarchyItems()}
+            /      /ko
+
+          <!-- /ko -->
+          <!-- /ko -->
           
           %button.premove{ ko(click: '$parent.removeCondition') }
           %br

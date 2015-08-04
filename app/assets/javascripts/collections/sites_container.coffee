@@ -3,10 +3,12 @@
 
 onCollections ->
 
-  class @SitesContainer
+  class @SitesContainer 
+
     @constructorSitesContainer: ->
       @expanded = ko.observable false
       @sites = ko.observableArray()
+      @partlySites = ko.observableArray()
       @sitesPage = 1
       @hasMoreSites = ko.observable true
       @loadingSites = ko.observable true
@@ -18,7 +20,12 @@ onCollections ->
       @loadingSites true
       # Fetch more sites. We fetch one more to know if we have more pages, but we discard that
       # extra element so the user always sees SITES_PER_PAGE elements.
-      $.get @sitesUrl(), {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1, _alert: window.model.showingAlert() if window.model.showingAlert()}, (data) =>
+      if model.currentCollection().hierarchy_mode && model.showingMap() && !model.inSearch()
+        queryParam = {_alert: window.model.showingAlert() if window.model.showingAlert()}
+      else
+        queryParam = {offset: (@sitesPage - 1) * SITES_PER_PAGE, limit: SITES_PER_PAGE + 1, _alert: window.model.showingAlert() if window.model.showingAlert()}
+      
+      $.get @sitesUrl(), queryParam , (data) =>
         @sitesPage += 1
         if data.length == SITES_PER_PAGE + 1
           data.pop()
@@ -27,7 +34,43 @@ onCollections ->
         for site in data
           @addSite @createSite(site)
         @loadingSites false
-        window.model.refreshTimeago()
+        window.model.refreshTimeago()  
+        if model.currentCollection().hierarchy_mode && model.currentCollection().checkedHierarchyMode() && !model.inSearch()
+          @prepareSitesAsHierarchy() 
+
+    @prepareSitesAsHierarchy: ->
+      fi = @field_identify
+      fp = @field_parent
+      items = []
+      for site in @sites()
+        property = site.properties()
+        item = {id: site.id(), name: site.name(), site: site}
+        if property[fp] == undefined
+          item.parent_id = ""
+        else 
+          for s, i in @sites()
+            p = s.properties()
+            if p[fi] != undefined && property[fp].toString() == p[fi].toString()
+              item.parent_id = s.id() 
+              break
+            else 
+              if i == @sites().length-1
+                item.parent_id = ""
+        items.push(item) 
+      #make the items array to be hierarchy
+      hierarchy = @getHierarchySite(items, "")
+      @hierarchySites($.map hierarchy, (x) => new HierarchySite(x))
+
+
+    @getHierarchySite: (items, parent_id) ->
+      out = []
+      for i of items
+        if items[i].parent_id == parent_id
+          sub = @getHierarchySite(items, items[i].id)
+          if sub.length
+            items[i].sub = sub
+          out.push items[i]
+      out
 
     @reloadSites: ->
       @loadingSites true
@@ -38,6 +81,8 @@ onCollections ->
           @addSite @createSite(site)
         @loadingSites false
         window.model.refreshTimeago()
+        if @hierarchy_mode
+          @prepareSitesAsHierarchy()
 
     @addSite: (site, isNew = false) ->
       return @siteIds[site.id()] if @siteIds[site.id()]
@@ -64,16 +109,15 @@ onCollections ->
       delete @siteIds[site.id()]
 
     @toggleExpand: ->
-      # Load more sites when we expand, but only the first time
-      if !@expanded() && @hasMoreSites() && @sitesPage == 1
-        @loadMoreSites()
-
-
-      # Toogle select folder
-      if !@expanded()
-        window.model.selectHierarchy(this)
-      else
-        window.model.selectHierarchy(null)
+      if !model.currentCollection().checkedHierarchyMode()
+        # Load more sites when we expand, but only the first time
+        if !@expanded() && @hasMoreSites() && @sitesPage == 1
+          @loadMoreSites()
+        # Toggle select folder
+        if !@expanded()
+          window.model.selectHierarchy(this)
+        else
+          window.model.selectHierarchy(null)
 
       @expanded(!@expanded())
       window.model.reloadMapSites()

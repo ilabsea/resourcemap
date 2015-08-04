@@ -12,8 +12,13 @@ class SitesController < ApplicationController
 
     search.name_start_with params[:name] if params[:name].present?
     search.alerted_search params[:_alert] if params[:_alert] == "true"
-    search.offset params[:offset]
-    search.limit params[:limit]
+    search.offset params[:offset] if params[:offset].present?
+    search.limit params[:limit] if params[:limit].present?
+
+    #hierarchy mode display
+    if !(params[:limit] && params[:offset])
+      search.unlimited
+    end
 
     render json: search.ui_results.map { |x| x['_source'] }
   end
@@ -24,6 +29,7 @@ class SitesController < ApplicationController
     search.id params[:id]
     # If site does not exists, return empty objects
     result = search.ui_results.first['_source'] rescue {}
+
     render json: result
   end
 
@@ -89,10 +95,16 @@ class SitesController < ApplicationController
     search.full_text_search params[:search] if params[:search].present?
     search.alerted_search params[:_alert] if params[:_alert].present?
     search.location_missing if params[:location_missing].present?
+    search.hierarchy_mode params[:selected_site_children] if params[:selected_site_parent].present?
     if params[:selected_hierarchies].present?
       search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
     end
-    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
+    search.where params.except(
+      :selected_site_children, :selected_site_parent, 
+      :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, 
+      :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, 
+      :selected_hierarchies, :_alert
+    )
 
     search.apply_queries
     render json: search.results
@@ -110,11 +122,16 @@ class SitesController < ApplicationController
     search.full_text_search params[:search] if params[:search].present?
     search.alerted_search params[:_alert] if params[:_alert].present?
     search.location_missing if params[:location_missing].present?
+    search.hierarchy_mode params[:selected_site_children] if params[:selected_site_parent].present?
     if params[:selected_hierarchies].present?
       search.selected_hierarchy params[:hierarchy_code], params[:selected_hierarchies]
     end
-    search.where params.except(:action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, :selected_hierarchies, :_alert)
-
+    search.where params.except(
+      :selected_site_children, :selected_site_parent, 
+      :action, :controller, :format, :n, :s, :e, :w, :z, :collection_ids, 
+      :exclude_id, :updated_since, :search, :location_missing, :hierarchy_code, 
+      :selected_hierarchies, :_alert
+    )
     search.apply_queries
     render json: search.sites_json    
   end

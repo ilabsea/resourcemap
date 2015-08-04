@@ -6,7 +6,6 @@ onCollections ->
   class @CollectionSearch extends CollectionDecorator
     constructor: (collection, search, filters, sort, sortDirection) ->
       super(collection)
-
       @search = search
       @filters = filters
       @sort = sort
@@ -40,6 +39,7 @@ onCollections ->
             q.sort_direction = if @sortDirection then 'desc' else 'asc'
           else
             q.sort_direction = if @sortDirection then 'asc' else 'desc'
+      
       filter.setQueryParams(q, api) for filter in @filters
       q
 
