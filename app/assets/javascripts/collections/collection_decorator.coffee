@@ -27,6 +27,7 @@ onCollections ->
       @showingCollectionAlert = collection.showingCollectionAlert
       @isVisibleName = collection.isVisibleName
       @isVisibleLocation = collection.isVisibleLocation
+      @checked = collection.checked
       @allSites(collection.allSites())
       @hierarchy_mode = collection?.hierarchy_mode
       @checkedHierarchyMode = ko.observable collection?.checkedHierarchyMode()
