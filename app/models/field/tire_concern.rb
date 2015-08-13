@@ -5,8 +5,10 @@ module Field::TireConcern
     case
     when kind == 'yes_no'
       { type: :boolean }
-    when stored_as_number?
+    when storeed_as_long?
       { type: :long }
+    when stoted_as_double?
+      { type: :double }
     when stored_as_date?
       { type: :date }
     else
