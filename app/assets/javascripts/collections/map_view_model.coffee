@@ -680,6 +680,36 @@ onCollections ->
         $(".autocomplete-site-input").data("autocomplete")._renderItem = (ul, item) ->
            $("<li></li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo ul
 
+    @initControlKey: ->
+      $('.key-map-integer').controlKeyInput
+        allowChar: /[0-9\-]/
+        allow: (input, char) ->
+          if char == '-' and ($.caretPosition(input) != 0 or input.value.indexOf(char) != -1)
+            return false
+          true
+        failed: (input, char) ->
+          return
+        success: (input, char) ->
+          return
+
+      $('.key-map-decimal').controlKeyInput
+        allowChar: /[0-9\-\.]/
+        allow: (input, char) ->
+          if char == '-' and ($.caretPosition(input) != 0 or input.value.indexOf(char) != -1)
+            return false
+          if char == '.'
+            if $.caretPosition(input) == 1 && input.value.indexOf('-') == 0
+              return false;
+            if $.caretPosition(input) == 0 or input.value.indexOf(char) != -1
+              return false
+          if $.caretPosition(input) <= input.value.indexOf('.')
+            return true
+          true
+        failed: (input, char) ->
+          return
+        success: (input, char) ->
+          return
+
     @initDatePicker: (options = {}) ->
       @initInsteddPlatform()
       # fix dinamic DOM

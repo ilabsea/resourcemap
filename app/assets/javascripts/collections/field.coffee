@@ -19,7 +19,7 @@ onCollections ->
       
       @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
       @value = ko.observable()
-      
+
       @value.subscribe => @setFieldFocus()
 
       @hasValue = ko.computed =>
@@ -34,6 +34,7 @@ onCollections ->
         @value(@valueUIFrom(value))
 
       if @kind == 'numeric'
+        @keyType = if @allowsDecimals() then 'decimal' else 'integer'
         @digitsPrecision = data?.config?.digits_precision
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
@@ -265,6 +266,7 @@ onCollections ->
           @save()
         window.model.initDatePicker(optionsDatePicker)
         window.model.initAutocomplete()
+        window.model.initControlKey()
         $('textarea').autogrow()
 
     validateRangeAndDigitsPrecision: =>
@@ -322,6 +324,26 @@ onCollections ->
       else
         return true
 
+    validate_digit: (keyCode) =>
+      value = $('#'+@kind+'-input-'+@code).val()
+      #check digit precision
+      valueAfterSplit = value.split '.'
+      if valueAfterSplit.length >= 2
+        decimalValue = valueAfterSplit[1]
+        ele = document.getElementById(@kind+"-input-"+@code)
+        pos = $.caretPosition(ele)
+        if @digitsPrecision
+          if keyCode == 8 || keyCode == 9 || keyCode == 173 || (keyCode >= 37 && keyCode <=40)
+            return true
+          if pos <= value.indexOf('.')
+            return true
+          if decimalValue.length < parseInt(@digitsPrecision)
+            return true
+          if decimalValue.length >= parseInt(@digitsPrecision)
+            return false
+          
+      return true
+
     keyPress: (field, event) =>
       switch event.keyCode
         when 13 then @save()
@@ -329,9 +351,7 @@ onCollections ->
         else
           if field.kind == "numeric"
             if field.allowsDecimals()
-              return @validate_decimal_only(event.keyCode)
-            else
-              return @validate_integer_only(event.keyCode)
+              return @validate_digit(event.keyCode)
           return true   
 
     exit: =>

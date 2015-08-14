@@ -85,6 +85,7 @@ onCollections ->
         @getLocations(pos.lat, pos.lng)
         window.model.initDatePicker()
         window.model.initAutocomplete()
+        window.model.initControlKey()
         $('textarea').autogrow()
         $('#name').focus()
 
