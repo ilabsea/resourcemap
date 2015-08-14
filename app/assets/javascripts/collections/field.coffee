@@ -35,7 +35,6 @@ onCollections ->
 
       if @kind == 'numeric'
         @keyType = if @allowsDecimals() then 'decimal' else 'integer'
-        @digitsPrecision = data?.config?.digits_precision
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
         @field_logics = if data.config?.field_logics?
@@ -96,7 +95,8 @@ onCollections ->
       @expanded = ko.observable false # For select_many
       @errorMessage = ko.observable()
       @error = ko.computed => !!@errorMessage()
-     
+      @errorClass = ko.computed => if @error() then 'error' else '' # For field number
+
     setFieldFocus: =>
       if window.model.newOrEditSite() 
         if @kind == 'yes_no'
@@ -280,20 +280,20 @@ onCollections ->
     validateRange: =>
       if @range
         if @range.minimum && @range.maximum
-          if parseInt(@value()) >= parseInt(@range.minimum) && parseInt(@value()) <= parseInt(@range.maximum)
+          if parseFloat(@value()) >= parseFloat(@range.minimum) && parseFloat(@value()) <= parseFloat(@range.maximum)
             @errorMessage('')
           else
             @errorMessage('Invalid value, value must be in the range of ('+@range.minimum+'-'+@range.maximum+")")
         else
           if @range.maximum
-            if parseInt(@value()) <= parseInt(@range.maximum)
+            if parseFloat(@value()) <= parseFloat(@range.maximum)
               @errorMessage('')
             else
               @errorMessage('Invalid value, value must be less than or equal '+@range.maximum)
             return
           
           if @range.minimum
-            if parseInt(@value()) >= parseInt(@range.minimum)
+            if parseFloat(@value()) >= parseFloat(@range.minimum)
               @errorMessage('')
             else
               @errorMessage('Invalid value, value must be greater than or equal '+@range.minimum)
