@@ -97,7 +97,7 @@ onCollections ->
       window.model.updateSitesInfo()
       @showRefindAlertOnMap()
       @getAlertConditions()
-      @filters([])
+      @filters([]) if @filters().length == 0
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 

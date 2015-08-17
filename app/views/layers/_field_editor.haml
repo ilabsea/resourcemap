@@ -63,11 +63,11 @@
   %div{ko(if: 'impl().is_enable_range'), style: 'width:275px'}
     %br/
     %p.smalltext Mininum
-    = ko_number_field_tag 'impl().minimum', css: {error: :error}, event: {keydown: 'impl().validate_number_only'}
+    = ko_number_field_tag 'impl().minimum', css: {error: :error}
     %br/
     %br/
     %p.smalltext Maximum
-    = ko_number_field_tag 'impl().maximum', css: {error: :error}, event: {keydown: 'impl().validate_number_only'}
+    = ko_number_field_tag 'impl().maximum', css: {error: :error}
   //ko
 
   /ko if: kind() == 'text'

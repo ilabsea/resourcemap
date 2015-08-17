@@ -41,6 +41,7 @@ class ThresholdsController < ApplicationController
 
   def set_order
     threshold.update_attribute :ord, params[:ord]
+    Resque.enqueue IndexRecreateTask, collection.id
     render json: threshold
   end
 

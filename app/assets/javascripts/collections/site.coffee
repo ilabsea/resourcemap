@@ -86,7 +86,9 @@ onCollections ->
         success: ((data) =>
           field.errorMessage("")
           @propagateUpdatedAt(data.updated_at)
-          window.model.updateSitesInfo()),
+          window.model.updateSitesInfo()
+          window.model.currentCollection().reloadSites()
+          window.model.reloadMapSites()),        
         global: false
       })
       .fail((data) =>
@@ -370,6 +372,7 @@ onCollections ->
       @startEditLocationInMap() if @collection.isVisibleLocation
       window.model.initDatePicker()
       window.model.initAutocomplete()
+      window.model.initControlKey()
       $('textarea').autogrow()
 
     exitEditMode: (saved) =>
