@@ -21,7 +21,6 @@ onCollections ->
         @value null
 
 
-
     toJSON: =>
       field: @field().esCode()
       op: @op().code()
@@ -30,3 +29,11 @@ onCollections ->
       type: @valueType().code()
       compare_field: @compareField()?.esCode()
       kind: @kind()
+
+
+
+
+
+
+
+      

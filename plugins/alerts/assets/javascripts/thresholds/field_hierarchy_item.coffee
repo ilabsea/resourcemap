@@ -35,5 +35,5 @@ onThresholds ->
 
 
     select: => 
-      @field.valueLabel(@name)
       @field.value(@id)
+      console.log @field.value()
