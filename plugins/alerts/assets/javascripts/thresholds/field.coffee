@@ -112,15 +112,27 @@ onThresholds ->
 
   class @Field_select_many extends @FieldSelectOne
     format: (value) ->
-      if value.length
+      if value instanceof Array  
         @field.findOptionById(value[0])?.label()
       else
         @field.findOptionById(value)?.label()
 
     encode: (value) ->
-      if !value.length
-        [value]
-      else
+      if value instanceof Array ? 
         value
+      else
+        [value]
 
   class @Field_select_one extends @FieldSelectOne
+
+
+
+
+
+
+
+
+
+
+
+

@@ -42,7 +42,7 @@ onThresholds ->
     toJSON: =>
       field: @field().esCode()
       op: @op().code()
-      value: @field()?.encode @value() 
+      value: @field()?.encode @value()
       valueLabel: @field().valueLabel()
       type: @valueType().code()
       compare_field: @compareField()?.esCode()
