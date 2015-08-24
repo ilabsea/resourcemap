@@ -4,18 +4,19 @@ module Collection::ShpConcern
   def to_shp(elastic_search_api_results = new_search.unlimited.api_results)
     Dir.mktmpdir { |dir|
       generate_shp File.join(dir, "#{self.id}.shp"), elastic_search_api_results
-      compress_files dir
+      # compress_files dir
     }
   end
 
   def generate_shp path, search_results
-    shp = ShpFile.create path, ShpType::POINT, self.class.resmap_dbf_fields | dbf_fields.values
-    shp.transaction do |tr|
-      search_results.each do |result|
-        tr.add dbf_record_for result['_source']
-      end
-    end
-    shp.close
+    fields = self.class.resmap_dbf_fields | dbf_fields.values
+    # shp = ShpFile.create path, ShpType::POINT, field
+    # shp.transaction do |tr|
+    #   search_results.each do |result|
+    #     tr.add dbf_record_for result['_source']
+    #   end
+    # end
+    # shp.close
   end
 
   def dbf_fields
@@ -56,15 +57,15 @@ module Collection::ShpConcern
 
   module ClassMethods
     def resmap_dbf_fields
-      fields = [
-        dbf_field_for('resmap-id', type: 'N', length: 4, decimal: 0),
-        dbf_field_for('name', type: 'C', length: 50),
-        dbf_field_for('created_at', type: 'C', length: 40),
-        dbf_field_for('updated_at', type: 'C', length: 40) ]
+      # fields = [
+      #   dbf_field_for('resmap-id', type: 'N', length: 4, decimal: 0),
+      #   dbf_field_for('name', type: 'C', length: 50),
+      #   dbf_field_for('created_at', type: 'C', length: 40),
+      #   dbf_field_for('updated_at', type: 'C', length: 40) ]
     end
 
     def dbf_field_for name, attrs = {}
-      Dbf::Field.new name, attrs[:type], attrs[:length], attrs[:decimal] || 0
+      Dbf::Field.new name, attrs[:type], attrs[:length], (attrs[:decimal] || 0)
     end
   end
 end

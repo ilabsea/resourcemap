@@ -117,6 +117,19 @@ class Field < ActiveRecord::Base
     nil
   end
 
+  def csv_headers(human = false)
+    [code]
+  end
+
+  def csv_values(value, human = false)
+    if human
+      value = decode(value) rescue value
+      [human_value(value)] rescue csv_values(value)
+    else
+      [Array(value).join(", ")]
+    end
+  end
+
   def error_description_for_invalid_values(exception)
     "are not valid for the type #{kind}"
   end
