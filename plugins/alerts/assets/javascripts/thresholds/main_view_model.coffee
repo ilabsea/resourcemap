@@ -9,9 +9,11 @@ onThresholds ->
       @saving = ko.observable(false)
       @isReady = ko.observable(false)
       @collectionIcon = ''
+      @expandedAlertPropertyHierarchy = ko.observable()
 
     addThreshold: =>
       threshold = new Threshold { ord: @nextOrd(), phone_notification: {fields: [], users: [], members: []}, email_notification: {fields: [], users: [], members: []}, is_all_site: "true", is_all_condition: "true", is_notify: "false", color: "#128e4e"}, @collectionIcon
+      threshold.collectionId = @collectionId
       threshold.addNewCondition()
       @currentThreshold threshold
       @thresholds.push threshold

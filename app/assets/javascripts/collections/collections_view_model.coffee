@@ -48,6 +48,17 @@ onCollections ->
     @deleteMembership: () =>
       alert 'delete'
 
+    @loadSiteByTerm: (alert) =>
+      if alert
+        $.get "/collections/#{model.currentCollection().id}/sites_by_term.json", _alert: true, (sites) =>
+          window.model.currentCollection().allSites(sites)
+          window.adjustContainerSize()
+          
+      else
+        $.get "/collections/#{model.currentCollection().id}/sites_by_term.json", (sites) =>
+          window.model.currentCollection().allSites(sites)
+          window.adjustContainerSize()
+
     @enterCollection: (collection) ->
       if @showingAlert()
         return if !collection.checked()      
@@ -63,16 +74,9 @@ onCollections ->
       @exitSite() if @editingSite()   
 
       @currentCollection().checked(true)
-      if @showingAlert()
-        $.get "/collections/#{@currentCollection().id}/sites_by_term.json", _alert: true, (sites) =>
-          @currentCollection().allSites(sites)
-          window.adjustContainerSize()
-          
-      else
-        $.get "/collections/#{@currentCollection().id}/sites_by_term.json", (sites) =>
-          @currentCollection().allSites(sites)
-          window.adjustContainerSize()
 
+      @loadSiteByTerm(@showingAlert())
+      
       initialized = @initMap()
       collection.panToPosition(true) unless initialized
 
@@ -93,7 +97,7 @@ onCollections ->
       window.model.updateSitesInfo()
       @showRefindAlertOnMap()
       @getAlertConditions()
-      @filters([])
+      @filters([]) if @filters().length == 0
 
     @editCollection: (collection) -> window.location = "/collections/#{collection.id}"
 

@@ -209,7 +209,7 @@ class Collection < ActiveRecord::Base
 
   def thresholds_test(site)
     catch(:threshold) {
-      thresholds.each do |threshold|
+      thresholds.order(:ord).each do |threshold|
         threshold.test site.properties if threshold.is_all_site || threshold.sites.any? { |selected| selected["id"] == site.id }
       end
       nil

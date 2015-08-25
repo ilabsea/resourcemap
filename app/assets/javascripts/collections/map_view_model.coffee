@@ -146,7 +146,6 @@ onCollections ->
       currentMapRequestNumber = @mapRequestNumber
 
       getCallback = (data = {}) =>
-        @loading(false)
         return unless currentMapRequestNumber == @mapRequestNumber
         if @showingMap()
           @drawSitesInMap data.sites
@@ -279,19 +278,24 @@ onCollections ->
 
         switch operator
           when "eq","eqi"
-            if kind == 'text'
+            if kind == 'text' && typeof field != 'undefined'
               field = field.toLowerCase()
               compareField = compareField.toLowerCase()
+
+            else if kind == 'select_many' && typeof field != 'undefined'
+              field = field.toString()
+              compareField = compareField.toString()
             
             if field is compareField
               b = true
             else
               b = false
+
           when "gt"
             if field > compareField
               b = true
             else
-              b = false   
+              b = false 
           when "lt"
             if field < compareField
               b = true
@@ -301,7 +305,12 @@ onCollections ->
             if typeof field != 'undefined' && field.toLowerCase().indexOf(compareField.toLowerCase()) != -1
               b = true
             else
-              b = false                   
+              b = false  
+          when "under"
+            if typeof field != 'undefined'
+              b = true
+            else
+              b = false
           else
             null
         if isAllCondition == "true"
@@ -336,6 +345,9 @@ onCollections ->
 
       query.exclude_id = @selectedSite().id() if @selectedSite()?.id()
       query.search = @lastSearch() if @lastSearch()
+      if model.selectedHierarchyMode()
+        query.selected_site_children = model.selectedHierarchyMode().selectedSiteChildren()
+        query.selected_site_parent = model.selectedHierarchyMode().selectedSiteParent()
 
       filter.setQueryParams(query) for filter in @filters()
 
@@ -344,6 +356,7 @@ onCollections ->
     @onSitesChanged: (listener) ->
       @sitesChangedListeners.push listener
     @notifySitesChanged: ->
+      @loading(false)
       for listener in @sitesChangedListeners
         listener()
 
@@ -606,6 +619,11 @@ onCollections ->
       @exitSite() if @editingSite()
       @editingSite(null)
       @oldSelectedSite = null
+      if @currentCollection()
+        sites = @currentCollection().sites() 
+        sites = sites.slice(0, 15) if sites
+        @currentCollection().partlySites(sites)
+
       delete @markers
       delete @clusters
       delete @map
@@ -613,6 +631,14 @@ onCollections ->
       @refreshTimeago()
       setTimeout(@makeFixedHeaderTable, 10)
       setTimeout(window.adjustContainerSize, 10)
+
+    @scrollTable: ->
+      sites = @currentCollection().sites() 
+      partlySites = @currentCollection().partlySites()
+      l = partlySites.length
+      if sites.length != l
+        sites = partlySites.concat(sites.slice(l, l + 15))
+        @currentCollection().partlySites(sites)
 
     @makeFixedHeaderTable: ->
       unless @showingMap()
@@ -653,6 +679,36 @@ onCollections ->
       if $(".autocomplete-site-input").length > 0 && $(".autocomplete-site-input").data("autocomplete")
         $(".autocomplete-site-input").data("autocomplete")._renderItem = (ul, item) ->
            $("<li></li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo ul
+
+    @initControlKey: ->
+      $('.key-map-integer').controlKeyInput
+        allowChar: /[0-9\-]/
+        allow: (input, char) ->
+          if char == '-' and ($.caretPosition(input) != 0 or input.value.indexOf(char) != -1)
+            return false
+          true
+        failed: (input, char) ->
+          return
+        success: (input, char) ->
+          return
+
+      $('.key-map-decimal').controlKeyInput
+        allowChar: /[0-9\-\.]/
+        allow: (input, char) ->
+          if char == '-' and ($.caretPosition(input) != 0 or input.value.indexOf(char) != -1)
+            return false
+          if char == '.'
+            if $.caretPosition(input) == 1 && input.value.indexOf('-') == 0
+              return false;
+            if $.caretPosition(input) == 0 or input.value.indexOf(char) != -1
+              return false
+          if $.caretPosition(input) <= input.value.indexOf('.')
+            return true
+          true
+        failed: (input, char) ->
+          return
+        success: (input, char) ->
+          return
 
     @initDatePicker: (options = {}) ->
       @initInsteddPlatform()

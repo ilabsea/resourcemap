@@ -6,7 +6,7 @@ gem 'devise'
 gem "elasticsearch"
 gem "elasticsearch-ruby"
 gem "valium"
-gem 'rmagick', '2.13.2', :require => false
+gem 'rmagick', '2.15.2', :require => false
 gem 'aws-sdk'
 gem 'whenever', :require => false
 gem 'georuby', '2.2.1'

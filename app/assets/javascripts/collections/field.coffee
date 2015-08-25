@@ -19,7 +19,7 @@ onCollections ->
       
       @allowsDecimals = ko.observable data?.config?.allows_decimals == 'true'
       @value = ko.observable()
-      
+
       @value.subscribe => @setFieldFocus()
 
       @hasValue = ko.computed =>
@@ -31,10 +31,10 @@ onCollections ->
       @valueUI =  ko.computed
        read: =>  @valueUIFor(@value())
        write: (value) =>
-         @value(@valueUIFrom(value))
+        @value(@valueUIFrom(value))
 
       if @kind == 'numeric'
-        @digitsPrecision = data?.config?.digits_precision
+        @keyType = if @allowsDecimals() then 'decimal' else 'integer'
         @range = if data.config?.range?.minimum? || data.config?.range?.maximum?
                   data.config?.range
         @field_logics = if data.config?.field_logics?
@@ -95,7 +95,8 @@ onCollections ->
       @expanded = ko.observable false # For select_many
       @errorMessage = ko.observable()
       @error = ko.computed => !!@errorMessage()
-     
+      @errorClass = ko.computed => if @error() then 'error' else '' # For field number
+
     setFieldFocus: =>
       if window.model.newOrEditSite() 
         if @kind == 'yes_no'
@@ -208,7 +209,15 @@ onCollections ->
     # If it's a select one or many, we need to get the label from the option code.
     valueUIFor: (value) =>
       if @kind == 'yes_no'
-        if value then window.t('javascripts.collections.fields.yes') else window.t('javascripts.collections.fields.no')
+        if value
+          value = window.t('javascripts.collections.fields.yes')
+        else 
+          if @writeable
+            value = window.t('javascripts.collections.fields.no')
+          else
+            value = ''
+            if window.model.showSite()
+              value = window.t('javascripts.collections.fields.no')        
       else if @kind == 'select_one'
         if value then @labelFor(value) else ''
       else if @kind == 'location'
@@ -257,6 +266,7 @@ onCollections ->
           @save()
         window.model.initDatePicker(optionsDatePicker)
         window.model.initAutocomplete()
+        window.model.initControlKey()
         $('textarea').autogrow()
 
     validateRangeAndDigitsPrecision: =>
@@ -270,20 +280,20 @@ onCollections ->
     validateRange: =>
       if @range
         if @range.minimum && @range.maximum
-          if parseInt(@value()) >= parseInt(@range.minimum) && parseInt(@value()) <= parseInt(@range.maximum)
+          if parseFloat(@value()) >= parseFloat(@range.minimum) && parseFloat(@value()) <= parseFloat(@range.maximum)
             @errorMessage('')
           else
             @errorMessage('Invalid value, value must be in the range of ('+@range.minimum+'-'+@range.maximum+")")
         else
           if @range.maximum
-            if parseInt(@value()) <= parseInt(@range.maximum)
+            if parseFloat(@value()) <= parseFloat(@range.maximum)
               @errorMessage('')
             else
               @errorMessage('Invalid value, value must be less than or equal '+@range.maximum)
             return
           
           if @range.minimum
-            if parseInt(@value()) >= parseInt(@range.minimum)
+            if parseFloat(@value()) >= parseFloat(@range.minimum)
               @errorMessage('')
             else
               @errorMessage('Invalid value, value must be greater than or equal '+@range.minimum)
@@ -309,10 +319,30 @@ onCollections ->
       value = $('#'+@kind+'-input-'+@code).val()
       if (value == null || value == "")&& (keyCode == 229 || keyCode == 190) #prevent dot at the beginning
         return false
-      if (keyCode != 8 && keyCode != 46) && (keyCode != 190 || value.indexOf('.') != -1) && (keyCode < 48 || keyCode > 57) #prevent multiple dot
+      if (keyCode != 8 && keyCode != 46 && keyCode != 173) && (keyCode != 190 || value.indexOf('.') != -1) && (keyCode < 48 || keyCode > 57) #prevent multiple dot
         return false
       else
         return true
+
+    validate_digit: (keyCode) =>
+      value = $('#'+@kind+'-input-'+@code).val()
+      #check digit precision
+      valueAfterSplit = value.split '.'
+      if valueAfterSplit.length >= 2
+        decimalValue = valueAfterSplit[1]
+        ele = document.getElementById(@kind+"-input-"+@code)
+        pos = $.caretPosition(ele)
+        if @digitsPrecision
+          if keyCode == 8 || keyCode == 9 || keyCode == 173 || (keyCode >= 37 && keyCode <=40)
+            return true
+          if pos <= value.indexOf('.')
+            return true
+          if decimalValue.length < parseInt(@digitsPrecision)
+            return true
+          if decimalValue.length >= parseInt(@digitsPrecision)
+            return false
+          
+      return true
 
     keyPress: (field, event) =>
       switch event.keyCode
@@ -321,9 +351,7 @@ onCollections ->
         else
           if field.kind == "numeric"
             if field.allowsDecimals()
-              return @validate_decimal_only(event.keyCode)
-            else
-              return @validate_integer_only(event.keyCode)
+              return @validate_digit(event.keyCode)
           return true   
 
     exit: =>

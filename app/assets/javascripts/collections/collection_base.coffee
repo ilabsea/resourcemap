@@ -36,7 +36,7 @@ onCollections ->
       $.get @sitesUrl(), (data) =>
         @loading(false)
         for site in data
-          @addSite @createSite(site)    
+          @addSite @createSite(site) 
 
     loadAllSites: =>
       @allSites = ko.observable()

@@ -29,4 +29,8 @@ module Threshold::ComparisonConcern
   def con(a, b)
     not a.scan(/#{b}/i).empty?
   end
+
+  def under(a, b)
+    true if b.index a
+  end
 end

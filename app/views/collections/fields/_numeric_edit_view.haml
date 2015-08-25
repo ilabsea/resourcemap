@@ -6,8 +6,8 @@
     .clear
 - else
   - if single_editing_mode
-    = ko_number_field_tag :value, hasfocus: true, event: {keydown: :keyPress, keyup: :validateRangeAndDigitsPrecision, blur: :save}, css: { error: :error }, html: {class: 'w25', step: "any"}, attr: {id: "'numeric-input-' + code"}
+    = ko_text_field_tag :value, hasfocus: true, event: {keydown: :keyPress, keyup: :validateRange, blur: :save}, css: { error: :error }, html: {step: "any"}, attr: {id: "'numeric-input-' + code", class: "'w25 key-map-' + keyType+ ' '+ errorClass()"}
   - else
-    = ko_number_field_tag :value, valueUpdate: :afterblur, css: { error: :error }, event: {keydown: :keyPress}, html: {class: 'w25', step: "any"}, attr: {id: "'numeric-input-' + code"}
+    = ko_text_field_tag :value, valueUpdate: :afterblur, css: { error: :error}, event: {keydown: :keyPress}, attr: {id: "'numeric-input-' + code", class: "'w25 key-map-' + keyType+ ' '+ errorClass()"}
     .clear
 

@@ -13,6 +13,12 @@ module SearchBase
     self
   end
 
+  def hierarchy_mode(ids)
+    ids = [] if ids == nil
+    @search.filter :terms, id: ids
+    self
+  end
+
   def name_start_with(name)
     add_filter prefix: {name: name.downcase}
   end

@@ -50,9 +50,9 @@ onCollections ->
     hasInputMendatoryProperties: =>
       for field in @fields()
         if field.is_mandatory
-          if field.kind == 'yes_no' && field.value() != null
+          if field.kind == 'yes_no' && field.value() != null 
             return true
-          if !field.value()
+          if !field.value() || (field.value() instanceof Array && field.value().length == 0)
             return false
       return true
 
@@ -86,7 +86,9 @@ onCollections ->
         success: ((data) =>
           field.errorMessage("")
           @propagateUpdatedAt(data.updated_at)
-          window.model.updateSitesInfo()),
+          window.model.updateSitesInfo()
+          window.model.currentCollection().reloadSites()
+          window.model.reloadMapSites()),        
         global: false
       })
       .fail((data) =>
@@ -370,6 +372,7 @@ onCollections ->
       @startEditLocationInMap() if @collection.isVisibleLocation
       window.model.initDatePicker()
       window.model.initAutocomplete()
+      window.model.initControlKey()
       $('textarea').autogrow()
 
     exitEditMode: (saved) =>

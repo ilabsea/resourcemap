@@ -12,6 +12,9 @@ class LayersController < ApplicationController
       end
       if current_user_snapshot.at_present?
         json = layers.includes(:fields).all.as_json(include: :fields).each { |layer|
+          layer["fields"].each { |field|
+            field['threshold_ids'] = get_associated_field_threshold_ids(field)
+          }
           layer['threshold_ids'] = Layer.find(layer['id']).get_associated_threshold_ids
         }
         format.json { render json:  json, :root => false}
@@ -40,9 +43,10 @@ class LayersController < ApplicationController
   def update
     # FIX: For some reason using the exposed layer here results in duplicated fields being created
     layer = collection.layers.find params[:id]
-    fix_layer_fields_for_update
+    fix_layer_fields_for_update layer
+    debugger
     layer.user = current_user
-    layer.update_attributes! params[:layer]   
+    layer.update_attributes! layer_params
     layer.reload
     render json: layer.as_json(include: :fields)
   end
@@ -159,12 +163,12 @@ class LayersController < ApplicationController
         if field[:config][:range][:minimum] == "" || field[:config][:range][:minimum].nil?
           field[:config][:range] = field[:config][:range].except(:minimum)
         else
-          field[:config][:range][:minimum] = field[:config][:range][:minimum].to_i
+          field[:config][:range][:minimum] = field[:config][:range][:minimum].to_f
         end
         if field[:config][:range][:maximum] == "" || field[:config][:range][:maximum].nil?
           field[:config][:range] = field[:config][:range].except(:maximum)
         else
-          field[:config][:range][:maximum] = field[:config][:range][:maximum].to_i
+          field[:config][:range][:maximum] = field[:config][:range][:maximum].to_f
         end
       end
     end 
@@ -192,7 +196,7 @@ class LayersController < ApplicationController
   # whose ids don't show up in the new ones and then we add the _destroy flag.
   #
   # That way we preserve existing fields and we can know if their codes change, to trigger a reindex
-  def fix_layer_fields_for_update
+  def fix_layer_fields_for_update layer
     fields = layer.fields
 
     fields_ids = fields.map(&:id).compact
@@ -211,7 +215,54 @@ class LayersController < ApplicationController
   end
 
   def layer_params
-    params.require(:layer).permit(:name, :ord, :fields_attributes => {})
+    params.require(:layer).permit(  :name, 
+                                    :ord, 
+                                    :fields_attributes => 
+                                      [ 
+                                        :id, 
+                                        :code, 
+                                        :layer_id, 
+                                        :kind, 
+                                        :ord, 
+                                        :name, 
+                                        :is_mandatory, 
+                                        :is_enable_field_logic, 
+                                        :is_enable_range, 
+                                        :config => 
+                                          [
+                                            :allows_decimals,
+                                            :range =>
+                                              [
+                                                :minimum,
+                                                :maximum
+                                              ],
+                                            :field_logics =>
+                                              [
+                                                :id, 
+                                                :value, 
+                                                :field_id, 
+                                                :condition_type
+                                              ]
+                                          ]
+                                      ]
+                                  )
+  end
+
+  def get_associated_field_threshold_ids(field)
+    associated_field_threshold_ids = []
+    fieldID = field["id"]
+
+    self.collection.thresholds.map { |threshold|
+      threshold.conditions.map { |condition| 
+        conditionFieldID = condition['field'].to_i
+        if fieldID == conditionFieldID
+          associated_field_threshold_ids.push(threshold.id)
+          break
+        end
+      }
+    }
+
+    associated_field_threshold_ids
   end
 
 end

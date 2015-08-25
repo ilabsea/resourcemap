@@ -10,7 +10,6 @@ class Field::NumericField < Field
 
 	def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
 		check_presence_of_value(value)
-    valid_format?(value)
     standadrize(value)
 	end
 
@@ -56,17 +55,17 @@ class Field::NumericField < Field
 
   def validate_range(value)
     if config['range']['minimum'] && config['range']['maximum'] && config['range']['minimum'] <= config['range']['maximum']
-      unless value.to_i >= config['range']['minimum'] && value.to_i <= config['range']['maximum']
+      unless value.to_f >= config['range']['minimum'] && value.to_f <= config['range']['maximum']
         raise "Invalid value, value must be in the range of (#{config['range']['minimum']}-#{config['range']['maximum']})"
       end
     end
     
     if config['range']['minimum']
-      raise "Invalid value, value must be greater than or equal #{config['range']['minimum']}" unless value.to_i >= config['range']['minimum']
+      raise "Invalid value, value must be greater than or equal #{config['range']['minimum']}" unless value.to_f >= config['range']['minimum']
     end
 
     if config['range']['maximum']
-      raise "Invalid value, value must be less than or equal #{config['range']['maximum']}" unless value.to_i <= config['range']['maximum']
+      raise "Invalid value, value must be less than or equal #{config['range']['maximum']}" unless value.to_f <= config['range']['maximum']
     end   
   end
 

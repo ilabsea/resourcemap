@@ -548,7 +548,7 @@ DEPENDENCIES
   resque
   resque-scheduler (= 2.5.5)
   resque_spec
-  rmagick (= 2.13.2)
+  rmagick (= 2.15.2)
   rspec
   rspec-rails
   ruby-prof!

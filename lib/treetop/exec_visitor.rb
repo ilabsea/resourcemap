@@ -59,6 +59,7 @@ class ExecVisitor < Visitor
       if collection.is_visible_name == true && (not site.keys.include?('name'))
         return MSG[:name_is_required]
       end
+
       properties = node_to_site_properties key_value_properties,collection.id
       if properties["not_exist"]
         if properties["not_exist"].length > 1
@@ -109,8 +110,13 @@ class ExecVisitor < Visitor
   def update_properties(site, user, props)
     site.user = user
     props.each do |p|
-      field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
-      site.properties[field.es_code] = to_supported_value(field, p.values[1])
+      code = p[:code]
+      if code != "name"
+        field =Field.where("code=? and collection_id=?", p.values[0], site.collection_id).first
+        site.properties[field.es_code] = to_supported_value(field, p.values[1])
+      else
+        site[code] = p.values[1]
+      end
     end
     if site.valid?
       site.save!

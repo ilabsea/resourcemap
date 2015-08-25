@@ -5,7 +5,7 @@ onCollections ->
       @showingAlert= ko.observable(false)
       @alertsCountText = ko.computed => if @alertsCount() == 1 then window.t('javascripts.plugins.alerts.one_alert') else window.t('javascripts.plugins.alerts.n_alerts', {n: @alertsCount()})
       
-      @onSitesChanged =>      
+      @onSitesChanged =>
         alertsCount = 0
         bounds = @map.getBounds()
         for siteId, marker of @markers

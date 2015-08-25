@@ -187,6 +187,15 @@ describe ExecVisitor, "Process update command" do
     site.properties[@f2.es_code].to_i.should == 20
   end
 
+  it "should update site name to test" do
+    @node = @parser.parse("dyrm u AB1 name=test").command
+    @node.sender = @user    
+    Site.should_receive(:find_by_id_with_prefix).with('AB1').and_return(@site)
+    @visitor.should_receive(:can_update?).and_return(true)
+    @visitor.should_receive(:update_properties).with(@site, @node.sender, [{:code=>"name", :value=>"test"}])
+    @visitor.visit_update_command(@node).should == ExecVisitor::MSG[:update_successfully]
+  end
+
   it "should update field many to [1,2]" do
     @node = @parser.parse("dyrm u AB1 many=one two").command
     @node.sender = @user    
@@ -302,6 +311,7 @@ describe ExecVisitor, "Process add command" do
     @node = @parser.parse("dyrm a name=abc,doctors=5,ambulances=10").command
     @visitor.node_to_site_properties(@visitor.node_to_properties(@node.property_list),@collection.id).should eq({@f2.id.to_s=>"5", @f1.id.to_s=>"10"})
   end
+
   it 'should return a key-value site' do
     @node = @parser.parse("dyrm a name=abc,lat=12.11,lng=75.11,doctors=5,ambulances=10").command
     @visitor.node_to_site(@visitor.node_to_properties(@node.property_list)).should eq({"name" => "abc", "lat" => "12.11", "lng" => "75.11"})

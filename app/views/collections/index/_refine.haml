@@ -1,8 +1,11 @@
+<!-- ko if: !currentCollection().checkedHierarchyMode() -->
 <!-- ko if: !inSearch() && currentCollection() && currentCollection().groupByOptions().length > 1 -->
 .left{ko(with: :currentCollection), style: 'margin-right:8px'}
   = t('views.collections.index.group_by')
   %select{ko(value: '$root.groupBy', options: :groupByOptions, optionsText: "'name'")}
 <!-- /ko -->
+<!-- /ko -->
+
 .left.superblyTagItems
   <!-- ko foreach: filters() -->
   %li.superblyTagItem{style: 'float:left;padding:3px;margin-right:4px;cursor:pointer'}
@@ -49,7 +52,7 @@
       <!-- /ko -->
     <!-- /ko -->
     <!-- ko foreach: currentCollection().refineFields() -->
-    <!-- ko if: kind != 'photo' -->
+    <!-- ko if: kind != 'photo'  && kind != 'location' -->
     #div{ko(click: 'function (data, event) { $root.toggleRefineProperty($data.esCode) }'), style: 'cursor:pointer;padding-top:6px'}
       %img{ko(attr: {src: "'#{InsteddRails.url}/theme/images/icons/misc/grey/arrow' + ($root.expandedRefineProperty() == esCode ? 'Down' : 'Right') + '.png'"}), style: "position:relative;top:1px", width: 11, height: 11}
       %span{ko(text: :name)}
@@ -137,5 +140,11 @@
       = ko_link_to 'clear search', :clearSearch
     <!-- /ko -->
     = ko_text_field_tag :search, html: {class: 'ux-search', placeholder: t('views.collections.index.search')}
+.clear
+<!-- ko if: currentCollection() && currentCollection().hierarchy_mode && showingMap() && !inSearch()-->
+.left{style: 'margin-right:8px; margin-left: 3px;'}
+  = t('views.collections.index.hierarchy_mode')
+  %input{ko(checked: 'currentCollection().checkedHierarchyMode'), type: 'checkbox'}
+<!-- /ko -->
 .clear
 %br/

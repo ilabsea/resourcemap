@@ -11,10 +11,10 @@ class Field::HierarchyField < Field
     "don't exist in the corresponding hierarchy"
   end
 
-	def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
-		check_presence_of_value(value)
-		decode_hierarchy_option(value, use_codes_instead_of_es_codes)
-	end
+  def apply_format_query_validation(value, use_codes_instead_of_es_codes = false)
+    check_presence_of_value(value)
+    decode_hierarchy_option(value, use_codes_instead_of_es_codes)
+  end
 
   def decode(hierarchy_name)
     if hierarchy_code = find_hierarchy_id_by_name(hierarchy_name)
@@ -36,7 +36,7 @@ class Field::HierarchyField < Field
     end
   end
 
-	def descendants_of_in_hierarchy(parent, use_codes_instead_of_es_codes)
+  def descendants_of_in_hierarchy(parent, use_codes_instead_of_es_codes)
     if use_codes_instead_of_es_codes
       parent_id = find_hierarchy_id_by_name(parent)
     else
@@ -139,7 +139,7 @@ class Field::HierarchyField < Field
     max
   end
 
-	private
+  private
 
   def inject_parent_id hierarchy, parent_id, level
     level = level + 1
@@ -154,9 +154,9 @@ class Field::HierarchyField < Field
     hierarchy
   end
 
-	def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
+  def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
     start_at.each do |item|
-      return item if item['id'] == id
+      return item if item['id'] == id.to_s
       if item.has_key? 'sub'
         found = find_hierarchy_item_by_id(id, item['sub'])
         return found unless found.nil?

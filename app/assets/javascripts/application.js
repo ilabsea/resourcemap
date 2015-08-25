@@ -26,6 +26,8 @@
 //= require lodash
 //= require password_strength
 //= require jquery_strength
+//= require jquery_control_key_input
+//= require validate_key
 //= require i18n
 //= require_tree .
 //available on sprocket 2.2 and above
