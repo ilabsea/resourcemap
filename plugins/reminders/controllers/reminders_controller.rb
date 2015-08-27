@@ -13,11 +13,12 @@ class RemindersController < ApplicationController
   end
 
   def create
+    debugger
     if params[:reminder]["time_zone"]
       date_and_time = '%m-%d-%YT%H:%M:%S %Z'
       params[:reminder]["reminder_date"] = ActiveSupport::TimeZone[params[:reminder]["time_zone"]].parse(params[:reminder]["reminder_date"]).to_s
     end
-    reminder = reminders.new params[:reminder].except(:sites)
+    reminder = reminders.new reminder_params
     reminder.sites = Site.select("id, collection_id, name, properties").find params[:reminder][:sites] if params[:reminder][:sites]
     reminder.save!
     render json: reminder
@@ -29,7 +30,7 @@ class RemindersController < ApplicationController
       date_and_time = '%m-%d-%YT%H:%M:%S %Z'
       params[:reminder]["reminder_date"] = ActiveSupport::TimeZone[params[:reminder]["time_zone"]].parse(params[:reminder]["reminder_date"]).to_s
     end
-    reminder.update_attributes! params[:reminder].except(:sites)
+    reminder.update_attributes! reminder_params
     reminder.sites = Site.select("id, collection_id, name, properties").find params[:reminder][:sites] if params[:reminder][:sites]
    
     reminder.save! 
@@ -63,5 +64,9 @@ class RemindersController < ApplicationController
       arr.push r
     end
     arr
+  end
+
+  def reminder_params
+    params.require(:reminder).permit(:name, :reminder_message, :reminder_date, :repeat_id, :collection_id, :time_zone, :is_all_site)
   end
 end

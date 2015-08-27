@@ -46,10 +46,12 @@ class ThresholdsController < ApplicationController
   end
 
   def update
+    threshold = Threshold.find params[:id]
     params[:threshold][:email_notification] = {} unless params[:threshold][:email_notification] # email not selected
     params[:threshold][:phone_notification] = {} unless params[:threshold][:phone_notification] # phone not selected
     params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]} if params[:threshold][:sites]
     threshold.strongly_type_conditions
+    debugger
     threshold.update_attributes! threshold_params
     if params[:threshold][:is_all_site] == "false" && params[:threshold][:sites]
       threshold.sites = Site.get_id_and_name params[:threshold][:sites]

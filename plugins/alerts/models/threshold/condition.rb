@@ -8,7 +8,7 @@ class Threshold::Condition
     if hash[:type] == "percentage"
       @value = hash[:value] * (properties[hash[:compare_field]] || 0) / 100
     else
-      @value = hash[:value]
+      @value = hash[:value].to_f
     end
   end
 
