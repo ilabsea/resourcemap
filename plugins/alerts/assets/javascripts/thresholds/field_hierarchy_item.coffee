@@ -36,4 +36,3 @@ onThresholds ->
 
     select: => 
       @field.value(@id)
-      console.log @field.value()

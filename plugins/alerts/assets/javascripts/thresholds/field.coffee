@@ -14,8 +14,7 @@ onThresholds ->
       @operators = ko.computed => @impl.getOperators()
       @value = ko.observable()
 
-      if @kind() == 'hierarchy'
-        @buildFieldHierarchyItems()
+      @buildFieldHierarchyItems() if @kind() == 'hierarchy'
 
     format: (value) ->
       @impl.format value
@@ -93,14 +92,11 @@ onThresholds ->
       !!value
 
   class @Field_hierarchy extends @FieldImpl
-    constructor: (field) ->
-      @field = field
-
     getOperators: =>
       [Operator.UNDER]
 
     encode: (value) =>
-      value
+      @field.value()
 
     valid: (value) =>
       @field.value()
