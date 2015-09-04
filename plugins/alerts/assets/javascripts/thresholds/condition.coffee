@@ -4,6 +4,7 @@
 onThresholds ->
   class @Condition
     constructor: (data) ->
+      console.log 'data : ',data
       @field = ko.observable window.model.findField data?.field
       @compareField = ko.observable window.model.findField data?.compare_field ? data?.field # assign data.field only when data.compare_field doesn't exist to prevent error on view
       @op = ko.observable Operator.findByCode data?.op
@@ -27,14 +28,14 @@ onThresholds ->
         @valueType ValueType.VALUE
         @value null
 
-    #   if typeof @kind() == 'function' && @kind()() == 'hierarchy'
-    #     @buildFieldHierarchy()
+      if typeof @kind() == 'function' && @kind()() == 'hierarchy'
+        @buildFieldHierarchy()
 
-    # buildFieldHierarchy: =>
-    #   @field().value(@value())
-    #   @hierarchy = @field().config.hierarchy
-    #   @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@field(), x))
-    #   @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: window.t('javascripts.collections.fields.no_value')})   
+    buildFieldHierarchy: =>
+      @field().value(@value())
+      @hierarchy = @field().config.hierarchy
+      @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@field(), x))
+      @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: window.t('javascripts.collections.fields.no_value')})   
 
     toJSON: =>
       field: @field().esCode()

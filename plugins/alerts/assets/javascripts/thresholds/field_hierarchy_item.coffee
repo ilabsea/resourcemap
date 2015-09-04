@@ -35,4 +35,5 @@ onThresholds ->
 
 
     select: => 
+      model.currentThreshold().conditions()[0].value(@id)
       @field.value(@id)
