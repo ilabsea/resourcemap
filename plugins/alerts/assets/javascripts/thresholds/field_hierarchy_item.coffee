@@ -38,9 +38,8 @@ onThresholds ->
       @expanded(!@expanded())
 
     toggleParentsExpand: =>
-      @expanded(true) if @conditionValue() != @id
+      @expanded(true) if @value() != @id
       @parent.toggleParentsExpand() if @parent
-
 
     select: => 
       conditions = model.currentThreshold().conditions()
@@ -49,7 +48,6 @@ onThresholds ->
           if parseInt(condition.field().esCode()) == parseInt(@field.esCode())
             condition.value(@id)
             @value(@id)
-      @field.value(@id)
 
 
 
