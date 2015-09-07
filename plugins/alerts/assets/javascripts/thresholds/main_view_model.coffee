@@ -19,7 +19,6 @@ onThresholds ->
       @thresholds.push threshold
 
     editThreshold: (threshold) =>
-      console.log 'editThreshold : ', threshold.conditions()[0].toJSON()
       @clearUnsavedThreshold(@currentThreshold())
       @originalThreshold = new Threshold(threshold.toJSON())
       @currentThreshold threshold

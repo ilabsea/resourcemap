@@ -44,31 +44,6 @@ onThresholds ->
     encode: (value) -> value
     valid: (value) -> !!value
 
-  class @Field_hierarchy extends @FieldImpl
-    format: (value) ->
-      @hierarchy = @field.config.hierarchy
-      matches = getLabelFromId(@hierarchy, value, [])
-      if matches.length > 0
-        matches[0]
-
-    getLabelFromId = (hierarchy, value, matches) ->
-      for h in hierarchy
-        if parseInt(h.id) == parseInt(value)
-          matches.push(h.name)
-          break
-        if h.sub
-          getLabelFromId(h.sub, value, matches)  
-      return matches
-
-    getOperators: =>
-      [Operator.UNDER]
-
-    encode: (value) =>
-      value
-
-    valid: (value) =>
-      value
-
   class @FieldText extends @FieldImpl
     getOperators: =>
       [Operator.EQI, Operator.CON]
@@ -117,7 +92,6 @@ onThresholds ->
     valid: (value) ->
       !!value
 
-
   class @Field_email extends @FieldText
 
   class @Field_phone extends @FieldText
@@ -136,6 +110,25 @@ onThresholds ->
         [value]
 
   class @Field_select_one extends @FieldSelectOne
+
+  class @Field_hierarchy extends @FieldImpl
+    format: (value) ->
+      @hierarchy = @field.config.hierarchy
+      matches = getLabelFromId(@hierarchy, value, [])
+      if matches.length > 0
+        matches[0]
+
+    getLabelFromId = (hierarchy, value, matches) ->
+      for h in hierarchy
+        if parseInt(h.id) == parseInt(value)
+          matches.push(h.name)
+          break
+        if h.sub
+          getLabelFromId(h.sub, value, matches)  
+      return matches
+
+    getOperators: =>
+      [Operator.UNDER]
 
 
 
