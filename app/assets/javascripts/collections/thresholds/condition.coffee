@@ -22,7 +22,6 @@ onCollections ->
 
 
     toJSON: =>
-      # console.log @field()
       field: @field().esCode()
       op: @op().code()
       value: @field()?.encode @value() 
