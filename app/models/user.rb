@@ -15,6 +15,9 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :phone_number, :allow_blank => true
   validates_strength_of :password, :with => :email, :if => lambda {|u| u.password.present?}
 
+  has_many :share_national_channels
+  has_many :channels, through: :share_national_channels
+
   attr_accessor :is_guest
 
   def create_collection(collection)

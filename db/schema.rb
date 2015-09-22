@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150722042954) do
+ActiveRecord::Schema.define(:version => 20150922023019) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -45,22 +45,23 @@ ActiveRecord::Schema.define(:version => 20150722042954) do
     t.string   "name"
     t.text     "description"
     t.boolean  "public"
-    t.datetime "created_at",                                                           :null => false
-    t.datetime "updated_at",                                                           :null => false
-    t.decimal  "lat",                 :precision => 10, :scale => 6
-    t.decimal  "lng",                 :precision => 10, :scale => 6
-    t.decimal  "min_lat",             :precision => 10, :scale => 6
-    t.decimal  "min_lng",             :precision => 10, :scale => 6
-    t.decimal  "max_lat",             :precision => 10, :scale => 6
-    t.decimal  "max_lng",             :precision => 10, :scale => 6
+    t.datetime "created_at",                                                                   :null => false
+    t.datetime "updated_at",                                                                   :null => false
+    t.decimal  "lat",                         :precision => 10, :scale => 6
+    t.decimal  "lng",                         :precision => 10, :scale => 6
+    t.decimal  "min_lat",                     :precision => 10, :scale => 6
+    t.decimal  "min_lng",                     :precision => 10, :scale => 6
+    t.decimal  "max_lat",                     :precision => 10, :scale => 6
+    t.decimal  "max_lng",                     :precision => 10, :scale => 6
     t.string   "icon"
-    t.integer  "quota",                                              :default => 0
-    t.boolean  "is_visible_name",                                    :default => true
-    t.boolean  "is_visible_location",                                :default => true
+    t.integer  "quota",                                                      :default => 0
+    t.boolean  "is_visible_name",                                            :default => true
+    t.boolean  "is_visible_location",                                        :default => true
     t.integer  "field_identify"
     t.integer  "field_parent"
     t.boolean  "hierarchy_mode"
     t.integer  "field_identify_id"
+    t.boolean  "is_enabled_national_gateway"
   end
 
   create_table "field_histories", :force => true do |t|
@@ -218,6 +219,14 @@ ActiveRecord::Schema.define(:version => 20150722042954) do
     t.integer  "collection_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+  end
+
+  create_table "share_national_channels", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "collection_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.integer  "channel_id"
   end
 
   create_table "site_histories", :force => true do |t|

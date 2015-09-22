@@ -1,0 +1,1 @@
+window.onChannelsAccesses ?= (callback) ->  $(-> callback() if $('#channels_accesses-main').length > 0)

@@ -22,6 +22,7 @@
         = section t('views.nav.sms'), gateways_path, :gateways
       - if current_user.is_super_user
         = section t('views.nav.quota'), quotas_path, :quotas
+        = section t('views.nav.national_gateway'), channels_accesses_path, :channels_accesses
   -#= section "Tour", '', :tour
   -#= section "Community", '', :community
   -#= section "Help", '', :help

@@ -1,0 +1,21 @@
+%h1=t('views.national_gateways.index.national_gateway')
+
+.tabsline
+  #channels_accesses-main.hidden-until-loaded 
+  .tablewrapp
+    %table.GralTable
+      %tr
+        %th=t('views.national_gateways.index.user')
+        %th=t('views.national_gateways.index.collection')
+        -@channels.each do |c|
+          %th=c.name
+
+      - @collections.each do |collection|
+        %tr
+          %td= collection.users[0].email
+          %td= collection.name
+          =form_for collection, :url => channels_accesses_path, :method => :post do |f|
+            - @channels.each do |c|
+              %td=f.check_box :is_enabled_national_gateway, :onclick => "javascript: submit();"
+
+= render 'form'

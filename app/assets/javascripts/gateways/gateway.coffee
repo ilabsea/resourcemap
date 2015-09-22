@@ -11,18 +11,26 @@ onGateways ->
       @nuntiumChannelName     = ko.observable data?.name
       @clientConnected        = ko.observable data?.client_connected
       @queuedMessageCount     = ko.observable data?.queued_messages_count
-      @selectedGateway        = ko.observable(@setupType(data.advanced_setup))
+      @nationalGateway        = ko.observable()
+      @selectedGateway        = ko.observable(@setupType(data.advanced_setup, data.national_setup))
       @basicSetup             = ko.observable data?.basic_setup
       @advancedSetup          = ko.observable data?.advanced_setup
+      @nationalSetup          = ko.observable data?.national_setup
       @viewConfiguration      = ko.observable false
       @processGatewaySelected = ko.computed =>
         switch @selectedGateway()
           when 'basic'
             @basicSetup true
             @advancedSetup false
+            @nationalSetup false
           when 'advance' 
             @basicSetup false
             @advancedSetup true
+            @nationalSetup false
+          when 'national' 
+            @basicSetup false
+            @advancedSetup false
+            @nationalSetup true
 
       @queuedMessageText      = ko.computed =>
         messageText = 'Client disconected,' + @queuedMessageCount() 
@@ -97,10 +105,11 @@ onGateways ->
     toJson: ->
       id                      : @id
       collection_id           : @collectionId
-      name                    : @name()
+      name                    : if @nationalSetup() then @nationalGateway().code else @name()
       basic_setup             : @basicSetup()
       is_enable               : @isEnable()
       advanced_setup          : @advancedSetup()
+      national_setup          : @nationalSetup()
       #nuntium_channel_name    : @nuntiumChannelName()
       password                : @password()
       ticket_code             : @ticketCode()
@@ -111,6 +120,7 @@ onGateways ->
         name                    : @name()
         basic_setup             : @basicSetup()
         advanced_setup          : @advancedSetup()
+        national_setup          : @nationalSetup()
         nuntium_channel_name    : @nuntiumChannelName()
         gateway_url             : @gateWayURL() 
         password                : @password()
@@ -121,9 +131,11 @@ onGateways ->
       @status status
       $.post "/gateways/#{@id}/status.json", {status: status}, callback 
 
-    setupType: (advanced) ->
+    setupType: (advanced, national) ->
       if advanced
         'advanced'
+      else if national
+       'national'
       else
         'basic'
 

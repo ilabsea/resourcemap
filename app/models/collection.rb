@@ -27,6 +27,10 @@ class Collection < ActiveRecord::Base
   has_many :layer_histories, dependent: :destroy
   has_many :field_histories, dependent: :destroy
   has_many :messages, dependent: :destroy
+
+  has_many :share_national_channels
+  has_many :channels, through: :share_national_channels
+
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
   attr_accessor :time_zone

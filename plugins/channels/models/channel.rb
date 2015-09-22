@@ -13,6 +13,9 @@ class Channel < ActiveRecord::Base
   attr_accessor  :ticket_code
   attr_accessor  :phone_number
 
+  has_many :share_national_channels
+  has_many :collections, through: :share_national_channels
+
   def nuntium_channel_name
     national_setup ? self.name : "#{name}-#{id}"
   end

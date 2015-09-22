@@ -1,0 +1,25 @@
+#channels_accesses-main
+  = form_for :shareNationalChannel do |f|
+    .field.w60
+      %label Collection
+      %input.autocomplete-collection-input.ux-search{ ko(autocomplete: :collectionName, value: :collectionValueUI, source: '$root.searchCollectionsUrl()'), valueUpdate: :afterkeydown,  type: :text }
+
+    / %input.w25.ux-search{ko(value: :collectionName, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :searchCollectionsUrl}), type: :text, style: 'width:220px', autocomplete: "off"}
+
+    / .field.w60
+    /   = f.label 'User'
+    /   = f.text_field :user_id, data: {url: channels_accesses_search_user_path}
+    / .field.w60
+    /   = f.label 'Collection'
+    /   = f.text_field :collection_id, data: {url: channels_accesses_search_collection_path}
+    / .field.w60
+    /   = f.label 'SMS Channels'
+    /   %br
+    /   - @channels.each do |c|
+    /     %label.checkbox{ :for => "name" }
+    /       = f.check_box :name 
+    /       = c.name
+
+    .w60
+      = f.button 'Save', :class => 'white'
+      = link_to 'Cancel', channels_accesses_path, :class=> 'grey'
