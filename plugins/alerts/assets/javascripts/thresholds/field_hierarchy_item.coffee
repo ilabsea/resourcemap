@@ -10,7 +10,15 @@ onThresholds ->
       @name = data.name
       @level = level
       @expanded = ko.observable(false)
-      @selected = ko.computed => parseInt(@field.value()) == parseInt(@id)
+      @value = ko.observable()
+      @conditionValue = ko.computed =>
+                          conditions = model.currentThreshold().conditions() if model.currentThreshold()
+                          if conditions 
+                            for condition in conditions
+                              if condition.field() && (parseInt(condition.field().esCode()) == parseInt(@field.esCode()))
+                                @value(condition.value())
+      @selected = ko.computed => 
+                    parseInt(@value()) == parseInt(@id)
 
       @fieldHierarchyItems =  if data.sub?
                                 $.map data.sub, (x) => new FieldHierarchyItem(@field, x, @, level + 1)
@@ -30,8 +38,21 @@ onThresholds ->
       @expanded(!@expanded())
 
     toggleParentsExpand: =>
-      @expanded(true) if @field.value() != @id
+      @expanded(true) if @value() != @id
       @parent.toggleParentsExpand() if @parent
 
+    select: => 
+      conditions = model.currentThreshold().conditions()
+      for condition in conditions
+        if condition.field().kind() == 'hierarchy'
+          if parseInt(condition.field().esCode()) == parseInt(@field.esCode())
+            condition.value(@id)
+            @value(@id)
 
-    select: => @field.value(@id)
+
+
+
+
+
+
+

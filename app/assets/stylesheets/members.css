@@ -121,7 +121,7 @@ hr.underlineExpandedMember {
 }
 
 .memberHeaderColumn {
-  width:280px;
+  width:292px;
   height:32px;
   float: left;
   padding-left:6px;
@@ -234,6 +234,11 @@ hr.underlineExpandedMember {
   padding-left:8px;
   height:32px;
 }
+
+
+/*.addCustomPermissionRow .memberHeaderColumn {
+  width: 294px !important;
+}*/
 
 .addCustomPermissionRow .autocomplete-site-input {
   float:left;

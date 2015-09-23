@@ -12,4 +12,8 @@ class ChannelsController < ApplicationController
     end
   end
 
+  def new
+    
+  end
+
   end

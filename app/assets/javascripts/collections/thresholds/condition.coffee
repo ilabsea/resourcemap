@@ -8,6 +8,7 @@ onCollections ->
       @compareField = ko.observable data?.compare_field ? data?.field # assign data.field only when data.compare_field doesn't exist to prevent error on view
       @op = ko.observable Operator.findByCode data?.op
       @value = ko.observable data?.value
+      @valueLabel = ko.observable data?.valueLabel
       @valueType = ko.observable ValueType.findByCode data?.type ? 'value'
       @kind = ko.observable data?.kind
       @error = ko.computed => return "value is invalid" unless @field()?.valid? @value()
@@ -19,10 +20,20 @@ onCollections ->
         @valueType ValueType.VALUE
         @value null
 
+
     toJSON: =>
       field: @field().esCode()
       op: @op().code()
-      value: @field()?.encode @value()
+      value: @field()?.encode @value() 
+      valueLabel: @field().valueLabel @valueLabel()
       type: @valueType().code()
       compare_field: @compareField()?.esCode()
       kind: @kind()
+
+
+
+
+
+
+
+      

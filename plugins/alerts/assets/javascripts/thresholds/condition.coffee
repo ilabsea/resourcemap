@@ -21,20 +21,13 @@ onThresholds ->
       @valid = ko.computed => not @error()?
 
       @field.subscribe =>
-        @op Operator.EQ
+        if @field().kind() == 'hierarchy' 
+          @op Operator.UNDER
+        else 
+          @op Operator.EQ
         @compareField null
         @valueType ValueType.VALUE
         @value null
-
-
-      if typeof @kind() == 'function' && @kind()() == 'hierarchy'
-        @buildFieldHierarchy()
-
-    buildFieldHierarchy: =>
-      @field().value(@value())
-      @hierarchy = @field().config.hierarchy
-      @fieldHierarchyItems = ko.observableArray $.map(@hierarchy, (x) => new FieldHierarchyItem(@field(), x))
-      @fieldHierarchyItems.unshift new FieldHierarchyItem(@, {id: '', name: window.t('javascripts.collections.fields.no_value')})   
 
     toJSON: =>
       field: @field().esCode()
@@ -43,3 +36,7 @@ onThresholds ->
       type: @valueType().code()
       compare_field: @compareField()?.esCode()
       kind: @field().kind
+
+
+
+

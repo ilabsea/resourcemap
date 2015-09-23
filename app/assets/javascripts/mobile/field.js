@@ -89,9 +89,6 @@ Field.prototype.completeFieldRequirement = function() {
       break;      
     case "select_one":
       $("#" + this.code).selectmenu();
-      break;
-    case "location":
-      $("#" + this.code).selectmenu();
       break;      
     case "select_many":
       break;
@@ -99,13 +96,18 @@ Field.prototype.completeFieldRequirement = function() {
 };
 
 Field.prototype.getLocationField = function(){
-  return  '<div class="ui-select" style="margin-left:10px;">' +
-              '<label>' + this.label + '</label>'+
-                  '<input type="hidden" value="' + this.value +'"  id="hidden_'+this.code+'">'+
-                  '<select name="properties['+this.id+']" id="'+this.code+'"  datatype="location" >' +
-                    '<option value="" > (no value) </option>' +
-                  '</select>' +
+  return  '<div class="ui-controlgroup-controls">'+
+            '<label>' + this.label + '</label>'+
+            '<div id="div_wrapper_' + this.code + '" class="ui-input-search ui-shadow-inset ui-btn-corner-all ui-btn-shadow ui-icon-searchfield ui-body-c">'+
+              '<input id="' + this.code + '" class="ui-input-text ui-body-c" data-type="search" onkeyup="Collection.prototype.filterLocation(this.value,'+this.id+', true)">'+
+              '<input type="hidden" value="' + this.value +'" name="properties['+this.id+']" id="location_'+this.code+'">'+
+            '</div>'+
+          '</div>'+
+          '<div class="ui-controlgroup-controls">'+
+            '<ul id="filterLocationList_'+this.code+'" class="ui-listview ui-listview-inset ui-corner-all ui-shadow"  data-role="listview" data-inset="true" data-filter="true" >'+
+            '</ul>'+  
           '</div>';
+
 };
 
 Field.prototype.getHierarchyField = function() { 

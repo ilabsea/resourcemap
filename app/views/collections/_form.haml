@@ -57,9 +57,9 @@
 
     .field.w60#hierachy_mode_options
       = f.label t('views.collections.form.field_identify')
-      = f.select :field_identify, options_for_select(@options_for_select, collection.field_identify)
+      = f.select :field_identify, options_for_select(@options_for_select, collection.field_identify), {}, :disabled => !creation && (cannot? :update, collection) 
       = f.label t('views.collections.form.field_parent')
-      = f.select :field_parent, options_for_select(@options_for_select, collection.field_parent)
+      = f.select :field_parent, options_for_select(@options_for_select, collection.field_parent), {}, :disabled => !creation && (cannot? :update, collection) 
 
   .field.w60
     %label

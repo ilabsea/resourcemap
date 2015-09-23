@@ -8,8 +8,9 @@
       .toptitle
         %span{ko(text: :name)}
         &rarr;
-        %span{ko(visible: :nationalSetup)}
-          = t("view.gateway.resourcemap_default_gateway")
+        - if current_user.is_super_user
+          %span{ko(visible: :nationalSetup)}
+            = t("view.gateway.resourcemap_default_gateway")
       .rightbuttons
         %p.field.switch
           %label{ko(click: '$root.onOffEnable', attr: { class: :enableCss })}
@@ -17,7 +18,7 @@
           %label{ko(click: '$root.onOffDisable', attr: { class: :disableCss })}
             %span 
         %button.fdelete{ko(click: '$root.deleteGateway')}
-          
+
       .middlebuttons{ko(visible: '!nationalSetup()')}
         .middlebuttons{ko(visible: '!clientConnected() && viewConfiguration()')}
           %label= t('views.gateways.index.endpoint_url')
@@ -31,7 +32,6 @@
 
           %br 
           %button.farrow{ko(click: '$root.hideConfiguration')}= t('views.gateways.index.hide_configuration')
-
       
       .middlebuttons{ko(visible: '!nationalSetup()'), style: 'margin-top:0px'}
         .middlebuttons{ko(visible: '!clientConnected()'), style: 'margin-top:0px'}
@@ -40,7 +40,10 @@
           %hr{style: "margin:0px;height:6px;background-color: #D0D0D0;"}
           %label.error{ko(text: :queuedMessageText)}
 
-      %button.fmessage{ko(visible: 'clientConnected() || nationalSetup()', click: '$root.setIsTry')}= t('views.gateways.index.test_your_gateway')
+      - if current_user.is_super_user
+        %button.fmessage{ko(visible: 'clientConnected() || nationalSetup()', click: '$root.setIsTry')}= t('views.gateways.index.test_your_gateway')
+      -else
+        %button.fmessage{ko(visible: 'clientConnected()', click: '$root.setIsTry')}= t('views.gateways.index.test_your_gateway')
       .middlebuttons{ko(visible: 'isTry')}
         %label
         %input{ko(value: :tryPhoneNumber, valueUpdate: :afterkeydown), type: :text, hasfocus: true,  style: 'width:240px', placeholder: 'Enter your destination phone number' }
@@ -54,9 +57,12 @@
     <!-- ko if: $data == $root.currentGateway() -->
     .box.w60
       .middlebuttons
-        %label{ko(visible: '!nationalSetup()', css: {error: 'nameError'})}
-          = t('views.gateways.form.name')
-        %input{ko(visible: '!nationalSetup()', value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
+        - if current_user.is_super_user
+          %label{ko(visible: '!nationalSetup()', css: {error: 'nameError'})}
+          %input{ko(visible: '!nationalSetup()', value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
+        - else
+          %label{ko(css: {error: 'nameError'})}= t('views.gateways.form.name')
+          %input{ko(value: :name, valueUpdate: :afterkeydown),type: :text, style: 'width:240px'}
         %br
         %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
         
@@ -89,18 +95,19 @@
           %br
         %br
         %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
-        
-        %input{ko(checked: :selectedGateway), type: :radio, name: 'gatewayConfiguration', value: 'national'} 
-        %label
-          = t('views.gateways.form.national_gateway')
-        .national{ko(visible: :nationalSetup), style: "margin-left:25px"} 
-          %p
-            = t('views.gateways.form.national_text_description')
-          %label{ko(css: {error: 'passwordError'})}= t('views.gateways.index.sms_gateway')
-          %select{ ko(options: '$root.nationalGateways', optionsText: "'name'", value: :nationalGateway, hasfocus: true) }
-          %hr{style: "margin:0px;height:10px;background-color: #FFFFFF;"}
 
-        %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
+        - if current_user.is_super_user
+          %input{ko(checked: :selectedGateway), type: :radio, name: 'gatewayConfiguration', value: 'national'} 
+          %label
+            = t('views.gateways.form.national_gateway')
+          .national{ko(visible: :nationalSetup), style: "margin-left:25px"} 
+            %p
+              = t('views.gateways.form.national_text_description')
+            %label{ko(css: {error: 'passwordError'})}= t('views.gateways.index.sms_gateway')
+            %select{ ko(options: '$root.nationalGateways', optionsText: "'name'", value: :nationalGateway, hasfocus: true) }
+            %hr{style: "margin:0px;height:10px;background-color: #FFFFFF;"}
+
+          %hr{style: "margin:0px;height:3px;background-color: #FFFFFF;"}
         
         .bottom-actions
           %button.white{ ko(click: '$root.saveGateway', enable: :valid) }

@@ -28,6 +28,10 @@ class Collection < ActiveRecord::Base
   has_many :layer_histories, dependent: :destroy
   has_many :field_histories, dependent: :destroy
   has_many :messages, dependent: :destroy
+
+  has_many :share_national_channels
+  has_many :channels, through: :share_national_channels
+
   OPERATOR = {">" => "gt", "<" => "lt", ">=" => "gte", "<=" => "lte", "=>" => "gte", "=<" => "lte", "=" => "eq"}
 
   attr_accessor :time_zone
@@ -289,6 +293,12 @@ class Collection < ActiveRecord::Base
     builder = builder.limit limit   if limit
     builder = builder.offset offset if offset
     builder.find(:all, :order => "sites.created_at DESC") 
+  end
+
+  def self.filter_page_order_by_name limit, offset, builder
+    builder = builder.limit limit   if limit
+    builder = builder.offset offset if offset
+    builder.find(:all, :order => "sites.name ASC") 
   end
 
   def new_site_properties

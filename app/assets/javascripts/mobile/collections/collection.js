@@ -29,46 +29,110 @@ Collection.prototype.pushingPendingSites = function(){
 
 }
 
-Collection.prototype.buildLocation = function(){
+Collection.prototype.getNearByLocations = function(){
+
   var currentCollectionSchema = Collection.getSchemaByCollectionId(currentCollectionId);
   currentLat = $('#lat').val();
   currentLng = $('#lng').val();
-
+  window.limit = 4;
   for(i=0; i<currentCollectionSchema["layers"].length;i++){
     for(j=0; j<currentCollectionSchema["layers"][i]["fields"].length; j++){
       field = currentCollectionSchema["layers"][i]["fields"][j];
       if(field["kind"] == "location"){
         nearByPlaces = [];
+        field['config']['nearByPlaces'] = [];
+        field['config']['nearByPlacesUI'] = [];
+        field['config']['offset'] = 1;
         $('#'+field["code"]).empty();
         for(k=0; k<field["config"]["locations"].length; k++){
           fieldLocation = field["config"]["locations"][k]
           distance = Collection.calculateDistance(currentLat, currentLng, fieldLocation["latitude"], fieldLocation["longitude"]);
           if(distance < parseFloat(field["config"]["maximumSearchLength"])){
             fieldLocation["distance"] = distance;
-            nearByPlaces.push(fieldLocation);
+            field['config']['nearByPlaces'].push(fieldLocation);
+          }
+          if(parseInt(fieldLocation['code']) == parseInt($('#location_'+field['code']).val())){
+            $('#'+field['code']).val(fieldLocation['name']);
           }
         }
-
-        nearByPlaces.sort(function(a, b){return a["distance"]-b["distance"]});
-        nearByPlaces.splice(20, nearByPlaces.length);
+        field['config']['nearByPlaces'].sort(function(a, b){return a["distance"]-b["distance"]});
+        field['config']['nearByPlacesUI'] = field['config']['nearByPlaces'].slice(0,window.limit);
         fieldValue = $('#hidden_'+field['code']).val();
-        options = '<option value=""> (no value) </option>';
-        for(l=0; l< nearByPlaces.length; l++){
-          if(nearByPlaces[l]['code'] == fieldValue){
-            options = options + '<option value="'+nearByPlaces[l]["code"]+'" selected="selected">'+nearByPlaces[l]["name"]+'</option>';
-          }else{
-            options = options + '<option value="'+nearByPlaces[l]["code"]+'">'+nearByPlaces[l]["name"]+'</option>';
-          }
-        }
-        
-        
-        $('#'+field["code"]).append(options);
-        $('#'+field["code"]).selectmenu('refresh');        
+        Collection.prototype.buildLocation(field, null);
       }
     }
   }  
   
-};
+}
+
+Collection.prototype.filterLocation = function(fieldValue,fieldId,flag){
+  field = Collection.prototype.findFieldById(parseInt(fieldId));
+  if(flag == true){
+    Collection.prototype.clearLocationId(field['code']);
+  }
+  filter = new RegExp(fieldValue, 'i');
+  locations =  field['config']['nearByPlacesUI'].filter(function(o){
+    return o['name'].match(filter);
+  });
+  Collection.prototype.buildLocation(field, locations);
+}
+
+Collection.prototype.clearLocationId = function(fieldId){
+  $('#location_'+fieldId).val(null);
+}
+
+Collection.prototype.loadMoreLocation = function(fieldId){
+  field = Collection.prototype.findFieldById(parseInt(fieldId));
+  startIndex = (field['config']['offset'] * window.limit)+field['config']['offset'];
+  endIndex = startIndex + window.limit;
+  field['config']['offset'] = field['config']['offset'] + 1;
+  field['config']['nearByPlacesUI'] =  field['config']['nearByPlacesUI'].concat(field['config']['nearByPlaces'].slice(startIndex,endIndex));
+  filterText = $("#"+field['code']).val();
+  if(filterText != ""){
+    Collection.prototype.filterLocation(filterText, field['id'], false);
+    return ;
+  }else{
+    Collection.prototype.buildLocation(field, null);
+  }
+}
+
+Collection.prototype.buildLocation = function(field, locations){
+  if(locations == null){
+    locations = field['config']['nearByPlacesUI'];
+  }
+  fieldCode = field['code'];
+  $('#filterLocationList_'+fieldCode).empty();
+  locations.sort(function(a, b) {
+    if(a.name < b.name) return -1 ;
+    if(a.name > b.name) return 1  ;
+    return 0 ;
+  });
+  for(l=0; l<locations.length; l++){
+    if(l == 0){
+      li = '<li onclick="Collection.prototype.selectLocation('+locations[l]["code"] +',\''+ locations[l]['name'] +'\',\''+ field['code']+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c">';
+    }else{
+      li = '<li onclick="Collection.prototype.selectLocation('+locations[l]["code"] +',\''+ locations[l]['name'] +'\',\''+ field['code']+'\')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">';
+    }
+    ele = li + '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+                  '<span>'+locations[l]["name"]+'</span>'+
+            '</div>'+
+          '</li>';
+    $('#filterLocationList_'+fieldCode).append(ele);      
+  }
+  // load more option
+  li = '<li onclick="Collection.prototype.loadMoreLocation('+field['id']+')" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-last-child ui-btn-up-c">';
+  ele = li + '<div class="ui-btn-inner ui-li" style="padding-left:10px;padding-top: 10px; height: 25px;">'+
+              '<span>Load more locations ...</span>'+
+        '</div>'+
+      '</li>';
+  $('#filterLocationList_'+fieldCode).append(ele);   
+}
+
+Collection.prototype.selectLocation = function(locationId, locationName, fieldCode){
+  $('#'+fieldCode).val(locationName);
+  $('#location_'+fieldCode).val(locationId);
+  $('#filterLocationList_'+fieldCode).empty();
+}
 
 Collection.calculateDistance = function(fromLat, fromLng, toLat, toLng){
   fromLatlng = new google.maps.LatLng(fromLat, fromLng);
@@ -969,7 +1033,7 @@ Collection.prototype.findFieldById = function(fieldId){
   schema = Collection.getSchemaByCollectionId(window.currentCollectionId);
   for(i=0; i<schema["layers"].length;i++){
     for(j=0; j<schema["layers"][i]["fields"].length; j++){
-      var field = schema["layers"][i]["fields"][j];   
+      var field = schema["layers"][i]["fields"][j]; 
       if(field["id"] == fieldId){
         return field;
       }
@@ -992,7 +1056,7 @@ Collection.prototype.getFieldLogicByFieldId = function(fieldId){
 Collection.prototype.showPosition = function(position){
   $("#lat").val(position.coords.latitude);
   $("#lng").val(position.coords.longitude);
-  Collection.prototype.buildLocation();
+  Collection.prototype.getNearByLocations();
 }
 
 Collection.prototype.goHome = function(){
@@ -1030,7 +1094,7 @@ Collection.showMainSitePage = function(){
   Collection.hidePages();
   $("#lat").val(Collection.mapContainer.currentLat);
   $("#lng").val(Collection.mapContainer.currentLng);
-  Collection.prototype.buildLocation();
+  Collection.prototype.getNearByLocations();
   $("#mobile-sites-main").show();
 }
 
@@ -1194,7 +1258,7 @@ Collection.prototype.showSiteOnline = function(collectionId, siteId){
       Collection.hidePages();
       Collection.hideWhileOffline();
       Collection.assignSite(site);
-      Collection.prototype.buildLocation();
+      Collection.prototype.getNearByLocations();
       $("#mobile-sites-main").show();
       $.mobile.saving('hide');
     }

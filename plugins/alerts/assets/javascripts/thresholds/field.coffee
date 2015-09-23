@@ -12,10 +12,8 @@ onThresholds ->
       @impl = new window["Field_#{@kind()}"](@)
       @options = ko.computed => @impl.getOptions() 
       @operators = ko.computed => @impl.getOperators()
-      @value = ko.observable()
 
-      if @kind() == 'hierarchy'
-        @buildFieldHierarchyItems()
+      @buildFieldHierarchyItems() if @kind() == 'hierarchy'
 
     format: (value) ->
       @impl.format value
@@ -38,7 +36,8 @@ onThresholds ->
     constructor: (field) ->
       @field = field
 
-    format: (value) -> value
+    format: (value) ->
+      value
     getOptions: => []
     getOperators: => [Operator.EQ]
     encode: (value) -> value
@@ -96,21 +95,48 @@ onThresholds ->
     getOperators: =>
       [Operator.UNDER]
 
-    valid: (value) ->
-      @field.value()
+    format: (value) ->
+      @hierarchy = @field.config.hierarchy
+      matches = getLabelFromId(@hierarchy, value, [])
+      if matches.length > 0
+        matches[0]
 
-    encode: (value) ->
-      if !value 
-        @field.value()
-      else
-        value
+    getLabelFromId = (hierarchy, value, matches) ->
+      for h in hierarchy
+        if parseInt(h.id) == parseInt(value)
+          matches.push(h.name)
+          break
+        if h.sub
+          getLabelFromId(h.sub, value, matches)  
+      return matches
 
   class @Field_email extends @FieldText
 
   class @Field_phone extends @FieldText
 
   class @Field_select_many extends @FieldSelectOne
-    encode: (value) -> 
-      [value]
+    format: (value) ->
+      if value instanceof Array  
+        @field.findOptionById(value[0])?.label()
+      else
+        @field.findOptionById(value)?.label()
+
+    encode: (value) ->
+      if value instanceof Array ? 
+        value
+      else
+        [value]
 
   class @Field_select_one extends @FieldSelectOne
+
+
+
+
+
+
+
+
+
+
+
+
