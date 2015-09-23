@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 4.1.6'
 gem 'mysql2'
-gem 'devise'
+gem 'devise', '3.3.0'
 gem "elasticsearch"
 gem "elasticsearch-ruby"
 gem "valium"
@@ -64,7 +64,6 @@ group :test do
   gem 'capybara'
   gem 'database_cleaner'
   gem 'resque_spec'
-  gem 'rvm-capistrano', '1.2.2', :require => false
 end
 
 group :test, :development do
