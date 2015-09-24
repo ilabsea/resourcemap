@@ -4,7 +4,7 @@ require 'bundler/capistrano'
 set :whenever_command, "bundle exec whenever"
 require "whenever/capistrano"
 
-set :rvm_ruby_string, '1.9.3'
+set :rvm_ruby_string, '2.1.2'
 set :rvm_type, :system
 set :application, "resource_map"
 set :repository,  "https://bitbucket.org/ilab/resource_map_sea"
