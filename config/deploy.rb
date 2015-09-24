@@ -29,8 +29,7 @@ namespace :deploy do
   end
 
   task :whenever do
-    run "cd #{release_path} "
-    run "RAILS_ENV=production bundle exec whenever --update-crontab resource_map "
+    # run "cd #{release_path} && RAILS_ENV=production bundle exec whenever --update-crontab resource_map "
   end
 
   task :symlink_configs, :roles => :app do
