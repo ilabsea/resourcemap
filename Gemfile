@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 4.1.6'
-gem 'mysql2'
+gem 'mysql2', '0.3.20'
 gem 'devise', '3.3.0'
 gem "elasticsearch"
 gem "elasticsearch-ruby"
