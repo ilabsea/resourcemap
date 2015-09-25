@@ -29,11 +29,11 @@ namespace :deploy do
   end
 
   task :whenever do
-    # run "cd #{release_path} && RAILS_ENV=production bundle exec whenever --update-crontab resource_map "
+    run "cd #{release_path} && RAILS_ENV=production bundle exec whenever --update-crontab resource_map "
   end
 
   task :symlink_configs, :roles => :app do
-    %W(settings.yml google_maps.key nuntium.yml aws.yml).each do |file|
+    %W(settings.yml google_maps.key nuntium.yml aws.yml guisso.yml).each do |file|
       run "ln -nfs #{shared_path}/#{file} #{release_path}/config/"
     end
   end
