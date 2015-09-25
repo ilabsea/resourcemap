@@ -8,7 +8,19 @@ class Threshold::Condition
     if hash[:type] == "percentage"
       @value = hash[:value] * (properties[hash[:compare_field]] || 0) / 100
     else
-      @value = hash[:value].to_f
+      if (hash[:value].class == FalseClass or hash[:value].class == TrueClass or hash[:value].class == Fixnum)
+        @value = hash[:value]
+      elsif hash[:value].class == Float
+        @value = hash[:value].to_f
+      elsif hash[:value].class == String
+        # if hash[:value].is_float?
+        #   @value = hash[:value].to_f
+        # elsif hash[:value].is_integer?
+        #   @value = hash[:value].to_i
+        # else
+          @value = hash[:value]
+        # end
+      end
     end
   end
 

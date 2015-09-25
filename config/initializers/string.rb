@@ -24,4 +24,12 @@ class String
     end
   end
 
+  def is_integer?
+      self.to_i.to_s == self
+    end
+
+    def is_float?
+      self.to_f.to_s == self
+    end
+
 end
