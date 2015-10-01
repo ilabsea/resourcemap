@@ -2,7 +2,16 @@
   = form_for :shareNationalChannel do |f|
     .field.w60
       %label Collection
-      %input.autocomplete-collection-input.ux-search{ ko(autocomplete: :collectionName, value: :collectionValueUI, source: '$root.searchCollectionsUrl()'), valueUpdate: :afterkeydown,  type: :text }
+      %input.autocomplete-collection-input.ux-search{ ko(autocomplete: :collectionValueUI, value: :collectionValueUI, source: '$root.searchCollectionsUrl()'), valueUpdate: :afterkeydown,  type: :text }
+
+      / %input.w25.ux-search{ko(value: :filterText, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterLocation}, attr: {id: "'location-input-' + code"}), type: :text, style: 'width:220px', autocomplete: "off"}
+      <!-- ko if: isFocus -->
+      %ul.w25.taglist.box{style: 'margin-right:5px;margin-top:2px;width:100%'}
+        <!-- ko foreach: collections -->
+        %li{style: 'margin-left: 10px; border: none; list-style: none; background: none'}
+          %a{ko(text: :name, click: '$parent.selectLocation')}
+        <!-- /ko -->
+      <!-- /ko -->
 
     / %input.w25.ux-search{ko(value: :collectionName, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :searchCollectionsUrl}), type: :text, style: 'width:220px', autocomplete: "off"}
 

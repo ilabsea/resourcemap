@@ -5,6 +5,6 @@ onChannelsAccesses -> if $('#channels_accesses-main').length > 0
   window.model = new MainViewModel
   ko.applyBindings(window.model)
   window.model.initAutocomplete()
-
+  window.model.setCollections()
   
   $('.hidden-until-loaded').show()

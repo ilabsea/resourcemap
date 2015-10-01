@@ -33,7 +33,6 @@ class ChannelsAccessesController < ApplicationController
 
   def create
     @shareChannel = Collection.find(filter_params[:collection_id])
-    p @shareChannel
     if @shareChannel.update_attributes(channel_ids: filter_params[:channel_id])
       redirect_to channels_accesses_path, notice: 'Collection updated'
     else
@@ -43,7 +42,6 @@ class ChannelsAccessesController < ApplicationController
   end
 
   def create
-    p current_user
     @collection = current_user.collections(params[:collection][:id])
     if @collection.update_attributes(filter_params)
       redirect_to national_gateways_path, notice: 'Project is granted access to the national gateway'
