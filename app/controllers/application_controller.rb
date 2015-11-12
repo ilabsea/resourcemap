@@ -111,12 +111,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authenticate_api_user!
-    params.delete :auth_token if current_user
-    unless current_user
-      basic_authentication_check
-    end
-  end
+  # def authenticate_api_user!
+  #   debugger
+  #   params.delete :auth_token if current_user
+  #   unless current_user
+  #     basic_authentication_check
+  #   end
+  # end
 
   def authenticate_api_admin_user!
     params.delete :auth_token if current_user
@@ -198,8 +199,8 @@ class ApplicationController < ActionController::Base
       end
     end
     # try to authenticate using other methods defined in current_#{mapping}
-    return if @current_user
-    head :unauthorized
+    basic_authentication_check unless @current_user 
+    head :unauthorized unless (@current_user or current_user)
   end
 
   def ignore_public_attribute
