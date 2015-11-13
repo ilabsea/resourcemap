@@ -141,7 +141,7 @@ GEM
     coffee-script-source (1.9.1.1)
     daemons (1.2.3)
     database_cleaner (1.5.0)
-    dbf (2.0.10)
+    dbf (2.0.7)
       fastercsv (~> 1.5)
     decent_exposure (2.3.2)
     devise (3.3.0)
