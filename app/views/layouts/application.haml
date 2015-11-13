@@ -46,7 +46,7 @@
         = link_to '', edit_user_registration_path, class: 'fsettings'
     - else
       %li{style: 'line-height:20px'}
-        = link_to t('views.account.create_account'), new_user_registration_path, class: 'fedit', style: 'padding-top:0px !important'
+        = link_to t('views.account.create_account'), guisso_sign_up_path_for(:user), class: 'fedit', style: 'padding-top:0px !important'
       %li{style: 'line-height:20px'}
         = link_to t('views.account.login'), guisso_sign_in_path_for(:user), class: 'fuser', style: 'padding-top:0px !important'
     %li{style: "padding: 4px 5px;line-height:20px", id: "locale-switcher"}

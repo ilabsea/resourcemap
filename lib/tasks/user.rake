@@ -1,3 +1,4 @@
+#rake user:export['hello.csv']
 namespace :user do
   desc "Export user as csv"
   task :export, [:path] => :environment do |t, args|
