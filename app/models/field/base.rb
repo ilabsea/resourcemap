@@ -85,7 +85,7 @@ module Field::Base
     elsif hierarchy?
       return find_hierarchy_name_by_id(value)
     elsif date?
-      return Site.iso_string_to_mdy(value)
+      return Time.iso8601(value).strftime("%m/%d/%Y")
     else
       return value
     end
@@ -107,7 +107,7 @@ module Field::Base
     elsif hierarchy?
       return find_hierarchy_value value
     elsif date?
-      return Site.iso_string_to_mdy(value)
+      return Time.iso8601(value).strftime("%m/%d/%Y")
     else
       return value
     end
