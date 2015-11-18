@@ -13,13 +13,7 @@ class Threshold::Condition
       elsif hash[:value].class == Float
         @value = hash[:value].to_f
       elsif hash[:value].class == String
-        # if hash[:value].is_float?
-        #   @value = hash[:value].to_f
-        # elsif hash[:value].is_integer?
-        #   @value = hash[:value].to_i
-        # else
-          @value = hash[:value]
-        # end
+        @value = hash[:value]
       end
     end
   end
@@ -28,7 +22,7 @@ class Threshold::Condition
     if field[:kind] == "hierarchy" && value != nil && @value != nil
       @value = field.descendants_of_in_hierarchy(@value, false)
     end
-
+    value = value.to_s if field[:kind] == "yes_no"
     return false if value.nil? || @value.nil?
     send @operator, value, @value
   end

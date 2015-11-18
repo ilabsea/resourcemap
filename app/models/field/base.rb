@@ -43,7 +43,7 @@ module Field::Base
   def stored_as_number?
     numeric? || select_one? || select_many?  || hierarchy?
   end
-  
+
   def stoted_as_double?
     numeric?
   end

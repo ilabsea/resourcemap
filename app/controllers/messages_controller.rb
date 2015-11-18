@@ -21,7 +21,6 @@ class MessagesController < ApplicationController
   }
 
 def index
-	# debugger
 
 	respond_to do |format|
 		format.html
@@ -102,7 +101,6 @@ def index
 			activities_json = []
 			msgs.each do |message|
 				collection_name = message[13].nil? ? "" : Collection.find(message[13]).name
-				# debugger
 				tmp = {
 					id: message[0],
 					collection: collection_name,
@@ -112,7 +110,6 @@ def index
 				}
 				activities_json.push(tmp)
 			end
-			# debugger
 			render json: activities_json
 		end
 	end
