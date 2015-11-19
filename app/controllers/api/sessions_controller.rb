@@ -10,7 +10,13 @@ class Api::SessionsController < Devise::SessionsController
   }
 
   def create
-    render json: { success: true, auth_token: self.resource.authentication_token }, status: :created
+    auth_url = "http://localhost:3001/api/authentication/check"
+    response = Typhoeus.post(auth_url, body: { email: params["user"]["email"], password: params["user"]["password"]})
+    if response.success?
+      render json: { success: true, auth_token: self.resource.authentication_token }, status: :created
+    else
+      head :fobidden
+    end
   end
 
   def destroy
