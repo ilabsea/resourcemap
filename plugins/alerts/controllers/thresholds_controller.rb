@@ -51,7 +51,7 @@ class ThresholdsController < ApplicationController
     params[:threshold][:phone_notification] = {} unless params[:threshold][:phone_notification] # phone not selected
     params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]} if params[:threshold][:sites]
     threshold.strongly_type_conditions
-    threshold.update_attributes! threshold_params
+    threshold.update_attributes threshold_params
     if params[:threshold][:is_all_site] == "false" && params[:threshold][:sites]
       threshold.sites = Site.get_id_and_name params[:threshold][:sites]
       threshold.save
