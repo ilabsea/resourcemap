@@ -56,8 +56,6 @@ gem 'active_model_serializers'
 gem 'actionpack-action_caching'
 gem 'activerecord-deprecated_finders'
 
-gem 'typhoeus'
-
 group :test do
   gem 'shoulda-matchers'
   gem 'ci_reporter', :git => 'git://github.com/nicksieger/ci_reporter.git'
