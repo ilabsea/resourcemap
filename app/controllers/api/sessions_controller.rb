@@ -1,5 +1,5 @@
 class Api::SessionsController < Devise::SessionsController
-  before_filter :check_params, :login_attempt, only: :create
+  before_filter :check_guisso_basic_auth, only: :create
   skip_before_filter :require_no_authentication
   skip_before_filter :verify_authenticity_token
   
@@ -10,10 +10,8 @@ class Api::SessionsController < Devise::SessionsController
   }
 
   def create
-    auth_url = "http://localhost:3001/api/authentication/check"
-    response = Typhoeus.post(auth_url, body: { email: params["user"]["email"], password: params["user"]["password"]})
-    if response.success?
-      render json: { success: true, auth_token: self.resource.authentication_token }, status: :created
+    if @current_user
+      render json: { success: true, auth_token: @current_user.authentication_token }, status: :created
     else
       head :fobidden
     end
@@ -28,15 +26,14 @@ class Api::SessionsController < Devise::SessionsController
   end
 
   protected
-    def login_attempt
-      self.resource = User.find_for_database_authentication email: params[:user][:email]
-      return invalid_attempt :invalid, :unauthorized unless resource
-      return invalid_attempt :unconfirmed, :unauthorized unless resource.active_for_authentication?
-      return invalid_attempt :invalid, :unauthorized unless resource.valid_password? params[:user][:password]
-    end
-
-    def check_params
-      return invalid_attempt :invalid, :unauthorized unless params[:user]
+    def check_guisso_basic_auth
+      # return invalid_attempt :invalid, :unauthorized unless params[:user]
+      authenticate_or_request_with_http_basic do |user, password|
+        if AltoGuissoRails.valid_credentials?(user, password)
+          @current_user = find_or_create_user(user)
+          return
+        end
+      end
     end
 
     def invalid_attempt reason, status
