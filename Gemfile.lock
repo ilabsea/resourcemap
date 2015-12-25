@@ -312,6 +312,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     rack (1.5.5)
+    rack-cors (0.4.0)
     rack-oauth2 (1.2.1)
       activesupport (>= 2.3)
       attr_required (>= 0.0.5)
@@ -535,6 +536,7 @@ DEPENDENCIES
   password_strength
   poirot_rails!
   protected_attributes
+  rack-cors
   rack-offline
   rails (~> 4.1.6)
   rails-observers

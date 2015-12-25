@@ -17,6 +17,7 @@ gem "password_strength"
 gem "ruby-recaptcha"
 gem 'i18n-coffee'
 gem 'rack-offline'
+gem 'rack-cors', :require => 'rack/cors'
 
 gem 'haml-rails', '~> 0.4'
 gem 'gettext', '~> 3.1.2'
