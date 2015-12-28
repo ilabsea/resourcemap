@@ -854,20 +854,19 @@ Collection.prototype.handleFieldUI = function(schema){
 }
 
 Collection.prototype.addDataToCollectionList = function(collection_schema){
-  for(var i=0; i< collection_schema.length; i++){
-    if(collection_schema.length > 1 && i == 0){
+  $.each(collection_schema,  function(i, collection){
+    if(i == 0){
       classListName = "ui-first-child" 
     }
-    else if(collection_schema.length > 1 && i == (collection_schema.length - 1)){
+    else if(i == (collection_schema.length - 1)){
       classListName = "ui-last-child"
     }
     else{
       classListName = ""
     }
-    item = Collection.prototype.getListCollectionTemplate(collection_schema[i], classListName)
+    item = Collection.prototype.getListCollectionTemplate(collection, classListName)
     $("#listview").append(item);
-  }
-  
+  });
 }
 
 Collection.prototype.getListCollectionTemplate = function(collection, classListName){
@@ -940,8 +939,8 @@ Collection.prototype.showListSites = function(collectionId, isFromCollectionList
       }
     }
   }
+  Collection.hidePages();
   if(!have_site && !window.navigator.onLine){
-    Collection.hidePages();
     if(!isFromCollectionList){
       Collection.prototype.goHome();
     }else{
@@ -950,7 +949,6 @@ Collection.prototype.showListSites = function(collectionId, isFromCollectionList
     }
     $.mobile.saving('hide');
   }else{
-    Collection.hidePages();
     $("#mobile-list-sites-main").show();
     schema = Collection.getSchemaByCollectionId(collectionId);
     $("#collectionTitle").html(schema["name"]);

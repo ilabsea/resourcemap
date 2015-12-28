@@ -34,11 +34,11 @@ function initialize(locale){
 
     $.ajax({
       url: "/mobile/collections.json?locale=" + locale ,
-      dataType: "text",
+      dataType: "json",
       success: function(collections) {
         var collectionSchema;
-        window.localStorage.setItem("collectionSchema", collections);
-        window.collectionSchema = window.JSON.parse(window.localStorage.getItem("collectionSchema"));
+        window.localStorage.setItem("collectionSchema", collections.collections);
+        window.collectionSchema = collections.collections;
         Collection.prototype.addDataToCollectionList(window.collectionSchema)
       }
     });

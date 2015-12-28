@@ -111,14 +111,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # def authenticate_api_user!
-  #   debugger
-  #   params.delete :auth_token if current_user
-  #   unless current_user
-  #     basic_authentication_check
-  #   end
-  # end
-
   def authenticate_api_admin_user!
     params.delete :auth_token if current_user
     unless current_user
@@ -183,28 +175,19 @@ class ApplicationController < ActionController::Base
     render options
   end
 
-  def authenticate_api_user!
-    return if @current_user
-    if (req = env["guisso.oauth2.req"])
-      email = AltoGuissoRails.validate_oauth2_request(req)
-      if email
-        @current_user = find_or_create_user(email)
-        return
-      end
-    elsif request.authorization && request.authorization =~ /^Basic (.*)/m
-      email, password = Base64.decode64($1).split(/:/, 2)
-      if AltoGuissoRails.valid_credentials?(email, password)
-        @current_user = find_or_create_user(email)
-        return
-      end
-    end
-    # try to authenticate using other methods defined in current_#{mapping}
-    basic_authentication_check unless @current_user 
-    head :unauthorized unless (@current_user or current_user)
-  end
-
   def ignore_public_attribute
     params[:layer].delete(:public) if params[:layer] && params[:layer][:public]
   end
+
+  protected 
+    def authenticate_api_user!
+      authenticate_or_request_with_http_basic do |user, password|
+        if AltoGuissoRails.valid_credentials?(user, password)
+          @current_user = find_or_create_user(user)
+          return
+        end
+      end
+      head :unauthorized unless (@current_user or current_user)
+    end
 
 end
