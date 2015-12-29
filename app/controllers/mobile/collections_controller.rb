@@ -15,7 +15,7 @@ class Mobile::CollectionsController < ApplicationController
   def index
     respond_to do |format|
       format.html { render layout: 'mobile' }
-      format.json { render json: collections_with_layer }
+      format.json { render json: collections_with_layer, :root => false }
     end
   end
 

@@ -37,7 +37,6 @@ class Activity < ActiveRecord::Base
   def self.filter user, options=nil
     #index with default options
     current_user = user
-    # debugger
     acts = Activity.order('id desc').includes(:collection, :site, :user)
     result = []
     unless options

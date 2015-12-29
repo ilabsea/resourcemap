@@ -11,7 +11,6 @@ class GatewaysController < ApplicationController
   end
 
   def create
-    debugger
     channel = current_user.channels.new params[:gateway]
     if channel.valid?
       channel.save!

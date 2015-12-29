@@ -21,8 +21,6 @@ class MessagesController < ApplicationController
   }
 
 def index
-	# debugger
-
 	respond_to do |format|
 		format.html
 		format.json do
@@ -87,9 +85,6 @@ def index
 				end
 			end	
 
-
-			# debugger
-
 			# msgs = Message.order('id desc').where(collection_id: collections_id)
 			# msgs = msgs.limit(25)
    #    msgs = msgs.where('id < ?', params[:before_id]) if params[:before_id]
@@ -102,7 +97,6 @@ def index
 			activities_json = []
 			msgs.each do |message|
 				collection_name = message[13].nil? ? "" : Collection.find(message[13]).name
-				# debugger
 				tmp = {
 					id: message[0],
 					collection: collection_name,
@@ -112,7 +106,6 @@ def index
 				}
 				activities_json.push(tmp)
 			end
-			# debugger
 			render json: activities_json
 		end
 	end

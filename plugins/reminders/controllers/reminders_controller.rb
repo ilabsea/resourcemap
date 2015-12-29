@@ -13,7 +13,6 @@ class RemindersController < ApplicationController
   end
 
   def create
-    debugger
     if params[:reminder]["time_zone"]
       date_and_time = '%m-%d-%YT%H:%M:%S %Z'
       params[:reminder]["reminder_date"] = ActiveSupport::TimeZone[params[:reminder]["time_zone"]].parse(params[:reminder]["reminder_date"]).to_s

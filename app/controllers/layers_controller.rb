@@ -44,7 +44,6 @@ class LayersController < ApplicationController
     # FIX: For some reason using the exposed layer here results in duplicated fields being created
     layer = collection.layers.find params[:id]
     fix_layer_fields_for_update layer
-    debugger
     layer.user = current_user
     layer.update_attributes! layer_params
     layer.reload

@@ -37,8 +37,8 @@ function initialize(locale){
       dataType: "json",
       success: function(collections) {
         var collectionSchema;
-        window.localStorage.setItem("collectionSchema", collections.collections);
-        window.collectionSchema = collections.collections;
+        window.localStorage.setItem("collectionSchema", collections);
+        window.collectionSchema = collections;
         Collection.prototype.addDataToCollectionList(window.collectionSchema)
       }
     });

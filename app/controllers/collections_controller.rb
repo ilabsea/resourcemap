@@ -209,6 +209,7 @@ class CollectionsController < ApplicationController
       :hierarchy_code, :hierarchy_value, :location_missing, :_alert
     )
 
+
     # search.apply_queries
 
     results = search.results.map do |result|
