@@ -45,7 +45,7 @@ class LayersController < ApplicationController
     layer = collection.layers.find params[:id]
     fix_layer_fields_for_update layer
     layer.user = current_user
-    layer.update_attributes! layer_params
+    layer.update_attributes! params[:layer]
     layer.reload
     render json: layer.as_json(include: :fields)
   end
@@ -206,45 +206,11 @@ class LayersController < ApplicationController
     max_key += 1
 
     removed_fields_ids.each do |id|
-      params[:layer][:fields_attributes][max_key.to_s] = {id: id, _destroy: 1}
+      params[:layer][:fields_attributes][max_key.to_s] = {id: id, _destroy: true}
       max_key += 1
     end
 
     params[:layer][:fields_attributes] = params[:layer][:fields_attributes].values
-  end
-
-  def layer_params
-    params.require(:layer).permit(  :name, 
-                                    :ord, 
-                                    :fields_attributes => 
-                                      [ 
-                                        :id, 
-                                        :code, 
-                                        :layer_id, 
-                                        :kind, 
-                                        :ord, 
-                                        :name, 
-                                        :is_mandatory, 
-                                        :is_enable_field_logic, 
-                                        :is_enable_range, 
-                                        :config => 
-                                          [
-                                            :allows_decimals,
-                                            :range =>
-                                              [
-                                                :minimum,
-                                                :maximum
-                                              ],
-                                            :field_logics =>
-                                              [
-                                                :id, 
-                                                :value, 
-                                                :field_id, 
-                                                :condition_type
-                                              ]
-                                          ]
-                                      ]
-                                  )
   end
 
   def get_associated_field_threshold_ids(field)

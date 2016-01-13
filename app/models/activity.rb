@@ -55,12 +55,10 @@ class Activity < ActiveRecord::Base
 
       if options[:deleted_collection] == "true"
         acts_with_deleted_collection = acts.where(collection_id: nil, user_id: current_user.id)
-        # p acts_with_delete_collection
         result = result + acts_with_deleted_collection
       end      
     end
 
-    # result.uniq
     result
   end
 

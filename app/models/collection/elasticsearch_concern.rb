@@ -41,7 +41,6 @@ module Collection::ElasticsearchConcern
   def recreate_index
     destroy_index rescue nil
     create_index
-
     client = Elasticsearch::Client.new
     docs = sites.map do |site|
       site.collection = self
