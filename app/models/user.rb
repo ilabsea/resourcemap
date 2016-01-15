@@ -18,6 +18,14 @@ class User < ActiveRecord::Base
 
   attr_accessor :is_guest
 
+  before_save :ensure_authentication_token
+ 
+  def ensure_authentication_token
+    if !self.authentication_token
+      self.authentication_token = generate_authentication_token
+    end
+  end
+
   def ability(format = nil)
     @ability ||= Ability.new(self, format)
   end
@@ -154,5 +162,13 @@ class User < ActiveRecord::Base
       display_name = user.email
     end
     return display_name
+  end
+
+  private 
+  def generate_authentication_token
+    loop do
+      token = Devise.friendly_token
+      break token unless User.where(authentication_token: token).first
+    end
   end
 end
