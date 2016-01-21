@@ -175,19 +175,15 @@ class ApplicationController < ActionController::Base
     render options
   end
 
+  def authenticate_api_user!
+    params.delete :auth_token if current_user
+    unless current_user
+      basic_authentication_check
+    end
+  end
+
   def ignore_public_attribute
     params[:layer].delete(:public) if params[:layer] && params[:layer][:public]
   end
-
-  protected 
-    def authenticate_api_user!
-      authenticate_or_request_with_http_basic do |user, password|
-        if AltoGuissoRails.valid_credentials?(user, password)
-          @current_user = find_or_create_user(user)
-          return
-        end
-      end
-      head :unauthorized unless (@current_user or current_user)
-    end
 
 end
