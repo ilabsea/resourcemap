@@ -226,7 +226,7 @@ class Activity < ActiveRecord::Base
             ]            
             properties_row.each do |col_key, col_value|
               if field_kinds[col_key] == 'photo' and not col_value.empty?
-                col_value = "http://" + Settings.host + "/photo_field/" + col_value
+                col_value = "#{Settings.protocol}://" + Settings.host + "/photo_field/" + col_value
               end
               row << col_value
             end

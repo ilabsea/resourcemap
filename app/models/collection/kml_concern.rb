@@ -17,7 +17,7 @@ module Collection::KmlConcern
       field_kinds["#{f["code"]}"] = f["kind"]
     end
     builder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
-      xml.kml(:xmlns => "http://earth.google.com/kml/2.1"){
+      xml.kml(:xmlns => "#{Settings.protocol}://earth.google.com/kml/2.1"){
         xml.Document {
           xml.name self.name
           xml.open "1"
@@ -26,7 +26,7 @@ module Collection::KmlConcern
 
             xml.IconStyle {
               xml.Icon {
-                xml.href "http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png"
+                xml.href "#{Settings.protocol}://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png"
               }
               xml.scale '1.4'
             }
@@ -67,7 +67,7 @@ module Collection::KmlConcern
                     when 'yes_no'
                       xml.value value == true ? 'Yes': 'No'
                     when 'photo'
-                      xml.value "<image src='http://#{Settings.host}/photo_field/#{value}' style='width:200px;' alt='#{value}' />"
+                      xml.value "<image src='#{Settings.protocol}://#{Settings.host}/photo_field/#{value}' style='width:200px;' alt='#{value}' />"
                     else
                       xml.value value
                     end

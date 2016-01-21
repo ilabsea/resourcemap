@@ -42,7 +42,7 @@ module RecaptchaSetting
   end
   
   def validate_captcha(key, challeng, response)
-    uri = URI('http://www.google.com/recaptcha/api/verify')
+    uri = URI('#{Settings.protocol}://www.google.com/recaptcha/api/verify')
     params = { :privatekey => key, :remoteip => Settings.host, :challenge => challeng, :response => response }
     res = Net::HTTP.post_form(uri, params)
   end
