@@ -15,7 +15,7 @@ class ThresholdsController < ApplicationController
       end
     else
       if current_user
-        thresholds = Threshold.get_thresholds_by_user current_user        
+        thresholds = Threshold.get_thresholds_by_user current_user
       else
         thresholds = Threshold.get_thresholds_with_public_collection
       end
@@ -46,12 +46,11 @@ class ThresholdsController < ApplicationController
   end
 
   def update
-    threshold = Threshold.find params[:id]
     params[:threshold][:email_notification] = {} unless params[:threshold][:email_notification] # email not selected
     params[:threshold][:phone_notification] = {} unless params[:threshold][:phone_notification] # phone not selected
     params[:threshold][:sites] = params[:threshold][:sites].values.map{|site| site["id"]} if params[:threshold][:sites]
     threshold.strongly_type_conditions
-    threshold.update_attributes! threshold_params
+    threshold.update_attributes! params[:threshold].except(:sites)
     if params[:threshold][:is_all_site] == "false" && params[:threshold][:sites]
       threshold.sites = Site.get_id_and_name params[:threshold][:sites]
       threshold.save
