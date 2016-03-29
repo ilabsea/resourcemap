@@ -180,7 +180,7 @@ onCollections ->
               noThreshold = false
             else
               threshold.showingThreshold(false)
-            
+
             if noThreshold
               collection.showingCollectionAlert(false)
 
@@ -190,7 +190,7 @@ onCollections ->
       if noAlert
         window.model.showingLegend(false)
 
-    
+
     @toggleAlertLegend: ->
       if @toggleLegend() == true
         @toggleLegend(false)
@@ -219,10 +219,10 @@ onCollections ->
       @drawLegend()
       @showLegend()
       window.model.loadingLegend(false)
-    
+
     @isMapContainedSite: (site, latlng, bounds) =>
       isContainInMap = false
-      
+
       for siteId, marker of window.model.markers
         if bounds.contains(marker.getPosition()) && parseInt(siteId) == parseInt(site.id)
           return true
@@ -249,7 +249,7 @@ onCollections ->
           if threshold.isAllSite() == "false" && !@isThresholdSite(site, threshold.alertSites())
             continue
           alertSite = @operateWithCondition(threshold.conditions(), site, threshold.isAllCondition())
-          
+
           if alertSite
             threshold.alertedSitesNum(threshold.alertedSitesNum()+1)
             break
@@ -270,9 +270,9 @@ onCollections ->
           compareField = percentage
         else
           compareField = condition.value()
-        
+
         field = site?.properties()[condition.field()]
-        
+
         kind = condition.kind()
         if field is undefined && kind is "yes_no"
           field = false
@@ -286,7 +286,7 @@ onCollections ->
             else if kind == 'select_many' && typeof field != 'undefined'
               field = field.toString()
               compareField = compareField.toString()
-            
+
             if field is compareField
               b = true
             else
@@ -296,7 +296,7 @@ onCollections ->
             if field > compareField
               b = true
             else
-              b = false 
+              b = false
           when "lt"
             if field < compareField
               b = true
@@ -306,7 +306,7 @@ onCollections ->
             if typeof field != 'undefined' && field.toLowerCase().indexOf(compareField.toLowerCase()) != -1
               b = true
             else
-              b = false  
+              b = false
           when "under"
             if typeof field != 'undefined'
               b = true
@@ -315,9 +315,9 @@ onCollections ->
           else
             null
         if isAllCondition == "true"
-          return null if b == false            
+          return null if b == false
         else
-          return site if b == true            
+          return site if b == true
           return null if b == false && parseInt(key) == conditions.length-1
 
       return site
@@ -387,7 +387,7 @@ onCollections ->
 
       for siteId in toRemove
         @deleteMarker siteId
-        
+
       for site in sites
         dataSiteIds[site.id] = site.id
         if @markers[site.id]
@@ -621,7 +621,7 @@ onCollections ->
       @editingSite(null)
       @oldSelectedSite = null
       if @currentCollection()
-        sites = @currentCollection().sites() 
+        sites = @currentCollection().sites()
         sites = sites.slice(0, 15) if sites
         @currentCollection().partlySites(sites)
 
@@ -634,7 +634,7 @@ onCollections ->
       setTimeout(window.adjustContainerSize, 10)
 
     @scrollTable: ->
-      sites = @currentCollection().sites() 
+      sites = @currentCollection().sites()
       partlySites = @currentCollection().partlySites()
       l = partlySites.length
       if sites.length != l

@@ -21,7 +21,7 @@ ResourceMap::Application.routes.draw do
   get 'plugin/alerts/thresholds' => 'thresholds#index'
   get 'channels_accesses/search_user'
   get 'channels_accesses/search_collection'
-  
+
   resources :repeats
   resources :collections do
     post  :send_new_member_sms
@@ -32,7 +32,7 @@ ResourceMap::Application.routes.draw do
       get :visible_layers_for
     end
     resources :layers do
-      
+
       member do
         put :set_order
       end
@@ -105,7 +105,7 @@ ResourceMap::Application.routes.draw do
   resources :messages, :only => [:index], :path => 'message'
   resources :activities, :only => [:index], :path => 'activity'
   resources :quotas
-  resources :channels_accesses 
+  resources :channels_accesses
 
   resources :gateways do
     post 'status', :on => :member
@@ -126,9 +126,9 @@ ResourceMap::Application.routes.draw do
     # match 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', :via => :put
     # put 'collections/:id/update_sites_under_collection' => 'collections#update_sites_under_collection', as: :collections
     resources :tokens, :only => [:index, :destroy]
-    resources :collections do  
-      get 'sites_by_term'    
-      member do 
+    resources :collections do
+      get 'sites_by_term'
+      member do
         put 'update_sites'
         get 'get_fields'
         get 'get_sites_conflict'
@@ -141,7 +141,7 @@ ResourceMap::Application.routes.draw do
     match 'collections/:collection_id/memberships' => 'memberships#update', :via => :put
     match 'collections/:collection_id/register_new_member' => 'memberships#register_new_member', :via => :post
     match 'collections/:collection_id/destroy_member' => 'memberships#destroy_member', :via => :delete
-    
+
     devise_scope :user do
       post '/users' => 'registrations#create'
       post '/users/sign_in' => 'sessions#create'
@@ -159,7 +159,7 @@ ResourceMap::Application.routes.draw do
             get 'search'
           end
         end
-        resources :fields, only: [:create,:index,:update,:show] 
+        resources :fields, only: [:create,:index,:update,:show]
         resources :layer_memberships, only: [:create,:index,:update,:show]
         resources :site_permissions, only: [:create,:index,:update,:show]
       end
@@ -244,7 +244,7 @@ ResourceMap::Application.routes.draw do
     match 'quota' => 'quota#index', via: :get
   end
 
-  offline = Rack::Offline.configure do  
+  offline = Rack::Offline.configure do
     cache "assets/mobile.js"
     cache "assets/mobile.css"
 

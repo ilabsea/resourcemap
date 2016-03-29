@@ -13,10 +13,9 @@ module SearchBase
     self
   end
 
-  def hierarchy_mode(ids)
-    ids = [] if ids == nil
-    @search.filter :terms, id: ids
-    self
+  def hierarchy_mode(childs_ids)
+    childs_ids = [] if childs_ids == nil
+    add_filter term: {"id" => childs_ids}
   end
 
   def name_start_with(name)
@@ -88,7 +87,7 @@ module SearchBase
       return self
     end
 
-    value = field.descendants_of_in_hierarchy value
+    value = field.descendants_of_in_hierarchy value, @use_codes_instead_of_es_codes
     query_key = field.es_code
     add_filter terms: {query_key => value}
     self
