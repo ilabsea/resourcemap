@@ -149,7 +149,11 @@ class ApplicationController < ActionController::Base
   end
 
   def get_user_auth_token
-    render :text => current_user.authentication_token, :layout => false
+    if current_user
+      render :text => current_user.authentication_token, :layout => false
+    else
+      render :text => nil
+    end
   end
 
   def basic_authentication_check

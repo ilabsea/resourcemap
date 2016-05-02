@@ -79,7 +79,8 @@ module ElasticSearch::QueryHelper
       fields_to_search = fields_to_search.select &:select_kind?
 
       codes = {}
-      regex = /#{text}/i
+      search_text = Regexp.quote(text)
+      regex = /#{search_text}/i
       fields_to_search.each do |field|
         option_id = search_value_id field, regex
         codes[field.es_code] = option_id if option_id
