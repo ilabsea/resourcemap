@@ -5,7 +5,6 @@ gem 'mysql2', '0.3.20'
 gem 'devise', '3.3.0'
 gem "elasticsearch"
 gem "elasticsearch-ruby"
-gem "valium"
 gem 'rmagick', '2.15.2', :require => false
 gem 'aws-sdk'
 gem 'whenever', :require => false
