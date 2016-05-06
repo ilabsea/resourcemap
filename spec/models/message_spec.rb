@@ -8,7 +8,8 @@ describe Message do
     it { should validate_presence_of(:guid) }
     it { should validate_presence_of(:body) }
     it { should validate_presence_of(:from) }
-    its(:save) { should be_false }
+    it { expect(subject.save).to be_falsy }
+    # its(:save) { should be_false }
   end
 
   describe "check message channel and sender" do

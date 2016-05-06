@@ -48,7 +48,7 @@ describe Snapshot do
     Tire::Index.new(index_name).exists?.should be_false
   end
 
-  its "collection should have histories" do
+  it "collection should have histories" do
     date = Time.now
 
     site_histories = collection.site_histories.at_date(date)

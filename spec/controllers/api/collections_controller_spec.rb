@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Api::CollectionsController do
+describe Api::CollectionsController, type: :controller do
   include Devise::TestHelpers
   render_views
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImportWizardsController do
+describe ImportWizardsController, :type => :controller  do
   include Devise::TestHelpers
   render_views
 

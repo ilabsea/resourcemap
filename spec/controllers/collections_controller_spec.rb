@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CollectionsController do
+describe CollectionsController, :type => :controller do
   include Devise::TestHelpers
   render_views
   let!(:user) { User.make }

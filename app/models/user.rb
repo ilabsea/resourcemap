@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
   has_many :memberships, :dependent => :destroy
   has_many :channels
-  has_many :collections, through: :memberships, order: 'collections.name ASC'
+  has_many :collections, -> { order('collections.name ASC')}, through: :memberships
   has_one :user_snapshot
   has_many :identities, dependent: :destroy
   

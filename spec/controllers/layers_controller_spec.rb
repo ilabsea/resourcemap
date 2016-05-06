@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LayersController do
+describe LayersController, :type => :controller  do
   include Devise::TestHelpers
   render_views
 

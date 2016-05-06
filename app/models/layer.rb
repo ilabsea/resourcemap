@@ -3,8 +3,8 @@ class Layer < ActiveRecord::Base
   include HistoryConcern
 
   belongs_to :collection
-  has_many :fields, order: 'ord', dependent: :destroy
-  has_many :field_histories, order: 'ord', dependent: :destroy
+  has_many :fields, -> { order('ord')}, dependent: :destroy
+  has_many :field_histories, -> { order('ord')}, dependent: :destroy
 
   accepts_nested_attributes_for :fields, :allow_destroy => true
 
