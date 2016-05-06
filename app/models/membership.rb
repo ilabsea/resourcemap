@@ -13,6 +13,9 @@ class Membership < ActiveRecord::Base
 
   validates :user_id, :uniqueness => { scope: :collection_id, message: "membership already exists" }
 
+  after_save :touch_collection_lifespan
+  after_destroy :touch_collection_lifespan
+
   def destroy_collection_memberships
     collection.layer_memberships.where(:user_id => user_id).destroy_all
   end

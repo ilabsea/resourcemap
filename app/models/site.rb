@@ -16,6 +16,9 @@ class Site < ActiveRecord::Base
   after_validation :standardize_properties
   before_validation :assign_default_values, :on => :create
 
+  after_save :touch_collection_lifespan
+  after_destroy :touch_collection_lifespan
+
   attr_accessor :from_import_wizard
 
   def history_concern_foreign_key
