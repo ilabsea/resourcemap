@@ -47,7 +47,7 @@ class ActivitiesController < ApplicationController
             created_at: activity.created_at
           }
         end
-        render json: activities_json
+        render json: activities_json, :root => false
       end
     end
   end

@@ -57,6 +57,8 @@ gem 'active_model_serializers'
 gem 'actionpack-action_caching'
 gem 'activerecord-deprecated_finders'
 
+gem 'instedd_telemetry', git: 'https://github.com/instedd/telemetry_rails.git'
+
 group :test do
   gem 'shoulda-matchers'
   gem 'ci_reporter', :git => 'git://github.com/nicksieger/ci_reporter.git'

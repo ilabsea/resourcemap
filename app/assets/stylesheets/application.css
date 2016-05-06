@@ -11,6 +11,7 @@
  *= require_self
  *= require fixedheadertable
  *= require_tree .
+ *= require instedd_telemetry
  *= require jquery.fancybox
  *= require_fullscreen
 */

@@ -158,5 +158,32 @@ describe User do
     User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`, `time_zone`, `created_at`, `updated_at`) VALUES (22, 'foo@example.com', 'bar123', 'Bangkok', CURDATE(), CURDATE())"
     Time.zone = User.first.time_zone
     User.first.created_at.in_time_zone(User.first.time_zone).to_s.should eq User.first.created_at.to_s
-  end  
+  end 
+
+  describe 'telemetry' do
+    it 'should touch lifespan on create' do
+      user = User.make_unsaved
+
+      expect(Telemetry::Lifespan).to receive(:touch_user).with(user)
+
+      user.save
+    end
+
+    it 'should touch lifespan on update' do
+      user = User.make
+      user.touch
+
+      expect(Telemetry::Lifespan).to receive(:touch_user).with(user)
+
+      user.save
+    end
+
+    it 'should touch lifespan on destroy' do
+      user = User.make
+
+      expect(Telemetry::Lifespan).to receive(:touch_user).with(user)
+
+      user.destroy
+    end
+  end 
 end

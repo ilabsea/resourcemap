@@ -46,6 +46,15 @@ GIT
       rails (>= 3.2)
 
 GIT
+  remote: https://github.com/instedd/telemetry_rails.git
+  revision: 8ddfee2b94a2c1bef837b0a583538dfa72781948
+  specs:
+    instedd_telemetry (0.0.1)
+      global_phone
+      global_phone_dbgen
+      rails
+
+GIT
   remote: https://github.com/manastech/dist.git
   revision: 570e2bd1c90104df8880edc93cf8a1a659fcf093
   specs:
@@ -184,6 +193,9 @@ GEM
     gettext (3.1.7)
       locale (>= 2.0.5)
       text (>= 1.3.0)
+    global_phone (1.0.1)
+    global_phone_dbgen (1.0.0)
+      nokogiri (~> 1.5)
     guard (2.13.0)
       formatador (>= 0.2.4)
       listen (>= 2.7, <= 4.0)
@@ -519,6 +531,7 @@ DEPENDENCIES
   ice_cube
   includes-count
   instedd-rails (~> 0.0.24)
+  instedd_telemetry!
   jasminerice (~> 0.1.0)!
   jquery-rails (~> 2.0.2)
   knockoutjs-rails

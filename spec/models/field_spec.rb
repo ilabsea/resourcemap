@@ -379,4 +379,34 @@ describe Field do
       end
     end
   end
+
+  describe 'telemetry' do
+    let!(:collection) { Collection.make }
+    let!(:layer) { Layer.make collection: collection }
+
+    it 'should touch collection lifespan on create' do
+      field = Field::NumericField.make_unsaved collection: collection, layer: layer
+
+      expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
+
+      field.save
+    end
+
+    it 'should touch collection lifespan on update' do
+      field = Field::NumericField.make collection: collection, layer: layer
+      field.touch
+
+      expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
+
+      field.save
+    end
+
+    it 'should touch collection lifespan on destroy' do
+      field = Field::NumericField.make collection: collection, layer: layer
+
+      expect(Telemetry::Lifespan).to receive(:touch_collection).with(collection)
+
+      field.destroy
+    end
+  end
 end

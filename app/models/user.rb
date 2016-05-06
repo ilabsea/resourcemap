@@ -19,6 +19,9 @@ class User < ActiveRecord::Base
   attr_accessor :is_guest
 
   before_save :ensure_authentication_token
+
+  after_save :touch_lifespan
+  after_destroy :touch_lifespan
  
   def ensure_authentication_token
     if !self.authentication_token
@@ -165,10 +168,15 @@ class User < ActiveRecord::Base
   end
 
   private 
+
   def generate_authentication_token
     loop do
       token = Devise.friendly_token
       break token unless User.where(authentication_token: token).first
     end
+  end
+
+  def touch_lifespan
+    Telemetry::Lifespan.touch_user self
   end
 end
