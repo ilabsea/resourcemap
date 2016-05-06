@@ -13,6 +13,9 @@ class Channel < ActiveRecord::Base
   attr_accessor  :ticket_code
   attr_accessor  :phone_number
 
+  after_save :touch_user_lifespan
+  after_destroy :touch_user_lifespan
+
   has_many :share_national_channels
   has_many :collections, through: :share_national_channels
 

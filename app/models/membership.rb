@@ -15,6 +15,8 @@ class Membership < ActiveRecord::Base
 
   after_save :touch_collection_lifespan
   after_destroy :touch_collection_lifespan
+  after_save :touch_user_lifespan
+  after_destroy :touch_user_lifespan
 
   def destroy_collection_memberships
     collection.layer_memberships.where(:user_id => user_id).destroy_all

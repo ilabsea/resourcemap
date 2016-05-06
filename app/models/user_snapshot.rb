@@ -7,6 +7,8 @@ class UserSnapshot < ActiveRecord::Base
 
   after_save :touch_collection_lifespan
   after_destroy :touch_collection_lifespan
+  after_save :touch_user_lifespan
+  after_destroy :touch_user_lifespan
 
   def destroy_previous_for_user_and_collection
     UserSnapshot.destroy_all user_id: self.user_id, collection_id: self.collection_id
