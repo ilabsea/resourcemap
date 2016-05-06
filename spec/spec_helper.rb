@@ -81,10 +81,14 @@ RSpec.configure do |config|
     File.delete file
   end
 
-  # Delete all test indexes after running each spec
-  config.after(:each) do
-    Tire.delete_indices_that_match /^collection_test_\d+/
+  # Delete all test indexes before and after running each spec
+  def delete_all_elasticsearch_indices
+    Elasticsearch::Client.new.indices.delete index: "collection_test_*"
   end
+
+  config.before(:all) { delete_all_elasticsearch_indices }
+  config.after(:all) { delete_all_elasticsearch_indices }
+
 # Mock nuntium access and gateways management
   config.before(:each) do
     @nuntium = double("nuntium")

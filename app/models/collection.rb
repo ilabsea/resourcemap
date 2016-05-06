@@ -39,7 +39,8 @@ class Collection < ActiveRecord::Base
   after_destroy :touch_lifespan
 
   def max_value_of_property(es_code)
-    search = new_tire_search
+    # Watch out this change, confirm that is tested, then delete this comment
+    search = self.new_search
     search.sort { by es_code, 'desc' }
     search.size 2000
     results = search.perform.results

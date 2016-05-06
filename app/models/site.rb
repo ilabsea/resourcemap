@@ -4,7 +4,6 @@ class Site < ActiveRecord::Base
   include Site::CleanupConcern
   include Site::GeomConcern
   include Site::PrefixConcern
-  # include Site::TireConcern
   include Site::ElasticsearchConcern
   include HistoryConcern
 
