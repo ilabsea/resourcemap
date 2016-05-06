@@ -3,7 +3,6 @@ class Collection < ActiveRecord::Base
   include Collection::ShpConcern
   include Collection::GeomConcern
   include Collection::KmlConcern
-  # include Collection::TireConcern
   include Collection::ElasticsearchConcern
   include Collection::PluginsConcern
   include Collection::ImportLayersSchemaConcern
