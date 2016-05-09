@@ -66,11 +66,12 @@ group :test do
   gem 'capybara'
   gem 'database_cleaner'
   gem 'resque_spec'
+  gem 'timecop'
 end
 
 group :test, :development do
-  gem 'rspec'
-  gem 'rspec-rails'
+  gem 'rspec', '3.0.0'
+  gem 'rspec-rails', '3.0.0'
   gem 'faker'
   gem 'machinist', '1.0.6'
   gem 'capistrano', '~> 2.15'
@@ -79,8 +80,8 @@ group :test, :development do
   gem 'jasminerice', '~> 0.1.0', :git => 'https://github.com/bradphelan/jasminerice'
   gem 'guard-jasmine'
   # gem 'pry'
-  # gem 'pry-byebug'
-  gem 'byebug'
+  gem 'pry-byebug'
+  # gem 'byebug'
   # gem 'pry-debugger', '~>0.2.2'
 end
 
@@ -93,7 +94,6 @@ end
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer'
 

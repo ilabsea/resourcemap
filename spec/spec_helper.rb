@@ -22,7 +22,7 @@ RSpec.configure do |config|
 
   ###########
   #capybara
-  config.include Warden::Test::Helpers
+  # config.include Warden::Test::Helpers
   # config.include Capybara::DSL,           example_group: { file_path: config.escaped_path(%w[spec integration])}
   # config.include Capybara::CustomFinders, example_group: { file_path: config.escaped_path(%w[spec integration])}
   # config.include Capybara::AccountHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
@@ -33,9 +33,9 @@ RSpec.configure do |config|
 
   Warden.test_mode!
 
-  Capybara.default_wait_time = 5
-  Capybara.javascript_driver = :selenium
-  Capybara.default_selector = :css
+  # Capybara.default_max_wait_time = 5
+  # Capybara.javascript_driver = :selenium
+  # Capybara.default_selector = :css
 
   config.before :each do
     DatabaseCleaner.strategy = if Capybara.current_driver == :rack_test

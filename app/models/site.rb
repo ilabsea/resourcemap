@@ -180,7 +180,7 @@ class Site < ActiveRecord::Base
   def valid_properties
     return unless valid_lat_lng
     fields = collection.fields.index_by(&:es_code)
-    fields_mandatory = collection.fields.where(mandatory: true)
+    fields_mandatory = collection.fields.where(is_mandatory: true)
     properties.each do |es_code, value|
       field = fields[es_code]
       if field

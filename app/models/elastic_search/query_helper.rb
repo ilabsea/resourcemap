@@ -14,10 +14,10 @@ module ElasticSearch::QueryHelper
     #
     # If no field label would have matched, baz* would be the returned string.
     #
-    # Addionally, range queries (as "greater than") are apprended to the given tire_search.
+    # Addionally, range queries (as "greater than") are appended to the given 'es_search' parameter.
     #
     # Can return nil if no condition was generated except comparison of field values.
-    def full_text_search(text, tire_search, collection, fields = nil)
+    def full_text_search(text, es_search, collection, fields = nil)
       search_hash = SearchParser.new text
 
       conditions = []
@@ -53,15 +53,15 @@ module ElasticSearch::QueryHelper
 
         case op
         when '='
-          tire_search.filter :term, key => value
+          es_search.filter :term, key => value
         when '<'
-          tire_search.filter :range, key => {lt: value}
+          es_search.filter :range, key => {lt: value}
         when '<='
-          tire_search.filter :range, key => {lte: value}
+          es_search.filter :range, key => {lte: value}
         when '>'
-          tire_search.filter :range, key => {gt: value}
+          es_search.filter :range, key => {gt: value}
         when '>='
-          tire_search.filter :range, key => {gte: value}
+          es_search.filter :range, key => {gte: value}
         end
       end
 
