@@ -143,7 +143,7 @@ class Collection < ActiveRecord::Base
       target_fields = fields.includes(:layer)
     end
     if membership.admin?
-      target_fields = target_fields.all
+      target_fields = target_fields.to_a
     else
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
