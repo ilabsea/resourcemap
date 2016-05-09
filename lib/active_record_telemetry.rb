@@ -11,8 +11,8 @@ module ActiveRecordTelemetry
   end
 
   def touch_membership_lifespan
-    Telemetry::Lifespan.touch_collection(self.membership.try(:collection))
-    Telemetry::Lifespan.touch_user(self.membership.try(:user))
+    Telemetry::Lifespan.touch_collection(self.try(:collection))
+    Telemetry::Lifespan.touch_user(self.try(:user))
   end
 
 end
