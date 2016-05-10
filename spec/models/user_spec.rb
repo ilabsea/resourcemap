@@ -6,9 +6,9 @@ describe User do
 
   it "should be confirmed" do
     user = User.make confirmed_at: nil
-    user.confirmed?.should be_false
+    user.confirmed?.should be_falsey
     user.confirm!
-    user.confirmed?.should be_true
+    user.confirmed?.should be_truthy
   end
 
   it "creates a collection" do
@@ -32,7 +32,7 @@ describe User do
     user = User.make
     collection = Collection.make_unsaved
     collection.name = nil
-    user.create_collection(collection).should be_false
+    user.create_collection(collection).should be_falsey
     user.collections.should be_empty
   end
 
@@ -41,7 +41,7 @@ describe User do
 
     it "should not allow to add a new user with duplicate phone" do
       user2 = User.make
-      User.create(:email => 'test@instedd.org', :password => '123', :phone_number => '85592811844').should_not be_valid
+      User.create(:email => 'test@instedd.org', :password => 'AbCd456', :phone_number => '85592811844').should_not be_valid
     end
 
   end
@@ -51,17 +51,17 @@ describe User do
     let!(:collection) { user.create_collection Collection.make_unsaved }
 
     it "admins a collection" do
-      user.admins?(collection).should be_true
+      user.admins?(collection).should be_truthy
     end
 
     it "doesn't admin a collection if belongs but not admin" do
       user2 = User.make
       user2.memberships.create! :collection_id => collection.id
-      user2.admins?(collection).should be_false
+      user2.admins?(collection).should be_falsey
     end
 
     it "doesn't admin a collection if doesn't belong" do
-      User.make.admins?(collection).should be_false
+      User.make.admins?(collection).should be_falsey
     end
   end
 
@@ -91,7 +91,7 @@ describe User do
   describe "Permission" do
     before(:each) do
       @user1  = User.make
-      @user = User.create(:email => "demo@instedd.org", :password => "123456", :phone_number => "855123456789")
+      @user = User.create(:email => "demo@instedd.org", :password => "AbCd456", :phone_number => "855123456789")
       @collection = Collection.make
       @site  = @collection.sites.make
       @layer = @collection.layers.create(:name => "health center")
@@ -103,18 +103,18 @@ describe User do
       @collection.memberships.create(:user => @user, :admin => false)
       @collection.layer_memberships.create( :layer_id => @layer.id, :read => true, :user_id => @user.id, :write => true)
       Field::NumericField.create :collection_id => @collection.id, :layer_id => @layer.id, :code => "AB", :ord => 1
-      @user.can_view?(@collection, @properties[0][:code]).should be_true
-      @user.can_update?(@site, @properties).should be_true
+      @user.can_view?(@collection, @properties[0][:code]).should be_truthy
+      @user.can_update?(@site, @properties).should be_truthy
     end
 
     context "can update" do
       it "should return true when user have write permission on layer" do
         @collection.layer_memberships.create( :layer_id => @layer.id, :read => true, :user_id => @user.id, :write => true)
-        @user.validate_layer_write_permission(@site, @properties).should be_true
+        @user.validate_layer_write_permission(@site, @properties).should be_truthy
       end
 
       it "should return false when user don't have write permission on layer" do
-        @user.validate_layer_write_permission(@site, @properties).should be_false
+        @user.validate_layer_write_permission(@site, @properties).should be_falsey
       end
 
       it "should return true when two field have the same code 'AB' but difference collection_id" do
@@ -123,26 +123,26 @@ describe User do
         @field1 = Field.create(:collection_id => @collection1.id, :layer_id => @layer1.id, :code => "AB", :ord => 1, :kind => "numeric")
         @site1  = @collection1.sites.make
         @collection1.layer_memberships.create( :layer_id => @layer1.id, :read => true, :user_id => @user.id, :write => true)
-        @user.validate_layer_write_permission(@site1, @properties).should be_true
+        @user.validate_layer_write_permission(@site1, @properties).should be_truthy
       end
     end
 
     context "can view" do
       it "should return true when user have read permission on layer" do
         @collection.layer_memberships.create( :layer_id => @layer.id, :read => true, :user_id => @user.id, :write => true)
-        @user.validate_layer_read_permission(@collection, @properties[0][:code]).should be_true
+        @user.validate_layer_read_permission(@collection, @properties[0][:code]).should be_truthy
       end
 
       it "should return false when user don't have write permission on layer" do
-        @user.validate_layer_read_permission(@site, @properties[0][:code]).should be_false
+        @user.validate_layer_read_permission(@site, @properties[0][:code]).should be_falsey
       end
     end
   end
 
   it "should encrypt all users password" do
-    User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`, `created_at`, `updated_at`) VALUES (22, 'foo@example.com', 'bar123', CURDATE(), CURDATE())"
+    User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`, `created_at`, `updated_at`) VALUES (22, 'foo@example.com', 'BAr12345', CURDATE(), CURDATE())"
     User.encrypt_users_password
-    User.first.encrypted_password.should_not == 'bar123'
+    User.first.encrypted_password.should_not == 'BAr12345'
   end
 
   describe 'gateway' do 
@@ -155,7 +155,7 @@ describe User do
   end
 
   it "should change datetime based on user timezone" do
-    User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`, `time_zone`, `created_at`, `updated_at`) VALUES (22, 'foo@example.com', 'bar123', 'Bangkok', CURDATE(), CURDATE())"
+    User.connection.execute "INSERT INTO `users` (`id`, `email`, `encrypted_password`, `time_zone`, `created_at`, `updated_at`) VALUES (22, 'foo@example.com', 'BAr12345', 'Bangkok', CURDATE(), CURDATE())"
     Time.zone = User.first.time_zone
     User.first.created_at.in_time_zone(User.first.time_zone).to_s.should eq User.first.created_at.to_s
   end 

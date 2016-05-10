@@ -32,14 +32,14 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(1)
     layers[0].name.should eq(layer.name)
 
-    fields = layers[0].fields.all
+    fields = layers[0].fields
     fields.length.should eq(2)
 
-    sites = collection.sites.all
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     site1.reload
@@ -78,14 +78,14 @@ describe ImportWizard do
     ImportWizard.import user, collection, 'foo.csv', csv_string; ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    layers = collection.layers.all
+    layers = collection.layers
     layers.length.should eq(1)
     layers[0].name.should eq(layer.name)
 
-    fields = layers[0].fields.all
+    fields = layers[0].fields
     fields.length.should eq(2)
 
-    sites = collection.sites.all
+    sites = collection.sites.reload
     sites.length.should eq(2)
 
     site1.reload
