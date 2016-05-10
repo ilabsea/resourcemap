@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SitesPermission do
+describe SitesPermission, :type => :model do
   it { should belong_to :membership }
 
   describe "convert to json" do

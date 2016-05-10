@@ -110,3 +110,16 @@ ImportJob.blueprint do
   collection
   status
 end
+
+LayerMembership.blueprint do
+  collection
+  read { false }
+  write { false }
+  user
+end
+
+SiteReminder.blueprint do
+end
+
+SitesPermission.blueprint do
+end
