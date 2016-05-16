@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Reminder do
+describe Reminder, skip: true do
   let!(:collection) { Collection.make }
   let!(:repeat) { Repeat.make }
 

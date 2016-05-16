@@ -28,7 +28,7 @@ describe ImportWizard do
     ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    sites = collection.sites.all
+    sites = collection.sites.reload
     sites.length.should eq(3)
 
     sites[0].properties[luhn.es_code].should eq('100000-9')
@@ -54,7 +54,7 @@ describe ImportWizard do
     ImportWizard.mark_job_as_pending user, collection
     ImportWizard.execute user, collection, specs
 
-    sites = collection.sites.all
+    sites = collection.sites.reload
     sites.length.should eq(1)
     sites[0].properties[luhn.es_code].should be_blank
   end

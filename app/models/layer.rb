@@ -36,7 +36,7 @@ class Layer < ActiveRecord::Base
   def create_updated_activity
     layer_changes = changes.except('updated_at').to_hash
 
-    after_update_fields = fields.all
+    after_update_fields = fields.reload
 
     added = []
     changed = []
