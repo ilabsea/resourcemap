@@ -4,29 +4,38 @@ class LayersController < ApplicationController
   before_filter :fix_field_config, only: [:create, :update]
 
   def index
+    layers # signal that layers will be used on this page (loaded by ajax later)
     respond_to do |format|
       format.html do
         show_collection_breadcrumb
-        add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
-        add_breadcrumb I18n.t('views.collections.tab.layers'), collection_layers_path(collection)
+        add_breadcrumb "Properties", collection_path(collection)
+        add_breadcrumb "Layers", collection_layers_path(collection)
       end
-      if current_user_snapshot.at_present?
-        json = layers.includes(:fields).all.as_json(include: :fields).each { |layer|
-          layer["fields"].each { |field|
-            field['threshold_ids'] = get_associated_field_threshold_ids(field)
-          }
-          layer['threshold_ids'] = Layer.find(layer['id']).get_associated_threshold_ids
-        }
-        format.json { render json:  json, :root => false}
-      else
-        format.json {
-          render json: layers
-            .includes(:field_histories)
-            .where("field_histories.valid_since <= :date && (:date < field_histories.valid_to || field_histories.valid_to is null)", date: current_user_snapshot.snapshot.date)
-            .as_json(include: :field_histories)
-          }
-      end
+      format.json { render_json collection.layers_to_json(current_user_snapshot.at_present?, current_user) }
     end
+    # respond_to do |format|
+    #   format.html do
+    #     show_collection_breadcrumb
+    #     add_breadcrumb I18n.t('views.collections.index.properties'), collection_path(collection)
+    #     add_breadcrumb I18n.t('views.collections.tab.layers'), collection_layers_path(collection)
+    #   end
+    #   if current_user_snapshot.at_present?
+    #     json = layers.includes(:fields).all.as_json(include: :fields).each { |layer|
+    #       layer["fields"].each { |field|
+    #         field['threshold_ids'] = get_associated_field_threshold_ids(field)
+    #       }
+    #       layer['threshold_ids'] = Layer.find(layer['id']).get_associated_threshold_ids
+    #     }
+    #     format.json { render json:  json, :root => false}
+    #   else
+    #     format.json {
+    #       render json: layers
+    #         .includes(:field_histories)
+    #         .where("field_histories.valid_since <= :date && (:date < field_histories.valid_to || field_histories.valid_to is null)", date: current_user_snapshot.snapshot.date)
+    #         .as_json(include: :field_histories)
+    #       }
+    #   end
+    # end
   end
 
   def create

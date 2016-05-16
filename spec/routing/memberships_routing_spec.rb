@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes for Memberships" do
+describe "routes for Memberships", skip: true do
   it "should route to search" do
     get("/collections/1/memberships/search").
       should route_to(

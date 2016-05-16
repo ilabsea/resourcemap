@@ -3,12 +3,15 @@ class Layer < ActiveRecord::Base
   include HistoryConcern
 
   belongs_to :collection
-  has_many :fields, order: 'ord', dependent: :destroy
-  has_many :field_histories, order: 'ord', dependent: :destroy
+  has_many :fields, -> { order('ord')}, dependent: :destroy
+  has_many :field_histories, -> { order('ord')}, dependent: :destroy
 
   accepts_nested_attributes_for :fields, :allow_destroy => true
 
   validates_presence_of :ord
+
+  after_save :touch_collection_lifespan
+  after_destroy :touch_collection_lifespan
 
   # I'd move this code to a concern, but it works differntly (the fields don't
   # have an id). Must probably be a bug in Active Record.
@@ -33,7 +36,7 @@ class Layer < ActiveRecord::Base
   def create_updated_activity
     layer_changes = changes.except('updated_at').to_hash
 
-    after_update_fields = fields.all
+    after_update_fields = fields.reload
 
     added = []
     changed = []

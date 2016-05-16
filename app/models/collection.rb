@@ -3,7 +3,6 @@ class Collection < ActiveRecord::Base
   include Collection::ShpConcern
   include Collection::GeomConcern
   include Collection::KmlConcern
-  # include Collection::TireConcern
   include Collection::ElasticsearchConcern
   include Collection::PluginsConcern
   include Collection::ImportLayersSchemaConcern
@@ -15,8 +14,8 @@ class Collection < ActiveRecord::Base
   has_many :layer_memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :sites, dependent: :delete_all
-  has_many :layers, order: 'ord', dependent: :destroy
-  has_many :fields, order: 'ord'
+  has_many :layers, -> { order('ord')}, dependent: :destroy
+  has_many :fields, -> { order('ord')}
   has_many :thresholds, dependent: :destroy
   has_many :reminders, dependent: :destroy
   has_many :share_channels, dependent: :destroy
@@ -36,8 +35,12 @@ class Collection < ActiveRecord::Base
 
   attr_accessor :time_zone
 
+  after_save :touch_lifespan
+  after_destroy :touch_lifespan
+
   def max_value_of_property(es_code)
-    search = new_tire_search
+    # Watch out this change, confirm that is tested, then delete this comment
+    search = self.new_search
     search.sort { by es_code, 'desc' }
     search.size 2000
     results = search.perform.results
@@ -140,7 +143,7 @@ class Collection < ActiveRecord::Base
       target_fields = fields.includes(:layer)
     end
     if membership.admin?
-      target_fields = target_fields.all
+      target_fields = target_fields.to_a
     else
       lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
@@ -164,7 +167,7 @@ class Collection < ActiveRecord::Base
     end
     membership = user.membership_in self
     if !user.is_guest && !membership.try(:admin?)
-      lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
+      lms = LayerMembership.where(user_id: user.id, collection_id: self.id).to_a.inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
         hash
       end
@@ -262,7 +265,7 @@ class Collection < ActiveRecord::Base
   end
 
   def register_gateways_under_user_owner(owner_user)
-    self.channels = owner_user.channels.find_all_by_is_enable true
+    self.channels = owner_user.channels.where(is_enable: true)
   end
 
   # Returns a dictionary of :code => :es_code of all the fields in the collection
@@ -333,6 +336,12 @@ class Collection < ActiveRecord::Base
         .includes(:field_histories)
         .as_json(include: :field_histories)
     end
+  end
+
+  private 
+
+  def touch_lifespan
+    Telemetry::Lifespan.touch_collection self
   end
 
 end

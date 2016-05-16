@@ -156,9 +156,6 @@ module Collection::CsvConcern
       end
     end
 
-    p 'items : ', items
-
-
     # Remove those that have parents, and at the same time delete their parent key
     items = items.reject do |order, item|
       if item[:parent] && !item[:error].present?

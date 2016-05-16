@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model attr_accessible :email, :password, :password_confirmation, :remember_me, :phone_number
   has_many :memberships, :dependent => :destroy
   has_many :channels
-  has_many :collections, through: :memberships, order: 'collections.name ASC'
+  has_many :collections, -> { order('collections.name ASC')}, through: :memberships
   has_one :user_snapshot
   has_many :identities, dependent: :destroy
   
@@ -19,6 +19,9 @@ class User < ActiveRecord::Base
   attr_accessor :is_guest
 
   before_save :ensure_authentication_token
+
+  after_save :touch_lifespan
+  after_destroy :touch_lifespan
  
   def ensure_authentication_token
     if !self.authentication_token
@@ -165,10 +168,15 @@ class User < ActiveRecord::Base
   end
 
   private 
+
   def generate_authentication_token
     loop do
       token = Devise.friendly_token
       break token unless User.where(authentication_token: token).first
     end
+  end
+
+  def touch_lifespan
+    Telemetry::Lifespan.touch_user self
   end
 end

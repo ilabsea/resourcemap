@@ -1,5 +1,6 @@
 ResourceMap::Application.routes.draw do
 
+  mount InsteddTelemetry::Engine => '/instedd_telemetry'
   # devise_for :users, :controllers => {:registrations => "registrations", :sessions => 'sessions' }
   devise_for :users, controllers: {registrations: "registrations", omniauth_callbacks: "omniauth_callbacks"}
   guisso_for :user

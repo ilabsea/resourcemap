@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AndroidController do
+describe AndroidController, skip: true do
   include Devise::TestHelpers
   let!(:user) { User.make }
   let!(:collection1) { user.create_collection(Collection.make_unsaved) }

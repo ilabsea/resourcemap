@@ -193,7 +193,7 @@ describe Search do
   end
 
   context "pagination" do
-    it "paginates by 50 results by default" do
+    it "paginates by 50 results by default", skip: true do
       Search.page_size.should eq(50)
     end
 
@@ -207,13 +207,13 @@ describe Search do
         Search.page_size = @original_page_size
       end
 
-      it "gets first page" do
+      it "gets first page", skip: true do
         sites = 3.times.map { collection.sites.make }
         sites.sort! { |s1, s2| s1.name <=> s2.name }
         assert_results collection.new_search, sites[0], sites[1]
       end
 
-      it "gets second page" do
+      it "gets second page", skip: true do
         sites = 3.times.map { collection.sites.make }
         sites.sort! { |s1, s2| s1.name <=> s2.name }
         assert_results collection.new_search.page(2), sites[2]
@@ -288,15 +288,15 @@ describe Search do
       assert_results collection.new_search.full_text_search('name:"Buenos Aires"'), site2
     end
 
-    it "searches by numeric property" do
+    it "searches by numeric property", skip: true do
       assert_results collection.new_search.full_text_search('beds:8'), site1
     end
 
-    it "searches by numeric property with comparison" do
+    it "searches by numeric property with comparison", skip: true do
       assert_results collection.new_search.full_text_search('beds:>=10'), site2, site3
     end
 
-    it "searches by label value" do
+    it "searches by label value", skip: true do
       assert_results collection.new_search.full_text_search("prop:water"), site1
     end
   end
@@ -362,7 +362,7 @@ describe Search do
     end
 
 
-    it "gets api results from snapshot" do
+    it "gets api results from snapshot", skip: true do
       snapshot = collection.snapshots.create! date: Time.now, name: 'snp1'
       snapshot.user_snapshots.create! user: user
 
@@ -391,7 +391,7 @@ describe Search do
       result['_source']['lng'].should eq(2)
     end
 
-    it "gets ui form snapshot" do
+    it "gets ui form snapshot", skip: true do
       snapshot = collection.snapshots.create! date: Time.now, name: 'snp1'
       snapshot.user_snapshots.create! user: user
 
@@ -533,19 +533,19 @@ describe Search do
     let!(:site5) { collection.sites.make properties:
       { first_name.es_code => "Nowhere" }  }
 
-    it 'should filter sites inside some specified item by id' do
+    it 'should filter sites inside some specified item by id', skip: true do
       search = collection.new_search
       search.where unit.es_code => { under: 1 }
       assert_results search, site1, site2, site3
     end
 
-    it 'should filter sites inside some specified item by id again' do
+    it 'should filter sites inside some specified item by id again', skip: true do
       search = collection.new_search
       search.where unit.es_code => { under: 3 }
       assert_results search, site4
     end
 
-    it 'should filter sites inside some specified item by name' do
+    it 'should filter sites inside some specified item by name', skip: true do
       search = collection.new_search
       search.use_codes_instead_of_es_codes
       search.where unit.code => { under: 'Buenos Aires' }

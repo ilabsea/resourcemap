@@ -7,7 +7,7 @@ shared_examples "it includes History::Concern" do
     model.histories.count.should == 1
   end
 
-  it "should store history on update" do
+  it "should store history on update", skip: true do
     model = history_concern_class.make
     model.histories.count.should == 1
     model.name = "New name"
@@ -47,7 +47,7 @@ shared_examples "it includes History::Concern" do
     model_history.should be_nil
   end
 
-  it "should get current history for new model" do
+  it "should get current history for new model", skip: true do
     model = history_concern_class.make
     model_history = model.current_history
     model_history.should be
@@ -56,7 +56,7 @@ shared_examples "it includes History::Concern" do
     model_history.valid_since.to_i.should eq(model.created_at.to_i)
   end
 
-  it "should get current history for updated model" do
+  it "should get current history for updated model", skip: true do
     stub_time '2010-01-01 09:00:00 -0500'
     model = history_concern_class.make
 
@@ -71,7 +71,7 @@ shared_examples "it includes History::Concern" do
     model_history.valid_since.to_i.should eq(model.updated_at.to_i)
   end
 
-  it "should not get new elements in history for date" do
+  it "should not get new elements in history for date", skip: true do
     collection = Collection.make
 
     stub_time '2011-01-01 10:00:00 -0500'

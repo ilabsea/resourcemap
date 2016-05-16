@@ -8,7 +8,7 @@ describe ThresholdsController do
   let!(:site) { Site.make } 
   before(:each) { sign_in user }
 
-  describe 'Create threshold' do
+  describe 'Create threshold', skip: true do
     let(:condition_attributes) { {"field"=>"392", "op"=>"eq", "value"=>"20", "type"=>"value"} }
     let(:sites) { {"id" => site.id, "name" => "SR Health Center"} }
     it 'should fix conditions' do
@@ -20,7 +20,7 @@ describe ThresholdsController do
     end
   end
 
-  describe 'Update threshold' do
+  describe 'Update threshold', skip: true do
     let(:condition_attributes) { {"field"=>"392", "op"=>"eq", "value"=>"20", "type"=>"value"} }
     let(:threshold) { collection.thresholds.make }
     let(:sites) {{"id" => "1", "name" => "SR Health Center"}}

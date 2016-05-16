@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Membership::LayerAccessConcern do
+describe Membership::LayerAccessConcern, skip: true do
   let(:collection) { Collection.make }
   let(:user) { User.make }
   let(:membership) { collection.memberships.create! :user_id => user.id }

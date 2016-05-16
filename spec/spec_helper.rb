@@ -3,7 +3,6 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require File.expand_path("../../spec/blueprints", __FILE__)
 require 'rspec/rails'
-require 'rspec/autorun'
 require 'capybara/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -22,20 +21,20 @@ RSpec.configure do |config|
 
   ###########
   #capybara
-  config.include Warden::Test::Helpers
-  config.include Capybara::DSL,           example_group: { file_path: config.escaped_path(%w[spec integration])}
-  config.include Capybara::CustomFinders, example_group: { file_path: config.escaped_path(%w[spec integration])}
-  config.include Capybara::AccountHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
-  config.include Capybara::CollectionHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
-  config.include Capybara::SettingsHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
-  config.include Capybara::MailHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
+  # config.include Warden::Test::Helpers
+  # config.include Capybara::DSL,           example_group: { file_path: config.escaped_path(%w[spec integration])}
+  # config.include Capybara::CustomFinders, example_group: { file_path: config.escaped_path(%w[spec integration])}
+  # config.include Capybara::AccountHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
+  # config.include Capybara::CollectionHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
+  # config.include Capybara::SettingsHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
+  # config.include Capybara::MailHelper, example_group: { file_path: config.escaped_path(%w[spec integration])}
   config.filter_run_excluding(js: true)   unless config.filter_manager.inclusions[:js]
 
   Warden.test_mode!
 
-  Capybara.default_wait_time = 5
-  Capybara.javascript_driver = :selenium
-  Capybara.default_selector = :css
+  # Capybara.default_max_wait_time = 5
+  # Capybara.javascript_driver = :selenium
+  # Capybara.default_selector = :css
 
   config.before :each do
     DatabaseCleaner.strategy = if Capybara.current_driver == :rack_test
@@ -81,10 +80,14 @@ RSpec.configure do |config|
     File.delete file
   end
 
-  # Delete all test indexes after running each spec
-  config.after(:each) do
-    Tire.delete_indices_that_match /^collection_test_\d+/
+  # Delete all test indexes before and after running each spec
+  def delete_all_elasticsearch_indices
+    Elasticsearch::Client.new.indices.delete index: "collection_test_*"
   end
+
+  config.before(:all) { delete_all_elasticsearch_indices }
+  config.after(:all) { delete_all_elasticsearch_indices }
+
 # Mock nuntium access and gateways management
   config.before(:each) do
     @nuntium = double("nuntium")

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MembershipsController do
+describe MembershipsController, skip: true do
   include Devise::TestHelpers
 
   let!(:user) { User.make email: 'foo@test.com' }

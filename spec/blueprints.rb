@@ -14,7 +14,7 @@ Sham.define do
   name { Faker::Name.name }
   email { Faker::Internet.email }
   phone_number { rand(1111111..9999999) }
-  password { Faker::Name.name }
+  password { Faker::Internet.password(15, 15, true, false) }
   username { Faker::Internet.user_name }
   color { "##{rand(255**3).to_s(16)}" }
   icon { Faker::Name.name }
@@ -109,4 +109,17 @@ ImportJob.blueprint do
   user
   collection
   status
+end
+
+LayerMembership.blueprint do
+  collection
+  read { false }
+  write { false }
+  user
+end
+
+SiteReminder.blueprint do
+end
+
+SitesPermission.blueprint do
 end
