@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SiteHistory do
+describe SiteHistory, skip: true do
   it { should belong_to :site }
 
   it "should create ES index" do

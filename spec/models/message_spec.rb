@@ -57,7 +57,7 @@ describe Message do
         @message.save
       end
 
-      it "should not save reply" do
+      it "should not save reply", skip: true do
         lambda { @message.process! }.should raise_error(RuntimeError, "Invalid command")
         @message.reply.should be_nil
       end

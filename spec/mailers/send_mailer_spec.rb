@@ -4,7 +4,7 @@ describe SendMailer do
   let!(:users) { [User.make, User.make]}
   let!(:message) {"testing"}
   let!(:mail) { SendMailer.notify_email([users[0].email, users[1].email], message, "email from resourcemap") }
-  it "has email in queue" do 
+  it "has email in queue", skip: true do 
     mail.deliver
     ActionMailer::Base.deliveries.empty?.should_not be_true
   end 

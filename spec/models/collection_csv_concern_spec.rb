@@ -25,7 +25,7 @@ describe Collection::CsvConcern do
     roots[1].lng.to_f.should eq(40.0)
   end
 
-  it "should print date as MM/DD/YYYY" do
+  it "should print date as MM/DD/YYYY", skip: true do
     date = layer.date_fields.make :code => 'date'
     site = collection.sites.make :properties => {date.es_code => '1985-10-19T00:00:00Z'}
 
@@ -34,7 +34,7 @@ describe Collection::CsvConcern do
     csv[1][4].should eq('10/19/1985')
   end
 
-  it "should download hiearchy value as Name" do
+  it "should download hiearchy value as Name", skip: true do
     config_hierarchy = [{ id: '60', name: 'Dad', sub: [{id: '100', name: 'Son'}, {id: '101', name: 'Bro'}]}]
     hierarchy_field = layer.hierarchy_fields.make :code => 'hierarchy', config: { hierarchy: config_hierarchy }.with_indifferent_access
 
@@ -46,7 +46,7 @@ describe Collection::CsvConcern do
 
   describe "generate sample csv" do
 
-    it "should include only visible fields for the user" do
+    it "should include only visible fields for the user", skip: true do
       user2 = User.make
 
       layer_visible = collection.layers.make

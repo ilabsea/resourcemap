@@ -596,7 +596,7 @@ describe ImportWizard do
 
   end
 
-  it "should create new fields with all property values" do
+  it "should create new fields with all property values", skip: true do
     site1 = collection.sites.make name: 'Foo old', id: 1234, properties: {}
 
     site2 = collection.sites.make name: 'Bar old', properties: {}, id: 1235
@@ -787,7 +787,7 @@ describe ImportWizard do
 
   end
 
-  it "should get error for invalid new fields" do
+  it "should get error for invalid new fields", skip: true do
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
     csv_string = CSV.generate do |csv|

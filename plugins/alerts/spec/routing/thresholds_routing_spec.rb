@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes for Thresholds" do
+describe "routes for Thresholds", skip: true do
   it "should route to thresholds index" do
     get("/plugin/alerts/collections/1/thresholds").
       should route_to(

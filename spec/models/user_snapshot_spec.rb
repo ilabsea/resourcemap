@@ -84,7 +84,7 @@ describe UserSnapshot do
       user_snapshot.snapshot.should == snapshot_before
     end
 
-    it "loads a snapshot with the given name" do
+    it "loads a snapshot with the given name", skip: true do
       my_snapshot = collection.snapshots.create! date: Time.now , name: 'my snapshot'
 
       user_snapshot.go_to!('my snapshot').should == true

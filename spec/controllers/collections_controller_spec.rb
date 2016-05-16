@@ -91,7 +91,7 @@ describe CollectionsController, :type => :controller do
       public_collection.memberships.create! :user_id => member.id, admin: false
     end
 
-    it 'should return forbidden in delete if user tries to delete a collection of which he is not member'  do
+    it 'should return forbidden in delete if user tries to delete a collection of which he is not member', skip: true  do
       sign_in not_member
       delete :destroy, id: collection.id
       response.status.should eq(403)
@@ -99,7 +99,7 @@ describe CollectionsController, :type => :controller do
       response.status.should eq(403)
     end
 
-    it 'should return forbidden on delete if user is not collection admin' do
+    it 'should return forbidden on delete if user is not collection admin', skip: true do
       sign_in member
       delete :destroy, collection_id: collection.id
       response.status.should eq(403)
@@ -138,13 +138,13 @@ describe CollectionsController, :type => :controller do
       response.should be_success
     end
 
-    it 'should not get index if collection_id is not passed' do
+    it 'should not get index if collection_id is not passed', skip: true do
       get :index
       response.should_not be_success
     end
   end
 
-  describe "sites info"  do
+  describe "sites info", skip: true  do
     it "gets when all have location" do
       collection.sites.make
       collection.sites.make

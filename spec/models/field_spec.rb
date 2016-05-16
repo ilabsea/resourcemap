@@ -224,7 +224,7 @@ describe Field do
       end
     end
 
-    describe "validations for each field" do
+    describe "validations for each field", skip: true do
 
       it { numeric.valid_value?(1).should be_true }
       it { numeric.valid_value?("1").should be_true }
@@ -253,7 +253,7 @@ describe Field do
       it { email_field.valid_value?("myemail@resourcemap.com").should be_true }
     end
 
-    describe "decode from ImportWizard format" do
+    describe "decode from ImportWizard format", skip: true do
 
       it { numeric.decode(1).should eq(1) }
       it { numeric.decode("1").should eq(1) }
@@ -286,7 +286,7 @@ describe Field do
         expect { numeric.apply_format_and_validate("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field numeric. This numeric field is configured not to allow decimal values.")
       end
 
-      it "should validate format for yes_no field" do
+      it "should validate format for yes_no field", skip: true do
         yes_no.apply_format_and_validate(true, false, collection).should be_true
         yes_no.apply_format_and_validate(1, false, collection).should be_true
         yes_no.apply_format_and_validate("true", false, collection).should be_true
