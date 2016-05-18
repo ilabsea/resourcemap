@@ -5,3 +5,4 @@
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
 ResourceMap::Application.config.secret_token = '7fe0756c76a4de31e9f56c2853aa6a694470088427153aaf1d76694f0132d00424b927cc5d445c010899fed8993e3409fc5f687591c48dc1a3f24cbe13e31df1'
+ResourceMap::Application.config.secret_key_base = 'b559cc822922e2b750a02167f1016a77c3a2a7198584a4ad9b0d7dde15ea56a3c0b7596109aa2911a3100e9374e39253d50df12780f279d80cb7e39e6129b948'

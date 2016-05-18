@@ -34,8 +34,8 @@ shared_examples "it includes History::Concern" do
     stub_time '2020-01-01 10:00:00 -0500'
 
     model.destroy
-    histories = model.histories.all
-    expect(history_concern_class.find_all_by_id(model.id).count).to eq(0)
+    histories = model.histories
+    expect(history_concern_class.where(id: model.id).count).to eq(0)
     expect(histories.count).to eq(1)
     expect(histories.last.valid_to).to eq(Time.now)
   end
