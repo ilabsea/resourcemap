@@ -111,12 +111,12 @@ describe Collection do
     pending do
       it "should set plugins by names" do
         collection.selected_plugins = ['plugin_1', 'plugin_2']
-        collection.plugins.should eq({'plugin_1' => {}, 'plugin_2' => {}})
+        expect(collection.plugins).to eq({'plugin_1' => {}, 'plugin_2' => {}})
       end
 
       it "should skip blank plugin name when setting plugins" do
         collection.selected_plugins = ["", 'plugin_1', ""]
-        collection.plugins.should eq({'plugin_1' => {}})
+        expect(collection.plugins).to eq({'plugin_1' => {}})
       end
     end
   end

@@ -29,11 +29,11 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     sites = collection.sites.reload
-    sites.length.should eq(3)
+    expect(sites.length).to eq(3)
 
-    sites[0].properties[luhn.es_code].should eq('100000-9')
-    sites[1].properties[luhn.es_code].should eq('100001-8')
-    sites[2].properties[luhn.es_code].should eq('100002-7')
+    expect(sites[0].properties[luhn.es_code]).to eq('100000-9')
+    expect(sites[1].properties[luhn.es_code]).to eq('100001-8')
+    expect(sites[2].properties[luhn.es_code]).to eq('100002-7')
   end
 
   it "imports into existing field and deletes the value" do
@@ -55,8 +55,8 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     sites = collection.sites.reload
-    sites.length.should eq(1)
-    sites[0].properties[luhn.es_code].should be_blank
+    expect(sites.length).to eq(1)
+    expect(sites[0].properties[luhn.es_code]).to be_blank
   end
 
   it "imports into existing field with invalid values" do
@@ -80,19 +80,19 @@ describe ImportWizard do
 
     sites_errors = sites[:errors]
     data_errors = sites_errors[:data_errors]
-    data_errors.length.should eq(3)
+    expect(data_errors.length).to eq(3)
 
-    data_errors[0][:description].should eq("Some of the values in column 2 are not valid for the type luhn identifier: the value must be in this format: nnnnnn-n (where 'n' is a number).")
-    data_errors[0][:column].should eq(1)
-    data_errors[0][:rows].should eq([0])
+    expect(data_errors[0][:description]).to eq("Some of the values in column 2 are not valid for the type luhn identifier: the value must be in this format: nnnnnn-n (where 'n' is a number).")
+    expect(data_errors[0][:column]).to eq(1)
+    expect(data_errors[0][:rows]).to eq([0])
 
-    data_errors[1][:description].should eq("Some of the values in column 2 are not valid for the type luhn identifier: the value failed the luhn check.")
-    data_errors[1][:column].should eq(1)
-    data_errors[1][:rows].should eq([1])
+    expect(data_errors[1][:description]).to eq("Some of the values in column 2 are not valid for the type luhn identifier: the value failed the luhn check.")
+    expect(data_errors[1][:column]).to eq(1)
+    expect(data_errors[1][:rows]).to eq([1])
 
-    data_errors[2][:description].should eq("Some of the values in column 2 are not valid for the type luhn identifier: the value already exists in the collection.")
-    data_errors[2][:column].should eq(1)
-    data_errors[2][:rows].should eq([2])
+    expect(data_errors[2][:description]).to eq("Some of the values in column 2 are not valid for the type luhn identifier: the value already exists in the collection.")
+    expect(data_errors[2][:column]).to eq(1)
+    expect(data_errors[2][:rows]).to eq([2])
   end
 
 end

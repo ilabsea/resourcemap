@@ -33,25 +33,25 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(1)
-    layers[0].name.should eq(layer.name)
+    expect(layers.length).to eq(1)
+    expect(layers[0].name).to eq(layer.name)
 
     fields = layers[0].fields
-    fields.length.should eq(2)
+    expect(fields.length).to eq(2)
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
     site1.reload
-    site1.name.should eq('Foo new')
-    site1.properties.should eq({
+    expect(site1.name).to eq('Foo new')
+    expect(site1.properties).to eq({
       phone.es_code => '855111111111',
       email.es_code => 'new@email.com'
     })
 
     site2.reload
-    site2.name.should eq('Bar old')
-    site2.properties.should eq({phone.es_code => '855123456789'})
+    expect(site2.name).to eq('Bar old')
+    expect(site2.properties).to eq({phone.es_code => '855123456789'})
   end
 
   it "should delete all property values" do
@@ -79,21 +79,21 @@ describe ImportWizard do
     ImportWizard.execute user, collection, specs
 
     layers = collection.layers
-    layers.length.should eq(1)
-    layers[0].name.should eq(layer.name)
+    expect(layers.length).to eq(1)
+    expect(layers[0].name).to eq(layer.name)
 
     fields = layers[0].fields
-    fields.length.should eq(2)
+    expect(fields.length).to eq(2)
 
     sites = collection.sites.reload
-    sites.length.should eq(2)
+    expect(sites.length).to eq(2)
 
     site1.reload
-    site1.name.should eq('Foo old')
-    site1.properties.should eq({})
+    expect(site1.name).to eq('Foo old')
+    expect(site1.properties).to eq({})
 
     site2.reload
-    site2.name.should eq('Bar old')
-    site2.properties.should eq({phone.es_code => '855123456789'})
+    expect(site2.name).to eq('Bar old')
+    expect(site2.properties).to eq({phone.es_code => '855123456789'})
   end
 end
