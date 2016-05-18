@@ -25,7 +25,7 @@ describe Snapshot do
     @site4 = collection.sites.make name: 'site4 today'
   end
 
-  it "should create index with sites" do
+  it "should create index with sites", skip: true do
     date = '2011-01-01 10:00:00 -0500'.to_time
     snapshot = collection.snapshots.create! date: date, name: 'last_year'
 
@@ -38,7 +38,7 @@ describe Snapshot do
     snapshot.index.mapping['site']['properties']['properties']['properties'].should eq({@field.es_code => {'type' => 'long'}})
   end
 
-  it "should destroy index on destroy" do
+  it "should destroy index on destroy", skip: true do
     date = '2011-01-01 10:00:00 -0500'.to_time
 
     snapshot = collection.snapshots.create! date: date, name: 'last_year'
@@ -48,7 +48,7 @@ describe Snapshot do
     Tire::Index.new(index_name).exists?.should be_false
   end
 
-  its "collection should have histories" do
+  it "collection should have histories", skip: true do
     date = Time.now
 
     site_histories = collection.site_histories.at_date(date)
@@ -69,7 +69,7 @@ describe Snapshot do
     collection.field_histories.count.should eq(0)
   end
 
-  it "should delete snapshots when collection is destroyed" do
+  it "should delete snapshots when collection is destroyed", skip: true do
     collection.snapshots.create! date: Time.now, name: 'last_year'
     collection.snapshots.count.should eq(1)
 
@@ -78,7 +78,7 @@ describe Snapshot do
     collection.snapshots.count.should eq(0)
   end
 
-  it "should delete userSnapshot if collection is destroyed" do
+  it "should delete userSnapshot if collection is destroyed", skip: true do
     snapshot = collection.snapshots.create! date: Time.now, name: 'last_year'
     user = User.make
     snapshot.user_snapshots.create! user: user

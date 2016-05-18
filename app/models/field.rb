@@ -1,6 +1,6 @@
 class Field < ActiveRecord::Base
   include Field::Base
-  include Field::TireConcern
+  include Field::ElasticsearchConcern
   include Field::ValidationConcern
   include Field::ShpConcern
 
@@ -20,6 +20,9 @@ class Field < ActiveRecord::Base
 
   serialize :config, MarshalZipSerializable
   serialize :metadata
+
+  after_save :touch_collection_lifespan
+  after_destroy :touch_collection_lifespan
 
   def self.reserved_codes
     ['lat', 'long', 'name', 'resmap-id', 'last updated']

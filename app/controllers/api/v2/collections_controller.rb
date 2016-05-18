@@ -27,7 +27,9 @@ module Api::V2
     end
 
     def show
-      authorize! :export, collection
+      unless collection.public
+        authorize! :export, collection
+      end
 
       options = [:sort]
 
@@ -127,7 +129,11 @@ module Api::V2
     def build_search(*options)
       except_params = [:action, :controller, :format, :id, :site_id, :updated_since, :search, :box, :lat, :lng, :radius, :fields, :name, :sitename, :page_size, :location_missing, :locale, :human]
 
-      search = new_search
+      if current_user
+        search = new_search
+      else
+        search = collection.new_search {}
+      end
 
       search.use_codes_instead_of_es_codes
 

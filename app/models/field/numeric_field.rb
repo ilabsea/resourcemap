@@ -1,5 +1,4 @@
 class Field::NumericField < Field
-
   def value_type_description
     "numeric values"
   end

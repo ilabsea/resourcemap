@@ -12,7 +12,7 @@ describe Site do
     color: 'red'
   }
 
-  it "set alert in the index properties" do
+  it "set alert in the index properties", skip: true do
     site = collection.sites.make :properties => {beds_field.es_code => 100 }
 
     search = Tire::Search::Search.new site.index_name

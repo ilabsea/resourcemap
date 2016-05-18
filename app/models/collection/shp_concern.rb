@@ -21,7 +21,7 @@ module Collection::ShpConcern
 
   def dbf_fields
     @dbf_fields ||= Hash[
-      fields.all.map { |field|
+      fields.map { |field|
         [field, field.to_dbf_field]
       }
     ]

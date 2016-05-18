@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FredApiController do
+describe FredApiController, :type => :controller do
   include Devise::TestHelpers
 
   let!(:user) { User.make }

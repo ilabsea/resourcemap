@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150922023019) do
+ActiveRecord::Schema.define() do
 
   create_table "activities", force: true do |t|
     t.integer  "user_id"
@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
     t.integer  "field_id"
     t.integer  "site_id"
     t.binary   "data",            limit: 2147483647
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.string   "item_type"
     t.string   "action"
     t.text     "log"
@@ -33,8 +33,8 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
     t.string   "name"
     t.boolean  "is_enable"
     t.string   "password"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
     t.integer  "user_id"
     t.boolean  "basic_setup"
     t.boolean  "advanced_setup"
@@ -43,25 +43,24 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
 
   create_table "collections", force: true do |t|
     t.string   "name"
-    t.text     "description"
+    t.text     "description",                 limit: 16777215
     t.boolean  "public"
-    t.datetime "created_at",                                                                   :null => false
-    t.datetime "updated_at",                                                                   :null => false
-    t.decimal  "lat",                 precision: 10, scale: 6
-    t.decimal  "lng",                 precision: 10, scale: 6
-    t.decimal  "min_lat",             precision: 10, scale: 6
-    t.decimal  "min_lng",             precision: 10, scale: 6
-    t.decimal  "max_lat",             precision: 10, scale: 6
-    t.decimal  "max_lng",             precision: 10, scale: 6
+    t.datetime "created_at",                                                                            null: false
+    t.datetime "updated_at",                                                                            null: false
+    t.decimal  "lat",                                          precision: 10, scale: 6
+    t.decimal  "lng",                                          precision: 10, scale: 6
+    t.decimal  "min_lat",                                      precision: 10, scale: 6
+    t.decimal  "min_lng",                                      precision: 10, scale: 6
+    t.decimal  "max_lat",                                      precision: 10, scale: 6
+    t.decimal  "max_lng",                                      precision: 10, scale: 6
     t.string   "icon"
-    t.integer  "quota",                                        default: 0
-    t.boolean  "is_visible_name",                              default: true
-    t.boolean  "is_visible_location",                          default: true
-    t.integer  "field_identify"
-    t.integer  "field_parent"
+    t.integer  "quota",                                                                 default: 0
+    t.boolean  "is_visible_name",                                                       default: true
+    t.boolean  "is_visible_location",                                                   default: true
     t.boolean  "hierarchy_mode"
-    t.integer  "field_identify_id"
-    t.boolean  "is_enabled_national_gateway"
+    t.integer  "field_parent"
+    t.integer  "field_identify"
+    t.boolean  "is_enabled_national_gateway",                                           default: false
   end
 
   create_table "field_histories", force: true do |t|
@@ -70,14 +69,14 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
     t.string   "name"
     t.string   "code"
     t.string   "kind"
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.binary   "config",        limit: 2147483647
     t.integer  "ord"
     t.datetime "valid_since"
     t.datetime "valid_to"
     t.integer  "field_id"
-    t.text     "metadata"
+    t.text     "metadata",      limit: 16777215
   end
 
   add_index "field_histories", ["field_id"], name: "index_field_histories_on_field_id", using: :btree
@@ -88,11 +87,11 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
     t.string   "name"
     t.string   "code"
     t.string   "kind"
-    t.datetime "created_at",                                                     :null => false
-    t.datetime "updated_at",                                                     :null => false
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
     t.binary   "config",                limit: 2147483647
     t.integer  "ord"
-    t.text     "metadata"
+    t.text     "metadata",              limit: 16777215
     t.boolean  "is_mandatory",                             default: false
     t.boolean  "is_enable_field_logic",                    default: false
     t.boolean  "is_enable_range",                          default: false
@@ -102,34 +101,81 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
     t.integer  "user_id"
     t.string   "provider"
     t.string   "token"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "import_jobs", force: true do |t|
     t.string   "status"
     t.string   "original_filename"
     t.datetime "finished_at"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
     t.integer  "user_id"
     t.integer  "collection_id"
     t.text     "exception"
   end
 
+  create_table "instedd_telemetry_counters", force: true do |t|
+    t.integer "period_id"
+    t.string  "bucket"
+    t.text    "key_attributes"
+    t.integer "count",               default: 0
+    t.string  "key_attributes_hash"
+  end
+
+  add_index "instedd_telemetry_counters", ["bucket", "key_attributes_hash", "period_id"], name: "instedd_telemetry_counters_unique_fields", unique: true, using: :btree
+
+  create_table "instedd_telemetry_periods", force: true do |t|
+    t.datetime "beginning"
+    t.datetime "end"
+    t.datetime "stats_sent_at"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.string   "lock_owner"
+    t.datetime "lock_expiration"
+  end
+
+  create_table "instedd_telemetry_set_occurrences", force: true do |t|
+    t.integer "period_id"
+    t.string  "bucket"
+    t.text    "key_attributes"
+    t.string  "element"
+    t.string  "key_attributes_hash"
+  end
+
+  add_index "instedd_telemetry_set_occurrences", ["bucket", "key_attributes_hash", "element", "period_id"], name: "instedd_telemetry_set_occurrences_unique_fields", unique: true, using: :btree
+
+  create_table "instedd_telemetry_settings", force: true do |t|
+    t.string "key"
+    t.string "value"
+  end
+
+  add_index "instedd_telemetry_settings", ["key"], name: "index_instedd_telemetry_settings_on_key", unique: true, using: :btree
+
+  create_table "instedd_telemetry_timespans", force: true do |t|
+    t.string   "bucket"
+    t.text     "key_attributes"
+    t.datetime "since"
+    t.datetime "until"
+    t.string   "key_attributes_hash"
+  end
+
+  add_index "instedd_telemetry_timespans", ["bucket", "key_attributes_hash"], name: "instedd_telemetry_timespans_unique_fields", unique: true, using: :btree
+
   create_table "languages", force: true do |t|
     t.string   "name"
     t.string   "code"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "layer_histories", force: true do |t|
     t.integer  "collection_id"
     t.string   "name"
     t.boolean  "public"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.integer  "ord"
     t.datetime "valid_since"
     t.datetime "valid_to"
@@ -144,31 +190,31 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
     t.integer  "layer_id"
     t.boolean  "read",          default: false
     t.boolean  "write",         default: false
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
   create_table "layers", force: true do |t|
     t.integer  "collection_id"
     t.string   "name"
     t.boolean  "public"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.integer  "ord"
   end
 
   create_table "login_failed_trackers", force: true do |t|
     t.datetime "login_at"
     t.string   "ip_address"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "memberships", force: true do |t|
     t.integer  "user_id"
     t.integer  "collection_id"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
     t.boolean  "admin",         default: false
     t.boolean  "owner",         default: false
   end
@@ -183,30 +229,30 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
     t.string   "to"
     t.string   "subject"
     t.string   "body"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
-    t.text     "reply"
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.text     "reply",         limit: 16777215
     t.integer  "collection_id"
-    t.boolean  "is_send",       default: false
+    t.boolean  "is_send",                        default: false
   end
 
   create_table "prefixes", force: true do |t|
     t.string   "version"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "reminders", force: true do |t|
     t.string   "name"
-    t.text     "reminder_message"
+    t.text     "reminder_message", limit: 16777215
     t.integer  "repeat_id"
     t.integer  "collection_id"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
     t.boolean  "is_all_site"
-    t.text     "schedule"
+    t.text     "schedule",         limit: 16777215
     t.datetime "next_run"
-    t.text     "sites"
+    t.text     "sites",            limit: 16777215
     t.boolean  "status"
     t.string   "time_zone"
   end
@@ -217,37 +263,37 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
   create_table "repeats", force: true do |t|
     t.string   "name"
     t.integer  "order"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-    t.text     "rule"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.text     "rule",       limit: 16777215
   end
 
   create_table "share_channels", force: true do |t|
     t.integer  "channel_id"
     t.integer  "collection_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
-  create_table "share_national_channels", :force => true do |t|
+  create_table "share_national_channels", force: true do |t|
     t.integer  "user_id"
     t.integer  "collection_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "channel_id"
   end
 
   create_table "site_histories", force: true do |t|
     t.integer  "collection_id"
     t.string   "name"
-    t.decimal  "lat",                       precision: 10, scale: 6
-    t.decimal  "lng",                       precision: 10, scale: 6
+    t.decimal  "lat",                             precision: 10, scale: 6
+    t.decimal  "lng",                             precision: 10, scale: 6
     t.integer  "parent_id"
     t.string   "hierarchy"
-    t.datetime "created_at",                                                                           :null => false
-    t.datetime "updated_at",                                                                           :null => false
-    t.text     "properties"
-    t.string   "location_mode",  limit: 10,                          default: "automatic"
+    t.datetime "created_at",                                                                     null: false
+    t.datetime "updated_at",                                                                     null: false
+    t.text     "properties",     limit: 16777215
+    t.string   "location_mode",  limit: 10,                                default: "automatic"
     t.string   "id_with_prefix"
     t.datetime "valid_since"
     t.datetime "valid_to"
@@ -260,8 +306,8 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
   create_table "site_reminders", force: true do |t|
     t.integer  "reminder_id"
     t.integer  "site_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   add_index "site_reminders", ["reminder_id"], name: "index_site_reminders_on_reminder_id", using: :btree
@@ -270,14 +316,14 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
   create_table "sites", force: true do |t|
     t.integer  "collection_id"
     t.string   "name"
-    t.decimal  "lat",                       precision: 10, scale: 6
-    t.decimal  "lng",                       precision: 10, scale: 6
+    t.decimal  "lat",                             precision: 10, scale: 6
+    t.decimal  "lng",                             precision: 10, scale: 6
     t.integer  "parent_id"
     t.string   "hierarchy"
-    t.datetime "created_at",                                                                           :null => false
-    t.datetime "updated_at",                                                                           :null => false
-    t.text     "properties"
-    t.string   "location_mode",  limit: 10,                          default: "automatic"
+    t.datetime "created_at",                                                                     null: false
+    t.datetime "updated_at",                                                                     null: false
+    t.text     "properties",     limit: 16777215
+    t.string   "location_mode",  limit: 10,                                default: "automatic"
     t.string   "id_with_prefix"
     t.string   "uuid"
     t.string   "device_id"
@@ -287,42 +333,42 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
   create_table "sites_permissions", force: true do |t|
     t.integer  "membership_id"
     t.string   "type"
-    t.boolean  "all_sites",     default: true
-    t.text     "some_sites"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.boolean  "all_sites",                      default: true
+    t.text     "some_sites",    limit: 16777215
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
   end
 
   create_table "snapshots", force: true do |t|
     t.string   "name"
     t.datetime "date"
     t.integer  "collection_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "thresholds", force: true do |t|
     t.integer  "ord"
     t.string   "color"
-    t.text     "conditions"
+    t.text     "conditions",           limit: 16777215
     t.integer  "collection_id"
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
     t.string   "name"
     t.boolean  "is_all_site"
-    t.text     "sites"
+    t.text     "sites",                limit: 16777215
     t.boolean  "is_all_condition"
     t.boolean  "is_notify"
-    t.text     "phone_notification"
-    t.text     "email_notification"
+    t.text     "phone_notification",   limit: 16777215
+    t.text     "email_notification",   limit: 16777215
     t.string   "message_notification"
   end
 
   create_table "user_snapshots", force: true do |t|
     t.integer  "user_id"
     t.integer  "snapshot_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.integer  "collection_id"
   end
 
@@ -337,8 +383,8 @@ ActiveRecord::Schema.define(:version => 20150922023019) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
     t.string   "phone_number"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"

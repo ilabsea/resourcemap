@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GatewaysController do
+describe GatewaysController, :type => :controller  do
   include Devise::TestHelpers
   render_views
 

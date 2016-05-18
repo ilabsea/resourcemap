@@ -37,7 +37,7 @@ module Api::V1
     def search
       users = User.
         where('email LIKE ?', "#{params[:term]}%").
-        where("id in (?)", collection.memberships.value_of(:user_id)).
+        where("id in (?)", collection.memberships.pluck(:user_id)).
         order('email')
 
       render json: users.pluck(:email)

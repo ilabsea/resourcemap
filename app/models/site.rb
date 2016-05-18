@@ -4,7 +4,6 @@ class Site < ActiveRecord::Base
   include Site::CleanupConcern
   include Site::GeomConcern
   include Site::PrefixConcern
-  # include Site::TireConcern
   include Site::ElasticsearchConcern
   include HistoryConcern
 
@@ -15,6 +14,9 @@ class Site < ActiveRecord::Base
   validate :valid_properties
   after_validation :standardize_properties
   before_validation :assign_default_values, :on => :create
+
+  after_save :touch_collection_lifespan
+  after_destroy :touch_collection_lifespan
 
   attr_accessor :from_import_wizard
 
@@ -178,7 +180,7 @@ class Site < ActiveRecord::Base
   def valid_properties
     return unless valid_lat_lng
     fields = collection.fields.index_by(&:es_code)
-    fields_mandatory = collection.fields.find_all_by_is_mandatory(true)
+    fields_mandatory = collection.fields.where(is_mandatory: true)
     properties.each do |es_code, value|
       field = fields[es_code]
       if field

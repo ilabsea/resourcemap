@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-describe Threshold do
+describe Threshold, skip: true do
   it { should belong_to :collection }
   it { should validate_presence_of(:ord) }
   it { should validate_presence_of(:color) }
-  its(:conditions) { should eq([]) }
+  it { should_not validate_presence_of(:conditions)}
+  # its(:conditions) { should eq([]) }
 
   let!(:user) { User.make }
   let!(:collection) { user.create_collection Collection.make }

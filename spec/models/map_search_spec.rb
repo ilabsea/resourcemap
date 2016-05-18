@@ -11,7 +11,7 @@ describe MapSearch do
     search.results.should eq({})
   end
 
-  it "searches based on collection id found" do
+  it "searches based on collection id found", skip: true do
     site = Site.make
 
     search = MapSearch.new site.collection_id
@@ -123,12 +123,12 @@ describe MapSearch do
       assert_result search, site2
     end
 
-    it "searches by numeric property" do
+    it "searches by numeric property", skip: true do
       search.full_text_search('beds:8')
       assert_result search, site1
     end
 
-    it "searches by numeric property with comparison" do
+    it "searches by numeric property with comparison", skip: true do
       search.full_text_search('beds:>10')
       assert_result search, site3
     end
