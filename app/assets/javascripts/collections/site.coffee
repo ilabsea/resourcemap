@@ -35,13 +35,14 @@ onCollections ->
         write: (value) => @locationTextTemp = value
         owner: @
       @locationTextTemp = @locationText()
-      @valid = ko.computed => 
+      @valid = ko.computed =>
         if collection.isVisibleName
           @hasName() and @hasInputMendatoryProperties()
         else
           @hasInputMendatoryProperties()
       @highlightedName = ko.computed => window.model.highlightSearch(@name())
       @inEditMode = ko.observable(false)
+      @scrollable = ko.observable(false)
 
     hasLocation: => @position() != null
 
@@ -50,7 +51,7 @@ onCollections ->
     hasInputMendatoryProperties: =>
       for field in @fields()
         if field.is_mandatory
-          if field.kind == 'yes_no' && field.value() != null 
+          if field.kind == 'yes_no' && field.value() != null
             return true
           if !field.value() || (field.value() instanceof Array && field.value().length == 0)
             return false
@@ -88,7 +89,7 @@ onCollections ->
           @propagateUpdatedAt(data.updated_at)
           window.model.updateSitesInfo()
           window.model.currentCollection().reloadSites()
-          window.model.reloadMapSites()),        
+          window.model.reloadMapSites()),
         global: false
       })
       .fail((data) =>
@@ -222,7 +223,7 @@ onCollections ->
               $.handleAjaxError(data)
           catch error
             $.handleAjaxError(data))
-  
+
 
     propagateUpdatedAt: (value) =>
       @updatedAt(value)
@@ -257,7 +258,7 @@ onCollections ->
         @editingLocation(true)
         @startEditLocationInMap()
 
-    
+
     startEditLocationInMap: =>
       @originalLocation = @position()
 
@@ -373,11 +374,19 @@ onCollections ->
       window.model.initDatePicker()
       window.model.initAutocomplete()
       window.model.initControlKey()
+
+      for field in @fields()
+        field.editing(false)
+        field.originalValue = field.value()
+        field.setFieldFocus() if field.kind in ["yes_no", "numeric", "select_one", "select_many"]
+
+      window.model.newOrEditSite().scrollable(false)
+      $('#name').focus()
       $('textarea').autogrow()
 
     exitEditMode: (saved) =>
       @inEditMode(false)
-
+      @scrollable(false)
       @endEditLocationInMap(if saved then @position() else @originalLocation)
 
       # Restore original name and position if not saved
@@ -466,7 +475,7 @@ onCollections ->
         for layer in @layers()
           for field in layer.fields
             fields.push(field)
-        @fields(fields) 
+        @fields(fields)
         @getLocationFieldOption(@lat(), @lng())
 
         @copyPropertiesToFields()

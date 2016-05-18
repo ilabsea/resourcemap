@@ -43,7 +43,7 @@
     <!-- /ko -->
     .superblyTagfieldClearer
       <!-- ko if: expanded() -->
-      %input.w25.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
+      %input.w25.ux-search{ko(value: :filter, valueUpdate: :afterkeydown, hasfocus: true, event: {keydown: :filterKeyDown, change: :enableScrollFocusView}, attr: {id: "'select-many-input-' + code"}), type: :text, style: 'width:100%'}
       %ul.w25.taglist.box{ko(foreach: :remainingOptions), style: 'margin-right:5px;margin-top:2px;width:100%'}
         %li{ko(attr: {style: 'selected() ? "background-color:#DADAEA" : ""'})}
           %a{ko(text: :label, click: '$parent.selectOption')}
