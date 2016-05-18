@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Layer do
-  it { should belong_to :collection }
-  it { should have_many :fields }
+  it { is_expected.to belong_to :collection }
+  it { is_expected.to have_many :fields }
 
   def history_concern_class
     described_class

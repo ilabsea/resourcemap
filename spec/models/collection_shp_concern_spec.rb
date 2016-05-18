@@ -18,11 +18,11 @@ describe Collection::ShpConcern, skip: true do
       end
 
       it 'should format created_at' do
-        record.data['created_at'].should eq 'Fri, 20 Jun 2014 01:00:00 +0000'
+        expect(record.data['created_at']).to eq 'Fri, 20 Jun 2014 01:00:00 +0000'
       end
 
       it 'should format updated_at' do
-        record.data['updated_at'].should eq 'Fri, 20 Jun 2014 01:00:00 +0000'
+        expect(record.data['updated_at']).to eq 'Fri, 20 Jun 2014 01:00:00 +0000'
       end
     end
   end

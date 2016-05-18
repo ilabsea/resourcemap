@@ -4,10 +4,10 @@ describe Message do
   context "new" do
     subject { Message.new }
 
-    it { should be_invalid }
-    it { should validate_presence_of(:guid) }
-    it { should validate_presence_of(:body) }
-    it { should validate_presence_of(:from) }
+    it { is_expected.to be_invalid }
+    it { is_expected.to validate_presence_of(:guid) }
+    it { is_expected.to validate_presence_of(:body) }
+    it { is_expected.to validate_presence_of(:from) }
     it { expect(subject.save).to be_falsy }
     # its(:save) { should be_false }
   end
@@ -18,22 +18,22 @@ describe Message do
     end
 
     it "should not be an sms" do
-      @message.should_not be_channel(:sms)
+      expect(@message).not_to be_channel(:sms)
     end
 
     it "should not have a sender" do
-      @message.sender.should be_nil
+      expect(@message.sender).to be_nil
     end
 
     it "should check message is and sms" do
       @message.from = "sms://1"
-      @message.should be_channel(:sms)
+      expect(@message).to be_channel(:sms)
     end
 
     it "should find sender by phone number" do
       user = User.make :phone_number => "1"
       @message.from = "sms://1"
-      @message.sender.should eq(user)
+      expect(@message.sender).to eq(user)
     end
   end
 
@@ -46,9 +46,9 @@ describe Message do
     end
 
     it "should save reply" do
-      @message.should_receive(:visit).and_return("done")
+      expect(@message).to receive(:visit).and_return("done")
       @message.process!
-      @message.reply.should == "done"
+      expect(@message.reply).to eq("done")
     end
 
     context "when command is invalid" do
@@ -58,8 +58,8 @@ describe Message do
       end
 
       it "should not save reply", skip: true do
-        lambda { @message.process! }.should raise_error(RuntimeError, "Invalid command")
-        @message.reply.should be_nil
+        expect { @message.process! }.to raise_error(RuntimeError, "Invalid command")
+        expect(@message.reply).to be_nil
       end
     end
   end
@@ -68,8 +68,8 @@ describe Message do
     it "should accept ExecVisitor" do
       message = Message.create :guid => '999', :from => 'sms://123', :body => "foo"
       command = double('Command')
-      command.should_receive(:sender=)
-      command.should_receive(:accept)
+      expect(command).to receive(:sender=)
+      expect(command).to receive(:accept)
       # Execute
       message.visit command, nil
     end
@@ -90,7 +90,7 @@ describe Message do
     it "shouldn't change collection.quota after create new message with property is_send == false" do
       message = Message.new from: '123456', to: '123456', body: 'hello resourcemap', is_send: false, collection_id: collection.id
       c = Collection.find collection.id 
-      c.quota.should eq collection.quota
+      expect(c.quota).to eq collection.quota
     end
 
   end

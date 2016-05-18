@@ -41,7 +41,7 @@ describe Api::CollectionsController, type: :controller do
     end
 
     it 'should assign time_zone from login user' do
-      controller.collection.time_zone.should eq user.time_zone
+      expect(controller.collection.time_zone).to eq user.time_zone
     end
   end
 
@@ -50,39 +50,39 @@ describe Api::CollectionsController, type: :controller do
       get :show, id: collection.id, format: 'json'
     end
 
-    it { response.should be_success }
+    it { expect(response).to be_success }
 
     it "should return JSON", skip: true do
       json = JSON.parse response.body
-      json["name"].should eq(collection.name)
+      expect(json["name"]).to eq(collection.name)
       json['sites'].sort_by! { |site| site["name"] }
-      json["sites"].length.should eq(2)
+      expect(json["sites"].length).to eq(2)
 
-      json["sites"][0]["id"].should eq(site2.id)
-      json["sites"][0]["name"].should eq(site2.name)
-      json["sites"][0]["lat"].should eq(site2.lat)
-      json["sites"][0]["long"].should eq(site2.lng)
+      expect(json["sites"][0]["id"]).to eq(site2.id)
+      expect(json["sites"][0]["name"]).to eq(site2.name)
+      expect(json["sites"][0]["lat"]).to eq(site2.lat)
+      expect(json["sites"][0]["long"]).to eq(site2.lng)
 
-      json["sites"][0]["properties"].length.should eq(1)
+      expect(json["sites"][0]["properties"].length).to eq(1)
 
-      json["sites"][0]["properties"][hierarchy.code].should eq("Bro")
+      expect(json["sites"][0]["properties"][hierarchy.code]).to eq("Bro")
 
-      json["sites"][1]["id"].should eq(site.id)
-      json["sites"][1]["name"].should eq(site.name)
-      json["sites"][1]["lat"].should eq(site.lat)
-      json["sites"][1]["long"].should eq(site.lng)
+      expect(json["sites"][1]["id"]).to eq(site.id)
+      expect(json["sites"][1]["name"]).to eq(site.name)
+      expect(json["sites"][1]["lat"]).to eq(site.lat)
+      expect(json["sites"][1]["long"]).to eq(site.lng)
 
-      json["sites"][1]["properties"].length.should eq(9)
+      expect(json["sites"][1]["properties"].length).to eq(9)
 
-      json["sites"][1]["properties"][text.code].should eq(site.properties[text.es_code])
-      json["sites"][1]["properties"][yes_no.code].should be_true
-      json["sites"][1]["properties"][numeric.code].should eq(site.properties[numeric.es_code])
-      json["sites"][1]["properties"][select_one.code].should eq('one')
-      json["sites"][1]["properties"][select_many.code].should eq(['one', 'two'])
-      json["sites"][1]["properties"][hierarchy.code].should eq("Dad")
-      json["sites"][1]["properties"][site_ref.code].should eq(site2.id)
-      json["sites"][1]["properties"][date.code].should eq('10/24/2012')
-      json["sites"][1]["properties"][director.code].should eq(user.email)
+      expect(json["sites"][1]["properties"][text.code]).to eq(site.properties[text.es_code])
+      expect(json["sites"][1]["properties"][yes_no.code]).to be_truthy
+      expect(json["sites"][1]["properties"][numeric.code]).to eq(site.properties[numeric.es_code])
+      expect(json["sites"][1]["properties"][select_one.code]).to eq('one')
+      expect(json["sites"][1]["properties"][select_many.code]).to eq(['one', 'two'])
+      expect(json["sites"][1]["properties"][hierarchy.code]).to eq("Dad")
+      expect(json["sites"][1]["properties"][site_ref.code]).to eq(site2.id)
+      expect(json["sites"][1]["properties"][date.code]).to eq('10/24/2012')
+      expect(json["sites"][1]["properties"][director.code]).to eq(user.email)
 
     end
   end
@@ -91,11 +91,11 @@ describe Api::CollectionsController, type: :controller do
 
     it "should retrieve sites under certain item in a hierarchy field", skip: true do
       get :show, id: collection.id, format: 'json', hierarchy.code => { under: 'Dad' }
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json["sites"].length.should eq(2)
-      json["sites"][0]["id"].should eq(site2.id)
-      json["sites"][1]["id"].should eq(site.id)
+      expect(json["sites"].length).to eq(2)
+      expect(json["sites"][0]["id"]).to eq(site2.id)
+      expect(json["sites"][1]["id"]).to eq(site.id)
     end
   end
 
@@ -104,44 +104,44 @@ describe Api::CollectionsController, type: :controller do
       get :show, id: collection.id, format: 'rss'
     end
 
-    it { response.should be_success }
+    it { expect(response).to be_success }
 
     it "should return RSS" do
       rss =  Hash.from_xml response.body
 
-      rss["rss"]["channel"]["title"].should eq(collection.name)
+      expect(rss["rss"]["channel"]["title"]).to eq(collection.name)
       rss["rss"]["channel"]["item"].sort_by! { |item| item["name"] }
 
-      rss["rss"]["channel"]["item"][0]["title"].should eq(site2.name)
-      rss["rss"]["channel"]["item"][0]["lat"].should eq(site2.lat.to_s)
-      rss["rss"]["channel"]["item"][0]["long"].should eq(site2.lng.to_s)
-      rss["rss"]["channel"]["item"][0]["guid"].should eq(api_site_url site2, format: 'rss')
+      expect(rss["rss"]["channel"]["item"][0]["title"]).to eq(site2.name)
+      expect(rss["rss"]["channel"]["item"][0]["lat"]).to eq(site2.lat.to_s)
+      expect(rss["rss"]["channel"]["item"][0]["long"]).to eq(site2.lng.to_s)
+      expect(rss["rss"]["channel"]["item"][0]["guid"]).to eq(api_site_url site2, format: 'rss')
 
       #TODO: This is returning "properties"=>"\n      "
-      rss["rss"]["channel"]["item"][0]["properties"].length.should eq(1)
+      expect(rss["rss"]["channel"]["item"][0]["properties"].length).to eq(1)
 
-      rss["rss"]["channel"]["item"][0]["properties"][hierarchy.code].should eq('Bro')
+      expect(rss["rss"]["channel"]["item"][0]["properties"][hierarchy.code]).to eq('Bro')
 
-      rss["rss"]["channel"]["item"][1]["title"].should eq(site.name)
-      rss["rss"]["channel"]["item"][1]["lat"].should eq(site.lat.to_s)
-      rss["rss"]["channel"]["item"][1]["long"].should eq(site.lng.to_s)
-      rss["rss"]["channel"]["item"][1]["guid"].should eq(api_site_url site, format: 'rss')
+      expect(rss["rss"]["channel"]["item"][1]["title"]).to eq(site.name)
+      expect(rss["rss"]["channel"]["item"][1]["lat"]).to eq(site.lat.to_s)
+      expect(rss["rss"]["channel"]["item"][1]["long"]).to eq(site.lng.to_s)
+      expect(rss["rss"]["channel"]["item"][1]["guid"]).to eq(api_site_url site, format: 'rss')
 
 
-      rss["rss"]["channel"]["item"][1]["properties"].length.should eq(9)
+      expect(rss["rss"]["channel"]["item"][1]["properties"].length).to eq(9)
 
-      rss["rss"]["channel"]["item"][1]["properties"][text.code].should eq(site.properties[text.es_code])
-      rss["rss"]["channel"]["item"][1]["properties"][numeric.code].should eq(site.properties[numeric.es_code].to_s)
-      rss["rss"]["channel"]["item"][1]["properties"][yes_no.code].should eq('true')
-      rss["rss"]["channel"]["item"][1]["properties"][select_one.code].should eq('one')
-      rss["rss"]["channel"]["item"][1]["properties"][select_many.code].length.should eq(1)
-      rss["rss"]["channel"]["item"][1]["properties"][select_many.code]['option'].length.should eq(2)
-      rss["rss"]["channel"]["item"][1]["properties"][select_many.code]['option'][0]['code'].should eq('one')
-      rss["rss"]["channel"]["item"][1]["properties"][select_many.code]['option'][1]['code'].should eq('two')
-      rss["rss"]["channel"]["item"][1]["properties"][hierarchy.code].should eq('Dad')
-      rss["rss"]["channel"]["item"][1]["properties"][site_ref.code].should eq(site2.id.to_s)
-      rss["rss"]["channel"]["item"][1]["properties"][date.code].should eq('10/24/2012')
-      rss["rss"]["channel"]["item"][1]["properties"][director.code].should eq(user.email)
+      expect(rss["rss"]["channel"]["item"][1]["properties"][text.code]).to eq(site.properties[text.es_code])
+      expect(rss["rss"]["channel"]["item"][1]["properties"][numeric.code]).to eq(site.properties[numeric.es_code].to_s)
+      expect(rss["rss"]["channel"]["item"][1]["properties"][yes_no.code]).to eq('true')
+      expect(rss["rss"]["channel"]["item"][1]["properties"][select_one.code]).to eq('one')
+      expect(rss["rss"]["channel"]["item"][1]["properties"][select_many.code].length).to eq(1)
+      expect(rss["rss"]["channel"]["item"][1]["properties"][select_many.code]['option'].length).to eq(2)
+      expect(rss["rss"]["channel"]["item"][1]["properties"][select_many.code]['option'][0]['code']).to eq('one')
+      expect(rss["rss"]["channel"]["item"][1]["properties"][select_many.code]['option'][1]['code']).to eq('two')
+      expect(rss["rss"]["channel"]["item"][1]["properties"][hierarchy.code]).to eq('Dad')
+      expect(rss["rss"]["channel"]["item"][1]["properties"][site_ref.code]).to eq(site2.id.to_s)
+      expect(rss["rss"]["channel"]["item"][1]["properties"][date.code]).to eq('10/24/2012')
+      expect(rss["rss"]["channel"]["item"][1]["properties"][director.code]).to eq(user.email)
 
 
     end
@@ -153,16 +153,16 @@ describe Api::CollectionsController, type: :controller do
       get :show, id: collection.id, format: 'csv'
     end
 
-    it { response.should be_success }
+    it { expect(response).to be_success }
 
     it "should return CSV" do
       csv =  CSV.parse response.body
-      csv.length.should eq(3)
-      csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, yes_no.code, select_one.code, 'select_many', 'hierarchy', site_ref.code, date.code, director.code, 'last updated'])
+      expect(csv.length).to eq(3)
+      expect(csv[0]).to eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, yes_no.code, select_one.code, 'select_many', 'hierarchy', site_ref.code, date.code, director.code, 'last updated'])
       
-      csv.include?([site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "Bro", "", "", "", site2.updated_at.strftime("%a, %d %B %Y %T %z")]).should eq(true)
+      expect(csv.include?([site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "Bro", "", "", "", site2.updated_at.strftime("%a, %d %B %Y %T %z")])).to eq(true)
 
-      csv.include?([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, "yes", "one", "one, two", "Dad", site2.id.to_s, "10/24/2012", user.email, site.updated_at.strftime("%a, %d %B %Y %T %z")]).should eq(true)
+      expect(csv.include?([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, "yes", "one", "one, two", "Dad", site2.id.to_s, "10/24/2012", user.email, site.updated_at.strftime("%a, %d %B %Y %T %z")])).to eq(true)
     end
   end
 
@@ -171,7 +171,7 @@ describe Api::CollectionsController, type: :controller do
       get :show, id: collection.id, format: 'shp'
     end
 
-    it { response.should be_success }
+    it { expect(response).to be_success }
   end
 
   describe "GET some sites from collection" do
@@ -181,9 +181,9 @@ describe Api::CollectionsController, type: :controller do
 
     it "should return some sites based on provided ids params", skip: true do
       get :get_some_sites ,sites: [site.id, site2.id].join(","), format: 'json', collection_id: collection.id
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json.length.should eq(2)
+      expect(json.length).to eq(2)
     end
   end
 
@@ -191,56 +191,56 @@ describe Api::CollectionsController, type: :controller do
 
     it "should validate numeric fields in equal queries", skip: true do
       get :show, id: collection.id, format: 'csv', numeric.code => "invalid"
-      response.response_code.should be(400)
-      response.body.should include("Invalid numeric value in field numeric")
+      expect(response.response_code).to be(400)
+      expect(response.body).to include("Invalid numeric value in field numeric")
       get :show, id: collection.id, format: 'csv', numeric.code => "2"
-      response.response_code.should be(200)
+      expect(response.response_code).to be(200)
     end
 
     it "should validate numeric fields in other operations", skip: true do
       get :show, id: collection.id, format: 'csv', numeric.code => "<=invalid"
-      response.response_code.should be(400)
-      response.body.should include("Invalid numeric value in field numeric")
+      expect(response.response_code).to be(400)
+      expect(response.body).to include("Invalid numeric value in field numeric")
       get :show, id: collection.id, format: 'csv', numeric.code => "<=2"
-      response.response_code.should be(200)
+      expect(response.response_code).to be(200)
     end
 
     it "should validate date fields format" do
       get :show, id: collection.id, format: 'csv', date.code => "invalid1234"
-      response.response_code.should be(400)
-      response.body.should include("Invalid date value in field date")
+      expect(response.response_code).to be(400)
+      expect(response.body).to include("Invalid date value in field date")
     end
 
     it "should validate date fields format values" do
       get :show, id: collection.id, format: 'csv', date.code => "32/4,invalid"
-      response.response_code.should be(400)
-      response.body.should include("Invalid date value in field date")
+      expect(response.response_code).to be(400)
+      expect(response.body).to include("Invalid date value in field date")
       get :show, id: collection.id, format: 'csv', date.code => "12/25/2012,12/31/2012"
-      response.response_code.should be(200)
+      expect(response.response_code).to be(200)
     end
 
     it "should validate hierarchy existing option" do
       get :show, id: collection.id, format: 'csv', hierarchy.code => ["invalid"]
-      response.response_code.should be(400)
-      response.body.should include("Invalid hierarchy option in field hierarchy")
+      expect(response.response_code).to be(400)
+      expect(response.body).to include("Invalid hierarchy option in field hierarchy")
       get :show, id: collection.id, format: 'csv', hierarchy.code => ["Dad"]
-      response.response_code.should be(200)
+      expect(response.response_code).to be(200)
     end
 
     it "should validate select_one existing option" do
       get :show, id: collection.id, format: 'csv', select_one.code => "invalid"
-      response.response_code.should be(400)
-      response.body.should include("Invalid option in field select_one")
+      expect(response.response_code).to be(400)
+      expect(response.body).to include("Invalid option in field select_one")
       get :show, id: collection.id, format: 'csv', select_one.code => "one"
-      response.response_code.should be(200)
+      expect(response.response_code).to be(200)
     end
 
     it "should validate select_many existing option" do
       get :show, id: collection.id, format: 'csv', select_many.code => "invalid"
-      response.response_code.should be(400)
-      response.body.should include("Invalid option in field select_many")
+      expect(response.response_code).to be(400)
+      expect(response.body).to include("Invalid option in field select_many")
       get :show, id: collection.id, format: 'csv', select_many.code => "one"
-      response.response_code.should be(200)
+      expect(response.response_code).to be(200)
     end
   end
 end

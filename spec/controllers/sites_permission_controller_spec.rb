@@ -10,7 +10,7 @@ describe SitesPermissionController, skip: true do
   describe 'POST create' do
     it 'should response ok' do
       post :create, "sites_permission" => {"user_id" => user.id}, "collection_id" => collection.id
-      response.body.should == "\"ok\""
+      expect(response.body).to eq("\"ok\"")
     end
   end
 
@@ -21,12 +21,12 @@ describe SitesPermissionController, skip: true do
 
     it "should response include read sites permission" do
       get :index, collection_id: collection.id
-      response.body.should include "\"read\":#{read_sites_permission.to_json}"
+      expect(response.body).to include "\"read\":#{read_sites_permission.to_json}"
     end
 
     it "should response include write sites permission" do
       get :index, collection_id: collection.id
-      response.body.should include "\"write\":#{write_sites_permission.to_json}"
+      expect(response.body).to include "\"write\":#{write_sites_permission.to_json}"
     end
 
     context "when user is not a member of collection" do
@@ -34,7 +34,7 @@ describe SitesPermissionController, skip: true do
 
       it "should response no permission" do
         get :index, collection_id: collection_2.id
-        response.body.should == SitesPermission.no_permission.to_json
+        expect(response.body).to eq(SitesPermission.no_permission.to_json)
       end
     end
   end

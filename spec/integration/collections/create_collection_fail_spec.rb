@@ -11,6 +11,6 @@ describe "create_collection" do
   	click_button "Save"
   	sleep 1
   	page.save_screenshot "Create Collection_fail.png"
-  	page.should have_content("Name can't be blank")
+  	expect(page).to have_content("Name can't be blank")
   end
 end

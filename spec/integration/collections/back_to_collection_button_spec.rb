@@ -13,7 +13,7 @@ describe "back_to_colletion_button" do
     sleep 5
     find('.pback').click
     sleep 2
-    page.should have_content ("Central Hospital")
-    page.should have_content ("My Collections")
+    expect(page).to have_content ("Central Hospital")
+    expect(page).to have_content ("My Collections")
   end
 end

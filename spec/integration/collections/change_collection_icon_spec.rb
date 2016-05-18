@@ -16,6 +16,6 @@ it " should change a collections icon", js:true do
     sleep 2
    	click_button "Save"
   	page.save_screenshot "Edit Collections icon.png"
-  	page.should have_content "Collection Central Hospital updated"
+  	expect(page).to have_content "Collection Central Hospital updated"
   end
 end

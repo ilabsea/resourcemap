@@ -12,7 +12,7 @@ describe "login_fail" do
     end 
     sleep 2
     page.save_screenshot 'login_fail.png'
-    page.should have_content("Invalid email or password.")
+    expect(page).to have_content("Invalid email or password.")
   end
 
 end

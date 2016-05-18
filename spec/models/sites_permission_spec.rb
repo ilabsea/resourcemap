@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SitesPermission, :type => :model do
-  it { should belong_to :membership }
+  it { is_expected.to belong_to :membership }
 
   describe "convert to json" do
     describe '#to_json' do
@@ -26,7 +26,7 @@ describe SitesPermission, :type => :model do
   end
 
   it "should have no_permission" do
-    SitesPermission.no_permission.should == { read: nil, write: nil }
+    expect(SitesPermission.no_permission).to eq({ read: nil, write: nil })
   end
 
   describe 'telemetry' do

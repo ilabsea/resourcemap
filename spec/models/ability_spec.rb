@@ -18,52 +18,52 @@ describe Ability do
 
 
 		describe "Destroy collection" do
-			it { admin_ability.should be_able_to(:destroy, collection) }
-			it { member_ability.should_not be_able_to(:destroy, collection) }
-			it { user_ability.should_not be_able_to(:destroy, collection) }
-			it { guest_ability.should_not be_able_to(:destroy, collection) }
+			it { expect(admin_ability).to be_able_to(:destroy, collection) }
+			it { expect(member_ability).not_to be_able_to(:destroy, collection) }
+			it { expect(user_ability).not_to be_able_to(:destroy, collection) }
+			it { expect(guest_ability).not_to be_able_to(:destroy, collection) }
 		end
 
 		describe "Create snapshot" do
-			it { admin_ability.should be_able_to(:create_snapshot, collection) }
-			it { member_ability.should_not be_able_to(:create_snapshot, collection) }
-			it { user_ability.should_not be_able_to(:create_snapshot, collection) }
-			it { guest_ability.should_not be_able_to(:create_snapshot, collection) }
+			it { expect(admin_ability).to be_able_to(:create_snapshot, collection) }
+			it { expect(member_ability).not_to be_able_to(:create_snapshot, collection) }
+			it { expect(user_ability).not_to be_able_to(:create_snapshot, collection) }
+			it { expect(guest_ability).not_to be_able_to(:create_snapshot, collection) }
 		end
 
 		describe "Update collection" do 
-			it { admin_ability.should be_able_to(:update, collection) }
-			it { member_ability.should_not be_able_to(:upate, collection) }
-			it { user_ability.should_not be_able_to(:update, collection) }
-			it { guest_ability.should_not be_able_to(:update, collection) }
+			it { expect(admin_ability).to be_able_to(:update, collection) }
+			it { expect(member_ability).not_to be_able_to(:upate, collection) }
+			it { expect(user_ability).not_to be_able_to(:update, collection) }
+			it { expect(guest_ability).not_to be_able_to(:update, collection) }
 		end
 
 		describe "Create collection" do
-			it { guest_ability.should_not be_able_to(:create, Collection) }
-			it { user_ability.should be_able_to(:create, Collection) }
+			it { expect(guest_ability).not_to be_able_to(:create, Collection) }
+			it { expect(user_ability).to be_able_to(:create, Collection) }
 		end
 
 		describe "Public Collection Abilities" do
 			let!(:public_collection) { admin.create_collection Collection.make public: true}
 
-			it { user_ability.should_not be_able_to(:read, collection) }
-			it { user_ability.should_not be_able_to(:update, collection) }
+			it { expect(user_ability).not_to be_able_to(:read, collection) }
+			it { expect(user_ability).not_to be_able_to(:update, collection) }
 
 		end
 
 		describe "Manage snapshots" do
 
-			it { admin_ability.should be_able_to(:create, (Snapshot.make collection: collection)) }
-			it { member_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
-			it { user_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
-			it { guest_ability.should_not be_able_to(:create, (Snapshot.make collection: collection)) }
+			it { expect(admin_ability).to be_able_to(:create, (Snapshot.make collection: collection)) }
+			it { expect(member_ability).not_to be_able_to(:create, (Snapshot.make collection: collection)) }
+			it { expect(user_ability).not_to be_able_to(:create, (Snapshot.make collection: collection)) }
+			it { expect(guest_ability).not_to be_able_to(:create, (Snapshot.make collection: collection)) }
 		end
 
 		describe "Members" do
-			it { admin_ability.should be_able_to(:members, collection) }
-			it { member_ability.should_not be_able_to(:members, collection) }
-			it { user_ability.should_not be_able_to(:members, collection) }
-			it { guest_ability.should_not be_able_to(:members, collection) }
+			it { expect(admin_ability).to be_able_to(:members, collection) }
+			it { expect(member_ability).not_to be_able_to(:members, collection) }
+			it { expect(user_ability).not_to be_able_to(:members, collection) }
+			it { expect(guest_ability).not_to be_able_to(:members, collection) }
 		end
 	end
 

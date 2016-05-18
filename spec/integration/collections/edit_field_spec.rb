@@ -21,6 +21,6 @@ describe "edit_field" do
     click_button 'Save layer'
     sleep 5
     page.save_screenshot 'Edit_field.png'
-    page.should have_content "Layer 'Central Hospital Layer 1' successfully saved"
+    expect(page).to have_content "Layer 'Central Hospital Layer 1' successfully saved"
   end
 end

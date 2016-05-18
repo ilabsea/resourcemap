@@ -17,7 +17,7 @@ describe "layers" do
     click_link "Layers"
     click_button "Move layer down"
     page.find(:xpath, '//div[@id="layers-main"]/div[1]/button').click
-    page.should have_content layers[0]
+    expect(page).to have_content layers[0]
     page.save_screenshot 'Sort_layer.png'
   end
 

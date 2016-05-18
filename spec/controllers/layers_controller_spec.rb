@@ -15,24 +15,24 @@ describe LayersController, :type => :controller  do
 
   it "should update field.layer_id", skip: true do
 
-    layer.fields.count.should eq(1)
+    expect(layer.fields.count).to eq(1)
     json_layer = {id: layer.id, name: layer.name, ord: layer.ord, public: layer.public, fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
 
     post :update, {layer: json_layer, collection_id: collection.id, id: layer.id}
 
-    layer.fields.count.should eq(0)
-    layer2.fields.count.should eq(1)
-    layer2.fields.first.name.should eq(numeric.name)
+    expect(layer.fields.count).to eq(0)
+    expect(layer2.fields.count).to eq(1)
+    expect(layer2.fields.first.name).to eq(numeric.name)
 
     histories = FieldHistory.where :field_id => numeric.id
 
-    histories.count.should eq(2)
+    expect(histories.count).to eq(2)
 
-    histories.first.layer_id.should eq(layer.id)
-    histories.first.valid_to.should_not be_nil
+    expect(histories.first.layer_id).to eq(layer.id)
+    expect(histories.first.valid_to).not_to be_nil
 
-    histories.last.valid_to.should be_nil
-    histories.last.layer_id.should eq(layer2.id)
+    expect(histories.last.valid_to).to be_nil
+    expect(histories.last.layer_id).to eq(layer2.id)
 
   end
 
@@ -41,7 +41,7 @@ describe LayersController, :type => :controller  do
     json = JSON.parse response.body
     #expect(response.body).to match /threshold_ids/
 
-    json[0]["threshold_ids"].should eq [threshold.id]
+    expect(json[0]["threshold_ids"]).to eq [threshold.id]
 
   end
   
@@ -64,13 +64,13 @@ describe LayersController, :type => :controller  do
 
       post :create, {layer: layer, collection_id: collection.id}
 
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json["name"].should eq("layer1")
-      json["fields"][0]["name"].should eq("location")
-      json["fields"][0]["code"].should eq("location")
-      json["fields"][0]["kind"].should eq("location")
-      json["fields"][0]["config"]["locations"].size.should eq(439)
+      expect(json["name"]).to eq("layer1")
+      expect(json["fields"][0]["name"]).to eq("location")
+      expect(json["fields"][0]["code"]).to eq("location")
+      expect(json["fields"][0]["kind"]).to eq("location")
+      expect(json["fields"][0]["config"]["locations"].size).to eq(439)
     end
   end
 

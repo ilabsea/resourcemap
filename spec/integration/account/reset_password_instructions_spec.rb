@@ -15,6 +15,6 @@ describe "reset_password" do
   	click_button "Send me reset password instructions"
   	sleep 2
   	page.save_screenshot 'reset_password.png'
-  	page.should have_content 'You will receive an email with instructions about how to reset your password in a few minutes.'
+  	expect(page).to have_content 'You will receive an email with instructions about how to reset your password in a few minutes.'
   end
 end

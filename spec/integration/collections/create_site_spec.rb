@@ -14,6 +14,6 @@ describe "create_site" do
   	click_button 'Done'
   	sleep 5
   	page.save_screenshot 'Create site.png'
-  	page.should have_content "Site 'New site' successfully created"
+  	expect(page).to have_content "Site 'New site' successfully created"
   end
 end

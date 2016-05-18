@@ -20,8 +20,8 @@ describe "collections" do
     fill_in 'identifier-input-id', :with => 'GB120712MB'
     click_button 'Done'
     sleep 3 
-    page.should_not have_content 'ID4567HJL'
-    page.should have_content 'GB120712MB'
+    expect(page).not_to have_content 'ID4567HJL'
+    expect(page).to have_content 'GB120712MB'
     page.save_screenshot "Edit_site_identifier_value.png"
   end
 end

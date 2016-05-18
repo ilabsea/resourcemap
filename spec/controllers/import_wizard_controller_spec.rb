@@ -27,7 +27,7 @@ describe ImportWizardsController, :type => :controller  do
       '3' => {name: 'Beds', usage: 'new_field', kind: 'numeric', code: 'beds', label: 'The beds'},
     }
     post :execute, collection_id: collection.id, columns: specs
-    response.response_code.should == 401
+    expect(response.response_code).to eq(401)
   end
 
 end

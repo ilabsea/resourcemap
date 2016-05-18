@@ -17,6 +17,6 @@ describe "edit_layer" do
     fill_in 'Name', :with => 'Test Layer'
     click_button 'Save layer'
     page.save_screenshot 'Edit_layer.png'
-    page.should have_content "Layer 'Test Layer' successfully saved"
+    expect(page).to have_content "Layer 'Test Layer' successfully saved"
   end  
 end

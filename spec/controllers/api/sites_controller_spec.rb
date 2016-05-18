@@ -33,9 +33,9 @@ describe Api::SitesController, skip: true do
       get :show, id: site.id, format: 'rss'
     end
 
-    it { response.should be_success }
+    it { expect(response).to be_success }
     it "should response RSS" do
-      response.content_type.should eq 'application/rss+xml'
+      expect(response.content_type).to eq 'application/rss+xml'
     end
   end
 
@@ -49,16 +49,16 @@ describe Api::SitesController, skip: true do
 
     it "should return one site in the collection" do
       get :index, format: 'json', limit: 1, offset: 1, collection_id: collection.id
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json["sites"].length.should eq(1)
+      expect(json["sites"].length).to eq(1)
     end
 
     it "should return two sites in the collection" do
       get :index, format: 'json', limit: 2, offset: 0, collection_id: collection.id
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json["sites"].length.should eq(2)
+      expect(json["sites"].length).to eq(2)
     end
 
   end
@@ -72,13 +72,13 @@ describe Api::SitesController, skip: true do
 
     it "should save site in the collection" do
       post :create, format: 'json', name: 'Hello', lat: 12.618897, lng: 104.765625, collection_id: collection.id, properties: {}, phone_number: user.phone_number
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json["site"]["name"].should eq("Hello")
-      json["site"]["lat"].should eq("12.618897")
-      json["site"]["lng"].should eq("104.765625")
-      json["site"]["collection_id"].should eq(collection.id)
-      json["site"]["properties"].should eq({})
+      expect(json["site"]["name"]).to eq("Hello")
+      expect(json["site"]["lat"]).to eq("12.618897")
+      expect(json["site"]["lng"]).to eq("104.765625")
+      expect(json["site"]["collection_id"]).to eq(collection.id)
+      expect(json["site"]["properties"]).to eq({})
     end
   end
 
@@ -91,13 +91,13 @@ describe Api::SitesController, skip: true do
 
     it "should save site in the collection" do
       put :update, format: 'json', id: site.id, name: 'Hello', lat: 12.618897, lng: 104.765625, collection_id: collection.id, properties: {}, phone_number: user.phone_number
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json["site"]["name"].should eq("Hello")
-      json["site"]["lat"].should eq("12.618897")
-      json["site"]["lng"].should eq("104.765625")
-      json["site"]["collection_id"].should eq(collection.id)
-      json["site"]["properties"].should eq({})
+      expect(json["site"]["name"]).to eq("Hello")
+      expect(json["site"]["lat"]).to eq("12.618897")
+      expect(json["site"]["lng"]).to eq("104.765625")
+      expect(json["site"]["collection_id"]).to eq(collection.id)
+      expect(json["site"]["properties"]).to eq({})
     end
   end
 
@@ -109,13 +109,13 @@ describe Api::SitesController, skip: true do
     end
 
     it "should have two sites befor delete" do
-      collection.sites.length.should eq(2)
+      expect(collection.sites.length).to eq(2)
     end
 
     it "should delete site in the collection" do
       delete :destroy, format: 'json', id: site.id, collection_id: collection.id
-      response.should be_success
-      collection.sites.length.should eq(1)
+      expect(response).to be_success
+      expect(collection.sites.length).to eq(1)
     end
   end
 end

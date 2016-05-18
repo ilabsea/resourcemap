@@ -14,6 +14,6 @@ describe "delete_collection_sites" do
     sleep 2
   	page.save_screenshot "Delete Collection Sites.png"
     sleep 6
-  	page.should have_content "Collection Central Hospital's sites deleted"
+  	expect(page).to have_content "Collection Central Hospital's sites deleted"
   end
 end

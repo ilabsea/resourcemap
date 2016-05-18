@@ -20,7 +20,7 @@ describe "search" do
     sleep 3
     page.has_content? 'Aida Rohan'
     sleep 3
-    page.should have_no_content 'Alek Ortiz'
+    expect(page).to have_no_content 'Alek Ortiz'
     sleep 2
   end
 end

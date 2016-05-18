@@ -4,7 +4,7 @@ describe Snapshot do
   describe "validations" do
     let!(:snapshot) { Snapshot.make }
 
-    it { should validate_uniqueness_of(:name).scoped_to(:collection_id) }
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:collection_id) }
   end
 
   let!(:collection) { Collection.make }
@@ -32,10 +32,10 @@ describe Snapshot do
     index_name = Collection.index_name collection.id, snapshot_id: snapshot.id
     search = Tire::Search::Search.new index_name
 
-    search.perform.results.map { |x| x['_source']['id'] }.sort.should eq([@site1.id, @site2.id])
+    expect(search.perform.results.map { |x| x['_source']['id'] }.sort).to eq([@site1.id, @site2.id])
 
     # Also check mapping
-    snapshot.index.mapping['site']['properties']['properties']['properties'].should eq({@field.es_code => {'type' => 'long'}})
+    expect(snapshot.index.mapping['site']['properties']['properties']['properties']).to eq({@field.es_code => {'type' => 'long'}})
   end
 
   it "should destroy index on destroy", skip: true do
@@ -45,48 +45,48 @@ describe Snapshot do
     snapshot.destroy
 
     index_name = Collection.index_name collection.id, snapshot_id: snapshot.id
-    Tire::Index.new(index_name).exists?.should be_false
+    expect(Tire::Index.new(index_name).exists?).to be_falsey
   end
 
   it "collection should have histories", skip: true do
     date = Time.now
 
     site_histories = collection.site_histories.at_date(date)
-    site_histories.count.should eq(4)
+    expect(site_histories.count).to eq(4)
 
     layer_histories = collection.layer_histories.at_date(date)
-    layer_histories.count.should eq(1)
+    expect(layer_histories.count).to eq(1)
 
     field_histories = collection.field_histories.at_date(date)
-    field_histories.count.should eq(2)
+    expect(field_histories.count).to eq(2)
   end
 
   it "should delete history when collection is destroyed" do
     collection.destroy
 
-    collection.site_histories.count.should eq(0)
-    collection.layer_histories.count.should eq(0)
-    collection.field_histories.count.should eq(0)
+    expect(collection.site_histories.count).to eq(0)
+    expect(collection.layer_histories.count).to eq(0)
+    expect(collection.field_histories.count).to eq(0)
   end
 
   it "should delete snapshots when collection is destroyed", skip: true do
     collection.snapshots.create! date: Time.now, name: 'last_year'
-    collection.snapshots.count.should eq(1)
+    expect(collection.snapshots.count).to eq(1)
 
     collection.destroy
 
-    collection.snapshots.count.should eq(0)
+    expect(collection.snapshots.count).to eq(0)
   end
 
   it "should delete userSnapshot if collection is destroyed", skip: true do
     snapshot = collection.snapshots.create! date: Time.now, name: 'last_year'
     user = User.make
     snapshot.user_snapshots.create! user: user
-    snapshot.user_snapshots.count.should eq(1)
+    expect(snapshot.user_snapshots.count).to eq(1)
 
     collection.destroy
 
-    UserSnapshot.where(user_id: user.id, snapshot_id: snapshot.id).count.should eq(0)
+    expect(UserSnapshot.where(user_id: user.id, snapshot_id: snapshot.id).count).to eq(0)
   end
 
 end

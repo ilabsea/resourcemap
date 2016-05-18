@@ -12,10 +12,10 @@ describe "load_snapshot" do
   	fill_in 'snapshot_name', :with => 'Snapshot2'
   	click_button 'Take new snapshot'
   	sleep 2 
-  	page.should have_content 'Snapshot2'
+  	expect(page).to have_content 'Snapshot2'
   	choose ('name_Snapshot2')
     sleep 1
     page.save_screenshot "Load snapshot"
-    page.should have_content 'Snapshot Snapshot2 loaded'
+    expect(page).to have_content 'Snapshot Snapshot2 loaded'
   end
 end

@@ -15,12 +15,12 @@ describe Membership::LayerAccessConcern, skip: true do
         membership2.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
 
         lms = LayerMembership.all
-        lms.length.should eq(1)
-        lms[0].collection_id.should eq(collection.id)
-        lms[0].layer_id.should eq(layer.id)
-        lms[0].user_id.should eq(user2.id)
-        lms[0].read.should be_true
-        lms[0].write.should be_false
+        expect(lms.length).to eq(1)
+        expect(lms[0].collection_id).to eq(collection.id)
+        expect(lms[0].layer_id).to eq(layer.id)
+        expect(lms[0].user_id).to eq(user2.id)
+        expect(lms[0].read).to be_truthy
+        expect(lms[0].write).to be_falsey
       end
     end
 
@@ -31,12 +31,12 @@ describe Membership::LayerAccessConcern, skip: true do
         membership2.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
 
         lms = LayerMembership.all
-        lms.length.should eq(1)
-        lms[0].collection_id.should eq(collection.id)
-        lms[0].layer_id.should eq(layer.id)
-        lms[0].user_id.should eq(user2.id)
-        lms[0].read.should be_true
-        lms[0].write.should be_false
+        expect(lms.length).to eq(1)
+        expect(lms[0].collection_id).to eq(collection.id)
+        expect(lms[0].layer_id).to eq(layer.id)
+        expect(lms[0].user_id).to eq(user2.id)
+        expect(lms[0].read).to be_truthy
+        expect(lms[0].write).to be_falsey
       end
 
       it "revokes read access" do
@@ -44,7 +44,7 @@ describe Membership::LayerAccessConcern, skip: true do
 
         membership2.set_layer_access :verb => :read, :access => false, :layer_id => layer.id
 
-        LayerMembership.exists?.should be_false
+        expect(LayerMembership.exists?).to be_falsey
       end
     end
   end
@@ -56,8 +56,8 @@ describe Membership::LayerAccessConcern, skip: true do
 
       membership.destroy
 
-      collection.memberships.exists?.should be_false
-      collection.layer_memberships.exists?.should be_false
+      expect(collection.memberships.exists?).to be_falsey
+      expect(collection.layer_memberships.exists?).to be_falsey
     end
   end
 end

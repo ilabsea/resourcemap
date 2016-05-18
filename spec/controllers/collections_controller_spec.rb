@@ -16,7 +16,7 @@ describe CollectionsController, :type => :controller do
 
     res = CollectionsController.generate_error_description_list(hierarchy_csv)
 
-    res.should == "Error: Wrong format. Invalid column number in line 1."
+    expect(res).to eq("Error: Wrong format. Invalid column number in line 1.")
   end
 
   it "should generate error description form invalid hierarchy list" do
@@ -24,7 +24,7 @@ describe CollectionsController, :type => :controller do
 
     res = CollectionsController.generate_error_description_list(hierarchy_csv)
 
-    res.should == "Error: Illegal quoting in line 3."
+    expect(res).to eq("Error: Illegal quoting in line 3.")
   end
 
   it "should generate error description html form invalid hierarchy list with >1 errors" do
@@ -35,7 +35,7 @@ describe CollectionsController, :type => :controller do
 
     res = CollectionsController.generate_error_description_list(hierarchy_csv)
 
-    res.should == "Error: Wrong format. Invalid column number in line 1.<br/>Error: Wrong format. Invalid column number in line 2."
+    expect(res).to eq("Error: Wrong format. Invalid column number in line 1.<br/>Error: Wrong format. Invalid column number in line 2.")
   end
 
   it "should not throw error when calling unload_current_snapshot and no snapshot is set" do
@@ -59,23 +59,23 @@ describe CollectionsController, :type => :controller do
       get :sites_by_term, collection_id: collection.id, format: 'json'
 
       json = JSON.parse response.body
-      json.length.should eq(2)
-      json[0]["id"].should eq(@site2.id)
-      json[0]["name"].should eq(@site2.name)
-      json[0]["value"].should eq(@site2.name)
-      json[1]["id"].should eq(@site1.id)
-      json[1]["name"].should eq(@site1.name)
-      json[1]["value"].should eq(@site1.name)
+      expect(json.length).to eq(2)
+      expect(json[0]["id"]).to eq(@site2.id)
+      expect(json[0]["name"]).to eq(@site2.name)
+      expect(json[0]["value"]).to eq(@site2.name)
+      expect(json[1]["id"]).to eq(@site1.id)
+      expect(json[1]["name"]).to eq(@site1.name)
+      expect(json[1]["value"]).to eq(@site1.name)
     end
 
     it "should filter by name in a collection" do
       get :sites_by_term, collection_id: collection.id, format: 'json', term: "o"
 
       json = JSON.parse response.body
-      json.length.should eq(1)
-      json[0]["id"].should eq(@site2.id)
-      json[0]["name"].should eq(@site2.name)
-      json[0]["value"].should eq(@site2.name)
+      expect(json.length).to eq(1)
+      expect(json[0]["id"]).to eq(@site2.id)
+      expect(json[0]["name"]).to eq(@site2.name)
+      expect(json[0]["value"]).to eq(@site2.name)
     end
   end
 
@@ -94,25 +94,25 @@ describe CollectionsController, :type => :controller do
     it 'should return forbidden in delete if user tries to delete a collection of which he is not member', skip: true  do
       sign_in not_member
       delete :destroy, id: collection.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
       delete :destroy, id: public_collection.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
     end
 
     it 'should return forbidden on delete if user is not collection admin', skip: true do
       sign_in member
       delete :destroy, collection_id: collection.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
       delete :destroy, id: public_collection.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
     end
 
     it 'should return forbidden on create_snapshot if user is not collection admin' do
       sign_in member
       post :create_snapshot, collection_id: public_collection.id, snapshot: {name: 'my snapshot'}
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
       post :create_snapshot, collection_id: collection.id, snapshot: {name: 'my snapshot'}
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
     end
 
   end
@@ -135,12 +135,12 @@ describe CollectionsController, :type => :controller do
 
     it 'should get index as guest' do
       get :index, collection_id: public_collection.id
-      response.should be_success
+      expect(response).to be_success
     end
 
     it 'should not get index if collection_id is not passed', skip: true do
       get :index
-      response.should_not be_success
+      expect(response).not_to be_success
     end
   end
 
@@ -152,8 +152,8 @@ describe CollectionsController, :type => :controller do
       get :sites_info, collection_id: collection.id
 
       info = JSON.parse response.body
-      info["total"].should eq(2)
-      info["no_location"].should be_false
+      expect(info["total"]).to eq(2)
+      expect(info["no_location"]).to be_falsey
     end
 
     it "gets when some have no location" do
@@ -164,8 +164,8 @@ describe CollectionsController, :type => :controller do
       get :sites_info, collection_id: collection.id
 
       info = JSON.parse response.body
-      info["total"].should eq(3)
-      info["no_location"].should be_true
+      expect(info["total"]).to eq(3)
+      expect(info["no_location"]).to be_truthy
     end
   end
 

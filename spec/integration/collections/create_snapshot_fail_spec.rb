@@ -13,7 +13,7 @@ describe "create_snapshot_fail" do
     click_button 'Take new snapshot'
     sleep 2
   	page.save_screenshot 'Create_snapshot_fail.png'
-    page.should have_content "Name can't be blank"
-  	page.should have_content 'Snapshot could not be created'
+    expect(page).to have_content "Name can't be blank"
+  	expect(page).to have_content 'Snapshot could not be created'
   end
 end

@@ -19,6 +19,6 @@ it " should change password", js:true do
     click_button 'Update'
     sleep 1
     page.save_screenshot 'Change_password.png'
-    page.should have_content 'Account updated successfully'
+    expect(page).to have_content 'Account updated successfully'
   end
 end

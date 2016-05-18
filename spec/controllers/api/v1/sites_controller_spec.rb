@@ -31,16 +31,16 @@ describe Api::V1::SitesController, skip: true do
 
     it "should return one site in the collection" do
       get :index, format: 'json', limit: 1, offset: 1, collection_id: collection.id
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json["sites"].length.should eq(1)
+      expect(json["sites"].length).to eq(1)
     end
 
     it "should return two sites in the collection" do
       get :index, format: 'json', limit: 2, offset: 0, collection_id: collection.id
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json["sites"].length.should eq(2)
+      expect(json["sites"].length).to eq(2)
     end
   end
 
@@ -64,40 +64,40 @@ describe Api::V1::SitesController, skip: true do
     it "should save site in the collection1" do
       post :create, collection_id: collection1.id, site: { name: 'Hello', device_id: 'dv1', external_id: '1', lat: 12.618897, lng: 104.765625, properties: {}}
       
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json["name"].should eq("Hello")
-      json["lat"].should eq("12.618897")
-      json["lng"].should eq("104.765625")
-      json["collection_id"].should eq(collection1.id)
-      json["properties"].should eq({})
+      expect(json["name"]).to eq("Hello")
+      expect(json["lat"]).to eq("12.618897")
+      expect(json["lng"]).to eq("104.765625")
+      expect(json["collection_id"]).to eq(collection1.id)
+      expect(json["properties"]).to eq({})
     end
     
     it "should save site in the collection" do
       post :create, collection_id: collection.id, site: { name: 'Hello', lat: 12.618897, lng: 104.765625, properties: {"#{text.id}"=> 'test1', "#{numeric.id}"=> 10}}
       
-      response.should be_success
+      expect(response).to be_success
       json = JSON.parse response.body
-      json["name"].should eq("Hello")
-      json["lat"].should eq("12.618897")
-      json["lng"].should eq("104.765625")
-      json["collection_id"].should eq(collection.id)
-      json["properties"].should eq({"#{text.id}"=> 'test1', "#{numeric.id}"=> 10})
+      expect(json["name"]).to eq("Hello")
+      expect(json["lat"]).to eq("12.618897")
+      expect(json["lng"]).to eq("104.765625")
+      expect(json["collection_id"]).to eq(collection.id)
+      expect(json["properties"]).to eq({"#{text.id}"=> 'test1', "#{numeric.id}"=> 10})
     end
 
     context 'when device_id and external_id valid' do
 	    it "should save site in the collection" do
 	      post :create, collection_id: collection.id, site: { name: 'Hello', lat: 12.618897, lng: 104.765625, device_id: 'dv1', external_id: 3, properties: {"#{text.id}"=> 'test1', "#{numeric.id}"=> 10}}
 	      
-	      response.should be_success
+	      expect(response).to be_success
 	      json = JSON.parse response.body
-	      json["name"].should eq("Hello")
-	      json["lat"].should eq("12.618897")
-	      json["lng"].should eq("104.765625")
-	      json["device_id"].should eq("dv1")
-	      json["external_id"].should eq("3")
-	      json["collection_id"].should eq(collection.id)
-	      json["properties"].should eq({"#{text.id}"=> 'test1', "#{numeric.id}"=> 10})
+	      expect(json["name"]).to eq("Hello")
+	      expect(json["lat"]).to eq("12.618897")
+	      expect(json["lng"]).to eq("104.765625")
+	      expect(json["device_id"]).to eq("dv1")
+	      expect(json["external_id"]).to eq("3")
+	      expect(json["collection_id"]).to eq(collection.id)
+	      expect(json["properties"]).to eq({"#{text.id}"=> 'test1', "#{numeric.id}"=> 10})
 	    end
 	  end
     
@@ -105,15 +105,15 @@ describe Api::V1::SitesController, skip: true do
 	    it "should save site in the collection" do
 	      post :create, collection_id: collection.id, site: { name: 'Bonjour', lat: 12.618897, lng: 104.765625, device_id: 'dv1', external_id: 3, properties: {"#{text.id}"=> 'test2', "#{numeric.id}"=> 20}}
 	      
-	      response.should be_success
+	      expect(response).to be_success
 	      json = JSON.parse response.body
-	      json["name"].should eq("Bonjour")
-	      json["lat"].should eq("12.618897")
-	      json["lng"].should eq("104.765625")
-	      json["device_id"].should eq("dv1")
-	      json["external_id"].should eq("3")
-	      json["collection_id"].should eq(collection.id)
-	      json["properties"].should eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
+	      expect(json["name"]).to eq("Bonjour")
+	      expect(json["lat"]).to eq("12.618897")
+	      expect(json["lng"]).to eq("104.765625")
+	      expect(json["device_id"]).to eq("dv1")
+	      expect(json["external_id"]).to eq("3")
+	      expect(json["collection_id"]).to eq(collection.id)
+	      expect(json["properties"]).to eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
 	    end
 	  end
 
@@ -121,15 +121,15 @@ describe Api::V1::SitesController, skip: true do
 	    it "should save site in the collection" do
 	      post :create, collection_id: collection.id, site: { name: 'Bonjour', lat: 12.618897, lng: 104.765625, device_id: 'dv2', external_id: 1, properties: {"#{text.id}"=> 'test2', "#{numeric.id}"=> 20}}
 	      
-	      response.should be_success
+	      expect(response).to be_success
 	      json = JSON.parse response.body
-	      json["name"].should eq("Bonjour")
-	      json["lat"].should eq("12.618897")
-	      json["lng"].should eq("104.765625")
-	      json["device_id"].should eq("dv2")
-	      json["external_id"].should eq("1")
-	      json["collection_id"].should eq(collection.id)
-	      json["properties"].should eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
+	      expect(json["name"]).to eq("Bonjour")
+	      expect(json["lat"]).to eq("12.618897")
+	      expect(json["lng"]).to eq("104.765625")
+	      expect(json["device_id"]).to eq("dv2")
+	      expect(json["external_id"]).to eq("1")
+	      expect(json["collection_id"]).to eq(collection.id)
+	      expect(json["properties"]).to eq({"#{text.id}"=> 'test2', "#{numeric.id}"=> 20})
 	    end
 	  end
 
@@ -137,9 +137,9 @@ describe Api::V1::SitesController, skip: true do
   	  it "should update site in the collection" do
   		  post :create, collection_id: collection.id, site: { name: 'Thyda', lat: 12.618897, lng: 104.765625, device_id: 'dv1', external_id: '1', properties: {"#{text.id}"=> 'test2', "#{numeric.id}"=> 20}}
         
-  	    response.should be_success
-        collection.sites.count.should eq(2)
-        collection.sites[0].name.should eq("Thyda")
+  	    expect(response).to be_success
+        expect(collection.sites.count).to eq(2)
+        expect(collection.sites[0].name).to eq("Thyda")
   	  end
   	end
 
@@ -159,8 +159,8 @@ describe Api::V1::SitesController, skip: true do
     it "should update site" do
       put :update, collection_id: collection.id, id: site1.id, site: {name: 'Thyda', lat: 12.618897, lng: 104.765625, device_id: 'dv1', external_id: '2', properties: {"#{text.id}"=> 'test2', "#{numeric.id}"=> 40}}
 
-      response.should be_success
-      collection.sites[0].name.should eq("Thyda")
+      expect(response).to be_success
+      expect(collection.sites[0].name).to eq("Thyda")
     end
   end
 
