@@ -87,8 +87,7 @@ module SearchBase
       add_filter missing: {field: field.es_code}
       return self
     end
-
-    value = field.descendants_of_in_hierarchy value
+    value = field.descendants_of_in_hierarchy value, true
     query_key = field.es_code
     add_filter terms: {query_key => value}
     self

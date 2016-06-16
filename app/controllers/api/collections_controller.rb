@@ -137,7 +137,7 @@ class Api::CollectionsController < ApplicationController
   def get_some_sites
     site_ids = params[:sites]
     sites = Site.where("id in (" + site_ids + ")")
-    render :json => sites
+    render :json => sites, :root => false
   end
 
   def parse_date_format date 
@@ -165,7 +165,6 @@ class Api::CollectionsController < ApplicationController
   private
 
   def perform_search(*options)
-
     except_params = [:action, :controller, :format, :id, :updated_since, :search, :box, :lat, :lng, :radius]
 
     search = new_search

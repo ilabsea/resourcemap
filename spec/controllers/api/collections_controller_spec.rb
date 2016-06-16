@@ -52,7 +52,7 @@ describe Api::CollectionsController, type: :controller do
 
     it { response.should be_success }
 
-    it "should return JSON", skip: true do
+    it "should return JSON" do
       json = JSON.parse response.body
       json["name"].should eq(collection.name)
       json['sites'].sort_by! { |site| site["name"] }
@@ -75,7 +75,7 @@ describe Api::CollectionsController, type: :controller do
       json["sites"][1]["properties"].length.should eq(9)
 
       json["sites"][1]["properties"][text.code].should eq(site.properties[text.es_code])
-      json["sites"][1]["properties"][yes_no.code].should be_true
+      json["sites"][1]["properties"][yes_no.code].should eq(true)
       json["sites"][1]["properties"][numeric.code].should eq(site.properties[numeric.es_code])
       json["sites"][1]["properties"][select_one.code].should eq('one')
       json["sites"][1]["properties"][select_many.code].should eq(['one', 'two'])
@@ -89,7 +89,7 @@ describe Api::CollectionsController, type: :controller do
 
   describe "GET JSON collection with query fieldeters" do
 
-    it "should retrieve sites under certain item in a hierarchy field", skip: true do
+    it "should retrieve sites under certain item in a hierarchy field" do
       get :show, id: collection.id, format: 'json', hierarchy.code => { under: 'Dad' }
       response.should be_success
       json = JSON.parse response.body
@@ -104,7 +104,9 @@ describe Api::CollectionsController, type: :controller do
       get :show, id: collection.id, format: 'rss'
     end
 
-    it { response.should be_success }
+    it { 
+      response.should be_success 
+    }
 
     it "should return RSS" do
       rss =  Hash.from_xml response.body
@@ -159,10 +161,9 @@ describe Api::CollectionsController, type: :controller do
       csv =  CSV.parse response.body
       csv.length.should eq(3)
       csv[0].should eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, yes_no.code, select_one.code, 'select_many', 'hierarchy', site_ref.code, date.code, director.code, 'last updated'])
-      
-      csv.include?([site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "Bro", "", "", "", site2.updated_at.strftime("%a, %d %B %Y %T %z")]).should eq(true)
 
-      csv.include?([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, "yes", "one", "one, two", "Dad", site2.id.to_s, "10/24/2012", user.email, site.updated_at.strftime("%a, %d %B %Y %T %z")]).should eq(true)
+      csv.include?([site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "Bro", "", "", "", site2.updated_at.strftime("%a, %d %b %Y %T %z")]).should eq(true)
+      csv.include?([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, "yes", "one", "one, two", "Dad", site2.id.to_s, "10/24/2012", user.email, site.updated_at.strftime("%a, %d %b %Y %T %z")]).should eq(true)
     end
   end
 
@@ -179,8 +180,8 @@ describe Api::CollectionsController, type: :controller do
       get :show, id: collection.id, format: 'shp'
     end
 
-    it "should return some sites based on provided ids params", skip: true do
-      get :get_some_sites ,sites: [site.id, site2.id].join(","), format: 'json', collection_id: collection.id
+    it "should return some sites based on provided ids params" do
+      get :get_some_sites ,sites: [site.id, site2.id].join(","), format: 'json', id: collection.id
       response.should be_success
       json = JSON.parse response.body
       json.length.should eq(2)
@@ -189,15 +190,15 @@ describe Api::CollectionsController, type: :controller do
 
   describe "validate query fields" do
 
-    it "should validate numeric fields in equal queries", skip: true do
-      get :show, id: collection.id, format: 'csv', numeric.code => "invalid"
+    it "should validate numeric fields in equal queries" do
+      get :show, id: collection.id, format: 'csv', numeric.code => "<=invalid"
       response.response_code.should be(400)
       response.body.should include("Invalid numeric value in field numeric")
       get :show, id: collection.id, format: 'csv', numeric.code => "2"
       response.response_code.should be(200)
     end
 
-    it "should validate numeric fields in other operations", skip: true do
+    it "should validate numeric fields in other operations" do
       get :show, id: collection.id, format: 'csv', numeric.code => "<=invalid"
       response.response_code.should be(400)
       response.body.should include("Invalid numeric value in field numeric")

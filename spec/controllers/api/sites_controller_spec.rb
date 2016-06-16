@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Api::SitesController, skip: true do
+describe Api::SitesController, type: :controller  do
   include Devise::TestHelpers
 
   let!(:user) { User.make }

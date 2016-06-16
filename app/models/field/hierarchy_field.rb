@@ -45,11 +45,11 @@ class Field::HierarchyField < Field
     valid_value?(parent_id)
     options = []
     add_option_to_options options, find_hierarchy_item_by_id(parent_id)
-    if use_codes_instead_of_es_codes
-      options.map { |item| item[:name] }
-    else
+    # if use_codes_instead_of_es_codes
+      # options.map { |item| item[:name] }
+    # else
       options.map { |item| item[:id] }
-    end
+    # end
   end
 
   def cache_for_read
