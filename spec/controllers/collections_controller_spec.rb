@@ -84,24 +84,23 @@ describe CollectionsController, :type => :controller do
     let!(:not_member) { User.make }
     let!(:member) { User.make }
 
-
     before(:each) do
       sign_out user
       collection.memberships.create! :user_id => member.id, admin: false
       public_collection.memberships.create! :user_id => member.id, admin: false
     end
 
-    it 'should return forbidden in delete if user tries to delete a collection of which he is not member', skip: true  do
+    it 'should return 404 in delete if user tries to delete a collection of which he is not member'  do
       sign_in not_member
       delete :destroy, id: collection.id
-      response.status.should eq(403)
+      response.status.should eq(404)
       delete :destroy, id: public_collection.id
-      response.status.should eq(403)
+      response.status.should eq(404)
     end
 
-    it 'should return forbidden on delete if user is not collection admin', skip: true do
+    it 'should return forbidden on delete if user is not collection admin' do
       sign_in member
-      delete :destroy, collection_id: collection.id
+      delete :destroy, id: collection.id
       response.status.should eq(403)
       delete :destroy, id: public_collection.id
       response.status.should eq(403)
@@ -138,13 +137,13 @@ describe CollectionsController, :type => :controller do
       response.should be_success
     end
 
-    it 'should not get index if collection_id is not passed', skip: true do
+    it 'should get index if collection_id is not passed' do
       get :index
-      response.should_not be_success
+      response.should be_success
     end
   end
 
-  describe "sites info", skip: true  do
+  describe "sites info"  do
     it "gets when all have location" do
       collection.sites.make
       collection.sites.make
@@ -153,7 +152,7 @@ describe CollectionsController, :type => :controller do
 
       info = JSON.parse response.body
       info["total"].should eq(2)
-      info["no_location"].should be_false
+      info["no_location"].should eq(false)
     end
 
     it "gets when some have no location" do
@@ -165,7 +164,7 @@ describe CollectionsController, :type => :controller do
 
       info = JSON.parse response.body
       info["total"].should eq(3)
-      info["no_location"].should be_true
+      info["no_location"].should eq(true)
     end
   end
 

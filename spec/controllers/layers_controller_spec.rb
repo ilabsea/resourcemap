@@ -13,7 +13,7 @@ describe LayersController, :type => :controller  do
 
   before(:each) {sign_in user}
 
-  it "should update field.layer_id", skip: true do
+  it "should update field.layer_id" do
 
     layer.fields.count.should eq(1)
     json_layer = {id: layer.id, name: layer.name, ord: layer.ord, public: layer.public, fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
