@@ -19,7 +19,9 @@ describe Api::CollectionsController do
   let!(:date) { layer.date_fields.make :code => 'date' }
   let!(:director) { layer.user_fields.make :code => 'user'}
 
-  let!(:site2) {collection.sites.make :name => "Site A", properties: { hierarchy.es_code => 'bro' } }
+  let!(:site2) {
+    collection.sites.make :name => "Site A", properties: { hierarchy.es_code => 'bro' }
+  }
 
   let!(:site) { collection.sites.make  :name => "Site B", :properties => {
     text.es_code => 'foo',

@@ -1,6 +1,8 @@
 class Api::MembershipsController < ApplicationController
   protect_from_forgery :except => [:create, :update, :register_new_member, :destroy_member]
-  USER_NAME, PASSWORD = 'iLab', '1c4989610bce6c4879c01bb65a45ad43'
+
+  before_filter  :authenticate_api_user!
+  before_filter  :check_user_member!
 
   # POST /user
   def create
@@ -99,9 +101,14 @@ class Api::MembershipsController < ApplicationController
     
   end
 
-  def authenticate
-    authenticate_or_request_with_http_basic 'Dynamic Resource Map - HTTP' do |username, password|
-      USER_NAME == username && PASSWORD == Digest::MD5.hexdigest(password)
+  private
+
+  def check_user_member!
+    collection = Collection.find_by_id(params[:collection_id])
+    if (current_user.collections.map(&:id).include?(params["collection_id"].to_i) and current_user.admins?(collection))
+      return true
+    else
+      return head 403
     end
   end
 end

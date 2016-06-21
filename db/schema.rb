@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150722042954) do
+ActiveRecord::Schema.define(:version => 20160621022032) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -57,10 +57,9 @@ ActiveRecord::Schema.define(:version => 20150722042954) do
     t.integer  "quota",                                              :default => 0
     t.boolean  "is_visible_name",                                    :default => true
     t.boolean  "is_visible_location",                                :default => true
-    t.integer  "field_identify"
-    t.integer  "field_parent"
     t.boolean  "hierarchy_mode"
-    t.integer  "field_identify_id"
+    t.integer  "field_parent"
+    t.integer  "field_identify"
   end
 
   create_table "field_histories", :force => true do |t|
@@ -107,6 +106,53 @@ ActiveRecord::Schema.define(:version => 20150722042954) do
     t.integer  "collection_id"
     t.text     "exception"
   end
+
+  create_table "instedd_telemetry_counters", :force => true do |t|
+    t.integer "period_id"
+    t.string  "bucket"
+    t.text    "key_attributes"
+    t.integer "count",               :default => 0
+    t.string  "key_attributes_hash"
+  end
+
+  add_index "instedd_telemetry_counters", ["bucket", "key_attributes_hash", "period_id"], :name => "instedd_telemetry_counters_unique_fields", :unique => true
+
+  create_table "instedd_telemetry_periods", :force => true do |t|
+    t.datetime "beginning"
+    t.datetime "end"
+    t.datetime "stats_sent_at"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.string   "lock_owner"
+    t.datetime "lock_expiration"
+  end
+
+  create_table "instedd_telemetry_set_occurrences", :force => true do |t|
+    t.integer "period_id"
+    t.string  "bucket"
+    t.text    "key_attributes"
+    t.string  "element"
+    t.string  "key_attributes_hash"
+  end
+
+  add_index "instedd_telemetry_set_occurrences", ["bucket", "key_attributes_hash", "element", "period_id"], :name => "instedd_telemetry_set_occurrences_unique_fields", :unique => true
+
+  create_table "instedd_telemetry_settings", :force => true do |t|
+    t.string "key"
+    t.string "value"
+  end
+
+  add_index "instedd_telemetry_settings", ["key"], :name => "index_instedd_telemetry_settings_on_key", :unique => true
+
+  create_table "instedd_telemetry_timespans", :force => true do |t|
+    t.string   "bucket"
+    t.text     "key_attributes"
+    t.datetime "since"
+    t.datetime "until"
+    t.string   "key_attributes_hash"
+  end
+
+  add_index "instedd_telemetry_timespans", ["bucket", "key_attributes_hash"], :name => "instedd_telemetry_timespans_unique_fields", :unique => true
 
   create_table "languages", :force => true do |t|
     t.string   "name"

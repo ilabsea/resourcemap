@@ -91,12 +91,17 @@ describe CollectionsController do
       public_collection.memberships.create! :user_id => member.id, admin: false
     end
 
-    it 'should return forbidden in delete if user tries to delete a collection of which he is not member'  do
+    it 'should return 404 in delete if user tries to delete a collection of which he is not member'  do
       sign_in not_member
       delete :destroy, id: collection.id
-      response.status.should eq(403)
+      response.status.should eq(404)
+     
+    end
+
+    it 'should return 404 in delete if user tries to delete a public collection of which he is not member'  do
+      sign_in not_member
       delete :destroy, id: public_collection.id
-      response.status.should eq(403)
+      response.status.should eq(404)
     end
 
     it 'should return forbidden on delete if user is not collection admin' do
@@ -138,9 +143,9 @@ describe CollectionsController do
       response.should be_success
     end
 
-    it 'should not get index if collection_id is not passed' do
+    it 'should get index with success if collection_id is not passed' do
       get :index
-      response.should_not be_success
+      response.should be_success
     end
   end
 

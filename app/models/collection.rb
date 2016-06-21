@@ -31,6 +31,9 @@ class Collection < ActiveRecord::Base
 
   attr_accessor :time_zone
 
+  after_save :touch_lifespan
+  after_destroy :touch_lifespan
+
   def max_value_of_property(es_code)
     search = new_tire_search
     search.sort { by es_code, 'desc' }
@@ -312,5 +315,11 @@ class Collection < ActiveRecord::Base
   def create_deleted_activity(user)
     Activity.create! item_type: 'collection', action: 'deleted', collection_id: nil, collection_name: name, layer_id: nil, user_id: user.id, 'data' => {'name' => name}
   end  
+
+  private 
+
+  def touch_lifespan
+    Telemetry::Lifespan.touch_collection self
+  end
 
 end

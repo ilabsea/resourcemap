@@ -1,4 +1,12 @@
 class SiteReminder < ActiveRecord::Base
   belongs_to :reminder
   belongs_to :site
+  after_save :touch_lifespan
+  after_destroy :touch_lifespan
+
+  private
+
+  def touch_collection_lifespan
+    Telemetry::Lifespan.touch_collection self.site.try(:collection)
+  end
 end

@@ -44,6 +44,14 @@ module Field::Base
     numeric? || select_one? || select_many?  || hierarchy?
   end
 
+  def stored_as_double?
+    numeric?
+  end
+
+  def stored_as_long?
+    select_one? || select_many?
+  end
+
   def allow_decimals?
     config && (config[:allows_decimals] == "true" || config["allows_decimals"] == "true")
   end

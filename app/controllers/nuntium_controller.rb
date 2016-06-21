@@ -4,6 +4,7 @@ require 'digest'
 class NuntiumController < ApplicationController
   helper_method :save_message
   protect_from_forgery :except => :receive
+  before_filter :set_timezone, :except => [:receive, :authenticate]
 
   USER_NAME, PASSWORD = 'iLab', '1c4989610bce6c4879c01bb65a45ad43'
 

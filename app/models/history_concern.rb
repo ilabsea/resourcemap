@@ -20,7 +20,7 @@ module HistoryConcern
   def create_history
     history = histories.new
     attributes.each_pair do |att_name, att_value|
-      unless ['id', 'created_at', 'updated_at'].include? att_name
+      unless ['id', 'created_at', 'updated_at','is_mandatory','device_id','is_enable_field_logic','is_enable_range', 'external_id'].include? att_name
         history[att_name] = att_value
       end
     end

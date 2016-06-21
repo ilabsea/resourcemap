@@ -1,5 +1,7 @@
 ResourceMap::Application.routes.draw do
 
+  mount InsteddTelemetry::Engine => '/instedd_telemetry'
+
   devise_for :users, :controllers => {:registrations => "registrations", :sessions => 'sessions' }
 
   # match 'messaging' => 'messaging#index'
