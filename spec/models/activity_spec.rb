@@ -178,7 +178,7 @@ describe Activity do
       'description' => "Import CSV: 1 site were imported"
   end
 
-  context "site changed" do
+  context "site changed", skip: true do
     let!(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'beds', name: 'Beds', ord: 1}, {kind: 'numeric', code: 'tables', name: 'Tables', ord: 2}, {kind: 'text', code: 'text', name: 'Text', ord: 3}] }
     let(:beds) { layer.fields.first }
     let(:tables) { layer.fields.second }
