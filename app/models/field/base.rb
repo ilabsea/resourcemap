@@ -44,11 +44,11 @@ module Field::Base
     numeric? || select_one? || select_many?  || hierarchy?
   end
 
-  def stoted_as_double?
+  def stored_as_double?
     numeric?
   end
 
-  def storeed_as_long?
+  def stored_as_long?
     select_one? || select_many?
   end
  

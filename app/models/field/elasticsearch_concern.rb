@@ -5,9 +5,9 @@ module Field::ElasticsearchConcern
     case
     when kind == 'yes_no'
       { type: :boolean }
-    when storeed_as_long?
+    when stored_as_long?
       { type: :long }
-    when stoted_as_double?
+    when stored_as_double?
       { type: :double }
     when stored_as_date?
       { type: :date }
