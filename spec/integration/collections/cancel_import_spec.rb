@@ -24,7 +24,7 @@ describe "cancel_import" do
     sleep 3
     click_button "Cancel import"
     sleep 2
-    page.should have_content "Import canceled"
+    expect(page).to have_content "Import canceled"
     sleep 2
     page.save_screenshot "Cancel_import.png"
   end

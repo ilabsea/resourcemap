@@ -18,7 +18,7 @@ it "should switch snapshots", js:true do
     sleep 3
     choose ('name_feb')
     sleep 3
-    page.should have_content 'Snapshot feb loaded'
+    expect(page).to have_content 'Snapshot feb loaded'
     page.save_screenshot "Switch_snapshot.png"
     
   end

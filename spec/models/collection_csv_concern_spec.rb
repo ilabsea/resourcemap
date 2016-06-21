@@ -14,15 +14,15 @@ describe Collection::CsvConcern do
 
     collection.reload
     roots = collection.sites.reload
-    roots.length.should eq(2)
+    expect(roots.length).to eq(2)
 
-    roots[0].name.should eq('Site 1')
-    roots[0].lat.to_f.should eq(10.0)
-    roots[0].lng.to_f.should eq(20.0)
+    expect(roots[0].name).to eq('Site 1')
+    expect(roots[0].lat.to_f).to eq(10.0)
+    expect(roots[0].lng.to_f).to eq(20.0)
 
-    roots[1].name.should eq('Site 2')
-    roots[1].lat.to_f.should eq(30.0)
-    roots[1].lng.to_f.should eq(40.0)
+    expect(roots[1].name).to eq('Site 2')
+    expect(roots[1].lat.to_f).to eq(30.0)
+    expect(roots[1].lng.to_f).to eq(40.0)
   end
 
   it "should print date as MM/DD/YYYY", skip: true do
@@ -31,7 +31,7 @@ describe Collection::CsvConcern do
 
     csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
 
-    csv[1][4].should eq('10/19/1985')
+    expect(csv[1][4]).to eq('10/19/1985')
   end
 
   it "should download hiearchy value as Name", skip: true do
@@ -41,7 +41,7 @@ describe Collection::CsvConcern do
     site = collection.sites.make :properties => {hierarchy_field.es_code => '100'}
 
     csv =  CSV.parse collection.to_csv collection.new_search(:current_user_id => user.id).unlimited.api_results
-    csv[1][4].should eq('Son')
+    expect(csv[1][4]).to eq('Son')
   end
 
   describe "generate sample csv" do
@@ -69,10 +69,10 @@ describe Collection::CsvConcern do
 
       csv = CSV.parse(collection.sample_csv user2)
 
-      csv[0].should include('date_writable')
-      csv[0].should_not include('date_visible')
-      csv[0].should_not include('date_invisible')
-      csv[1].length.should be(4)
+      expect(csv[0]).to include('date_writable')
+      expect(csv[0]).not_to include('date_visible')
+      expect(csv[0]).not_to include('date_invisible')
+      expect(csv[1].length).to be(4)
     end
   end
 
@@ -89,7 +89,7 @@ describe Collection::CsvConcern do
         202,2,Health Centre Type 2
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Dispensary', sub: [{order: 3, id: '101', name: 'Lab Dispensary'}, {order: 4, id: '102', name: 'Clinical Dispensary'}]},
         {order: 2, id: '2', name: 'Health Centre', sub: [{order: 5, id: '201', name: 'Health Centre Type 1'}, {order: 6, id: '202', name: 'Health Centre Type 2'}]},
       ])
@@ -107,7 +107,7 @@ describe Collection::CsvConcern do
         6,1,Site 1.3
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}, {order: 6, id: '6', name: 'Site 1.3'}]},
         {order: 2, id: '2', name: 'Site 2'},
         {order: 3, id: '3', name: 'Site 3'}
@@ -124,7 +124,7 @@ describe Collection::CsvConcern do
         6,1,Site 1.3
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}, {order: 6, id: '6', name: 'Site 1.3'}]},
         {order: 2, id: '2', name: 'Site 2'},
         {order: 3, id: '3', name: 'Site 3'}
@@ -141,7 +141,7 @@ describe Collection::CsvConcern do
         6,1,Site 1.3
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}, {order: 6, id: '6', name: 'Site 1.3'}]},
         {order: 2, id: '2', name: 'Site 2'},
         {order: 3, error: 'Wrong format.', error_description: 'Invalid column number'}
@@ -158,7 +158,7 @@ describe Collection::CsvConcern do
         6,
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Site 1', sub: [{order: 4, id: '4', name: 'Site 1.1'}, {order: 5, id: '5', name: 'Site 1.2'}]},
         {order: 2, id: '2', name: 'Site 2'},
         {order: 3, id: '3', name: 'Site 3'},
@@ -173,7 +173,7 @@ describe Collection::CsvConcern do
         "2","1","Site 2"
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Site 1'},
         {order: 2, id: '2', name: 'Site 2'}
       ])
@@ -187,7 +187,7 @@ describe Collection::CsvConcern do
         101,10,Lab Dispensary
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Dispensary', },
         {order: 2, id: '2', name: 'Health Centre'},
         {order: 3, error: 'Invalid parent value.', error_description: 'ParentID should match one of the Hierarchy ids'},
@@ -203,7 +203,7 @@ describe Collection::CsvConcern do
 
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {error: "Illegal quoting in line 4."}
       ])
     end
@@ -217,7 +217,7 @@ describe Collection::CsvConcern do
 
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Site 1'},
         {order: 2, error: 'Wrong format.', error_description: 'Invalid column number'},
         {order: 3, error: 'Wrong format.', error_description: 'Invalid column number'},
@@ -232,7 +232,7 @@ describe Collection::CsvConcern do
         2,,Site 1
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Site 1'},
         {order: 2, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'}
       ])
@@ -245,7 +245,7 @@ describe Collection::CsvConcern do
         3,,Site 1
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Site 1'},
         {order: 2, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'},
         {order: 3, error: 'Invalid name.', error_description: 'Hierarchy name should be unique'}
@@ -259,7 +259,7 @@ describe Collection::CsvConcern do
         1,,Site 3
       ).strip
 
-      json.should eq([
+      expect(json).to eq([
         {order: 1, id: '1', name: 'Site 1'},
         {order: 2, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'},
         {order: 3, error: 'Invalid id.', error_description: 'Hierarchy id should be unique'}

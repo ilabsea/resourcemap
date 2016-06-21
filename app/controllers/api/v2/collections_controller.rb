@@ -192,7 +192,8 @@ module Api::V2
 
     def collection_csv(collection, results, options = {})
       sites_csv = collection.to_csv(results, current_user, nil, options)
-      send_data sites_csv, type: 'text/csv', filename: "#{collection.name}_sites.csv"
+      p 'sites_csv : ', sites_csv
+      send_data sites_csv.force_encoding("UTF-8"), type: 'text/csv; charset=iso-8859-1; header=present', filename: "#{collection.name}_sites.csv"
     end
 
     def collection_shp(collection, results)

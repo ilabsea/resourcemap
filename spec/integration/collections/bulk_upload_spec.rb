@@ -30,7 +30,7 @@ describe "bulk_upload" do
 
     click_button "Start importing"
     sleep 3
-    page.should have_content "Importing"
+    expect(page).to have_content "Importing"
 
     # click_link ('Collections')
     # sleep 30

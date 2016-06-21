@@ -13,10 +13,9 @@ module SearchBase
     self
   end
 
-  def hierarchy_mode(ids)
-    ids = [] if ids == nil
-    @search.filter :terms, id: ids
-    self
+  def hierarchy_mode(childs_ids)
+    childs_ids = [] if childs_ids == nil
+    add_filter term: {"id" => childs_ids}
   end
 
   def name_start_with(name)

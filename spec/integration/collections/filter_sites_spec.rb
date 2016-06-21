@@ -21,7 +21,7 @@ describe "filter_sites" do
     sleep 2
     find(:xpath, '//div[@class="refine-popup box"]/div[4]/a').click
     sleep 3
-    page.should have_content 'Show sites where Central Hospital Layer 1 Field starts with "fra" '
+    expect(page).to have_content 'Show sites where Central Hospital Layer 1 Field starts with "fra" '
     page.save_screenshot 'Filter_sites.png'
   end  
 end

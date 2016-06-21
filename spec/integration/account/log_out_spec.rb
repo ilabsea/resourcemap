@@ -10,6 +10,6 @@ describe "log_out" do
     click_link('Sign Out')
     sleep 3
     page.save_screenshot 'Log_out.png'
-    page.should have_content 'Signed out successfully'
+    expect(page).to have_content 'Signed out successfully'
   end
 end

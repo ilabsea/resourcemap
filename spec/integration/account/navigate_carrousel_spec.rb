@@ -6,9 +6,9 @@ describe "navigate_carrousel" do
  	visit "/"
  	sleep 1
  	find(:xpath, '//div[@id="container"]/div/div[3]/div/div/div[3]/a').click
- 	page.should have_content 'Maintain'
+ 	expect(page).to have_content 'Maintain'
  	find(:xpath, '//div[@id="container"]/div/div[3]/div/div/div[3]/a').click
- 	page.should have_content 'Open Source'
+ 	expect(page).to have_content 'Open Source'
  	page.save_screenshot 'navigate_carrousel.png'
   end
 end

@@ -10,6 +10,6 @@ describe "change_tab_home" do
     sleep 3
     page.save_screenshot 'TabHome'
     sleep 3
-    page.should have_content ('Make better decisions')
+    expect(page).to have_content ('Make better decisions')
   end
 end

@@ -5,20 +5,20 @@ describe Epsg do
 
   describe 'esri projection' do
     it 'should get wgs84' do
-      Epsg.wgs84.should eq(content)
+      expect(Epsg.wgs84).to eq(content)
     end
 
     it 'should get epsg:4326' do
-      Epsg['4326'].should eq(content)
+      expect(Epsg['4326']).to eq(content)
     end
 
     it 'should get other code' do
-      Epsg['5726'].should_not be_nil
+      expect(Epsg['5726']).not_to be_nil
     end
 
     context 'non-existed code' do
       it 'should return nil' do
-        Epsg['non-existed'].should be_nil
+        expect(Epsg['non-existed']).to be_nil
       end
     end
   end

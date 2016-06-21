@@ -17,7 +17,7 @@ describe "delete_site" do
     page.driver.browser.switch_to.alert.accept 
     sleep 3
     page.save_screenshot "Delete_site.png"
-    page.should have_no_content ("Health Center")
+    expect(page).to have_no_content ("Health Center")
   end
 end
 

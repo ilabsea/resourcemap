@@ -112,7 +112,7 @@ class Field::HierarchyField < Field
     end
     option = hierarchy_options.find { |opt| opt[:id] == value }
     option if option
-  end  
+  end
 
   def find_hierarchy_by_name(value)
     if @cache_for_read
@@ -121,7 +121,7 @@ class Field::HierarchyField < Field
     end
     option = hierarchy_options.find { |opt| opt[:name] == value }
     option if option
-  end  
+  end
 
   def transform
     field_hierarchy = {}

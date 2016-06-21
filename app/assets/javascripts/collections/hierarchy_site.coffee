@@ -18,7 +18,7 @@ onCollections ->
 
       @selectedSiteChildren = ko.observableArray()
       @selectedSiteParent = ko.observable()
-      
+
       @hierarchySites = if data.sub?
                           $.map data.sub, (x) => new HierarchySite(x, level + 1)
                         else
@@ -61,7 +61,7 @@ onCollections ->
     #     @loadMoreSites()
     #   @expanded(!@expanded())
     #   window.model.reloadMapSites()
-      
+
     # private
     style: =>
       pixels_per_indent_level = 20

@@ -12,6 +12,6 @@ describe "delete_collection" do
   	click_link "Delete collection"
   	click_link "Confirm"
   	page.save_screenshot "Delete Collection.png"
-  	page.should have_content "Collection Central Hospital deleted"
+  	expect(page).to have_content "Collection Central Hospital deleted"
   end
 end

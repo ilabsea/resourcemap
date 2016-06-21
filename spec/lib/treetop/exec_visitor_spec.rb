@@ -22,33 +22,33 @@ describe ExecVisitor, "Process query command" do
   end
 
   it "should recognize collection_id equals to @collection.id" do
-    @node.collection_id.value.should == @collection.id
+    expect(@node.collection_id.value).to eq(@collection.id)
   end
 
   it "should recognize property name equals to AB" do
-    @node.conditional_expression.name.text_value.should == 'AB'
+    expect(@node.conditional_expression.name.text_value).to eq('AB')
   end
 
   it "should recognize conditional operator equals to greater than sign" do
-    @node.conditional_expression.operator.text_value.should == '>'
+    expect(@node.conditional_expression.operator.text_value).to eq('>')
   end
 
   it "should recognize property value equals to 5" do
-    @node.conditional_expression.value.value.should == 5
+    expect(@node.conditional_expression.value.value).to eq(5)
   end
 
   it "should find collection by id" do
-    Collection.should_receive(:find_by_id).with(@collection.id).and_return(@collection)
+    expect(Collection).to receive(:find_by_id).with(@collection.id).and_return(@collection)
     @visitor.visit_query_command @node
   end
 
   it "should user can view collection", skip: true do
-    @visitor.can_view?(@properties[0], @node.sender, @collection).should be_true
+    expect(@visitor.can_view?(@properties[0], @node.sender, @collection)).to be_truthy
   end
 
   it "should query resources with condition options" do
-    Collection.should_receive(:find_by_id).with(@collection.id).and_return(@collection)
-    @collection.should_receive(:query_sites).with({ :code => 'AB', :operator => '>', :value => '5'})
+    expect(Collection).to receive(:find_by_id).with(@collection.id).and_return(@collection)
+    expect(@collection).to receive(:query_sites).with({ :code => 'AB', :operator => '>', :value => '5'})
     @visitor.visit_query_command @node
   end
 
@@ -56,12 +56,12 @@ describe ExecVisitor, "Process query command" do
     context "valid criteria" do
       it "should get Siemreap Health Center when their Ambulance property greater than 5" do
         @collection.sites.make(:name => 'Siemreap Healt Center', :properties => {"10"=>15, "11"=>40})
-        @visitor.visit_query_command(@node).should eq('["AB"] in Siemreap Healt Center=15')
+        expect(@visitor.visit_query_command(@node)).to eq('["AB"] in Siemreap Healt Center=15')
       end
 
       it "should return no result for public collection" do
         @collection.public = true and @collection.save
-        @visitor.visit_query_command(@node).should == "[\"AB\"] in There is no site matched"
+        expect(@visitor.visit_query_command(@node)).to eq("[\"AB\"] in There is no site matched")
       end
     end
 
@@ -71,26 +71,26 @@ describe ExecVisitor, "Process query command" do
       end
 
       it "should return 'No resource available' when collection does not have any site" do
-        @visitor.visit_query_command(@node).should == "[\"AB\"] in There is no site matched"
+        expect(@visitor.visit_query_command(@node)).to eq("[\"AB\"] in There is no site matched")
       end
 
       it "should return 'No site available' when site_properties does not match with condition" do
         site = Site.make(:collection => @collection)
-        @visitor.visit_query_command(@node).should == "[\"AB\"] in There is no site matched"
+        expect(@visitor.visit_query_command(@node)).to eq("[\"AB\"] in There is no site matched")
       end
 
       it "should raise error when the sender is not a dyrm user" do
         @node.sender = nil
-        lambda {
+        expect {
           @visitor.visit_query_command(@node)
-        }.should raise_error(RuntimeError, ExecVisitor::MSG[:can_not_query])
+        }.to raise_error(RuntimeError, ExecVisitor::MSG[:can_not_query])
       end
 
       it "should raise error when the sender is not a collection member" do
         @node.sender = @bad_user
-        lambda {
+        expect {
           @visitor.visit_query_command(@node)
-        }.should raise_error(RuntimeError, ExecVisitor::MSG[:can_not_query])
+        }.to raise_error(RuntimeError, ExecVisitor::MSG[:can_not_query])
       end
     end
 
@@ -104,7 +104,7 @@ describe ExecVisitor, "Process query command" do
       it "should query property pname equals to Phnom Penh" do
         @layer.text_fields.make :id => 22, :name => "pname", :code => "PN", :ord => 1
         @collection.sites.make :name => 'Bayon', :properties => {"22"=>"Phnom Penh"} 
-        @visitor.visit_query_command(@node).should eq "[\"PN\"] in Bayon=Phnom Penh"
+        expect(@visitor.visit_query_command(@node)).to eq "[\"PN\"] in Bayon=Phnom Penh"
       end
     end
   end
@@ -132,76 +132,76 @@ describe ExecVisitor, "Process update command" do
   end
 
   it "should recognize resource_id equals to AB1" do
-    @node.resource_id.text_value.should == 'AB1'
+    expect(@node.resource_id.text_value).to eq('AB1')
   end
 
   it "should recognize first property setting ambulances to 15" do
     property = @node.property_list.assignment_expression
-    property.name.text_value.should == 'ambulances'
-    property.value.value.should == 15
+    expect(property.name.text_value).to eq('ambulances')
+    expect(property.value.value).to eq(15)
   end
 
   it "should recognize second property setting doctors to 20" do
     property = @node.property_list.next
-    property.name.text_value.should == 'doctors'
-    property.value.value.should == 20
+    expect(property.name.text_value).to eq('doctors')
+    expect(property.value.value).to eq(20)
   end
 
   it "should find resource with id AB1" do
-    Site.should_receive(:find_by_id_with_prefix).with('AB1')
-    lambda {
+    expect(Site).to receive(:find_by_id_with_prefix).with('AB1')
+    expect {
       @visitor.visit_update_command @node
-    }.should raise_error
+    }.to raise_error
   end
 
   it "should user can update resource", skip: true do
-    @visitor.can_update?(@node.property_list, @node.sender, @site).should be_true
+    expect(@visitor.can_update?(@node.property_list, @node.sender, @site)).to be_truthy
   end
 
   it "should validate sender can not update resource", skip: true do
     sender = User.make(:phone_number => "111")
-    @visitor.can_update?(@node.property_list, sender, @site).should be_false
+    expect(@visitor.can_update?(@node.property_list, sender, @site)).to be_falsey
   end
 
   it "should raise exception when do not have permission", skip: true do
     site = Site.make
-    Site.should_receive(:find_by_id_with_prefix).with('AB1').and_return(site)
+    expect(Site).to receive(:find_by_id_with_prefix).with('AB1').and_return(site)
 
     @node.sender = User.make(:phone_number => '123')
-    lambda {
+    expect {
       @visitor.visit_update_command(@node)
-    }.should raise_error(RuntimeError, ExecVisitor::MSG[:can_not_update])
+    }.to raise_error(RuntimeError, ExecVisitor::MSG[:can_not_update])
   end
 
   it "should update property  of the site" do
-    Site.should_receive(:find_by_id_with_prefix).with('AB1').and_return(@site)
-    @visitor.should_receive(:can_update?).and_return(true)
-    @visitor.should_receive(:update_properties).with(@site, @node.sender, [{:code=>"ambulances", :value=>"15"}, {:code=>"doctors", :value=>"20"}])
-    @visitor.visit_update_command(@node).should == ExecVisitor::MSG[:update_successfully]
+    expect(Site).to receive(:find_by_id_with_prefix).with('AB1').and_return(@site)
+    expect(@visitor).to receive(:can_update?).and_return(true)
+    expect(@visitor).to receive(:update_properties).with(@site, @node.sender, [{:code=>"ambulances", :value=>"15"}, {:code=>"doctors", :value=>"20"}])
+    expect(@visitor.visit_update_command(@node)).to eq(ExecVisitor::MSG[:update_successfully])
   end
 
   it "should update field Ambulance to 15 and Doctor to 20" do
-    @visitor.visit_update_command(@node).should == ExecVisitor::MSG[:update_successfully]
+    expect(@visitor.visit_update_command(@node)).to eq(ExecVisitor::MSG[:update_successfully])
     site = Site.find_by_id_with_prefix('AB1')
-    site.properties[@f1.es_code].to_i.should == 15
-    site.properties[@f2.es_code].to_i.should == 20
+    expect(site.properties[@f1.es_code].to_i).to eq(15)
+    expect(site.properties[@f2.es_code].to_i).to eq(20)
   end
 
   it "should update site name to test" do
     @node = @parser.parse("dyrm u AB1 name=test").command
     @node.sender = @user    
-    Site.should_receive(:find_by_id_with_prefix).with('AB1').and_return(@site)
-    @visitor.should_receive(:can_update?).and_return(true)
-    @visitor.should_receive(:update_properties).with(@site, @node.sender, [{:code=>"name", :value=>"test"}])
-    @visitor.visit_update_command(@node).should == ExecVisitor::MSG[:update_successfully]
+    expect(Site).to receive(:find_by_id_with_prefix).with('AB1').and_return(@site)
+    expect(@visitor).to receive(:can_update?).and_return(true)
+    expect(@visitor).to receive(:update_properties).with(@site, @node.sender, [{:code=>"name", :value=>"test"}])
+    expect(@visitor.visit_update_command(@node)).to eq(ExecVisitor::MSG[:update_successfully])
   end
 
   it "should update field many to [1,2]", skip: true do
     @node = @parser.parse("dyrm u AB1 many=one two").command
     @node.sender = @user    
-    @visitor.visit_update_command(@node).should == ExecVisitor::MSG[:update_successfully]
+    expect(@visitor.visit_update_command(@node)).to eq(ExecVisitor::MSG[:update_successfully])
     site = Site.find_by_id_with_prefix('AB1')
-    site.properties[@f3.es_code].should == [1,2]
+    expect(site.properties[@f3.es_code]).to eq([1,2])
   end
 
   it 'should return cannot find site id when trying to update a site that does not exist' do
@@ -233,29 +233,29 @@ describe ExecVisitor, "Process add command" do
   end
 
   it 'should have collection_id' do
-    @node.collection_id.value.should == @collection.id
+    expect(@node.collection_id.value).to eq(@collection.id)
   end
 
   it 'should recognize lat equal 12.11' do
     property = @node.property_list.assignment_expression
-    property.name.text_value.should eq 'lat'
-    property.value.text_value.should eq '12.11'
+    expect(property.name.text_value).to eq 'lat'
+    expect(property.value.text_value).to eq '12.11'
   end
 
   it 'should recognize lng equal 75.11' do
     property = @node.property_list.next.assignment_expression
-    property.name.text_value.should eq 'lng'
-    property.value.text_value.should eq '75.11'
+    expect(property.name.text_value).to eq 'lng'
+    expect(property.value.text_value).to eq '75.11'
   end
 
   it 'should recognize name equal sms_site ' do
     property = @node.property_list.next.next
-    property.name.text_value.should eq 'name'
-    property.value.text_value.should eq 'sms_site'
+    expect(property.name.text_value).to eq 'name'
+    expect(property.value.text_value).to eq 'sms_site'
   end
 
   it 'should return added_successfully after site has been created' do
-    @visitor.visit_add_command(@node).should == ExecVisitor::MSG[:added_successfully]
+    expect(@visitor.visit_add_command(@node)).to eq(ExecVisitor::MSG[:added_successfully])
   end
 
   it 'should added 1 new site when visit_add_command called' do
@@ -278,7 +278,7 @@ describe ExecVisitor, "Process add command" do
   it 'should return added_successfully without collection_id' do
     @node = @parser.parse("dyrm a lat=12.11,lng=75.11,name=sms_site").command
     @node.sender = @user
-    @visitor.visit_add_command(@node).should == ExecVisitor::MSG[:added_successfully]
+    expect(@visitor.visit_add_command(@node)).to eq(ExecVisitor::MSG[:added_successfully])
   end
 
   it 'should return collection_id is needed when sender have more than 1 collections' do
@@ -286,35 +286,35 @@ describe ExecVisitor, "Process add command" do
     @collection1.memberships.create(:user => @user, :admin => false)
     @node = @parser.parse("dyrm a lat=12.11,lng=75.11,name=sms_site").command
     @node.sender = @user
-    @visitor.visit_add_command(@node).should eq "Collection id is needed in your message."
+    expect(@visitor.visit_add_command(@node)).to eq "Collection id is needed in your message."
   end
 
   it 'should return collection_id is needed when sender do not belong to any collections' do
     @user1 = User.make(:phone_number => '85512345678')
     @node = @parser.parse("dyrm a lat=12.11,lng=75.11,name=sms_site").command
     @node.sender = @user1
-    @visitor.visit_add_command(@node).should eq "Collection id is needed in your message."
+    expect(@visitor.visit_add_command(@node)).to eq "Collection id is needed in your message."
   end
 
   it 'should return site name is required when sender do not include name' do
     @node = @parser.parse("dyrm a lat=12.11,lng=75.11").command
     @node.sender = @user
-    @visitor.visit_add_command(@node).should == ExecVisitor::MSG[:name_is_required]
+    expect(@visitor.visit_add_command(@node)).to eq(ExecVisitor::MSG[:name_is_required])
   end
 
   it 'should return key-value properties' do
     @node = @parser.parse("dyrm a name=abc,doctors=5").command
-    @visitor.node_to_properties(@node.property_list).should eq [{:code=>"name", :value=>"abc"},{:code=>"doctors", :value=>"5"}]
+    expect(@visitor.node_to_properties(@node.property_list)).to eq [{:code=>"name", :value=>"abc"},{:code=>"doctors", :value=>"5"}]
   end
 
   it 'should return site properties with id and value' do
     @node = @parser.parse("dyrm a name=abc,doctors=5,ambulances=10").command
-    @visitor.node_to_site_properties(@visitor.node_to_properties(@node.property_list),@collection.id).should eq({@f2.id.to_s=>"5", @f1.id.to_s=>"10"})
+    expect(@visitor.node_to_site_properties(@visitor.node_to_properties(@node.property_list),@collection.id)).to eq({@f2.id.to_s=>"5", @f1.id.to_s=>"10"})
   end
 
   it 'should return a key-value site' do
     @node = @parser.parse("dyrm a name=abc,lat=12.11,lng=75.11,doctors=5,ambulances=10").command
-    @visitor.node_to_site(@visitor.node_to_properties(@node.property_list)).should eq({"name" => "abc", "lat" => "12.11", "lng" => "75.11"})
+    expect(@visitor.node_to_site(@visitor.node_to_properties(@node.property_list))).to eq({"name" => "abc", "lat" => "12.11", "lng" => "75.11"})
   end
 
 end

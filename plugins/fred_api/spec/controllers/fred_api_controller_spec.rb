@@ -29,16 +29,16 @@ describe FredApiController, :type => :controller do
 
     it 'should get default fields' do
       get :show_facility, id: site.id, format: 'json', collection_id: collection.id
-      response.should be_ok
-      response.content_type.should eq 'application/json'
+      expect(response).to be_ok
+      expect(response.content_type).to eq 'application/json'
 
       json = JSON.parse response.body
-      json["name"].should eq(site.name)
-      json["coordinates"][0].should eq(site.lng)
-      json["coordinates"][1].should eq(site.lat)
-      json['uuid'].should eq(site.uuid)
-      json["active"].should eq(true)
-      json["href"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      expect(json["name"]).to eq(site.name)
+      expect(json["coordinates"][0]).to eq(site.lng)
+      expect(json["coordinates"][1]).to eq(site.lat)
+      expect(json['uuid']).to eq(site.uuid)
+      expect(json["active"]).to eq(true)
+      expect(json["href"]).to eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
 
     end
 
@@ -46,11 +46,11 @@ describe FredApiController, :type => :controller do
       get :show_facility, id: site_with_properties.id, format: 'json', collection_id: collection.id
 
       json = JSON.parse response.body
-      json["properties"].length.should eq(4)
-      json["properties"]['manager'].should eq("Mrs. Liz")
-      json["properties"]['numBeds'].should eq(55)
-      json["properties"]['services'].should eq(['XR', 'OBG'])
-      json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+      expect(json["properties"].length).to eq(4)
+      expect(json["properties"]['manager']).to eq("Mrs. Liz")
+      expect(json["properties"]['numBeds']).to eq(55)
+      expect(json["properties"]['services']).to eq(['XR', 'OBG'])
+      expect(json["properties"]['inagurationDay']).to eq("2012-10-24T00:00:00Z")
     end
 
     it "should convert time in different timezone to UTC" do
@@ -58,15 +58,15 @@ describe FredApiController, :type => :controller do
       site2 = collection.sites.make name: 'Arg Site'
       get :show_facility, id: site2.id, format: 'json', collection_id: collection.id
       json = JSON.parse response.body
-      json["createdAt"].should eq("2013-02-04T23:25:27Z")
+      expect(json["createdAt"]).to eq("2013-02-04T23:25:27Z")
     end
 
     it "should return valid UUID" do
       get :show_facility, id: site_with_properties.id, format: 'json', collection_id: collection.id
       json = JSON.parse response.body
-      json['uuid'].should be
-      json['uuid'].should_not be_empty
-      (UUIDTools::UUID.parse json['uuid']).should be_valid
+      expect(json['uuid']).to be
+      expect(json['uuid']).not_to be_empty
+      expect(UUIDTools::UUID.parse json['uuid']).to be_valid
     end
 
   end
@@ -77,38 +77,38 @@ describe FredApiController, :type => :controller do
 
     it 'should get the full list of facilities' do
       get :facilities, format: 'json', collection_id: collection.id
-      response.should be_success
-      response.content_type.should eq 'application/json'
+      expect(response).to be_success
+      expect(response.content_type).to eq 'application/json'
 
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(2)
+      expect(json.length).to eq(2)
     end
 
     it 'should sort the list of facilities by name asc' do
       get :facilities, format: 'json', sortAsc: 'name', collection_id: collection.id
 
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(2)
-      json[0]["name"].should eq(site1.name)
-      json[1]["name"].should eq(site2.name)
+      expect(json.length).to eq(2)
+      expect(json[0]["name"]).to eq(site1.name)
+      expect(json[1]["name"]).to eq(site2.name)
     end
 
     it 'should sort the list of facilities by name desc' do
       get :facilities, format: 'json', sortDesc: 'name', collection_id: collection.id
 
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(2)
-      json[0]["name"].should eq(site2.name)
-      json[1]["name"].should eq(site1.name)
+      expect(json.length).to eq(2)
+      expect(json[0]["name"]).to eq(site2.name)
+      expect(json[1]["name"]).to eq(site1.name)
     end
 
     it 'should sort the list of facilities by property date' do
       get :facilities, format: 'json', sortDesc: 'inagurationDay', collection_id: collection.id
 
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(2)
-      json[0]["name"].should eq(site2.name)
-      json[1]["name"].should eq(site1.name)
+      expect(json.length).to eq(2)
+      expect(json[0]["name"]).to eq(site2.name)
+      expect(json[1]["name"]).to eq(site1.name)
     end
 
     describe 'limit' do
@@ -119,12 +119,12 @@ describe FredApiController, :type => :controller do
       it 'should limit the number of facilities returned and the offset for the query' do
         get :facilities, format: 'json', limit: 1, collection_id: collection.id
         json = (JSON.parse response.body)["facilities"]
-        json.length.should eq(1)
-        json[0]["name"].should eq(site1.name)
+        expect(json.length).to eq(1)
+        expect(json[0]["name"]).to eq(site1.name)
         get :facilities, format: 'json', limit: 1, offset: 1, collection_id: collection.id
         json = (JSON.parse response.body)["facilities"]
-        json.length.should eq(1)
-        json[0]["name"].should eq(site2.name)
+        expect(json.length).to eq(1)
+        expect(json[0]["name"]).to eq(site2.name)
       end
 
       it 'should not limit the number of facilities when limit=off' do
@@ -134,57 +134,57 @@ describe FredApiController, :type => :controller do
         json = (JSON.parse response.body)["facilities"]
 
         # 98 sites created inside this test case, and 2 under "query list of facilities" describe scope
-        json.length.should eq(100)
+        expect(json.length).to eq(100)
       end
     end
 
     it 'should select only default fields' do
       get :facilities, format: 'json', fields: "name,updatedAt", collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(2)
-      json[0].length.should eq(2)
-      json[0]['name'].should eq(site1.name)
+      expect(json.length).to eq(2)
+      expect(json[0].length).to eq(2)
+      expect(json[0]['name']).to eq(site1.name)
       iso_updated_at = Time.zone.parse(site1.updated_at.to_s).utc.iso8601
-      json[0]['updatedAt'].should eq(iso_updated_at)
+      expect(json[0]['updatedAt']).to eq(iso_updated_at)
 
-      json[1].length.should eq(2)
-      json[1]['name'].should eq(site2.name)
+      expect(json[1].length).to eq(2)
+      expect(json[1]['name']).to eq(site2.name)
       iso_updated_at = Time.zone.parse(site2.updated_at.to_s).utc.iso8601
-      json[1]['updatedAt'].should eq(iso_updated_at)
+      expect(json[1]['updatedAt']).to eq(iso_updated_at)
     end
 
     it 'should select default and custom fields' do
       get :facilities, format: 'json', fields: "name,properties:inagurationDay", collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(2)
-      json[0].length.should eq(2)
-      json[0]['name'].should eq(site1.name)
-      json[0]['properties']['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+      expect(json.length).to eq(2)
+      expect(json[0].length).to eq(2)
+      expect(json[0]['name']).to eq(site1.name)
+      expect(json[0]['properties']['inagurationDay']).to eq("2012-10-24T00:00:00Z")
 
-      json[1].length.should eq(2)
-      json[1]['name'].should eq(site2.name)
-      json[1]['properties']['inagurationDay'].should eq("2012-10-25T00:00:00Z")
+      expect(json[1].length).to eq(2)
+      expect(json[1]['name']).to eq(site2.name)
+      expect(json[1]['properties']['inagurationDay']).to eq("2012-10-25T00:00:00Z")
     end
 
     it 'should return all fields (default and custom) when parameter allProperties is set' do
       get :facilities, format: 'json', allProperties: true, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(2)
-      json[0]['properties'].length.should eq(1)
-      json[1]['properties'].length.should eq(1)
+      expect(json.length).to eq(2)
+      expect(json[0]['properties'].length).to eq(1)
+      expect(json[1]['properties'].length).to eq(1)
     end
 
     it "should select uuid field in partial response" do
       get :facilities, format: 'json', fields: "uuid,properties:inagurationDay", collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(2)
-      json[0].length.should eq(2)
-      json[0]['uuid'].should eq(site1.uuid)
-      json[0]['properties']['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+      expect(json.length).to eq(2)
+      expect(json[0].length).to eq(2)
+      expect(json[0]['uuid']).to eq(site1.uuid)
+      expect(json[0]['properties']['inagurationDay']).to eq("2012-10-24T00:00:00Z")
 
-      json[1].length.should eq(2)
-      json[1]['uuid'].should eq(site2.uuid)
-      json[1]['properties']['inagurationDay'].should eq("2012-10-25T00:00:00Z")
+      expect(json[1].length).to eq(2)
+      expect(json[1]['uuid']).to eq(site2.uuid)
+      expect(json[1]['properties']['inagurationDay']).to eq("2012-10-25T00:00:00Z")
     end
 
   end
@@ -197,15 +197,15 @@ describe FredApiController, :type => :controller do
     it "should filter by name" do
       get :facilities, format: 'json', name: site1.name, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['name'].should eq(site1.name)
+      expect(json.length).to eq(1)
+      expect(json[0]['name']).to eq(site1.name)
     end
 
     it "should filter by coordinates" do
       get :facilities, format: 'json', coordinates: [site1.lng.to_f, site1.lat.to_f], collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['uuid'].should eq(site1.uuid)
+      expect(json.length).to eq(1)
+      expect(json[0]['uuid']).to eq(site1.uuid)
     end
 
     it "should filter by updated_at" do
@@ -215,8 +215,8 @@ describe FredApiController, :type => :controller do
       iso_updated_at = Time.zone.parse(site3.updated_at.to_s).utc.iso8601
       get :facilities, format: 'json', updatedAt: iso_updated_at, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['uuid'].should eq(site3.uuid)
+      expect(json.length).to eq(1)
+      expect(json[0]['uuid']).to eq(site3.uuid)
     end
 
     it "should filter by created_at" do
@@ -226,15 +226,15 @@ describe FredApiController, :type => :controller do
       iso_created_at = Time.zone.parse(site3.created_at.to_s).utc.iso8601
       get :facilities, format: 'json', createdAt: iso_created_at, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['uuid'].should eq(site3.uuid)
+      expect(json.length).to eq(1)
+      expect(json[0]['uuid']).to eq(site3.uuid)
     end
 
     it "should filter by active" do
       #All ResourceMap facilities are active, because ResourceMap does not implement logical deletion yet
       get :facilities, format: 'json', active: 'false', collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(0)
+      expect(json.length).to eq(0)
     end
 
     it "should filter by updated since" do
@@ -244,8 +244,8 @@ describe FredApiController, :type => :controller do
       site1.save!
       get :facilities, format: 'json', updatedSince: iso_before_update, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['uuid'].should eq(site1.uuid)
+      expect(json.length).to eq(1)
+      expect(json[0]['uuid']).to eq(site1.uuid)
     end
 
     it "should filter by updated since with miliseconds" do
@@ -255,8 +255,8 @@ describe FredApiController, :type => :controller do
       site1.save!
       get :facilities, format: 'json', updatedSince: iso_before_update, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['uuid'].should eq(site1.uuid)
+      expect(json.length).to eq(1)
+      expect(json[0]['uuid']).to eq(site1.uuid)
     end
 
     it "should filter by updated since with arbitrary updated_at velues" do
@@ -270,23 +270,23 @@ describe FredApiController, :type => :controller do
       site5 = collection.sites.make name: 'Site E'
       get :facilities, format: 'json', updatedSince: "2013-02-04T22:55:53Z", collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(2)
-      json[0]['uuid'].should eq(site4.uuid)
-      json[1]['uuid'].should eq(site5.uuid)
+      expect(json.length).to eq(2)
+      expect(json[0]['uuid']).to eq(site4.uuid)
+      expect(json[1]['uuid']).to eq(site5.uuid)
     end
 
     it "should filter by property with 'properties.' prefix" do
       get :facilities, format: 'json', "properties.numBeds" => 55, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['name'].should eq(site1.name)
+      expect(json.length).to eq(1)
+      expect(json[0]['name']).to eq(site1.name)
     end
 
     it "should filter by uuid" do
       get :facilities, format: 'json', uuid: site1.uuid, collection_id: collection.id
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['uuid'].should eq(site1.uuid)
+      expect(json.length).to eq(1)
+      expect(json[0]['uuid']).to eq(site1.uuid)
     end
 
   end
@@ -295,9 +295,9 @@ describe FredApiController, :type => :controller do
     it "should delete facility" do
       site3 = collection.sites.make name: 'Site C'
       delete :delete_facility, id: site3.id, collection_id: collection.id
-      response.body.should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site3.id}.json")
+      expect(response.body).to eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site3.id}.json")
       sites = Site.find_by_name 'Site C'
-      sites.should be(nil)
+      expect(sites).to be(nil)
     end
   end
 
@@ -305,19 +305,19 @@ describe FredApiController, :type => :controller do
     let!(:site) { collection.sites.make }
     it "should return 200 in a valid request" do
       get :show_facility, id: site.id, format: 'json', collection_id: collection.id
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should return 401 if the user is not signed_in" do
       sign_out user
       get :show_facility, id: site.id, format: 'json', collection_id: collection.id
-      response.status.should eq(401)
+      expect(response.status).to eq(401)
     end
 
     it "should return 401 if the user is not signed_in" do
       sign_out user
       get :show_facility, id: site.id, format: 'json', collection_id: collection.id
-      response.status.should eq(401)
+      expect(response.status).to eq(401)
     end
 
     it "should return 403 if user is do not have permission to access the site" do
@@ -325,33 +325,33 @@ describe FredApiController, :type => :controller do
       sign_out user
       sign_in user2
       get :show_facility, id: site.id, format: 'json', collection_id: collection.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
     end
 
     it "should return 403 if user is do not have permission to access the collection" do
       collection2 = Collection.make
       get :show_facility, id: site.id, format: 'json', collection_id: collection2.id
-      response.status.should eq(403)
+      expect(response.status).to eq(403)
     end
 
     it "should return 409 if the site do not belong to the collection" do
       collection2 = Collection.make
       user.create_collection(collection2)
       get :show_facility, id: site.id, format: 'json', collection_id: collection2.id
-      response.status.should eq(409)
+      expect(response.status).to eq(409)
     end
 
     it "should return 404 if the requested site does not exist" do
       get :show_facility, id: 12355259, format: 'json', collection_id: collection.id
-      response.status.should eq(404)
+      expect(response.status).to eq(404)
       json = JSON.parse response.body
-      json['code'].should eq('404 Not Found')
-      json['message'].should eq('Resource not found')
+      expect(json['code']).to eq('404 Not Found')
+      expect(json['message']).to eq('Resource not found')
     end
 
     it "should return 400 if a non existing field is included in the query" do
       get :facilities, format: 'json', invalid: "option", collection_id: collection.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
     end
   end
 
@@ -365,51 +365,51 @@ describe FredApiController, :type => :controller do
 
     it "should return 404 if the facility does not exist" do
       put :update_facility, collection_id: collection.id, id: "124566", :name => "Kakamega HC 2"
-      response.status.should eq(404)
+      expect(response.status).to eq(404)
     end
 
     it "should update name" do
       request.env["RAW_POST_DATA"] = { :name => "Kakamega HC 2" }.to_json
       put :update_facility, collection_id: collection.id, id: site.id
-      response.status.should eq(200)
+      expect(response.status).to eq(200)
       updated_site = Site.find site.id
-      updated_site.name.should eq("Kakamega HC 2")
+      expect(updated_site.name).to eq("Kakamega HC 2")
     end
 
     it "should return 400 if id, url, createdAt or updatedAt are present in the query params" do
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', url: "sda" }.to_json
       put :update_facility, collection_id: collection.id, id: site.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
 
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', createdAt: "sda" }.to_json
       put :update_facility, collection_id: collection.id, id: site.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
 
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', updatedAt: "sda" }.to_json
       put :update_facility, collection_id: collection.id, id: site.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
     end
 
     it "should update coordinates" do
       request.env["RAW_POST_DATA"] = {coordinates: [76.9,34.2]}.to_json
       put :update_facility, collection_id: collection.id, id: site.id
-      response.status.should eq(200)
+      expect(response.status).to eq(200)
       json = JSON.parse response.body
-      json["name"].should eq('Kakamega HC')
-      json["coordinates"][0].should eq(76.9)
-      json["coordinates"][1].should eq(34.2)
+      expect(json["name"]).to eq('Kakamega HC')
+      expect(json["coordinates"][0]).to eq(76.9)
+      expect(json["coordinates"][1]).to eq(34.2)
       updated_site = Site.find site.id
-      updated_site.lat.to_f.should eq(34.2)
-      updated_site.lng.to_f.should eq(76.9)
+      expect(updated_site.lat.to_f).to eq(34.2)
+      expect(updated_site.lng.to_f).to eq(76.9)
     end
 
     it "should ignore active param in facility creation" do
       request.env["RAW_POST_DATA"] = { active: 'false' }.to_json
       put :update_facility, collection_id: collection.id, id: site.id
-      response.status.should eq(200)
+      expect(response.status).to eq(200)
       json = JSON.parse response.body
-      json["name"].should eq('Kakamega HC')
-      json["active"].should eq(true)
+      expect(json["name"]).to eq('Kakamega HC')
+      expect(json["active"]).to eq(true)
     end
 
     it "should update properties" do
@@ -423,13 +423,13 @@ describe FredApiController, :type => :controller do
       request.env["RAW_POST_DATA"] = {properties: json_data}.to_json
       put :update_facility, collection_id: collection.id, id: site.id
 
-      response.status.should eq(200)
+      expect(response.status).to eq(200)
       json = JSON.parse response.body
-      json["properties"].length.should eq(4)
-      json["properties"]['manager'].should eq("Mrs. Liz 2")
-      json["properties"]['numBeds'].should eq(552)
-      json["properties"]['services'].should eq(['OBG'])
-      json["properties"]['inagurationDay'].should eq("2013-10-24T00:00:00Z")
+      expect(json["properties"].length).to eq(4)
+      expect(json["properties"]['manager']).to eq("Mrs. Liz 2")
+      expect(json["properties"]['numBeds']).to eq(552)
+      expect(json["properties"]['services']).to eq(['OBG'])
+      expect(json["properties"]['inagurationDay']).to eq("2013-10-24T00:00:00Z")
     end
 
     it "should update identifiers" do
@@ -442,62 +442,62 @@ describe FredApiController, :type => :controller do
 
       put :update_facility, collection_id: collection.id, id: site.id
 
-      response.status.should eq(200)
+      expect(response.status).to eq(200)
       json = JSON.parse response.body
-      json['identifiers'][0].should eq({"context" => "MOH", "agency" => "DHIS", "id"=> "1234"})
+      expect(json['identifiers'][0]).to eq({"context" => "MOH", "agency" => "DHIS", "id"=> "1234"})
     end
 
     it "should not update uuid" do
       prev_uuid = site.uuid
       request.env["RAW_POST_DATA"] = { :uuid => "c57f5866-f8cb-44b0-8fa5-109aa14ed822" }.to_json
       put :update_facility, collection_id: collection.id, id: site.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
       json = JSON.parse response.body
-      json["message"].should eq("Invalid Paramaters: The id, uuid, url, createdAt and updatedAt core properties cannot be changed by the client.")
+      expect(json["message"]).to eq("Invalid Paramaters: The id, uuid, url, createdAt and updatedAt core properties cannot be changed by the client.")
       #check that site uuid does not change
       updated_site = Site.find site.id
-      updated_site.uuid.should eq(prev_uuid)
+      expect(updated_site.uuid).to eq(prev_uuid)
     end
   end
 
   describe "Should create facility" do
     it "should not create a facility without a name" do
       post :create_facility, collection_id: collection.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
       json = JSON.parse response.body
-      json["message"].should eq("Validation failed: Name can't be blank")
+      expect(json["message"]).to eq("Validation failed: Name can't be blank")
     end
 
     it "should create facility with name" do
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC' }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(201)
+      expect(response.status).to eq(201)
       site = Site.find_by_name 'Kakamega HC'
-      site.should be
-      response.location.should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      expect(site).to be
+      expect(response.location).to eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
       json = JSON.parse response.body
-      json["name"].should eq(site.name)
-      json["uuid"].should eq("#{site.uuid}")
-      json["active"].should eq(true)
-      json["href"].should eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
+      expect(json["name"]).to eq(site.name)
+      expect(json["uuid"]).to eq("#{site.uuid}")
+      expect(json["active"]).to eq(true)
+      expect(json["href"]).to eq("http://test.host/plugin/fred_api/collections/#{collection.id}/fred_api/v1/facilities/#{site.id}.json")
     end
 
     it "should return 400 if id, url, createdAt or updatedAt are present in the query params" do
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', id: 234 }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
 
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', url: "sda" }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
 
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', createdAt: "sda" }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
 
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', updatedAt: "sda" }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
     end
 
     # Resourcemap does not consider sites with the same name as duplicated
@@ -505,36 +505,36 @@ describe FredApiController, :type => :controller do
       site = collection.sites.create :name => "Duplicated name"
       request.env["RAW_POST_DATA"] = { name: "Duplicated name" }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(409)
+      expect(response.status).to eq(409)
     end
 
     it "should create facility with coordinates" do
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', coordinates: [76.9,34.2] }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(201)
+      expect(response.status).to eq(201)
       json = JSON.parse response.body
-      json["name"].should eq('Kakamega HC')
-      json["coordinates"][0].should eq(76.9)
-      json["coordinates"][1].should eq(34.2)
+      expect(json["name"]).to eq('Kakamega HC')
+      expect(json["coordinates"][0]).to eq(76.9)
+      expect(json["coordinates"][1]).to eq(34.2)
     end
 
     it "should ignore active param in facility creation" do
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', active: 'false' }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(201)
+      expect(response.status).to eq(201)
       json = JSON.parse response.body
-      json["name"].should eq('Kakamega HC')
-      json["active"].should eq(true)
+      expect(json["name"]).to eq('Kakamega HC')
+      expect(json["active"]).to eq(true)
     end
 
     it "should create facility with coordinates" do
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', coordinates: [76.9,34.2] }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(201)
+      expect(response.status).to eq(201)
       json = JSON.parse response.body
-      json["name"].should eq('Kakamega HC')
-      json["coordinates"][0].should eq(76.9)
-      json["coordinates"][1].should eq(34.2)
+      expect(json["name"]).to eq('Kakamega HC')
+      expect(json["coordinates"][0]).to eq(76.9)
+      expect(json["coordinates"][1]).to eq(34.2)
     end
 
     it "should create a facility with properties" do
@@ -546,13 +546,13 @@ describe FredApiController, :type => :controller do
       } }.to_json
       post :create_facility, collection_id: collection.id
 
-      response.status.should eq(201)
+      expect(response.status).to eq(201)
       json = JSON.parse response.body
-      json["properties"].length.should eq(4)
-      json["properties"]['manager'].should eq("Mrs. Liz")
-      json["properties"]['numBeds'].should eq(55)
-      json["properties"]['services'].should eq(['XR', 'OBG'])
-      json["properties"]['inagurationDay'].should eq("2012-10-24T00:00:00Z")
+      expect(json["properties"].length).to eq(4)
+      expect(json["properties"]['manager']).to eq("Mrs. Liz")
+      expect(json["properties"]['numBeds']).to eq(55)
+      expect(json["properties"]['services']).to eq(['XR', 'OBG'])
+      expect(json["properties"]['inagurationDay']).to eq("2012-10-24T00:00:00Z")
     end
 
     it "should return descriptive error if an invalid property code is supplied" do
@@ -560,9 +560,9 @@ describe FredApiController, :type => :controller do
         "invalid" => "Mrs. Liz",
       } }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
       json = JSON.parse response.body
-      json["message"].should eq("Invalid Parameters: Cannot find Field with code equal to 'invalid' in Collection's Layers.")
+      expect(json["message"]).to eq("Invalid Parameters: Cannot find Field with code equal to 'invalid' in Collection's Layers.")
     end
 
     it "should create a facility with identifiers" do
@@ -578,10 +578,10 @@ describe FredApiController, :type => :controller do
         "id"=>"124"}] }.to_json
       post :create_facility, collection_id: collection.id
 
-      response.status.should eq(201)
+      expect(response.status).to eq(201)
       json = JSON.parse response.body
-      json['identifiers'][0].should eq({"context" => "MOH", "agency" => "DHIS", "id"=> "123"})
-      json['identifiers'][1].should eq({"context" => "MOH2", "agency" => "DHIS2", "id"=> "124"})
+      expect(json['identifiers'][0]).to eq({"context" => "MOH", "agency" => "DHIS", "id"=> "123"})
+      expect(json['identifiers'][1]).to eq({"context" => "MOH2", "agency" => "DHIS2", "id"=> "124"})
     end
 
     it "should return descriptive error if an invalid identifier field supplied" do
@@ -592,35 +592,35 @@ describe FredApiController, :type => :controller do
       ] }.to_json
 
       post :create_facility, collection_id: collection.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
       json = JSON.parse response.body
-      json["message"].should eq("Invalid Parameters: Cannot find Identifier Field with context equal to 'MOH' and agency equal to 'DHIS' in Collection's Layers.")
+      expect(json["message"]).to eq("Invalid Parameters: Cannot find Identifier Field with context equal to 'MOH' and agency equal to 'DHIS' in Collection's Layers.")
     end
 
     it "should create a facility with uuid" do
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :uuid => "c57f5866-f8cb-44b0-8fa5-109aa14ed822" }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(201)
+      expect(response.status).to eq(201)
       json = JSON.parse response.body
-      json['uuid'].should eq("c57f5866-f8cb-44b0-8fa5-109aa14ed822")
+      expect(json['uuid']).to eq("c57f5866-f8cb-44b0-8fa5-109aa14ed822")
     end
 
     it "should not create facility with invalid uuid" do
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :uuid => "1245" }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(400)
+      expect(response.status).to eq(400)
       json = JSON.parse response.body
-      json["message"].should eq("Validation failed: Uuid is not valid")
-      (Site.find_by_name 'Kakamega HC').should be_nil
+      expect(json["message"]).to eq("Validation failed: Uuid is not valid")
+      expect(Site.find_by_name 'Kakamega HC').to be_nil
     end
 
     it "should return 409 if facility uuid is duplicated in the collection" do
       site = collection.sites.make
       request.env["RAW_POST_DATA"] = { name: 'Kakamega HC', :uuid => site.uuid }.to_json
       post :create_facility, collection_id: collection.id
-      response.status.should eq(409)
+      expect(response.status).to eq(409)
       json = JSON.parse response.body
-      json["message"].should eq("Duplicated facility: UUID has already been taken in this collection.")
+      expect(json["message"]).to eq("Duplicated facility: UUID has already been taken in this collection.")
     end
 
   end
@@ -637,53 +637,53 @@ describe FredApiController, :type => :controller do
       get :show_facility, id: site_with_metadata.id, format: 'json', collection_id: collection.id
       json = JSON.parse response.body
 
-      json["name"].should eq(site_with_metadata.name)
-      json["uuid"].should eq("#{site_with_metadata.uuid}")
-      json["identifiers"].length.should eq(1)
-      json["identifiers"][0].should eq({"context" => "MOH", "agency" => "DHIS", "id"=> "53adf"})
+      expect(json["name"]).to eq(site_with_metadata.name)
+      expect(json["uuid"]).to eq("#{site_with_metadata.uuid}")
+      expect(json["identifiers"].length).to eq(1)
+      expect(json["identifiers"][0]).to eq({"context" => "MOH", "agency" => "DHIS", "id"=> "53adf"})
     end
 
     it 'should filter by identifier', focus: true do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.id" => "53adf"
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['uuid'].should eq("#{site_with_metadata.uuid}")
+      expect(json.length).to eq(1)
+      expect(json[0]['uuid']).to eq("#{site_with_metadata.uuid}")
     end
 
     it 'should filter by identifier and agency' do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.agency" => "DHIS", "identifiers.id" => "53adf"
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['uuid'].should eq("#{site_with_metadata.uuid}")
+      expect(json.length).to eq(1)
+      expect(json[0]['uuid']).to eq("#{site_with_metadata.uuid}")
     end
 
     it 'should filter by identifier and context' do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf"
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['uuid'].should eq("#{site_with_metadata.uuid}")
+      expect(json.length).to eq(1)
+      expect(json[0]['uuid']).to eq("#{site_with_metadata.uuid}")
     end
 
     it 'should filter by identifier, context and agency' do
       get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf", "identifiers.agency" => "DHIS"
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(1)
-      json[0]['uuid'].should eq("#{site_with_metadata.uuid}")
+      expect(json.length).to eq(1)
+      expect(json[0]['uuid']).to eq("#{site_with_metadata.uuid}")
     end
 
     it 'sholud return an empty list if the id does not match' do get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "invalid", "identifiers.agency" => "DHIS"
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(0)
+      expect(json.length).to eq(0)
     end
 
     it 'sholud return an empty list if the context does not match any identifier' do get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "invalid", "identifiers.id" => "53adf", "identifiers.agency" => "DHIS"
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(0)
+      expect(json.length).to eq(0)
     end
 
     it 'sholud return an empty list if the agency does not match any identifier' do get :facilities, format: 'json',  collection_id: collection.id, "identifiers.context" => "MOH", "identifiers.id" => "53adf", "identifiers.agency" => "invalid"
       json = (JSON.parse response.body)["facilities"]
-      json.length.should eq(0)
+      expect(json.length).to eq(0)
     end
 
   end

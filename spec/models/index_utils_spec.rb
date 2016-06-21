@@ -7,7 +7,7 @@ describe Site::IndexUtils do
   it 'should search site by site.id_with_prefix' do
     search = collection.new_search
     search.id site.id
-    search.results.first['_source']["id_with_prefix"].should eq site.id_with_prefix
+    expect(search.results.first['_source']["id_with_prefix"]).to eq site.id_with_prefix
   end
 end
 

@@ -11,7 +11,7 @@ onCollections ->
       @newOrEditSite = ko.computed => if @editingSite() && (!@editingSite().id() || @editingSite().inEditMode()) then @editingSite() else null
       @showSite = ko.computed =>  if @editingSite()?.id() && !@editingSite().inEditMode() then @editingSite() else null
       window.markers = @markers = {}
-      
+
     @loadBreadCrumb: ->
       params = {}
       if @selectedSite()
@@ -24,7 +24,7 @@ onCollections ->
     @editingSiteLocation: ->
       @editingSite() && (!@editingSite().id() || @editingSite().inEditMode() || @editingSite().editingLocation())
 
-    @calculateDistance: (fromLat, fromLng, toLat, toLng) => 
+    @calculateDistance: (fromLat, fromLng, toLat, toLng) =>
       fromLatlng = new google.maps.LatLng(fromLat, fromLng)
       toLatlng = new google.maps.LatLng(toLat, toLng)
       distance = google.maps.geometry.spherical.computeDistanceBetween(fromLatlng, toLatlng)
@@ -47,7 +47,7 @@ onCollections ->
             if distance < parseFloat(field.maximumSearchLength)
               location.distance = distance
               result.push(location)
-          result.sort (a, b) => 
+          result.sort (a, b) =>
             return parseFloat(a.distance) - parseFloat(b.distance)
           field.resultLocations(result)
           field.resultLocationsUI(field.resultLocations[0..field.limit])
@@ -66,7 +66,7 @@ onCollections ->
           for esCode, value of window.model.newSiteProperties
             field = @currentCollection().findFieldByEsCode esCode
             field.setValueFromSite(value) if field
-        
+
         #set default value to field yes_no as false
         if site
           for field in site.fields()
@@ -77,7 +77,7 @@ onCollections ->
 
         #update @currentCollection().allSite()
         fields = @currentCollection().fields()
-        for field in fields 
+        for field in fields
           if field.kind == 'site'
             @loadSiteByTerm(@showingAlert())
 
@@ -88,6 +88,10 @@ onCollections ->
         window.model.initDatePicker()
         window.model.initAutocomplete()
         window.model.initControlKey()
+        window.model.newOrEditSite().scrollable(false)
+        for field in window.model.newOrEditSite().fields()
+          if field.skippedState() == false && field.kind == 'yes_no'
+            field.setFieldFocus()
         $('textarea').autogrow()
         $('#name').focus()
 
@@ -98,7 +102,7 @@ onCollections ->
     @editSite: (site) ->
       #update @currentCollection().allSite()
       fields = @currentCollection().fields()
-      for field in fields 
+      for field in fields
         if field.kind == 'site'
           @loadSiteByTerm(@showingAlert())
 
@@ -115,14 +119,14 @@ onCollections ->
           @showMap =>
 
             site.copyPropertiesToCollection(site.collection)
-            
+
             if @selectedSite() && @selectedSite().id() == site.id()
               @unselectSite()
 
             if site.collection.sitesPermission.canUpdate(site) || site.collection.sitesPermission.canRead(site)
               site.fetchFields()
             else if site.collection.sitesPermission.canNone(site)
-              site.layers([]) 
+              site.layers([])
 
             @selectSite(site)
             @editingSite(site)
@@ -250,7 +254,7 @@ onCollections ->
       @loadBreadCrumb()
       @rewriteUrl()
 
-      hierarchySites = @currentCollection().hierarchySites() 
+      hierarchySites = @currentCollection().hierarchySites()
       @deselectHierarchySite(hierarchySites)
 
       $('a#previewimg').fancybox()

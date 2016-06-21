@@ -1,4 +1,4 @@
-enabled: true
-url: http://localhost:3003
-client_id: dP3tN9J-iJP90O0608VBUg
-client_secret: T-xS6huJajhjlNm5mexPiHt9Lsrs0L8rlN2v1R-0Sbk
+enabled: false
+url: http://rmlocal.instedd.org:3333
+client_id: 2928443723-dturo1vsmdun7534lrmakvhpq950mnlv.apps.googleusercontent.com
+client_secret: 0wnUVSzDfnZvSRa0F-khdzWC

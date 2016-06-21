@@ -312,7 +312,7 @@ describe Activity do
       site.properties_will_change!
       site.save!
 
-      Activity.count.should eq(0)
+      expect(Activity.count).to eq(0)
     end
 
     it "doesn't create one if lat/lng updated but not changed" do
@@ -324,7 +324,7 @@ describe Activity do
       site.lng = "30.103090000000066"
       site.save!
 
-      Activity.count.should eq(0)
+      expect(Activity.count).to eq(0)
     end
   end
 
@@ -345,12 +345,12 @@ describe Activity do
 
   def assert_activity(item_type, action, options = {})
     activities = Activity.all
-    activities.length.should eq(1)
+    expect(activities.length).to eq(1)
 
-    activities[0].item_type.should eq(item_type)
-    activities[0].action.should eq(action)
+    expect(activities[0].item_type).to eq(item_type)
+    expect(activities[0].action).to eq(action)
     options.each do |key, value|
-      activities[0].send(key).should eq(value)
+      expect(activities[0].send(key)).to eq(value)
     end
   end
   
@@ -413,30 +413,30 @@ describe Activity do
     it "should migrate activities log for site to add incremental properties something" do
        activities = Activity.migrate_activities_of_site(@activities, @site1)
        
-       activities.size.should eq 5
+       expect(activities.size).to eq 5
        
-       activities[0].data["properties"].should eq({"120"=>"channa@info", "145"=>"10", "290"=>"20", "310"=>"097555"})
-       activities[0].data["lat"].should eq 10.30
-       activities[0].data["lng"].should eq 15.30
-       
-      
-       activities[1].data["properties"].should eq({"120"=>"tola@gmail", "145"=>"200", "290"=>"20", "310"=>"097555"})
-       activities[1].data["lat"].should eq 10.30
-       activities[1].data["lng"].should eq 15.30
-       
-       activities[2].data["properties"].should eq({"120"=>"vicheka@gmail", "145"=>"200", "290"=>"90", "310"=>"097555"})
-       activities[2].data["lat"].should eq 10.30
-       activities[2].data["lng"].should eq 15.30
+       expect(activities[0].data["properties"]).to eq({"120"=>"channa@info", "145"=>"10", "290"=>"20", "310"=>"097555"})
+       expect(activities[0].data["lat"]).to eq 10.30
+       expect(activities[0].data["lng"]).to eq 15.30
        
       
-       activities[3].data["properties"].should eq({"120"=>"theary@gmail", "145"=>"200", "290"=>"100", "310"=>"097555"})
-       activities[3].data["lat"].should eq 10.30
-       activities[3].data["lng"].should eq 15.30
+       expect(activities[1].data["properties"]).to eq({"120"=>"tola@gmail", "145"=>"200", "290"=>"20", "310"=>"097555"})
+       expect(activities[1].data["lat"]).to eq 10.30
+       expect(activities[1].data["lng"]).to eq 15.30
+       
+       expect(activities[2].data["properties"]).to eq({"120"=>"vicheka@gmail", "145"=>"200", "290"=>"90", "310"=>"097555"})
+       expect(activities[2].data["lat"]).to eq 10.30
+       expect(activities[2].data["lng"]).to eq 15.30
+       
       
-       activities[4].data["properties"].should eq({"120"=>"theary@gmail", "145"=>"200", "290"=>"100", "310"=>"097555"})
-       activities[4].data["lat"].should eq 15.90
-       activities[4].data["lng"].should eq 50.30
-       activities[4].data["name"].should eq "Champa"
+       expect(activities[3].data["properties"]).to eq({"120"=>"theary@gmail", "145"=>"200", "290"=>"100", "310"=>"097555"})
+       expect(activities[3].data["lat"]).to eq 10.30
+       expect(activities[3].data["lng"]).to eq 15.30
+      
+       expect(activities[4].data["properties"]).to eq({"120"=>"theary@gmail", "145"=>"200", "290"=>"100", "310"=>"097555"})
+       expect(activities[4].data["lat"]).to eq 15.90
+       expect(activities[4].data["lng"]).to eq 50.30
+       expect(activities[4].data["name"]).to eq "Champa"
 
     end
   end

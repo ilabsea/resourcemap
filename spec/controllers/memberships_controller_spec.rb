@@ -12,21 +12,21 @@ describe MembershipsController, skip: true do
   describe "search" do
     it "should find users that have membership" do
       get :search, collection_id: collection.id, term: 'bar'
-      JSON.parse(response.body).count.should == 0
+      expect(JSON.parse(response.body).count).to eq(0)
     end
 
     it "should find user" do
       get :search, collection_id: collection.id, term: 'foo'
       json = JSON.parse response.body
 
-      json.size.should == 1
-      json[0].should == 'foo@test.com'
+      expect(json.size).to eq(1)
+      expect(json[0]).to eq('foo@test.com')
     end
 
     context "without term" do
       it "should return all users in the collection" do
         get :search, collection_id: collection.id
-        JSON.parse(response.body).count.should == 1
+        expect(JSON.parse(response.body).count).to eq(1)
       end
     end
   end
@@ -34,12 +34,12 @@ describe MembershipsController, skip: true do
   describe "create" do
     it "should create with owner false" do
       user_2.memberships.create! :collection_id => collection.id
-      user_2.memberships[0].should_not be_owner
+      expect(user_2.memberships[0]).not_to be_owner
     end
 
     it "should create with owner true" do
       collection1 = user.create_collection(Collection.make_unsaved)
-      collection1.memberships.first.should be_owner
+      expect(collection1.memberships.first).to be_owner
     end    
   end
 

@@ -9,6 +9,6 @@ describe "view_collections" do
     visit "/?explicit=true"
     click_button ("View your collections")
     sleep 3
-    page.should have_content ("Central Hospital")
+    expect(page).to have_content ("Central Hospital")
   end
 end

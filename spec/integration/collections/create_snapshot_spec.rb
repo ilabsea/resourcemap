@@ -13,7 +13,7 @@ describe "create_snapshot" do
   	click_button 'Take new snapshot'
   	sleep 2 
   	page.save_screenshot 'New snapshot.png'
-  	page.should have_content 'Snapshot 1'
-  	page.should have_content 'Snapshot created'
+  	expect(page).to have_content 'Snapshot 1'
+  	expect(page).to have_content 'Snapshot created'
   end
 end

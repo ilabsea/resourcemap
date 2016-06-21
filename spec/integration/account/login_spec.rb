@@ -11,7 +11,7 @@ describe "login" do
       click_button('Log In')
     end 
     page.save_screenshot 'login.png'
-    page.should have_content("Signed in successfully")
+    expect(page).to have_content("Signed in successfully")
   end
 
 end

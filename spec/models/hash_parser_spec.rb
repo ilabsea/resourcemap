@@ -16,6 +16,6 @@ describe HashParser do
 
   it "should convert xml to hash object" do
     result = HashParser.from_xml_file @xml
-    result.should be_a_kind_of(Hash)
+    expect(result).to be_a_kind_of(Hash)
   end
 end

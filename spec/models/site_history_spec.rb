@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SiteHistory, skip: true do
-  it { should belong_to :site }
+  it { is_expected.to belong_to :site }
 
   it "should create ES index" do
     index_name = Collection.index_name 32, snapshot: "last_year"
@@ -12,15 +12,15 @@ describe SiteHistory, skip: true do
 
     site_history.store_in index
 
-    index.exists?.should be_true
+    expect(index.exists?).to be_truthy
 
     search = Tire::Search::Search.new index_name
-    search.perform.results.length.should eq(1)
-    search.perform.results.first["_source"]["name"].should eq(site_history.name)
-    search.perform.results.first["_source"]["id"].should eq(site_history.site_id)
-    search.perform.results.first["_source"]["properties"].should eq(site_history.properties)
-    search.perform.results.first["_source"]["location"]["lat"].should eq(site_history.lat)
-    search.perform.results.first["_source"]["location"]["lon"].should eq(site_history.lng)
+    expect(search.perform.results.length).to eq(1)
+    expect(search.perform.results.first["_source"]["name"]).to eq(site_history.name)
+    expect(search.perform.results.first["_source"]["id"]).to eq(site_history.site_id)
+    expect(search.perform.results.first["_source"]["properties"]).to eq(site_history.properties)
+    expect(search.perform.results.first["_source"]["location"]["lat"]).to eq(site_history.lat)
+    expect(search.perform.results.first["_source"]["location"]["lon"]).to eq(site_history.lng)
   end
 
 end

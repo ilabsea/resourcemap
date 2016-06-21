@@ -8,6 +8,6 @@ describe "show_more_info" do
  	click_link "Find out how"
  	sleep 1
  	page.save_screenshot 'Show_more_info.png'
- 	page.should have_content "How does it work?"
+ 	expect(page).to have_content "How does it work?"
   end
 end

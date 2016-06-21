@@ -17,6 +17,6 @@ describe "edit_site" do
   	sleep 3
     click_button 'Done'
   	sleep 4
-  	page.should_not have_content ('26.7574, 14.3574')
+  	expect(page).not_to have_content ('26.7574, 14.3574')
   end
 end
