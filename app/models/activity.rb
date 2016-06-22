@@ -409,7 +409,7 @@ class Activity < ActiveRecord::Base
     elsif field && field.select_many? && value.is_a?(Array)
       value.map { |v| format_option field, v }
     else
-      value.is_a?(String) ? "'#{value}'" : value
+      value.is_a?(String) ? "#{value}" : value
     end
   end
 

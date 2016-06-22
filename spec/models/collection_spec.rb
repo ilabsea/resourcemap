@@ -14,7 +14,7 @@ describe Collection do
   let!(:field) { layer.fields.first }
 
   context "max value" do
-    it "gets max value for property that exists", skip: true do
+    it "gets max value for property that exists" do
       collection.sites.make :properties => {field.es_code => 10}
       collection.sites.make :properties => {field.es_code => 20}, :lat => nil, :lng => nil
       collection.sites.make :properties => {field.es_code => 5}
@@ -23,13 +23,13 @@ describe Collection do
     end
   end
 
-  describe "thresholds test", skip: true do
+  describe "thresholds test" do
     let!(:site) { collection.sites.make properties: {field.es_code => 9}}
-    it "should return false when there is no threshold", skip: true do
+    it "should return false when there is no threshold" do
       expect(collection.thresholds_test(site)).to be_falsey
     end
 
-    it "should return false when no threshold is hit", skip: true do
+    it "should return false when no threshold is hit" do
       collection.thresholds.make is_all_site: true, conditions: [ field: 1, op: :gt, value: 10 ]
       expect(collection.thresholds_test(site)).to be_falsey
     end
@@ -122,16 +122,17 @@ describe Collection do
   end
 
   describe 'gateway' do
-    let(:admin_user) { User.make }
-    let(:collection_1) { admin_user.create_collection Collection.make name: 'test'}
-    let!(:gateway) { admin_user.channels.make name: 'default', basic_setup: true, ticket_code: '2222'  }
+    let!(:admin_user) { User.make }
+    let!(:collection_1) { admin_user.create_collection Collection.make name: 'test'}
+    let!(:channel) { admin_user.channels.make name: 'default', basic_setup: true, ticket_code: '2222'  }
 
     it 'should return user_owner of collection' do
       expect(collection_1.get_user_owner).to eq admin_user
     end
 
-    it 'should return gateway under user_owner', skip: true do
-      expect(collection_1.get_gateway_under_user_owner).to eq gateway
+    it 'should return gateway under user_owner' do
+      debugger
+      expect(collection_1.get_gateway_under_user_owner).to eq channel
     end
   end
 
@@ -177,7 +178,7 @@ describe Collection do
     end
   end
 
-  describe "#is site exist?", skip: true do
+  describe "#is site exist?" do
     before(:each) do
       site1 = collection.sites.make device_id: 'dv1', external_id: '1',properties: {}
       site2 = collection.sites.make device_id: 'dv1', external_id: '2',properties: {}

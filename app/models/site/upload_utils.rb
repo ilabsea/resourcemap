@@ -1,6 +1,6 @@
 module Site::UploadUtils
   extend self
-  require 'RMagick'
+  require 'rmagick'
 
   def uploadSingleFile(key, value)
     img = Magick::Image::from_blob(value).first
@@ -34,7 +34,6 @@ module Site::UploadUtils
 
   def purgeUploadedPhotos(site)
     photoFields = Field.where(:collection_id => site.collection_id, :kind => 'photo')
-    puts photoFields.length
     photoFields.each { |field|
       path = "public/photo_field/"
       photoFileName = site.properties[field.id.to_s]

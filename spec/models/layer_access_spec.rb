@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "layer access", skip: true do
+describe "layer access" do
   let!(:collection) { Collection.make }
   let!(:user) { User.make }
   let!(:membership) { Membership.create! user_id: user.id, collection_id: collection.id }

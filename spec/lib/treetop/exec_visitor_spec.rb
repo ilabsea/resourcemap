@@ -42,7 +42,7 @@ describe ExecVisitor, "Process query command" do
     @visitor.visit_query_command @node
   end
 
-  it "should user can view collection", skip: true do
+  it "should user can view collection" do
     expect(@visitor.can_view?(@properties[0], @node.sender, @collection)).to be_truthy
   end
 
@@ -154,23 +154,23 @@ describe ExecVisitor, "Process update command" do
     }.to raise_error
   end
 
-  it "should user can update resource", skip: true do
+  it "should user can update resource" do
     expect(@visitor.can_update?(@node.property_list, @node.sender, @site)).to be_truthy
   end
 
-  it "should validate sender can not update resource", skip: true do
+  it "should validate sender can not update resource" do
     sender = User.make(:phone_number => "111")
     expect(@visitor.can_update?(@node.property_list, sender, @site)).to be_falsey
   end
 
-  it "should raise exception when do not have permission", skip: true do
+  it "should raise exception when do not have permission" do
     site = Site.make
     expect(Site).to receive(:find_by_id_with_prefix).with('AB1').and_return(site)
 
     @node.sender = User.make(:phone_number => '123')
     expect {
       @visitor.visit_update_command(@node)
-    }.to raise_error(RuntimeError, ExecVisitor::MSG[:can_not_update])
+    }.to raise_error(RuntimeError, ExecVisitor::MSG[:no_rights_not_update] )
   end
 
   it "should update property  of the site" do
@@ -196,8 +196,8 @@ describe ExecVisitor, "Process update command" do
     expect(@visitor.visit_update_command(@node)).to eq(ExecVisitor::MSG[:update_successfully])
   end
 
-  it "should update field many to [1,2]", skip: true do
-    @node = @parser.parse("dyrm u AB1 many=one two").command
+  it "should update field many to [1,2]" do
+    @node = @parser.parse("dyrm u AB1 many=one&two").command
     @node.sender = @user    
     expect(@visitor.visit_update_command(@node)).to eq(ExecVisitor::MSG[:update_successfully])
     site = Site.find_by_id_with_prefix('AB1')

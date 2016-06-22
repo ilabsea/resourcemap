@@ -42,7 +42,7 @@ describe Activity do
         'description' => "Layer 'Layer1' was renamed to '#{layer.name}'"
     end
 
-    it "creates one when layer's field is added", skip: true do
+    it "creates one when layer's field is added" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
 
       Activity.delete_all
@@ -59,7 +59,7 @@ describe Activity do
         'description' => "Layer 'Layer1' changed: text field 'Two' (two) was added"
     end
 
-    it "creates one when layer's field's code changes", skip: true do
+    it "creates one when layer's field's code changes" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
 
       Activity.delete_all
@@ -76,7 +76,7 @@ describe Activity do
         'description' => "Layer 'Layer1' changed: text field 'One' (one) code changed to 'one1'"
     end
 
-    it "creates one when layer's field's name changes", skip: true do
+    it "creates one when layer's field's name changes" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}]
 
       Activity.delete_all
@@ -93,7 +93,7 @@ describe Activity do
         'description' => "Layer 'Layer1' changed: text field 'One' (one) name changed to 'One1'"
     end
 
-    it "creates one when layer's field's options changes", skip: true do
+    it "creates one when layer's field's options changes" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'select_one', code: 'one', name: 'One', config: {'options' => [{'code' => '1', 'label' => 'One'}]}, ord: 1}]
 
       Activity.delete_all
@@ -114,7 +114,7 @@ describe Activity do
         'description' => %(Layer 'Layer1' changed: select_one field 'One' (one) options changed from ["One (1)"] to ["Two (2)"])
     end
 
-    it "creates one when layer's field is removed", skip: true do
+    it "creates one when layer's field is removed" do
       layer = collection.layers.make user: user, name: 'Layer1', fields_attributes: [{kind: 'text', code: 'one', name: 'One', ord: 1}, {kind: 'text', code: 'two', name: 'Two', ord: 2}]
 
       Activity.delete_all
@@ -178,7 +178,7 @@ describe Activity do
       'description' => "Import CSV: 1 site were imported"
   end
 
-  context "site changed", skip: true do
+  context "site changed" do
     let!(:layer) { collection.layers.make user: user, fields_attributes: [{kind: 'numeric', code: 'beds', name: 'Beds', ord: 1}, {kind: 'numeric', code: 'tables', name: 'Tables', ord: 2}, {kind: 'text', code: 'text', name: 'Text', ord: 3}] }
     let(:beds) { layer.fields.first }
     let(:tables) { layer.fields.second }
@@ -207,13 +207,12 @@ describe Activity do
 
       site.lat = 15.0
       site.save!
-
       assert_activity 'site', 'changed',
         'collection_id' => collection.id,
         'user_id' => user.id,
         'site_id' => site.id,
         'data' => {'name' => site.name, 'changes' => {'lat' => [10.0, 15.0], 'lng' => [20.0, 20.0]}, 'lat' => 15.0, 'lng' => 20.0, 'properties' => {beds.es_code => 20}},
-        'description' => "Site '#{site.name}' changed: location changed from (10.0, 20.0) to (15.0, 20.0)"
+        'description' => "Site '#{site.name}' changed: location changed from '(10.0, 20.0)' to '(15.0, 20.0)'"
     end
 
     it "creates one after adding location in site without location" do
@@ -231,7 +230,7 @@ describe Activity do
         'user_id' => user.id,
         'site_id' => site.id,
         'data' => {'name' => site.name, 'changes' => {'lat' => [ nil, 15.0], 'lng' => [nil, 20.0]}, 'lat' => 15.0, 'lng' => 20.0, 'properties' => {beds.es_code => 20}},
-        'description' => "Site '#{site.name}' changed: location changed from (nothing) to (15.0, 20.0)"
+        'description' => "Site '#{site.name}' changed: location changed from '(Nothing)' to '(15.0, 20.0)'"
     end
 
     it "creates one after removing location in site with location" do
@@ -249,7 +248,7 @@ describe Activity do
         'user_id' => user.id,
         'site_id' => site.id,
         'data' => {'name' => site.name, 'changes' => {'lat' => [10.0, nil], 'lng' => [20.0, nil]}, 'lat' => nil, 'lng' => nil, 'properties' => {beds.es_code => 20}},
-        'description' => "Site '#{site.name}' changed: location changed from (10.0, 20.0) to (nothing)"
+        'description' => "Site '#{site.name}' changed: location changed from '(10.0, 20.0)' to '(Nothing)'"
     end
 
     it "creates one after adding one site's property" do
@@ -266,7 +265,7 @@ describe Activity do
         'user_id' => user.id,
         'site_id' => site.id,
         'data' => {'name' => site.name, 'changes' => {'properties' => [{}, {beds.es_code => 30}]}, 'lat' => 10.0, 'lng' => 20.0, 'properties' => {beds.es_code => 30}},
-        'description' => "Site '#{site.name}' changed: 'beds' changed from (nothing) to 30"
+        'description' => "Site '#{site.name}' changed: 'beds' changed from '(Nothing)' to '30'"
     end
 
     it "creates one after changing one site's property" do
@@ -283,7 +282,7 @@ describe Activity do
         'user_id' => user.id,
         'site_id' => site.id,
         'data' => {'name' => site.name, 'changes' => {'properties' => [{beds.es_code => 20}, {beds.es_code => 30}]}, 'lat' => 10.0, 'lng' => 20.0, 'properties' => {beds.es_code => 30}},
-        'description' => "Site '#{site.name}' changed: 'beds' changed from 20 to 30"
+        'description' => "Site '#{site.name}' changed: 'beds' changed from '20' to '30'"
     end
 
     it "creates one after changing many site's properties" do
@@ -301,7 +300,7 @@ describe Activity do
         'user_id' => user.id,
         'site_id' => site.id,
         'data' => {'name' => site.name, 'changes' => {'properties' => [{beds.es_code => 20, text.es_code => 'foo'}, {beds.es_code => 30, text.es_code => 'bar'}]}, 'lat' => 10.0, 'lng' => 20.0, 'properties' => {beds.es_code => 30, text.es_code => 'bar'}},
-        'description' => "Site '#{site.name}' changed: 'beds' changed from 20 to 30, 'text' changed from 'foo' to 'bar'"
+        'description' => "Site '#{site.name}' changed: 'beds' changed from '20' to '30', 'text' changed from 'foo' to 'bar'"
     end
 
     it "doesn't create one after siglaning properties will change but they didn't change" do

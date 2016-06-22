@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Api::V1::SitesController, skip: true do
+describe Api::V1::SitesController do
   include Devise::TestHelpers
   let!(:user) { User.make }
   let!(:collection) { user.create_collection(Collection.make_unsaved) }

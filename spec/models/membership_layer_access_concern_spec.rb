@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Membership::LayerAccessConcern, skip: true do
+describe Membership::LayerAccessConcern do
   let(:collection) { Collection.make }
   let(:user) { User.make }
   let(:membership) { collection.memberships.create! :user_id => user.id }
@@ -13,7 +13,6 @@ describe Membership::LayerAccessConcern, skip: true do
     context "when no access already exists" do
       it "grants read access to layer" do
         membership2.set_layer_access :verb => :read, :access => true, :layer_id => layer.id
-
         lms = LayerMembership.all
         expect(lms.length).to eq(1)
         expect(lms[0].collection_id).to eq(collection.id)

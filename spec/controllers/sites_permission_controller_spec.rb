@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SitesPermissionController, skip: true do
+describe SitesPermissionController do
   include Devise::TestHelpers
 
   let!(:user) { User.make }

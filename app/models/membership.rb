@@ -40,8 +40,7 @@ class Membership < ActiveRecord::Base
 
     lm = collection.layer_memberships.where(:layer_id => options[:layer_id], :user_id => user_id).first
     lm.destroy if lm
-
-    if options[:access] == "true"
+    if options[:access] == "true" || options[:access] == true
       collection.layer_memberships.create! :layer_id => options[:layer_id], :user_id => user_id, :read => read, :write => write
     end
 

@@ -42,7 +42,7 @@ class Field::HierarchyField < Field
     else
       parent_id = parent
     end
-    valid_value?(parent_id)
+    # valid_value?(parent_id)
     options = []
     add_option_to_options options, find_hierarchy_item_by_id(parent_id)
     # if use_codes_instead_of_es_codes
@@ -156,7 +156,7 @@ class Field::HierarchyField < Field
 
   def find_hierarchy_item_by_id(id, start_at = config['hierarchy'])
     start_at.each do |item|
-      return item if item['id'] == id.to_s
+      return item if item['id'].to_s == id.to_s
       if item.has_key? 'sub'
         found = find_hierarchy_item_by_id(id, item['sub'])
         return found unless found.nil?

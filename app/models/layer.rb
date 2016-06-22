@@ -29,6 +29,7 @@ class Layer < ActiveRecord::Base
   def record_status_before_update
     @name_was = name_was
     @before_update_fields = Field.where("layer_id = ?", id)
+    @before_update_fields.reload()
     @before_update_changes = changes.dup
   end
 

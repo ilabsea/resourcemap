@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NuntiumController, skip: true do
+describe NuntiumController do
   describe "POST 'receive'" do
     before(:each) do
       @collection = Collection.make(:name => 'Healt Center')

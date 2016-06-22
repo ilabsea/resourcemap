@@ -193,30 +193,32 @@ describe Search do
   end
 
   context "pagination" do
-    it "paginates by 50 results by default", skip: true do
-      expect(Search.page_size).to eq(50)
+    it "paginates by 50 results by default" do
+      search = collection.new_search
+      expect(search.page_size).to eq(50)
     end
 
     context "with another page size" do
+      let!(:search) { collection.new_search}
       before(:each) do
-        @original_page_size = Search.page_size
-        Search.page_size = 2
+        @original_page_size = search.page_size
+        search.page_size = 2
       end
 
       after(:each) do
-        Search.page_size = @original_page_size
+        search.page_size = @original_page_size
       end
 
-      it "gets first page", skip: true do
+      it "gets first page" do
         sites = 3.times.map { collection.sites.make }
         sites.sort! { |s1, s2| s1.name <=> s2.name }
-        assert_results collection.new_search, sites[0], sites[1]
+        assert_results search, sites[0], sites[1]
       end
 
-      it "gets second page", skip: true do
+      it "gets second page" do
         sites = 3.times.map { collection.sites.make }
         sites.sort! { |s1, s2| s1.name <=> s2.name }
-        assert_results collection.new_search.page(2), sites[2]
+        assert_results search.page(2), sites[2]
       end
     end
   end
@@ -252,6 +254,7 @@ describe Search do
     let!(:site1) { collection.sites.make :name => "Argentina", :properties => {beds.es_code => 8, prop.es_code => 1} }
     let!(:site2) { collection.sites.make :name => "Buenos Aires", :properties => {beds.es_code => 10, prop.es_code => 2} }
     let!(:site3) { collection.sites.make :name => "Cordoba bar Buenos", :properties => {beds.es_code => 20, prop.es_code => 3} }
+    let!(:search) { collection.new_search }
 
     it "finds by name" do
       assert_results collection.new_search.full_text_search("Argent"), site1
@@ -271,33 +274,32 @@ describe Search do
     end
 
     it "finds by value of select one property using where" do
-      search = collection.new_search
       search.use_codes_instead_of_es_codes
       assert_results search.where(prop.code => "A glass of water"), site1
     end
 
     it "doesn't give false positives" do
-      assert_results collection.new_search.full_text_search("wine"), site2
+      assert_results search.full_text_search("wine"), site2
     end
 
     it "searches whole phrase, not part of it" do
-      assert_results collection.new_search.full_text_search("Buenos Aires"), site2
+      assert_results search.full_text_search("Buenos Aires"), site2
     end
 
     pending "searches by name property" do
-      assert_results collection.new_search.full_text_search('name:"Buenos Aires"'), site2
+      assert_results search.full_text_search('name:"Buenos Aires"'), site2
     end
 
-    it "searches by numeric property", skip: true do
-      assert_results collection.new_search.full_text_search('beds:8'), site1
+    it "searches by numeric property" do
+      assert_results search.full_text_search('beds:8'), site1
     end
 
-    it "searches by numeric property with comparison", skip: true do
-      assert_results collection.new_search.full_text_search('beds:>=10'), site2, site3
+    it "searches by numeric property with comparison" do
+      assert_results search.full_text_search('beds:>=10'), site2, site3
     end
 
-    it "searches by label value", skip: true do
-      assert_results collection.new_search.full_text_search("prop:water"), site1
+    it "searches by label value" do
+      assert_results search.full_text_search("prop:water"), site1
     end
   end
 
@@ -362,7 +364,7 @@ describe Search do
     end
 
 
-    it "gets api results from snapshot", skip: true do
+    it "gets api results from snapshot" do
       snapshot = collection.snapshots.create! date: Time.now, name: 'snp1'
       snapshot.user_snapshots.create! user: user
 
@@ -391,7 +393,7 @@ describe Search do
       expect(result['_source']['lng']).to eq(2)
     end
 
-    it "gets ui form snapshot", skip: true do
+    it "gets ui form snapshot" do
       snapshot = collection.snapshots.create! date: Time.now, name: 'snp1'
       snapshot.user_snapshots.create! user: user
 
@@ -532,42 +534,37 @@ describe Search do
       { first_name.es_code => "At Formosa", unit.es_code => 3 } }
     let!(:site5) { collection.sites.make properties:
       { first_name.es_code => "Nowhere" }  }
+    let!(:search) { collection.new_search }
 
-    it 'should filter sites inside some specified item by id', skip: true do
-      search = collection.new_search
+    it 'should filter sites inside some specified item by id' do
       search.where unit.es_code => { under: 1 }
       assert_results search, site1, site2, site3
     end
 
-    it 'should filter sites inside some specified item by id again', skip: true do
-      search = collection.new_search
+    it 'should  filter sites inside some specified item by id again' do
       search.where unit.es_code => { under: 3 }
       assert_results search, site4
     end
 
-    it 'should filter sites inside some specified item by name', skip: true do
-      search = collection.new_search
+    it 'should filter sites inside some specified item by name' do
       search.use_codes_instead_of_es_codes
       search.where unit.code => { under: 'Buenos Aires' }
       assert_results search, site1, site2, site3
     end
 
     it "searches by hierarchy with @code" do
-      search = collection.new_search
       search.use_codes_instead_of_es_codes
       search.where unit.code => ['Buenos Aires']
       assert_results search, site1
     end
 
     it "searches by multiple hierarchy with @code" do
-      search = collection.new_search
       search.use_codes_instead_of_es_codes
       search.where unit.code => ['Buenos Aires', 'Vicente Lopez']
       assert_results search, site1, site2, site3
     end
 
     it "searches by multiple hierarchy with @es_code" do
-      search = collection.new_search
       search.where unit.es_code => [1, 2]
       assert_results search, site1, site2, site3
     end

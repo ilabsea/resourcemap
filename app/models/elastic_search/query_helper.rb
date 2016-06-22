@@ -53,15 +53,15 @@ module ElasticSearch::QueryHelper
 
         case op
         when '='
-          es_search.filter :term, key => value
+          es_search.add_filter :term => {key => value}
         when '<'
-          es_search.filter :range, key => {lt: value}
+          es_search.add_filter :range => {key => {lt: value}}
         when '<='
-          es_search.filter :range, key => {lte: value}
+          es_search.add_filter :range => {key => {lte: value}}
         when '>'
-          es_search.filter :range, key => {gt: value}
+          es_search.add_filter :range => {key => {gt: value}}
         when '>='
-          es_search.filter :range, key => {gte: value}
+          es_search.add_filter :range => { key => {gte: value}}
         end
       end
 

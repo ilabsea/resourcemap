@@ -17,7 +17,6 @@ describe Field do
     'field_id'
   end
 
-  it_behaves_like "it includes History::Concern"
 
   it "sanitizes options" do
     field = Field::SelectOneField.make config: {options: [{code: 'foo', label: 'bar'}]}.with_indifferent_access
@@ -126,10 +125,6 @@ describe Field do
         expect(field.strongly_type('1')).to eq 1
         expect(field.strongly_type('2')).to eq 2
       end
-
-      pending "should not convert value when option does not exist" do
-        expect(field.strongly_type('3')).to eq 0
-      end
     end
 
     describe 'yes_no' do
@@ -224,7 +219,7 @@ describe Field do
       end
     end
 
-    describe "validations for each field", skip: true do
+    describe "validations for each field" do
 
       it { expect(numeric.valid_value?(1)).to be_truthy }
       it { expect(numeric.valid_value?("1")).to be_truthy }
@@ -253,7 +248,7 @@ describe Field do
       it { expect(email_field.valid_value?("myemail@resourcemap.com")).to be_truthy }
     end
 
-    describe "decode from ImportWizard format", skip: true do
+    describe "decode from ImportWizard format" do
 
       it { expect(numeric.decode(1)).to eq(1) }
       it { expect(numeric.decode("1")).to eq(1) }
@@ -286,7 +281,7 @@ describe Field do
         expect { numeric.apply_format_and_validate("invalid23", false, collection) }.to raise_error(RuntimeError, "Invalid numeric value in field numeric. This numeric field is configured not to allow decimal values.")
       end
 
-      it "should validate format for yes_no field", skip: true do
+      it "should validate format for yes_no field" do
         expect(yes_no.apply_format_and_validate(true, false, collection)).to be_truthy
         expect(yes_no.apply_format_and_validate(1, false, collection)).to be_truthy
         expect(yes_no.apply_format_and_validate("true", false, collection)).to be_truthy

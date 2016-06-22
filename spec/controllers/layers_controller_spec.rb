@@ -13,7 +13,7 @@ describe LayersController, :type => :controller  do
 
   before(:each) {sign_in user}
 
-  it "should update field.layer_id", skip: true do
+  it "should update field.layer_id" do
 
     expect(layer.fields.count).to eq(1)
     json_layer = {id: layer.id, name: layer.name, ord: layer.ord, public: layer.public, fields_attributes: {:"0" => {code: numeric.code, id: numeric.id, kind: numeric.kind, name: numeric.name, ord: numeric.ord, layer_id: layer2.id}}}
@@ -33,15 +33,6 @@ describe LayersController, :type => :controller  do
 
     expect(histories.last.valid_to).to be_nil
     expect(histories.last.layer_id).to eq(layer2.id)
-
-  end
-
-  it "should return layer json with associated threshold ids", skip: true do
-    get :index, collection_id: collection.id, format: 'json'
-    json = JSON.parse response.body
-    #expect(response.body).to match /threshold_ids/
-
-    expect(json[0]["threshold_ids"]).to eq [threshold.id]
 
   end
   
