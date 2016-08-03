@@ -39,12 +39,6 @@ class Collection < ActiveRecord::Base
   after_destroy :touch_lifespan
 
   def max_value_of_property(es_code)
-    # Watch out this change, confirm that is tested, then delete this comment
-    # search = self.new_search
-    # search.sort { by es_code, 'desc' }
-    # search.size 2000
-    # results = search.perform.results
-    # results.first['_source']['properties'][es_code] rescue 0
     client = Elasticsearch::Client.new
     results = client.search index: index_name, type: 'site', body: {
       sort: {es_code => 'desc'},
@@ -91,7 +85,7 @@ class Collection < ActiveRecord::Base
     if membership.admin?
       target_fields = target_fields.all
     else
-      lms = LayerMembership.where(user_id: user.id, collection_id: self.id).all.inject({}) do |hash, lm|
+      lms = LayerMembership.where(user_id: user.id, collection_id: self.id).inject({}) do |hash, lm|
         hash[lm.layer_id] = lm
         hash
       end

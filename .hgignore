@@ -24,3 +24,4 @@ REVISION
 VERSION
 config/aws.yml
 config/telemetry.yml
+coverage/*

@@ -159,10 +159,12 @@ describe Api::CollectionsController, type: :controller do
 
     it "should return CSV" do
       csv =  CSV.parse response.body
+      site2_updated_at = site2.updated_at.to_datetime.rfc822
+      site1_updated_at = site.updated_at.to_datetime.rfc822
       expect(csv.length).to eq(3)
       expect(csv[0]).to eq(['resmap-id', 'name', 'lat', 'long', text.code, numeric.code, yes_no.code, select_one.code, 'select_many', 'hierarchy', site_ref.code, date.code, director.code, 'last updated'])
-      expect(csv.include?([site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "Bro", "", "", "", site2.updated_at.strftime("%a, %d %b %Y %T %z")])).to eq(true)
-      expect(csv.include?([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, "yes", "one", "one, two", "Dad", site2.id.to_s, "10/24/2012", user.email, site.updated_at.strftime("%a, %d %b %Y %T %z")])).to eq(true)
+      expect(csv.include?([site2.id.to_s, site2.name, site2.lat.to_s, site2.lng.to_s, "", "", "no", "", "", "Bro", "", "", "", site2_updated_at])).to eq(true)
+      expect(csv.include?([site.id.to_s, site.name, site.lat.to_s, site.lng.to_s, site.properties[text.es_code], site.properties[numeric.es_code].to_s, "yes", "one", "one, two", "Dad", site2.id.to_s, "10/24/2012", user.email, site1_updated_at])).to eq(true)
     end
   end
 

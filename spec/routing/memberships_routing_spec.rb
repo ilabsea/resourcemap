@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes for Memberships", skip: true do
+describe "routes for Memberships" do
   it "should route to search" do
     expect(get("/collections/1/memberships/search")).
       to route_to(

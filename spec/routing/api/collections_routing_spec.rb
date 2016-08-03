@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes for Api Collections", skip: true do
+describe "routes for Api Collections" do
   it "should route to show collection" do
     expect(get("/api/collections/1.rss")).
       to route_to(

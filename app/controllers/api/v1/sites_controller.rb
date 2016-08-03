@@ -4,6 +4,7 @@ module Api::V1
     include Api::JsonHelper
 
     before_filter :authenticate_api_user!
+    before_filter :check_user_member!
     skip_before_filter  :verify_authenticity_token
     expose(:site) { Site.find(params[:site_id] || params[:id]) }
 
@@ -146,6 +147,15 @@ module Api::V1
         site = collection.sites.build sanitized_site_params(true).merge(user: current_user)
       end
       return site
+    end
+
+    def check_user_member!
+      collection = Collection.find_by_id(params[:collection_id])
+      if (current_user.collections.map(&:id).include?(params["collection_id"].to_i))
+        return true
+      else
+        return head 403
+      end
     end
 
   end

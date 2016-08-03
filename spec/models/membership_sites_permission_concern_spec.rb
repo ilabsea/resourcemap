@@ -23,7 +23,7 @@ describe Membership::SitesPermissionConcern do
       expect(membership.read_sites_permission.all_sites).to eq false
     end
 
-    it "should change write sites permission", skip: true do
+    it "should change write sites permission" do
       permission = membership.write_sites_permission
 
       expect(permission.all_sites).to eq false
@@ -31,7 +31,7 @@ describe Membership::SitesPermissionConcern do
       expect(permission.some_sites[0]).to eq({id: 1, name: 'Bayon clinic'})
     end
 
-    it "should accept post data from jquery", skip: true do
+    it "should accept post data from jquery" do
       membership.update_sites_permission({read: {some_sites: {"0" => {"id" => "2", "name" => "Calmette hospital"}}}})
       permission = membership.read_sites_permission
 

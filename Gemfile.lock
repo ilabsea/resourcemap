@@ -165,6 +165,7 @@ GEM
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
     diff-lcs (1.2.5)
+    docile (1.1.5)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
     elasticsearch (1.0.13)
@@ -443,6 +444,11 @@ GEM
     shellany (0.0.1)
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
+    simplecov (0.12.0)
+      docile (~> 1.1.0)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.0)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -575,6 +581,7 @@ DEPENDENCIES
   sass-rails (~> 4.0.1)
   selenium-webdriver
   shoulda-matchers
+  simplecov
   therubyracer
   timecop
   treetop (= 1.4.15)

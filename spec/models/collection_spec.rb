@@ -106,32 +106,17 @@ describe Collection do
 
   end
 
-  describe "plugins" do
-    # will fixe as soon as possible
-    pending do
-      it "should set plugins by names" do
-        collection.selected_plugins = ['plugin_1', 'plugin_2']
-        expect(collection.plugins).to eq({'plugin_1' => {}, 'plugin_2' => {}})
-      end
-
-      it "should skip blank plugin name when setting plugins" do
-        collection.selected_plugins = ["", 'plugin_1', ""]
-        expect(collection.plugins).to eq({'plugin_1' => {}})
-      end
-    end
-  end
-
   describe 'gateway' do
     let!(:admin_user) { User.make }
-    let!(:collection_1) { admin_user.create_collection Collection.make name: 'test'}
-    let!(:channel) { admin_user.channels.make name: 'default', basic_setup: true, ticket_code: '2222'  }
+    let!(:collection_1) { admin_user.create_collection Collection.make_unsaved}
+    let!(:channel) { Channel.make name: 'default', basic_setup: true, ticket_code: '2222', user_id: admin_user.id  }
 
     it 'should return user_owner of collection' do
       expect(collection_1.get_user_owner).to eq admin_user
     end
 
     it 'should return gateway under user_owner' do
-      debugger
+      expect(channel.user_id).to eq admin_user.id
       expect(collection_1.get_gateway_under_user_owner).to eq channel
     end
   end

@@ -7,7 +7,7 @@ shared_examples "it includes History::Concern" do
     expect(model.histories.count).to eq(1)
   end
 
-  it "should store history on update", skip: true do
+  it "should store history on update" do
     model = history_concern_class.make
     expect(model.histories.count).to eq(1)
     model.name = "New name"
@@ -47,7 +47,7 @@ shared_examples "it includes History::Concern" do
     expect(model_history).to be_nil
   end
 
-  it "should get current history for new model", skip: true do
+  it "should get current history for new model" do
     model = history_concern_class.make
     model_history = model.current_history
     expect(model_history).to be
@@ -56,7 +56,7 @@ shared_examples "it includes History::Concern" do
     expect(model_history.valid_since.to_i).to eq(model.created_at.to_i)
   end
 
-  it "should get current history for updated model", skip: true do
+  it "should get current history for updated model" do
     stub_time '2010-01-01 09:00:00 -0500'
     model = history_concern_class.make
 
@@ -71,7 +71,7 @@ shared_examples "it includes History::Concern" do
     expect(model_history.valid_since.to_i).to eq(model.updated_at.to_i)
   end
 
-  it "should not get new elements in history for date", skip: true do
+  it "should not get new elements in history for date" do
     collection = Collection.make
 
     stub_time '2011-01-01 10:00:00 -0500'

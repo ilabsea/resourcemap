@@ -14,8 +14,9 @@ class Field::UserField < Field
 	private
 
 	def check_user_exists(user_email)
-    user_emails = collection.users.map {|u| u.email}
-
+    # debugger
+    # user_emails = collection.users.map {|u| u.email}
+    user_emails = collection.memberships.select(:email).joins(:user).map(&:email)
     if !user_emails.include? user_email
       raise "Non-existent user email address in field #{code}"
     end

@@ -84,13 +84,13 @@ describe UserSnapshot do
       expect(user_snapshot.snapshot).to eq(snapshot_before)
     end
 
-    it "loads a snapshot with the given name", skip: true do
+    it "loads a snapshot with the given name" do
       my_snapshot = collection.snapshots.create! date: Time.now , name: 'my snapshot'
-
+      user_snapshot.go_to!('my snapshot')
       expect(user_snapshot.go_to!('my snapshot')).to eq(true)
-
-      expect(user_snapshot.snapshot).to eq(user_snapshot.snapshot)
-      expect(user_snapshot.snapshot.name).to eq('my snapshot')
+      expect(user_snapshot.snapshot_id).to eq(my_snapshot.id)
+      new_snapshot = Snapshot.find user_snapshot.snapshot_id
+      expect(new_snapshot.name).to eq('my snapshot')
     end
   end
 

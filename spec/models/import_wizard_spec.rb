@@ -376,11 +376,11 @@ describe ImportWizard do
 
   # The updates will be performed using the hierarchy name for now
   # but soon they this is going to change when solving Issue #459
-  pending "should update hierarchy fields in bulk update using id" do
+  it "should update hierarchy fields in bulk update using id" do
     csv_string = CSV.generate do |csv|
       csv << ['Name', 'Column']
-      csv << ['Foo', '100']
-      csv << ['Bar', '101']
+      csv << ['Foo', 'Son']
+      csv << ['Bar', 'Bro']
     end
 
     specs = [
@@ -596,7 +596,7 @@ describe ImportWizard do
 
   end
 
-  it "should create new fields with all property values", skip: true do
+  it "should create new fields with all property values" do
     site1 = collection.sites.make name: 'Foo old', id: 1234, properties: {}
 
     site2 = collection.sites.make name: 'Bar old', properties: {}, id: 1235
@@ -787,7 +787,7 @@ describe ImportWizard do
 
   end
 
-  it "should get error for invalid new fields", skip: true do
+  it "should get error for invalid new fields" do
     site2 = collection.sites.make name: 'Bar old', properties: {text.es_code => 'lala'}, id: 1235
 
     csv_string = CSV.generate do |csv|

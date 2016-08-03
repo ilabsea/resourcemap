@@ -11,7 +11,7 @@ describe MapSearch do
     expect(search.results).to eq({})
   end
 
-  it "searches based on collection id found", skip: true do
+  it "searches based on collection id found" do
     site = Site.make
 
     search = MapSearch.new site.collection_id
@@ -20,9 +20,9 @@ describe MapSearch do
     expect(search.results[:sites].length).to be(1)
     expected_hash = {collection_id: site.collection_id, id: site.id,
     lat: site.lat.to_f, lng: site.lng.to_f,
-    name: site.name, name_not_analyzed: site.name, id_with_prefix:"AA1",
+    name: site.name, id_with_prefix:"AA1",
     lat_analyzed: site.lat.to_s, lng_analyzed: site.lng.to_s,
-    uuid: site.uuid, highlighted: false, icon: 'default', alert: 'false'}
+    uuid: site.uuid, highlighted: false, icon: 'default', alert: 'false', version: "null"}
     expect(search.results[:sites][0]).to eq(expected_hash)
   end
 
@@ -118,17 +118,17 @@ describe MapSearch do
       assert_result search, site2
     end
 
-    pending "searches by name property" do
-      search.full_text_search('name:"Buenos Aires"')
+    it "searches by name property" do
+      search.full_text_search('Buenos Aires')
       assert_result search, site2
     end
 
-    it "searches by numeric property", skip: true do
+    it "searches by numeric property" do
       search.full_text_search('beds:8')
       assert_result search, site1
     end
 
-    it "searches by numeric property with comparison", skip: true do
+    it "searches by numeric property with comparison" do
       search.full_text_search('beds:>10')
       assert_result search, site3
     end

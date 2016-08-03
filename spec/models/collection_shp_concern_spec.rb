@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Collection::ShpConcern, skip: true do
+describe Collection::ShpConcern do
   let(:user) { User.make time_zone: 'UTC' }
   let(:collection) { user.collections.make }
 

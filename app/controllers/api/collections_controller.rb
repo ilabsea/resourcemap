@@ -5,6 +5,8 @@ class Api::CollectionsController < ApplicationController
 
   before_filter :authenticate_api_user!
   skip_before_filter  :verify_authenticity_token
+  before_filter :check_user_member_admin!, :only => [:update_sites]
+  before_filter :check_user_member!, :only => [:show, :geo_json, :get_sites_conflict, :get_some_sites]
 
   def index
     render json: current_user.collections, :root => false
@@ -234,6 +236,24 @@ class Api::CollectionsController < ApplicationController
 
   def visible_layer_for_site    
     
+  end
+
+  def check_user_member_admin!
+    collection = Collection.find_by_id(params[:collection_id])
+    if (current_user.collections.map(&:id).include?(params["id"].to_i)and current_user.admins?(collection))
+      return true
+    else
+      return head 403
+    end
+  end
+
+  def check_user_member!
+    collection = Collection.find_by_id(params[:collection_id])
+    if (current_user.collections.map(&:id).include?(params["id"].to_i))
+      return true
+    else
+      return head 403
+    end
   end
 
 end

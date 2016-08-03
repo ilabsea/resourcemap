@@ -30,7 +30,7 @@ describe Api::SitesController, type: :controller  do
       user = 'iLab'
       pw = '1c4989610bce6c4879c01bb65a45ad43'
       request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user,pw)
-      get :show, id: site.id, format: 'rss'
+      get :show, id: site.id, format: 'rss', collection_id: collection.id
     end
 
     it { expect(response).to be_success }

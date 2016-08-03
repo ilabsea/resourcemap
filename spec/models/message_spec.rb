@@ -1,5 +1,11 @@
 require 'spec_helper'
 
+# For single rspec test run file you need to require below file
+# require 'polyglot'
+# require File.expand_path(File.join(Rails.root, '/spec/lib/treetop/treetop_helper'))
+
+# Treetop.load File.expand_path(File.join(Rails.root, '/lib/treetop/command'))
+
 describe Message do
   context "new" do
     subject { Message.new }
@@ -39,10 +45,11 @@ describe Message do
 
   describe "#process!" do
     before(:each) do
-      collection = Collection.make :id => 1
+      collection = Collection.make
       user = User.make :phone_number => '123'
       collection.memberships.create :user => user, :admin => true
-      @message = Message.new :guid => '999', :from => 'sms://123', :body => 'dyrm q 1 beds>12'
+      body = "dyrm q #{collection.id} beds>12"
+      @message = Message.new :guid => '999', :from => 'sms://123', :body => body
     end
 
     it "should save reply" do
@@ -57,7 +64,7 @@ describe Message do
         @message.save
       end
 
-      it "should not save reply", skip: true do
+      it "should not save reply" do
         expect { @message.process! }.to raise_error(RuntimeError, "Invalid command")
         expect(@message.reply).to be_nil
       end

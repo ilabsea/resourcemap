@@ -27,7 +27,7 @@ describe Membership do
       expect { user.memberships.create!(:collection_id => collection.id) }.to raise_error
     end
 
-    context "when user is collection admin", skip: true do
+    context "when user is collection admin" do
       it "should allow read for all sites" do
         membership.admin = true
         expect(membership.sites_permission[:read].all_sites).to be true

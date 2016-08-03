@@ -9,49 +9,6 @@ module Collection::CsvConcern
     end
   end
 
-  # def to_csv(elastic_search_api_results = new_search.unlimited.api_results, current_user)
-  #   layers = self.layers.all
-  #   fields = []
-  #   hierarchy_fields = {}
-  #   layers.each do |layer|
-  #     allFields = layer.fields
-  #     allFields.each do |field|
-  #       fields.push(field)
-  #     end
-  #   end
-
-  #   CSV.generate do |csv|
-  #     header = ['resmap-id', 'name', 'lat', 'long']
-  #     fields.each { |field| header << field.code }
-
-  #     header << 'last updated'
-  #     csv << header
-
-  #     elastic_search_api_results.each do |result|
-  #       source = result['_source']
-
-  #       row = [source['id'], source['name'], source['location'].try(:[], 'lat'), source['location'].try(:[], 'lon')]
-  #       fields.each do |field|
-  #         if field.kind == 'yes_no'
-  #           row << (Field.yes?(source['properties'][field.code]) ? 'yes' : 'no')
-  #         elsif field.kind == 'photo'
-  #           row << "#{Settings.host}/photo_field/#{source['properties'][field.code]}"
-  #         else
-  #           row << Array(source['properties'][field.code]).join(", ")
-  #         end
-  #       end
-  #       if current_user
-  #         updated_at = Site.iso_string_to_rfc822_with_timezone(source['updated_at'], current_user.time_zone)
-  #       else
-  #         updated_at = Site.iso_string_to_rfc822(source['updated_at'])
-  #       end
-  #       # row << Site.iso_string_to_rfc822(source['updated_at'])
-  #       row << updated_at
-  #       csv << row
-  #     end
-  #   end
-  # end
-
   def to_csv(elastic_search_api_results, user, snapshot_id = nil, options = {})
     fields = self.visible_fields_for(user, {snapshot_id: snapshot_id})
     fields.each(&:cache_for_read)
@@ -96,7 +53,7 @@ module Collection::CsvConcern
   end
 
   def sample_csv(user = nil)
-    fields = self.fields.all
+    fields = self.fields
 
     CSV.generate do |csv|
       header = ['name', 'lat', 'long']

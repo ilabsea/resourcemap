@@ -286,10 +286,6 @@ describe Search do
       assert_results search.full_text_search("Buenos Aires"), site2
     end
 
-    pending "searches by name property" do
-      assert_results search.full_text_search('name:"Buenos Aires"'), site2
-    end
-
     it "searches by numeric property" do
       assert_results search.full_text_search('beds:8'), site1
     end

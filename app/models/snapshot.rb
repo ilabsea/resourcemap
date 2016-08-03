@@ -11,14 +11,6 @@ class Snapshot < ActiveRecord::Base
   after_destroy :touch_collection_lifespan
 
   def create_index
-    # index = Tire::Index.new index_name
-    # index.create mappings: { site: site_mapping }
-
-    # collection.site_histories.at_date(date).each do |history|
-    #   history.store_in index
-    # end
-
-    # index.refresh
     index_properties = {
       mappings: { site: site_mapping }
     }
@@ -45,15 +37,11 @@ class Snapshot < ActiveRecord::Base
   after_destroy :destroy_index
 
   def destroy_index
-    index.delete
+    Elasticsearch::Client.new.indices.delete index: index_name
   end
 
   def index_name
     collection.index_name snapshot_id: id
-  end
-
-  def index
-    Tire::Index.new index_name
   end
 
   def recreate_index

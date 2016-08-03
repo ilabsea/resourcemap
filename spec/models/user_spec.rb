@@ -73,17 +73,14 @@ describe User do
       Activity.delete_all
     end
 
-    it "returns activities for user membership", skip: true do
-      Activity.make collection_id: collection.id, user_id: user.id, item_type: 'collection', action: 'created'
-
+    it "returns activities for user membership" do
+      Activity.make collection_id: collection.id, user_id: user.id, item_type: 'collection', action: 'created', data: {:name => collection.name}, collection_name: collection.name
       expect(user.activities.length).to eq(1)
     end
 
-    it "doesn't return activities for user membership", skip: true do
+    it "doesn't return activities for user membership" do
       user2 = User.make
-
-      Activity.make collection_id: collection.id, user_id: user.id, item_type: 'collection', action: 'created'
-
+      Activity.make collection_id: collection.id, user_id: user.id, item_type: 'collection', action: 'created', data: {:name => collection.name}, collection_name: collection.name
       expect(user2.activities.length).to eq(0)
     end
   end
@@ -149,7 +146,7 @@ describe User do
     let(:user_1){ User.make }
     let!(:gateway) { user_1.channels.make name: 'default', ticket_code: '1234', basic_setup: true}
 
-    it 'should return gateway under user', skip: true do
+    it 'should return gateway under user' do
       expect(user_1.get_gateway).to eq gateway 
     end
   end
