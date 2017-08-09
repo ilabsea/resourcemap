@@ -191,7 +191,6 @@ describe Activity do
 
       site.name = 'Bar'
       site.save!
-
       assert_activity 'site', 'changed',
         'collection_id' => collection.id,
         'user_id' => user.id,

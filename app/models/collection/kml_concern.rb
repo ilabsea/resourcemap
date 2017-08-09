@@ -44,8 +44,10 @@ module Collection::KmlConcern
               xml.name row["name"]
               xml.styleUrl "#defaultstyle"
               xml.LookAt {
-                xml.longitude row["location"]["lon"]
-                xml.latitude  row["location"]["lat"]
+                if row["location"]
+                  xml.longitude row["location"]["lon"]
+                  xml.latitude  row["location"]["lat"]
+                end
                 xml.altitude  0
                 xml.range 32185
                 xml.tilt 0
@@ -77,10 +79,11 @@ module Collection::KmlConcern
                   xml.value row["location"]
                 }
               }
-
-              xml.Point {
-                xml.coordinates "#{row["location"]["lon"]},#{row["location"]["lat"]},0"
-              }
+              if(row["location"])
+                xml.Point {
+                  xml.coordinates "#{row["location"]["lon"]},#{row["location"]["lat"]},0"
+                }
+              end
             }
           end
         }

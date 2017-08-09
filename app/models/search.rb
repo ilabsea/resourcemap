@@ -128,7 +128,7 @@ class Search
       body[:from] = @offset
       body[:size] = @limit
     elsif @unlimited
-      body[:size] = 1_000_000
+      body[:size] = 1_000_0
     else
       body[:size] = page_size
     end

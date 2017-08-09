@@ -129,6 +129,7 @@ class Collection < ActiveRecord::Base
     site_ids.uniq
   end
 
+
   def visible_fields_for(user, options, language = nil)
     if user.try(:is_guest)
       return fields.includes(:layer).all
@@ -149,9 +150,7 @@ class Collection < ActiveRecord::Base
         hash[lm.layer_id] = lm
         hash
       end
-
       target_fields = target_fields.select { |f| lms[f.layer_id] && lms[f.layer_id].read }
-
     end
     target_fields.sort! { |x, y| x[:ord] <=> y[:ord] }
   end

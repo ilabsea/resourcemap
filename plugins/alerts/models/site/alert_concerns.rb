@@ -11,18 +11,18 @@ module Site::AlertConcerns
       extended_properties[:alert] = true
       extended_properties[:color] = alert.color
       extended_properties[:ord] = alert.ord
-      if alert.is_notify
-        phone_numbers = notification_numbers alert
-        emails = notification_emails alert
-        message_notification = alert.message_notification.render_template_string(get_template_value_hash)
+      #if alert.is_notify
+      #  phone_numbers = notification_numbers alert
+      #  emails = notification_emails alert
+      #  message_notification = alert.message_notification.render_template_string(get_template_value_hash)
         
         # to be refactoring 
-        active_gateway = collection.active_gateway
-        suggested_channel = active_gateway.nil?? Channel.default_nuntium_name : active_gateway.nuntium_channel_name
+      #  active_gateway = collection.active_gateway
+      #  suggested_channel = active_gateway.nil?? Channel.default_nuntium_name : active_gateway.nuntium_channel_name
         
-        Resque.enqueue SmsTask, phone_numbers, message_notification, suggested_channel, collection.id unless phone_numbers.empty?
-        Resque.enqueue EmailTask, emails, message_notification, "[ResourceMap] Alert Notification" unless emails.empty?
-      end
+      #  Resque.enqueue SmsTask, phone_numbers, message_notification, suggested_channel, collection.id unless phone_numbers.empty?
+      #  Resque.enqueue EmailTask, emails, message_notification, "[ResourceMap] Alert Notification" unless emails.empty?
+      #end
     else
       extended_properties[:alert] = false
     end

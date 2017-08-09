@@ -31,7 +31,7 @@ class Snapshot < ActiveRecord::Base
       end
       client.bulk body: ops
     end
-    client.indices.refresh
+    # client.indices.refresh
   end
 
   after_destroy :destroy_index

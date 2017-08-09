@@ -101,8 +101,8 @@ ActiveRecord::Schema.define() do
     t.integer  "user_id"
     t.string   "provider"
     t.string   "token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "import_jobs", force: true do |t|
