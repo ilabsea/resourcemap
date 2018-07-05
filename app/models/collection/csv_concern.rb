@@ -14,7 +14,10 @@ module Collection::CsvConcern
     CSV.generate do |csv|
       locations.each do |location|
         csv << [location["code"], location["name"], location["latitude"], location["longitude"]]
-        
+      end
+    end
+  end
+
   def to_csv(elastic_search_api_results = new_search.unlimited.api_results, current_user)
 
     fields = self.fields.all
@@ -387,5 +390,4 @@ module Collection::CsvConcern
     end
     return csv
   end
-
 end

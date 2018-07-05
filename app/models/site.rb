@@ -295,8 +295,9 @@ class Site < ActiveRecord::Base
           return false
         end
       end
-
-<<<<<<< HEAD
+    end
+  end
+  
   def self.migrate_photo_field_to_full_url
     Site.all.each do |s|
       s.collection.fields.where(:kind => 'photo').each do |f|
@@ -320,18 +321,4 @@ class Site < ActiveRecord::Base
       p s.save(validate: false)
     end
   end
-=======
-      if lng
-        if (lng >= -180) && (lng <= 180)
-          valid = true
-        else
-          errors.add(:lng, "longitude must be in the range of -180 to 180")
-          return false
-        end
-      end
-
-    end
-    return valid
-  end  
->>>>>>> fix sms error with lat lng validate min max
 end
