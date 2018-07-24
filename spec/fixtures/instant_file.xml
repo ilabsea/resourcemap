@@ -1,0 +1,17 @@
+<?xml version='1.0' ?>
+      <site>
+        <collection-id type='integer'>8</collection-id>
+        <name>Cambodiana</name>
+        <lat type='float'>11.53</lat>
+        <lng type='float'>104.93</lng>
+        <existing-fields>
+          <field-7>
+            <field-id>7</field-id>
+            <value>Who know?</value>
+          </field-7>
+          <field-8>
+            <field-id>8</field-id>
+            <value>10</value>
+          </field-8>
+        </existing-fields>
+      </site>

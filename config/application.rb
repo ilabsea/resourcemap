@@ -81,7 +81,7 @@ module ResourceMap
     config.action_mailer.delivery_method = :sendmail
     config.google_analytics = 'UA-17030081-1'
 
-    config.version_name = `hg log -r . --template '{latesttag}'` rescue "Development"
+    config.version_name = `git describe --abbrev=0 --tags` rescue "Development"
     config.revision = File.read('REVISION').strip rescue "Development"
 
     config.middleware.insert_before 0, "Rack::Cors" do
