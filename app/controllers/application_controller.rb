@@ -162,11 +162,11 @@ class ApplicationController < ActionController::Base
   def http_basic_authentication
     authenticate_or_request_with_http_basic do |user, password|
       resource = User.find_by_email(user)
-      if resource.valid_password?(password)
+      if resource && resource.valid_password?(password)
         sign_in resource
         true
       else
-        false
+        head :forbidden
       end
     end
   end
